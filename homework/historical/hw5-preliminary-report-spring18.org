@@ -1,0 +1,24 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+title: Computerized control - homework 5
+#+date: Due Friday 2018-04-20
+
+* Preliminary report on the project and plan for the work
+
+  Please prepare a written preliminary report about your work on the project. The report should contain
+  1. *Design of the necessary analog circuits:*
+     1. Antialiasing filter (low pass Bessel filter). In order to find a reasonable value of the sampling period \(h\), you can make use of the step response in the figure below (by previous students Pedro de la Torre, Jorge Ramirez, Jorge Barrutia, Miguel Rubio). 
+	#+BEGIN_CENTER 
+	 \includegraphics[width=0.8\linewidth]{../figures/step-response-oscilloscope.png}
+	#+END_CENTER
+     2. Signal conditioner (motor driver) to convert a 0-5V signal from Arduino output channel to signal -5V - +5V for driving the dc motor in both directions.
+     3. Signal conditioner to convert zero-mean signal from anti-aliasing filter to signal in range 0-5V for input to Arduino.   
+  2. *A detailed plan of the work* needed to complete the project and finish the report. Break the work up in a number of suitable tasks and *provide for each task*
+     1. A description
+     2. Time required to complete the task
+     3. Deadline to accomplish the task and scheduled times to work on the task.
+     4. Responsible group member
+     You could for instance visualize the plan in a [[https://es.wikipedia.org/wiki/Diagrama_de_Gantt][Gantt chart]]
+

@@ -1,0 +1,16 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}
+    \addplot[samples=300
+\end{tikzpicture}
+
+\end{document}

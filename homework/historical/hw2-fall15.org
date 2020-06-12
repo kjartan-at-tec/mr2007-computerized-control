@@ -1,0 +1,108 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage[margin=18mm]{geometry}
+#+LaTex_HEADER: \usepackage{amsmath}
+#+LaTex_HEADER: \usepackage{graphicx}
+#+LaTex_HEADER: \usepackage{subfigure}
+#+LaTex_HEADER: \usepackage{parskip}
+#+LaTex_HEADER: \usepackage{standalone}
+#+LATEX_HEADER: \usepackage{tikz,pgf,pgfplots}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \pgfplotsset{compat=1.9}
+#+LaTex_HEADER: \newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+#+LaTex_HEADER: \newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+#+LaTex_HEADER: \newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+#+LaTex_HEADER: \newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+#+LaTex_HEADER: \newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+#+LaTex_HEADER: \newcommand*{\bbm}{\begin{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\ebm}{\end{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\obsmatrix}{\mathcal{O}}
+#+LaTex_HEADER: \newcommand*{\contrmatrix}{\mathcal{C}}
+#+LaTex_HEADER: \newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+#+LaTex_HEADER: \newcommand*{\swh}{\ensuremath{\sin \omega h}}
+#+title: Computerized control - homework 2
+#+date: Due 2015-09-03
+
+* Exercises
+** Sample the continuous-time transfer function
+   The harmonic oscillator from Homework 1
+\begin{align*}
+\dot{x} &= \begin{bmatrix} 0 & \omega\\-\omega & 0 \end{bmatrix} x + \begin{bmatrix}1\\0\end{bmatrix} u\\
+y &= \begin{bmatrix} 1 & 0 \end{bmatrix} x.
+\end{align*} 
+has the transfer function 
+\[ G(s) = C(sI-A)^{-1}B + D = \frac{s}{s^2 + \omega^2}. \]
+Sampling the state space system with zero-order-hold gives the discrete-time state space system ($x(kh) = x(k)$)
+\begin{align*}
+x(k+1) &= \bbm \cos \omega h & \sin \omega h\\ -\sin \omega h & \cos \omega h \ebm x(k) + 
+          \frac{1}{\omega} \bbm \sin \omega h \\ \cos \omega h - 1 \ebm u(k), \\
+y(k) &= \bbm 1 & 0 \ebm x(k).
+\end{align*}
+
+1. *Compute the pulse-transfer function* for the discrete-time system from the state-space representation using the expression \[ H(z) = C(zI-\Phi)^{-1}\Gamma. \]
+2. *Compute the pulse-transfer function* by sampling the transfer function $G(s)$. 
+
+** Simulation of the continuous- and discrete-time harmonic oscillator
+***  Simulate step responses
+Use matlab's control toolbox or the [[http://python-control.sourceforge.net/][python control module]]  to simulate the systems. Use $\omega=1$. 
+
+First, define the continuous-time system =sys_c= and the sampled system =sys_d= using the =ss= function. The example below uses the python control toolbox. Using the matlab control toolbox is very similar.
+#+BEGIN_SRC python
+import numpy as np
+import control.matlab as cm
+import matplotlib.plot as plt
+
+omega = 1.0
+h = omega / 10
+
+A = np.array([[0, omega], [-omega, 0]])
+B = np.array([[1],[0]])
+C = np.array([[1, 0]])
+D = np.array([[0]])
+sys_c = cm.ss(A,B,C,D)
+
+wh = omega*h
+F = np.array([[np.cos(wh), np.sin(wh)], [-np.sin(wh), np.cos(wh)]])
+G = 1.0/omega* np.array([[np.sin(wh)], [np.cos(wh)-1]])
+sys_d = cm.ss(F,G,C,D, h)
+
+Tc = np.linspace(0,4/omega,200)
+(yc,tc) = cm.step(sys_c, Tc)
+Td = h*np.arange(40)
+(yd,td) = cm.step(sys_d, Td)
+
+plt.plot(tc,yc)
+plt.plot(td,yd[0], '*')
+#+END_SRC
+
+*Verify that the step response of the discrete-time system is equal to that of the continuous-time system at the sampling instants. Explain why this is so!*
+
+*** Sampling the system with help of the computer
+Use the function =c2d= to sample your continuous-time system =sys_c=. *Verify that you get the same discrete-time system as your* =sys_d= *above*. /Hint/: Look at the system matrices returned by =ssdata=. 
+
+*** Compute the discrete step response yourself
+    Write some lines of code that solves the difference equation
+    \begin{align*}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y &= Cx(k)
+    \end{align*}
+
+given an initial state $x(0)=x_0$ and an input sequence $\{u(k)\}$. Use a step signal ($u(k)=1$) and verify that your solution is the same as when using the =step= function.
+ 
+
+* Not now							   :noexport:
+** Simulate ramp response
+   Simulate a ramp response using the function \texttt{lsim} for both the continous-time and the sampled system. *Why are the responses different?* *Why is the amplitude of the response not increasing with time?*
+
+** Calculate the eigenvalues
+   Verify by hand-calculation and with help of the computer that the identity
+   \[ \lambda_i = \mexp{p_ih} \]
+   holds for the relationship between the poles of the continous and sampled systems.
+
+** Step response as sampling interval increases
+   Simulate step responses for values of $h$ around $\omega h = \pi$. 
+

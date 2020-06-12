@@ -1,0 +1,24 @@
+\documentclass[tikz]{standalone}
+%\usetikzlibrary{calc}
+\begin{document}
+
+\begin{tikzpicture}[block/.style={rectangle, draw, minimum height=15mm, minimum width = 15mm}, sumnode/.style={circle, draw, inner sep=2pt}, node distance=30mm]
+  \node[block] (intvel) {$\frac{1}{s}$};
+  \node[block, left of=intvel] (intacc) {$\frac{1}{s}$};
+  \node[block, left of=intacc] (dividebymass) {};
+  \node[sumnode, left of=dividebymass,] (sumforce) {$\sum$};
+  \node[coordinate, left of=sumforce] (input) {};
+  
+  \draw[->] (input) -- node[above] {} (sumforce);
+  \draw[->] (sumforce) -- node[above] {} (dividebymass);
+  \draw[->] (dividebymass) -- node[above] {} (intacc);
+  \draw[->] (intacc) -- node[above] {} (intvel);
+  \draw[->] (intvel) -- node[above] {} ++(3cm, 0);
+
+  \draw[->] (sumforce) ++ (0,-2cm) -- node[left, pos=0.8] {$-$} (sumforce);
+  \draw[dashed] (sumforce) ++ (0,-2cm) -- ++(0,-1cm);
+  \draw[->] (sumforce) ++ (1.4,-1.4cm) -- node[right, pos=0.8] {$-$} (sumforce);
+  \draw[dashed] (sumforce) ++ (1.4,-1.4cm) -- ++(0.7,-0.7cm);
+
+\end{tikzpicture}
+\end{document}

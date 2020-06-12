@@ -1,0 +1,55 @@
+\setlength{\unitlength}{0.00087489in}
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+{\renewcommand{\dashlinestretch}{30}
+\begin{picture}(7182,3739)(0,-10)
+\drawline(1005.000,2944.000)(1030.783,2864.649)(1098.283,2815.607)
+	(1181.717,2815.607)(1249.217,2864.649)(1275.000,2944.000)
+\path(1005,2944)(1275,2944)
+\path(1005,3439)(1275,3169)(1275,3439)
+	(1005,3169)(1005,3439)
+\path(1140,3304)(1140,2944)
+\put(6315,964){\ellipse{630}{630}}
+\path(5865,514)(6765,514)
+\path(5865,514)(6090,739)
+\path(6765,514)(6540,739)
+\put(4065,1864){\ellipse{90}{90}}
+\path(3840,2314)(3840,1414)(5415,1414)(5415,2314)
+\path(3840,2089)(5415,2089)
+\path(2715,1414)(2715,2314)(1590,2314)
+	(1590,1414)(2715,1414)
+\path(4065,1864)(2715,1864)
+\path(2835.000,1894.000)(2715.000,1864.000)(2835.000,1834.000)
+\path(6630,964)(7170,964)
+\path(7050.000,934.000)(7170.000,964.000)(7050.000,994.000)
+\path(2160.000,1294.000)(2130.000,1414.000)(2100.000,1294.000)
+\path(2130,1414)(2130,289)
+\path(1590,1864)(1140,1864)(1140,2809)
+\path(1005,3304)(240,3304)
+\path(1275,3304)(4605,3304)
+\path(4605,3304)(4605,2854)
+\path(4575.000,2974.000)(4605.000,2854.000)(4635.000,2974.000)
+\path(5730,1414)(5730,2089)
+\path(5760.000,1969.000)(5730.000,2089.000)(5700.000,1969.000)
+\path(5685,1414)(5775,1414)
+\path(4515,1414)(4515,964)(6000,964)
+\path(5880.000,934.000)(6000.000,964.000)(5880.000,994.000)
+\put(1950,1954){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}PID-}}}}
+\put(1815,1684){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}controller}}}}
+\put(1230,1999){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}$u$}}}}
+\put(3165,1999){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}$h$}}}}
+\put(1860,64){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}$h_{ref}=0$}}}}
+\put(4605,1144){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}$v$}}}}
+\put(5820,1729){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}$h$}}}}
+\put(4785,2899){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}$x$}}}}
+\put(6090,289){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}Pump}}}}
+\put(4110,2179){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}Tank ($1 m^{2}$)}}}}
+\put(915,3574){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}Valve}}}}
+\put(15,3034){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}Inflow}}}}
+\end{picture}
+}

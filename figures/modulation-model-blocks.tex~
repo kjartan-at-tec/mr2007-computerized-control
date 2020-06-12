@@ -1,0 +1,56 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz,pgf,pgfplots}
+
+\begin{document}
+
+        \begin{tikzpicture}[node distance=28mm]
+        \begin{axis}[
+        yshift=4mm,
+        width=3cm,
+        height=2cm, 
+        %xlabel={$t$},
+        %ylabel={$$},
+        ytick=\empty,
+        xmin=-2.5,
+        xmax=10.5,
+        %ymin=-0.5,
+        %ymax=4.5,
+        %xtick={0},
+        xtick=\empty,
+        ]
+        \addplot+[red, no marks, domain=-2:10, samples=400,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+        \end{axis}
+
+        \begin{axis}[
+        yshift=4mm,
+        xshift=30mm,
+        width=3cm,
+        height=2cm, 
+        %xlabel={$t$},
+        %ylabel={$$},
+        ytick=\empty,
+        xmin=-2.5,
+        xmax=10.5,
+        %ymin=-0.5,
+        %ymax=4.5,
+        %xtick={0},
+        xtick=\empty,
+        ]
+        \draw[blue, thick] (axis cs:-2,0) -- (axis cs: 10,0);
+        \addplot+[white, no marks, domain=-2:10, samples=40,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+        \foreach \k in {-2,-1,0,1,...,10} {
+          \draw[->, blue, thick] (axis cs: \k, 0) -- (axis cs: \k, 1);
+        }
+        \end{axis}
+        
+        \node[coordinate] (ctsignal) {};
+        \node[circle, draw, inner sep=1pt, right of=ctsignal] (product) {$\times$};
+        \node[coordinate, right of=product] (sampledsignal) {};
+        \node[coordinate, above of=product] (pulsetrain) {};
+      
+        \draw[->] (ctsignal) -- node[below, near start] {$y(t)$} (product);
+        \draw[->] (product) -- node[below, near end] {$y_s(t)$} (sampledsignal);
+      \end{tikzpicture} 
+
+\end{document}

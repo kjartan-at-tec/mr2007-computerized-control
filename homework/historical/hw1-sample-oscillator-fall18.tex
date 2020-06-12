@@ -1,0 +1,101 @@
+% Created 2018-09-04 mar 12:51
+\documentclass[a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\author{Kjartan Halvorsen}
+\date{Due 2018-08-24 at midnight}
+\title{Computerized control - homework 2}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.5.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\section*{Exercises}
+\label{sec-1}
+
+\subsection*{1 Sample the continuous-time harmonic oscillator}
+\label{sec-1-1}
+Consider the harmonic oscillator with transfer function 
+\begin{equation}
+G(s) = \frac{\omega_0^2 s}{s^2 + \omega_0^2}.
+\label{eq:contsys}
+\end{equation}
+
+\begin{enumerate}
+\item Determine the poles of \(G(s)\).
+\item Compute the pulse-transfer function by zero-order-hold sampling (step-invariant sampling) of the transfer function \(G(s)\).
+\item Determine the poles of the pulse-transfer function. What is the relationship between these poles and the corresponding poles of \(G(s)\)?
+\item Let $\omega_0=1$. Describe in words how the poles depend on the sampling period $h$. In particular, discuss what happens when $\omega_0h > \pi$.
+\end{enumerate}
+
+\subsection*{2 Simulate the continuous- and the discrete-time harmonic oscillator}
+\label{sec-1-2}
+Use matlab's control toolbox to simulate the system and verify your calculations. 
+
+\subsubsection*{Define systems}
+\label{sec-1-2-1}
+First, define the continuous-time system in \eqref{eq:contsys}
+\begin{verbatim}
+omega0 = ?; % Use the average of the last digit of your two phone numbers.
+sys_c = tf(?,?)
+\end{verbatim}
+Sample the system using the function \texttt{c2d}
+\begin{verbatim}
+h = 0.2/omega0; % This gives about 30 samples per period 
+sys_c2d = c2d(?,?)
+\end{verbatim}
+Define the discrete-time system you calculated in the first part of the homework
+\begin{verbatim}
+den = [1 a1 a2];
+num = [b1 b2];
+sys_d = tf(num, den, h)
+\end{verbatim}
+\textbf{Verify that the two discrete-time systems} \texttt{sys\_c2d} \textbf{and} \texttt{sys\_d} \textbf{are identical.}
+
+\subsubsection*{Simulate step responses}
+\label{sec-1-2-2}
+Simulate for 4 complete periods 
+\begin{verbatim}
+Tc = linspace(0, 4*(2*pi/omega0), 800);
+[yc,tc] = step(sys_c, Tc);
+
+Td = h*(0:120);
+[yd,td] = step(sys_d, Td);
+
+figure()
+clf
+plot(tc,yc)
+hold on
+plot(td,yd, 'r*')
+\end{verbatim}
+
+\textbf{Verify that the step response of the discrete-time system is exactly equal to that of the continuous-time system at the sampling instants. Explain why this is so!}
+
+\subsubsection*{Compute the discrete step response yourself}
+\label{sec-1-2-3}
+ Write some lines of code that solves the difference equation
+ \[ y(k+2) = -a_1y(k+1) - a_2y(k) + b_1u(k+1) + b_2u(k) \]
+ for the harmonic oscillator. 
+Use the initial state \(y(-1)=y(0)=0\) and compute the response to a step sequence 
+ \[ u(k) = \begin{cases} 1, & k \ge 0\\ 0, & \text{otherwise} \end{cases}.\]
+ Verify that your solution is the same as when using the \texttt{step} function in the previous exercise in this homework.
+% Emacs 24.5.1 (Org mode 8.2.10)
+\end{document}

@@ -1,0 +1,832 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Computerized Control - Sampling and antialiasing
+# #+date: 2018-10-10
+
+* What do I want the students to understand?			   :noexport:
+  - The sampling theorem
+  - antialiasing filter
+
+* Which activities will the students do?			   :noexport:
+  1. Aliasing exercise
+  2. Read and apply table 7.3 Å & W
+
+* Intro
+
+** Goal of today's lecture				     :slide:noexport:
+   - Understand aliasing and frequency folding
+
+
+     
+** Result from quizz						   :noexport:
+   - Frequency folding - alias frequency
+
+** Course overview						   :noexport:
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/computer-control-approaches}
+\end{center}
+
+** Repetition
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.7\linewidth]{../../figures/fig7-2.png}
+   #+END_CENTER
+
+
+
+* Intro example - Use later!					   :noexport:
+** Introductory example: Level control of a tank
+
+   \hspace*{4cm} \includegraphics[width=0.7\linewidth]{../../MR2012/figures/tank-with-hole}
+
+** Introductory example: PI-control of the valve-tank-system
+#+BEGIN_LaTeX
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+     \node[block, right of=sumerr] (controller) {$3\big(1 + \frac{1}{0.4 s}\big)$};
+     \node[above of=controller, node distance=6mm] {controller};
+     \node[block, right of=controller, node distance=28mm] (valve) {$\frac{3}{s+3}$};
+     \node[above of=valve, node distance=6mm] {valve};
+     \node[sumnode, right of=valve, node distance=16mm] (sum) {\tiny $\sum$};
+     \node[block, right of=sum, node distance=20mm] (tank) {$\frac{1}{s+1}$};
+     \node[above of=tank, node distance=6mm] {tank};
+     \node[coordinate, right of=tank, node distance=20mm] (output) {};
+     \node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+     \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+     \draw[->] (controller) -- node[above] {$u(t)$} (valve);
+     \draw[->] (valve) -- node[above] {} (sum);
+     \draw[->] (sum) -- node[above] {$w(t)$} (tank);
+     \draw[->] (tank) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+     \draw[->] (disturbance) -- node[right, pos=0.2] {$d(t)$} (sum);
+     \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+     \end{tikzpicture}
+   \end{center}
+#+END_LaTeX
+
+   The closed-loop system from reference signal \(y_ref(t)\) to output \(y(t)\) is given by
+   \[G_c(s) =  \frac{9 s + 22.5}{  s^3 + 4 s^2 + 12 s + 22.5}, \quad \text{with Bode-diagram} \]
+
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/alias-example-bode-GC}
+   #+END_CENTER
+
+** Introductory example: Reading the Bode diagram
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/alias-example-bode-GC}
+   #+END_CENTER
+   which of the below frequency responses *is not* compatible with the Bode diagram?
+
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/alias-example-bode-timeseries}
+   #+END_CENTER
+
+   
+
+* The sampling theorem
+** The problem
+   If a continuous-time signal with frequency content (bandwidth) $\omega_B$ is sampled at too low sampling rate ( \(\omega_s < 2\omega_B\) ), then the energy at higher frequencies is folded onto lower frequencies. 
+
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.7\linewidth]{../../figures/aliasing-example.png}
+   #+END_CENTER
+   A high-frequency sinusoid ( \(\omega_1 = 1800\pi \) rad/s ) masquerading as a lower frequency sinusoid ( \( 200 \pi \) rad/s ) due to aliasing.
+
+** Aliasing							   :noexport:
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.7\linewidth]{../../figures/aliasing-definition.png}
+   #+END_CENTER
+
+** Spatial aliasing
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks.png}
+    \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks_small.png}
+   #+END_CENTER
+
+** The sampling theorem
+Shannon and Nyquist:
+
+A continuous-time signal with Fourier transform that is zero outside the interval \( (-\omega_0, \omega_0) \)  can be completely reconstructed from equidistant samples of the signal, as long as the sampling frequency is at least \(2\omega_0\). 
+
+** The impulse modulation model
+   The *impulse train*, a.k.a the *Dirac comb*:
+   #+BEGIN_CENTER 
+   \( m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh) \)\hspace*{10mm}
+    \includegraphics[width=0.4\linewidth]{../../../figures/modulation-model-blocks}
+   #+END_CENTER
+
+        \[f_s(t) = f(t)m(t) = f(t) \sum_{k=-\infty}^{\infty} \delta(t-kh) = \sum_{k=-\infty}^{\infty} f(t)\delta(t-kh) = \sum_{k=-\infty}^{\infty} f(kh) \delta(t-kh) \]
+
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.8\linewidth]{../../figures/modulation-model-timeseries}
+#+END_CENTER
+
+*** Notes							   :noexport:
+    The laplace transform of f_s(t):
+    F_s(s) = \int_t (\sum_k f(t)\delta(t-kh)) exp(-st) dt
+           = \sum_k f(kh) \int_t \delta(t-kh) exp(-st) dt
+	   = \sum_k f(kh) exp(-skh) = \sum_k f(kh) exp(-sh)^k = \sum_k f(kh) z^-k, 
+	   where z = exp(sh)
+    The fourier transform is obtained by evaluating the laplace transform at s=i\omega (provided the imaginary axis is within the ROC). Go back a few steps
+    F_s(i\omega) = \sum_k \int_t \delta(t-kh) f(t) exp(-i\omegat)
+    Since  \delta(x-a) = 1/2pi \int exp(i(x-a)t)dt
+    \delta(t-kh) = 1/2pi \int exp(i(t-kh)\tau) d\tau
+    F_s(i\omega) = \sum_k \int_t \int_tau 1/(2pi) exp(i(t-kh)\tau) d\tau f(t)exp(-i\omega t) dt
+                 = \sum_k \int_t \int_tau 1/(2pi) f(t) exp(i(t\tau -kh\tau-\omega t)) dtau dt
+		 = \sum_k \int_tau  exp(-i kh\tau) 1/2pi \int_t f(t) exp(-i(\omega -tau) t) dt dtau
+		 = \sum_k \int_tau exp(-i kh\tau) F(\omega-tau) dtau
+		 = 2pi \sum_k 
+
+    The Laplace transform of m(t) is also an impulse train
+    \[ M(s) = \sum_{i=-\infty}^{\infty} \delta(s-i\omega_j), \]
+    where \omega_j = j\frac{2\pi}{h} = j\omega_s. 
+    So, since multiplication in time domain is convolution in the s-domain
+    F_s(s) = F(s) \ast M(s) = \int_{x=-\infty}^{\infty} M(s) F(s-x)
+           = \int_x \sum_j \delta(s-i\omega_j) F(s-x
+
+** Fourier transform (spectrum) of the sampled signal
+
+   The Fourier transform of $f_s$ and the Fourier transform of $f$ are related as
+   \[ F_s(\omega) = \frac{1}{h} \sum_n F(\omega + n\omega_s). \]
+
+   Because the Fourier transform of the sampled signal equals the Fourier transform of the continuous-time signal repeated at every multiple of the sampling frequency and added, we get /frequency-folding/ or /aliasing/.
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.28\linewidth]{../../figures/frequency-folding.png}
+#+END_CENTER 
+*** Notes							   :noexport:
+    - Draw symmetric spectrum on whiteboard.
+    - Draw line at sampling frequency,  too low
+    - Draw line at Nyquist frequency
+    - Copy spectrum at +/- ws
+    - Note that effect is same as folding the part above wN onto lower freqs
+   
+* Proof of sampling theorem					   :noexport:
+** Preliminary: The Dirac delta function
+   Consider the unit pulse \(\delta_T(t)\). Note that \(\int_{-\infty}^\infty \delta_T(t) dt = ?\). 
+   \begin{center}
+   \begin{tikzpicture}
+   \begin{axis}[
+   width=14cm,
+   height=3cm,
+   xlabel={$t$},
+   ylabel={$\delta_T(t)$},
+   xmin=-1.5,
+   xmax=10.5,
+   xtick={0,1},
+   xticklabels={0,$T$},
+   ymin=-0.2,
+   ymax=1.6,
+   ytick={0,1},
+   yticklabels={0, $\frac{1}{T}$},
+   ]
+
+   \addplot+[thick, const plot, blue, no marks] coordinates {(-1,0) (0,1) (1,0) (10,0)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+
+** Preliminary: The Dirac delta function
+   Consider the unit pulse \(\delta_T(t)\). Note that \(\int_{-\infty}^\infty \delta_T(t) dt = 1\). 
+   \begin{center}
+   \begin{tikzpicture}
+   \begin{axis}[
+   width=14cm,
+   height=3cm,
+   xlabel={$t$},
+   ylabel={$\delta_T(t)$},
+   xmin=-1.5,
+   xmax=10.5,
+   xtick={0,1},
+   xticklabels={0,$T$},
+   ymin=-0.2,
+   ymax=1.6,
+   ytick={0,1},
+   yticklabels={0, $\frac{1}{T}$},
+   ]
+
+   \addplot+[thick, const plot, blue, no marks] coordinates {(-1,0) (0,1) (1,0) (10,0)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+   The impulse function (a.k.a /Dirac Delta function/) is the limit of the unit pulse as \(T \to 0\).
+   \begin{center}
+   \begin{tikzpicture}
+   \begin{axis}[
+   width=14cm,
+   height=3cm,
+   xlabel={$t$},
+   ylabel={$\delta(t)$},
+   xmin=-1.5,
+   xmax=10.5,
+   xtick={0},
+   xticklabels={0},
+   ymin=-0.2,
+   ymax=1.6,
+   ytick=\empty,
+   ]
+
+   \addplot+[thick, blue, no marks, domain=-1.1:10.1] {0};
+   \draw[->, blue, thick] (axis cs:0,0) -- (axis cs: 0,1.2);
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+** Definition of the Dirac delta function
+
+   \[ \delta(t) = \begin{cases} 0, & t \neq 0\\ \text{undefined}, & t = 0 \end{cases} \quad \text{such that} \quad  \int_{-\infty}^\infty \delta(t) dt = 1. \]
+
+   \begin{center}
+   \begin{tikzpicture}
+   \begin{axis}[
+   width=14cm,
+   height=2.8cm,
+   xlabel={$t$},
+   ylabel={$\delta(t)$},
+   xmin=-1.5,
+   xmax=10.5,
+   xtick={0},
+   xticklabels={0},
+   ymin=-0.2,
+   ymax=1.6,
+   ytick=\empty,
+   ]
+
+   \addplot+[thick, blue, no marks, domain=-1.1:10.1] {0};
+   \draw[->, blue, thick] (axis cs:0,0) -- (axis cs: 0,1.2);
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+   \[ \delta(t-kh) = \begin{cases} 0, & t \neq kh\\ \text{undefined}, & t = kh \end{cases} \quad \text{such that} \quad  \int_{-\infty}^\infty \delta(t-kh) dt = 1. \]
+
+   \begin{center}
+   \begin{tikzpicture}
+   \begin{axis}[
+   width=14cm,
+   height=2.8cm,
+   xlabel={$t$},
+   ylabel={$\delta(t)$},
+   xmin=-1.5,
+   xmax=10.5,
+   xtick={0,4},
+   xticklabels={0,$kh$},
+   ymin=-0.2,
+   ymax=1.6,
+   ytick=\empty,
+   ]
+
+   \addplot+[thick, blue, no marks, domain=-1.1:10.1] {0};
+   \draw[->, blue, thick] (axis cs:4,0) -- (axis cs: 4,1.2);
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+** The impulse function, contd
+
+   The /sifting/ property of the impulse function:
+   \[ \int_{-\infty}^\infty f(t) \delta(t) dt = f(0). \]
+
+   So 
+   \[  \int_{-\infty}^\infty f(t-T) \delta(t) dt = f(-T), \]
+   \[  \int_{-\infty}^\infty f(t) \delta(t-kh) dt = , \]
+   \[  f \ast \delta = \int_{-\infty}^\infty f(\tau) \delta(t-\tau) d\tau =  \]
+   \[ g(t) = f \ast \delta(t-T) = \int_{-\infty}^\infty f(\tau) \delta(t-T-\tau) d\tau =  \]
+** The impulse function, contd
+   The /sifting/ property of the impulse function:
+   \[ \int_{-\infty}^\infty f(t) \delta(t) dt = f(0). \]
+
+   So 
+   \[  \int_{-\infty}^\infty f(t-T) \delta(t) dt = f(-T), \]
+   \[  \int_{-\infty}^\infty f(t) \delta(t-kh) dt = f(kh), \]
+   \[  f \ast \delta = \int_{-\infty}^\infty f(\tau) \delta(t-\tau) d\tau = f(t) \]
+   \[ g(t) = f \ast \delta(t-T) = \int_{-\infty}^\infty f(\tau) \delta(t-T-\tau) d\tau = f(t-T) \]
+   *Convolution with the shifted delta function \(\delta(t-T)\) shifts the function by $T$.*
+
+** The impulse train
+   Also known as the Dirac comb
+   \[ m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh) \]
+
+   The sampled signal $f(kh)$ can be *represented in continuous-time* by modulation of the continuous-time signal $f(t)$ with the impulse train (dirac comb) 
+   \[f_s(t) = f(t)m(t) = f(t) \sum_{k=-\infty}^{\infty} \delta(t-kh) = \sum_{k=-\infty}^{\infty} f(t)\delta(t-kh) = \sum_{k=-\infty}^{\infty} f(kh) \delta(t-kh). \]
+
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=14cm,
+  height=4cm, 
+  xlabel={$t$},
+  ylabel={$$},
+  ytick=\empty,
+  xmin=-2.5,
+  xmax=10.5,
+  ymin=-0.5,
+  ymax=4.5,
+  xtick={0,1},
+  xticklabels={$kh$, $kh+h$},
+]
+
+\addplot+[red, no marks, domain=-2:10, samples=400,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+\addplot+[blue, thick, ycomb, no marks, domain=-2:10, samples=13,variable=k] { 2 + sin(k*90) + cos(k*45)}; 
+%\addplot+[const plot, ultra thick, no marks, domain=-2:10, samples=13,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+
+\draw[blue, thick] (axis cs:-2,0) -- (axis cs: 10,0);
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+#+END_LaTeX
+
+
+** Fourier transform of the impulse train
+   The impulse train
+   \[ m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh) \]
+   has Fourier transform
+   \[ M(\omega) = \frac{1}{h} \sum_{n=-\infty}^{\infty} \delta(\omega - n\omega_s). \]
+   where $\omega_s = \frac{2\pi}{h}$ is the sampling frequency in rad/s.
+
+
+** Fourier transform of the sampled signal
+   The sampled signal $f(kh)$, represented by modulation of the continuous-time signal $f(t)$ with the impulse train (dirac comb)  is
+   \[f_s(t) = f(t)m(t) = f(t) \sum_{k=-\infty}^{\infty} \delta(t-kh) = \sum_{k=-\infty}^{\infty} f(t)\delta(t-kh) = \sum_{k=-\infty}^{\infty} f(kh) \delta(t-kh). \]
+
+   Multiplication in time-domain is convolution is the frequency domain. So
+   \[F_s(\omega) = F(\omega) \ast M(\omega). \]
+
+   Hence, the Fourier transform of $f_s$ and the Fourier transform of $f$ are related as
+   \[ F_s(\omega) = \frac{1}{h} \sum_{n=-\infty}^\infty F(\omega) \ast \delta(\omega-n\omega_s) = \frac{1}{h} \sum_n F(\omega + n\omega_s). \]
+
+# On the whiteboard
+# f_s = m f, multiplication in time-domain is convolution in frequency domain. 
+# F_s = M * F = \int_{s'=-\infty}^\infty M(s-s') F(s')ds' 
+
+# Fouriertransform of impulse train
+# M(w) = \int exp(-i wt) \sum_k \delta(t-kh) dt = \sum_k \exp(-iwhk) = 0, except when
+# wh = 2\pi n, n integer => w = \frac{2\pi}{h} n = w_s n
+# M(w) = \delta( 
+
+** Aliasing
+
+   Because the Fourier transform of the sampled signal equals the Fourier transform of the continuous-time signal repeated at every multiple of the sampling frequency and added, we get /frequency-folding/ or /aliasing/.
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.3\linewidth]{../../../figures/frequency-folding.png}
+#+END_CENTER 
+
+* Aliasing and anti-aliasing
+** Alias freqency
+   To find the low frequency alias \(\omega_a<\omega_N\) of a high freqency sinusoid \(\omega_1\), The expression 
+\[ \omega_a = \left| \big( (\omega_1 + \omega_N) \, \text{mod}\, \omega_s\big) - \omega_N\right|\] 
+can be used (equation 7.10 in the textbook).
+
+** Exercise 1: Spectrum of a sinusoid
+   Consider the signal 
+
+   #+BEGIN_LaTeX
+     \begin{center}
+     \begin{tikzpicture}
+     \small
+     \pgfmathsetmacro{\ww}{1}
+     \pgfmathsetmacro{\TT}{2*pi/\ww}
+     \begin{axis}[
+     width=14cm,
+     height=2.5cm,
+     xlabel={$t$},
+     ylabel={$y(t)$},
+     xmin=0.,
+     xmax=30.5,
+     ytick = {0},
+     xtick = {0, \TT},
+     xticklabels={0, $T$},
+     ]
+     \addplot+[black, thick,no marks, domain=0:30, samples=400,variable=t] { sin(deg(\ww*t)) };
+     \end{axis}
+     \end{tikzpicture}
+     \end{center}
+   #+END_LaTeX
+   
+   Which of the below is the correct Fourier transform (magnitude plot shown)?
+
+   #+BEGIN_LaTeX
+     \pgfplotsset{
+     dirac/.style={
+     mark=triangle*,
+     mark options={scale=0.6},
+     ycomb,
+     scatter,
+     visualization depends on={y/abs(y)-1 \as \sign},
+     scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+     }
+     }
+       \begin{tikzpicture}
+       \footnotesize
+
+       \pgfmathsetmacro{\ww}{1}
+       \pgfmathsetmacro{\TT}{2*pi/\ww}
+       \pgfmathsetmacro{\omegaone}{2/\TT}
+       \pgfmathsetmacro{\omegatwo}{pi/\TT}
+       \pgfmathsetmacro{\omegathree}{1/\TT}
+       \pgfmathsetmacro{\omegafour}{2*pi/\TT}
+      
+       \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+       width=7cm,
+       height=2.5cm,
+       xlabel={$\omega$ [rad/s]},
+       ylabel={$|Y(i\omega)|$},
+       xmin=-1.5,
+       xmax=1.5,
+       ytick = \empty,
+       xtick = \empty,
+       ]
+       \nextgroupplot[xtick={-\omegaone, 0, \omegaone}, 
+       xticklabels={$-\frac{2}{T}$, 0, $\frac{2}{T}$}]
+       \addplot[red, thick, dirac] coordinates {(-\omegaone, 1) (\omegaone, 1)};
+       
+       \nextgroupplot[xtick={-\omegatwo, 0, \omegatwo}, 
+       xticklabels={$-\frac{\pi}{T}$, 0, $\frac{\pi}{T}$}]
+       \addplot[red, thick, dirac] coordinates {(-\omegatwo, 1) (\omegatwo, 1)};
+
+       \nextgroupplot[xtick={-\omegathree, 0, \omegathree}, 
+       xticklabels={$-\frac{1}{T}$, 0, $\frac{1}{T}$}]
+       \addplot[red, thick, dirac] coordinates {(-\omegathree, 1) (\omegathree, 1)};
+
+       \nextgroupplot[xtick={-\omegafour, 0, \omegafour}, 
+       xticklabels={$-\frac{2\pi}{T}$, 0, $\frac{2\pi}{T}$}]
+       \addplot[red, thick, dirac] coordinates {(-\omegafour, 1) (\omegafour, 1)};
+       \end{groupplot}
+       
+       \node[red] at (group c1r1.center) {\huge 1};
+       \node[red] at (group c2r1.center) {\huge 2};
+       \node[red] at (group c1r2.center) {\huge 3};
+       \node[red] at (group c2r2.center) {\huge 4};
+       \end{tikzpicture}
+
+   #+END_LaTeX
+   
+*** Notes							   :noexport:
+    - Given  T, so freq in Hz is f=1/T and in rad/s w=2pi/T 
+** Exercise 2: Two sinusoids
+   Consider a signal with Fourier transform  
+
+   #+BEGIN_LaTeX
+     \pgfplotsset{
+     dirac/.style={
+     mark=triangle*,
+     mark options={scale=0.6},
+     ycomb,
+     scatter,
+     visualization depends on={y/abs(y)-1 \as \sign},
+     scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+     }}
+     \begin{center}
+     \begin{tikzpicture}
+     \small
+     \pgfmathsetmacro{\wwone}{1}
+     \pgfmathsetmacro{\wwtwo}{5*\wwone}
+     \begin{axis}[
+     width=14cm,
+     height=2.5cm,
+     xlabel={$\omega$ [rad/s]},
+     ylabel={$|Y(i\omega)|$},
+     xmin=-7,
+     xmax=7,
+     ymin=-0.5,
+     ytick=\empty,
+     xtick = {-\wwtwo, -\wwone, 0, \wwone, \wwtwo},
+     % ticklabels={$-5\omega_1$, $-\omega_1$, 0, $\omega_1$, $5\omega_1$},
+     ]
+     \addplot[black, thick, dirac] coordinates {(-\wwtwo, 0.3) (-\wwone, 1) (\wwone, 1) (\wwtwo, 0.3)};
+     \end{axis}
+     \end{tikzpicture}
+     \end{center}
+   #+END_LaTeX
+   
+   Which of the below time series could this Fourier transform correspond to?
+
+   #+BEGIN_LaTeX
+     \begin{tikzpicture}
+     \footnotesize
+
+     \pgfmathsetmacro{\wwone}{1}
+     \pgfmathsetmacro{\wwtwo}{5*\wwone}
+           
+     \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+     width=7cm,
+     height=2.5cm,
+     xlabel={$t$ [s]},
+     ylabel={$y(t)$},
+     xmin=0,
+     xmax=15,
+     ytick = \empty,
+     xtick = \empty,
+     domain=0:20,
+     samples=600,
+     variable=t,
+     ]
+
+     \nextgroupplot[xtick={0, 6.28, 12.56}, xticklabels={0, $2\pi$, $4\pi$},]
+      \addplot[red, thick, no marks] { sin(deg(\wwone*t)) + 0.3*cos(deg(\wwtwo*t))};
+
+     \nextgroupplot[xtick={0, 6.28, 12.56}, xticklabels={0, $2\pi$, $4\pi$},]
+      \addplot[red, thick, no marks] { 0.3*cos(deg(\wwone*t)) + sin(deg(\wwtwo*t))};
+
+     \nextgroupplot[xtick={0, 6.28, 12.56}, xticklabels={0, $2\pi$, $4\pi$},]
+      \addplot[red, thick, no marks] { cos(deg(0.5*\wwone*t)) + 0.3*cos(deg(0.5*\wwtwo*t))};
+
+     \nextgroupplot[xtick={0, 6.28, 12.56}, xticklabels={0, $2\pi$, $4\pi$},]
+      \addplot[red, thick, no marks] { cos(deg(\wwone*t)) + 0.3*cos(deg(2*\wwtwo*t))};
+
+     \end{groupplot}
+
+     \node[red] at (group c1r1.center) {\huge 1};
+     \node[red] at (group c2r1.center) {\huge 2};
+     \node[red] at (group c1r2.center) {\huge 3};
+     \node[red] at (group c2r2.center) {\huge 4};
+     \end{tikzpicture}
+
+   #+END_LaTeX
+
+*** Notes							   :noexport:
+    - freq of w1=1 and w5=5 rad/s, which means periods of
+      - T1 = 2pi/w1 = 2pi
+      - T5 = 2pi/5
+    - All signals have a lower period of T=2pi
+    - 3 has a higher freq with 2.5 periods over 2pi, so freq of 2.5
+    - 4 has a higher freq with 10 periods over 2pi, so freq of 10 *2pi/2pi = 10
+    - 1 and 2 has correct high freq
+    - 2 has high freq with too large amplitude
+** Exercise 3: Spectrum of a sampled sinusoid
+   Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
+
+   #+BEGIN_LaTeX
+        \pgfplotsset{
+       dirac/.style={
+       mark=triangle*,
+       mark options={scale=0.6},
+       ycomb,
+       scatter,
+       visualization depends on={y/abs(y)-1 \as \sign},
+       scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+       }
+       }
+       \begin{center}
+       \begin{tikzpicture}
+       \small
+       \pgfmathsetmacro{\ww}{1}
+       \pgfmathsetmacro{\TT}{2*pi/\ww}
+       \pgfmathsetmacro{\TTT}{2*\TT}
+       \pgfmathsetmacro{\wws}{3*\ww/2}
+       \pgfmathsetmacro{\hh}{2*pi/\wws}
+       \pgfmathsetmacro{\Ttot}{60}
+       \pgfmathsetmacro{\Nsamples}{floor(\Ttot/\hh)}
+
+
+
+       \begin{axis}[
+       clip=false,
+       width=14cm,
+       height=3.5cm,
+       xlabel={$t$},
+       ylabel={$y(t)$},
+       xmin=0.,
+       xmax=\Ttot,
+       ytick = {0},
+       xtick = {0, \hh, \TT, \TTT},
+       xticklabels={0, $h$, $T$, $2T$},
+       ]
+       \addplot+[black, thick,no marks, domain=0:\Ttot, samples=400,variable=t] { sin(deg(\ww*t)) }
+              node [coordinate, pos=0.87, pin=45:{$y(t)$}] {};
+       \addplot+[color=blue!80!red!90, thick,dirac, domain=0:\Ttot, samples=\Nsamples+1,variable=t] { sin(deg(\ww*t))} node [coordinate, pos=0.93, pin=-45:{$y_s(t)$}] {};
+
+       \draw[blue!80!red!90, thick] (axis cs: 0,0) -- (axis cs: \Ttot, 0);
+
+       \end{axis}
+       \end{tikzpicture}
+       \end{center}
+  #+END_LaTeX
+
+   What is the frequency of the sinusoid? What is the sampling frequency \(\omega_s\) and the Nyquist frequency \(\omega_N\)?
+
+*** Notes							   :noexport:
+    - w = 2pi/T, so to minimum sampling period in  order to avoid aliasing is 2*w = 4pi/T
+    - ws = 2pi/h = 2pi/(2/3T) = 3pi/T < 4 pi/T
+    - wN  = pi/h = 3/2 pi/T
+** Exercise 3: Spectrum of a sampled sinusoid
+   Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
+
+   #+BEGIN_LaTeX
+       \pgfplotsset{
+       dirac/.style={
+       mark=triangle*,
+       mark options={scale=0.6},
+       ycomb,
+       scatter,
+       visualization depends on={y/abs(y)-1 \as \sign},
+       scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+       }
+       }
+       \begin{center}
+       \begin{tikzpicture}
+       \small
+       \pgfmathsetmacro{\ww}{1}
+       \pgfmathsetmacro{\TT}{2*pi/\ww}
+       \pgfmathsetmacro{\TTT}{2*\TT}
+       \pgfmathsetmacro{\wws}{3*\ww/2}
+       \pgfmathsetmacro{\hh}{2*pi/\wws}
+       \pgfmathsetmacro{\Ttot}{60}
+       \pgfmathsetmacro{\Nsamples}{floor(\Ttot/\hh)}
+
+
+
+       \begin{axis}[
+       clip=false,
+       width=14cm,
+       height=2.2cm,
+       xlabel={$t$},
+       ylabel={$y(t)$},
+       xmin=0.,
+       xmax=\Ttot,
+       ytick = {0},
+       xtick = {0, \hh, \TT, \TTT},
+       xticklabels={0, $h$, $T$, $2T$},
+       ]
+       \addplot+[black, thick,no marks, domain=0:\Ttot, samples=400,variable=t] { sin(deg(\ww*t)) }
+              node [coordinate, pos=0.87, pin=45:{$y(t)$}] {};
+       \addplot+[color=blue!80!red!90, thick,dirac, domain=0:\Ttot, samples=\Nsamples+1,variable=t] { sin(deg(\ww*t))} node [coordinate, pos=0.93, pin=-45:{$y_s(t)$}] {};
+
+       \draw[blue!80!red!90, thick] (axis cs: 0,0) -- (axis cs: \Ttot, 0);
+
+       \end{axis}
+       \end{tikzpicture}
+       \end{center}
+   #+END_LaTeX
+
+   Which of the below corresponds to the Fourier transform of the *sampled signal*?
+
+   #+BEGIN_LaTeX
+     \pgfplotsset{
+     dirac/.style={
+     mark=triangle*,
+     mark options={scale=0.6},
+     ycomb,
+     scatter,
+     visualization depends on={y/abs(y)-1 \as \sign},
+     scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+     }
+     }
+       \begin{tikzpicture}
+       \scriptsize
+
+       \pgfmathsetmacro{\ww}{1}
+       \pgfmathsetmacro{\TT}{2*pi/\ww}
+       \pgfmathsetmacro{\wws}{3*\ww/2}
+       \pgfmathsetmacro{\wwN}{\wws/2}
+
+       \pgfmathsetmacro{\omegaone}{\ww-\wwN}
+       \pgfmathsetmacro{\omegathree}{\wws - \ww}
+       \pgfmathsetmacro{\omegafour}{\wwN/2}
+      
+       \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+       width=8cm,
+       height=2.5cm,
+       xlabel={$\omega$ [rad/s]},
+       ylabel={$|Y_s(i\omega)|$},
+       xmin=-1.8,
+       xmax=1.8,
+       ymax=1.2,
+       ytick = \empty,
+       xtick = \empty,
+       ]
+       \nextgroupplot[xtick={-\wws, -\ww, -\omegaone, 0, \omegaone, \ww, \wws}, 
+       xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$, $-\frac{\pi}{2T}$, $$,$\frac{\pi}{2T}$, $\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
+       \addplot[red, thick, dirac] coordinates {(-\ww, 1) (-\omegaone, 1) (\omegaone, 1) (\ww, 1)};
+       \addplot+[black, dotted, no marks] coordinates { (-\wwN, 0) (-\wwN, 2) };
+       \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
+
+       \nextgroupplot[xtick={-\wws, -\ww,  0,  \ww, \wws}, 
+       xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$,  $$, $-\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
+       \addplot[red, thick, dirac] coordinates {(-\ww, 1) (\ww, 1)};
+       \addplot+[black, dotted, no marks] coordinates { (-\wwN, 0) (-\wwN, 2) };
+       \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
+
+       \nextgroupplot[xtick={-\wws, -\ww, -\omegathree, 0, \omegathree, \ww, \wws}, 
+       xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$, $-\frac{\pi}{T}$, $$,$\frac{\pi}{T}$, $\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
+       \addplot[red, thick, dirac] coordinates {(-\ww, 1) (-\omegathree, 1) (\omegathree, 1) (\ww, 1)};
+       \addplot+[black, dotted, no marks] coordinates { (-\wwN, 0) (-\wwN, 2) };
+       \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
+
+       \nextgroupplot[xtick={-\wws, -\ww, -\omegafour, 0, \omegafour, \ww, \wws}, 
+       xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$, $-\frac{3\pi}{4T}$, $$,$\frac{3\pi}{4T}$, $\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
+       \addplot[red, thick, dirac] coordinates {(-\ww, 1) (-\omegafour, 1) (\omegafour, 1) (\ww, 1)};
+       \addplot+[black, dotted, no marks] coordinates { (-\wwN, 0) (-\wwN, 2) };
+       \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
+
+       \end{groupplot}
+       
+       \node[red] at (group c1r1.center) {\huge 1};
+       \node[red] at (group c2r1.center) {\huge 2};
+       \node[red] at (group c1r2.center) {\huge 3};
+       \node[red] at (group c2r2.center) {\huge 4};
+       \end{tikzpicture}
+
+   #+END_LaTeX
+
+*** Notes							   :noexport:
+    - The freq of the continuous-time signal is w=2pi/T, so it has a line spectrum with lines at
+      +/- 2pi/T
+    - The sampled signal has the same two lines, but repeated every kws, 
+      with n in \mathcal{Z}  =  {...,-2,-1,0,1,2,...}
+    - So we get alias frequencies at 
+      wA(n) = +/- 2pi/T + n 3pi/T = pi/T ( +/- 2 + 3n),
+      or
+      wA(n)^+ = pi/T (2+3n), wA(n)^- = pi/T (-2 + 3n)
+      for instance
+      wA(1)^+ = 5pi/T, wA(1)^- = pi/T
+      wA(-1)^+ = pi/T(2-3) =-pi/T,  wA(1)^- = (-2 -3)pi/T = -5 pi/T
+    - Clearly, the correct one must be 3.
+** Aliasing exercise
+   If a continuous-time signal with frequency content (bandwidth) $\omega_B$ is sampled at too low sampling rate ( \(\omega_s < 2\omega_B\) ), then the energy at higher frequencies is folded onto lower frequencies. 
+
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{../../figures/aliasing-example.png}
+   #+END_CENTER
+   A high-frequency sinusoid ( \(\omega_1 = 1800\pi \) rad/s ) masquerading as a lower frequency sinusoid ( \( 200 \pi \) rad/s ) due to aliasing when sampled with \(h=10^{-3}\) s.
+
+   *Draw the spectrum (lines) of the two sinusoids. Mark the Nyquist frequency and verify that the alias frequency is obtained by folding about the Nyquist frequency.*
+
+*** Notes							   :noexport:
+    - The sampling frequency is 1000Hz = 2000\pi rad/s, and the Nyquist frequency is 1000\pi rad/s.
+    - The high freq signal is 1800\pi rad/s which is 800\pi rad/s above the Nyquist freq.
+    - The alias frequency is 
+       wa = | ( (\omega + \omega_N) mod \omega_s ) - \omega_N | 
+          = | ( ( 1800\pi + 1000\pi) mod 2000\pi ) - 1000\pi |
+          = | ( 800\pi ) - 1000\pi | = 200\pi
+       \omega_N - (\omega - \omega_N) = 1000\pi - 800\pi = 200\pi rad/s.
+
+* antialiasing
+
+
+
+** Noisy measurements
+
+** Antialiasing filter
+   The *Bessel filter* is often used. From wikipedia:
+   #+BEGIN_QUOTE
+   In electronics and signal processing, a Bessel filter is a type of analog linear filter with a maximally flat group/phase delay (maximally linear phase response), which preserves the wave shape of filtered signals in the passband. Bessel filters are often used in audio systems.
+   #+END_QUOTE
+
+   Why use a Bessel filter as antialiasing filter?
+
+
+** Antialiasing filter
+   The *Bessel filter* is often used. From wikipedia:
+   #+BEGIN_QUOTE
+   In electronics and signal processing, a Bessel filter is a type of analog linear filter with a maximally flat group/phase delay (maximally linear phase response), which preserves the wave shape of filtered signals in the passband. Bessel filters are often used in audio crossover systems.
+   #+END_QUOTE
+
+   Why use as antialiasing filter?
+   - Preserves wave shapes \(\Rightarrow\) very little distortion of signals in the passband
+   - Maximally linear phase response \(\Rightarrow\) \(\arg H \approx -T\omega\),  Can be modelled as a pure delay 
+
+**  Bessel filter exercise					   :noexport:
+    Second order Bessel filter which gives attenuation $|H(i\omega_N)| = 0.1$ at the Nyquist frequency.
+*** q
+:PROPERTIES:
+:BEAMER_col: 0.29
+:END:
+
+ \[ H(s) = \frac{3}{\big(s/\omega_0\big)^2 + 3\big(s/\omega_0\big) + 3}, \]
+
+What is the phase shift at the Nyquist frequency?
+
+Is the time-delay due to the filter smaller or greater than one sampling period?
+
+# At the nyq freq we have a phase shift of -150 deg. Since wN = pi/h, such a phase shift corresponds
+# to wN*T = 150/180 pi => T = pi/wN * 150/180 = \frac{5}{6} h.
+
+*** fig
+:PROPERTIES:
+:BEAMER_col: 0.70
+:END:
+
+  \begin{center}
+  \includegraphics[width=0.9\linewidth]{../../figures/ps7-bessel-bode}
+  \end{center}

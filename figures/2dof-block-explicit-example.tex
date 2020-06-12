@@ -1,0 +1,42 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+%\pgfplotsset{compat=1.9}
+
+
+\begin{document}
+
+
+\begin{tikzpicture}[
+    node distance=2cm, block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+  \node[coordinate] (input) {};
+  \node[block, right of=input] (TR) {$F_f(z)=43\frac{z-0.644}{z-0.407}$};
+  \node[sumnode, right of=TR] (sum) {$\sum$};
+  \node[block,right of=sum, node distance=30mm] (plant) {$H(z)=\frac{h^2/2(z+1)}{(z-1)^2}$};
+  \node[sumnode, right of=plant] (sumdist) {$\sum$};
+  \node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+  \node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+  \node[coordinate, right of=measure, node distance=10mm] (output) {};
+  \node[block,below of=plant, node distance=25mm] (SR) {$F_b(z) = \frac{14.39z+12.9}{z-0.407}$};
+  \node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+  \node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+
+  \draw[->] (input) -- node[above] {$u_c$} (TR);
+  \draw[->] (TR) -- node[above] {} (sum);
+  \draw[->] (sum) -- node[above] {$u$} (plant);
+  \draw[->] (plant) -- (sumdist);
+  \draw[->] (dist) -- node[at start, right] {$d$} (sumdist);
+  \draw[->] (sumdist) -- node[at end, above] {$y$} (output);
+  \draw[->] (measure) -- (sumnoise);
+  \draw[->] (noise) -- node[at start, above] {$n$} (sumnoise);
+  \draw[->] (sumnoise) -- (SR);
+  \draw[->] (SR) -| (sum) node[left, pos=0.96] {$-$};
+
+\end{tikzpicture}
+\end{document}
+
+

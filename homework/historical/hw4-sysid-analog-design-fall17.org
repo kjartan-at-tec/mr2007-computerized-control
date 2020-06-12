@@ -1,0 +1,37 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+title: Computerized control - Homework 4
+#+date: Due 2017-11-03
+
+* System identification
+** Data
+  Download the mat-file =sysid_data_hw4.mat= found on Blackboard under Course Documents/Homework and load it into matlab. It contains five variables:
+  - =h= :: Scalar, the sampling period.
+  - =u1= :: Input signal used to excite the system.
+  - =y1= :: Output signal obtained as response to =u1=. 
+  - =u2= :: Input signal used to excite the system.
+  - =y2= :: Output signal obtained as response to =u2=. 
+
+** Task
+   Identify a low-order model $H(z)$ (in \(Y(z) = H(z)U(z)\)) that gives good description of the system dynamics based on the provided input-output data. Use one data set for identification and the other for validation. Report the different models you tested, and report the pulse-transfer function $H(z)$ of the best model you found. Hand also in a plot of the simulated output of this model with comparison to the measured output.
+
+   You are free to use the system identification toolbox in matlab, or solve it on your own forming the prediction error and using least squares.
+
+* Antialiasing filter design
+  A sampling period of \(h=0.04\) has been chosen for a particular computer-controlled feedback system. Design an antialiasing filter that gives attenuation of 0.02 at the Nyquist frequency.
+
+** The transfer function 
+  Determine the parameter \(\omega_0\) in the transfer function of a second order Bessel filter 
+  \[ F(s) = \frac{3}{\big(s/\omega_0\big)^2 + 3\big(s/\omega_0\big) + 3} \]
+  such that the filter meets the specifications.
+
+  Implement the transfer function in matlab and generate a Bode diagram to verify your calculations.
+
+** Analog circuit  
+   Design an analog circuit that implements the second order transfer function, for instance using the Sallen-Key topology
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{Sallen-Key.png}
+   #+END_CENTER
+   Determine the parameters of all the components. Implement the circuit in a simulator and test that you obtain the desired characteristics of your low-pass filter.

@@ -1,0 +1,62 @@
+% Created 2016-01-12 Tue 12:02
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\usepackage{subfigure}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{Computerized control - homework 1}
+\author{Kjartan Halvorsen}
+\date{Due 2016-01-22}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Exercise}
+\label{sec-1}
+\subsection{Block-diagram calculation}
+\label{sec-1-1}
+
+   The block-diagram below shows a so-called \emph{two-degrees-of-freedom} feedback control system. Calculate the transfer function from each of the signals  $u_c$ (command signal), $d$ (disturbance signal) and $n$ (measurement noise) to the system output $y$.
+
+   \begin{center}
+   \includegraphics[width=0.6\linewidth]{2dof-block-complete}
+   \end{center}
+\subsection{Solution to a first-order system}
+\label{sec-1-2}
+
+   Consider the first-order system
+   \[ \dot{x}(t) = -x(t) + u(t) \]
+
+\begin{enumerate}
+\item Write the solution to the system for the input signal 
+      \begin{displaymath}
+        u(t) = \begin{cases} 1, & 0 \le t \le 1\\ 0, & \text{otherwise}.
+      \end{displaymath}
+      The initial value is $x(t) = 0$.
+\item Sketch the solution $x(t)$ for $0\le t \le 4$, (or generate the plot on the computer).
+\item On Blackboard you can find a simulink-file with an implementation of the system. Use this to verify your solution. Include a screen-dump of the simulation output in your report.
+\end{enumerate}
+
+\end{document}

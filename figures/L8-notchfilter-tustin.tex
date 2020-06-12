@@ -1,0 +1,65 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\def\NOTCHW{1}
+\def\NOTCHQ{10}
+\def\NOTCHH{0.5}
+
+\begin{tikzpicture}
+  \begin{loglogaxis} [
+      width=12cm,
+      height=5cm,
+      ylabel=$|F_{notch}|$,
+      xticklabels=\empty,
+      ytick={10, 1, 0.1, 0.01, 0.001, 0.0001, 0.0001, 0.00001},
+      ymin=0.01,
+      grid=both,
+      minor y tick num=9,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+      xtick={0.8, 1, 2},
+      xmin=0.7,
+      xmax=2,
+  ]
+    \addplot 
+    shell[thick, black, no marks, prefix=pgfshell_, id=bodenm] {octave -q --eval  "format long; G=tf([1, 0, (\NOTCHW *\NOTCHW)], [1, (\NOTCHW / \NOTCHQ), (\NOTCHW * \NOTCHW)]); [mag,phi,w]=bode(G,linspace(0.7, 3, 400)); disp(cat(2,w',mag))"};
+    \addplot
+    shell[thick, black, dashed, no marks, prefix=pgfshell_, id=bodenm] {octave -q --eval  "format long; G=tf([1, 0, (\NOTCHW *\NOTCHW)], [1, (\NOTCHW / \NOTCHQ), (\NOTCHW * \NOTCHW)]); Gd = c2d(G, \NOTCHH, 'tustin'); [mag,phi,w]=bode(Gd,linspace(0.7, 3, 400)); disp(cat(2,w',mag))"};
+
+    \node[coordinate, pin=-140:{$\omega_1'=0.98\omega_1$}] at (axis cs: 0.98, 0.06) {};
+
+  \end{loglogaxis}
+  \begin{semilogxaxis} [
+      xlabel=$\omega$,
+      ylabel=$\arg F_{notch}$,
+      yshift = -3.5cm, 
+      width=12cm,
+      height=5cm,
+      grid=both,
+      ytick={90, 0, -90},
+      minor y tick num=4,
+      every major grid/.style={red, opacity=0.5},
+      xtick={0.8, 1, 2},
+      xticklabels={$0.8\omega_1$, $\omega_1$, $2\omega_1$},
+      xmin=0.7,
+      xmax=2,
+  ]
+    \addplot 
+    shell[thick,black, no marks, prefix=pgfshell_, id=bodenm] {octave -q --eval  "format long; G=tf([1, 0, (\NOTCHW * \NOTCHW)], [1, (\NOTCHW / \NOTCHQ), (\NOTCHW * \NOTCHW)]); [mag,phi,w]=bode(G,linspace(0.7, 3, 400)); disp(cat(2,w',phi))"};
+    \addplot
+    shell[thick, black, dashed, no marks, prefix=pgfshell_, id=bodenm] {octave -q --eval  "format long; G=tf([1, 0, (\NOTCHW *\NOTCHW)], [1, (\NOTCHW / \NOTCHQ), (\NOTCHW * \NOTCHW)]); Gd = c2d(G, \NOTCHH, 'tustin'); [mag,phi,w]=bode(Gd,linspace(0.7, 3, 400)); disp(cat(2,w',mag))"};
+  \end{semilogxaxis}
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,84 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LATEX_CLASS_OPTIONS: [letterpaper]
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+title: Sampling and anti-aliasing exercise
+
+** The Bessel filter
+   A second order Bessel filter
+ \[ H(s) = \frac{3}{\big(s/\omega_0\big)^2 + 3\big(s/\omega_0\big) + 3}, \]
+ has been designed to give attenuation of 0.1 at the Nyquist frequency, i.e. \(|H(i\omega_N)| = 0.1\).
+
+  \begin{center}
+  \includegraphics[width=0.8\linewidth]{../figures/ps7-bessel-bode}
+  \end{center}
+
+  1. What is the bandwidth of the filter?
+  2. Determine the filter parameter \(\omega_0\) in terms of \(\omega_N\).
+  3. What is the phase shift at the Nyquist frequency?
+  4. Assume that the cross-over frequency of the loop gain is \(\omega_c = 0.1\omega_N\). What is the phase shift at this frequency?
+  5. What delay $T$  does this correspond to? Approximate the filter as a pure delay \(H(i\omega) \approx \mexp{-i\omega T}\)?
+  6. How large is the delay in terms of the sampling period \(h = \frac{\pi}{\omega_N}\)?
+
+
+*** Solution							   :noexport:
+
+    1. The definition of the bandwidth is \(|H(i\omega_B)| = -3db = 0.71\). From the magnitude curve we see that this occurs for \(\omega_B = \approx 0.25\omega_N\)
+    2. The equation to use is \(|H(i\omega_N)| = 0.1\) This gives
+       \[ |H(i\omega_N)| = \frac{ |3| }{| (i \omega_N/\omega_0)^2 + 3 i \omega_N/\omega_0 + 3|}\]
+       Let \( x = (\omega_N/\omega_0)^2\)
+       \[ 0.1 = \frac{3}{| (3-x) + i3\sqrt{x}|} \]
+       \[ \sqrt{ (3-x)^2 + (3\sqrt{x})^2} = 30 \]
+       \[ 9 - 6x + x^2 +  9x = 900 \]
+       \[ x^2 +3x -9(100-1) = 0\]
+       \[ x = -\frac{3}{2} \pm \frac{1}{2} \sqrt{9 + 4\cdot 9\cdot 99} = -\frac{3}{2}( 1 \pm \sqrt{397}. \]
+       Must have positive solution so
+       \[\omega_N/\omega_0 = \sqrt{ -\frac{3}{2} (  1 - 19.92 ) } \approx 5.33 \]
+       \[ \omega_0 = \omega_N / 5.33 \]
+    3. The minor ticks on the phase curve correspond to 10 degrees. At \(\omega=\omega_N\) we read that \(\arg H(i\omega_N) \approx -148^\circ\)
+    4. Same procedure. We get \(\arg H(i 0.1\omega_N) = -30^\circ\)
+    5. With \(H(i\omega) \approx \mexp{-i\omega T}\) \(\arg H(i\omega) \approx \arg \mexp{-i\omega T} = -\omega T\) From exerces 2 we had \( -30^\circ = -\frac{\pi}{6} \approx - 0.1\omega_N T\) which gives
+       \[ T \approx \frac{10}{6} \cdot \frac{\pi}{\omega_N} = \frac{5}{3} h. \]
+    6. See 3.
+
+\newpage
+
+
+** Choice of bandwidth of antialiasing filter
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.4\linewidth]{../figures/Astrom-fig73.png}
+#+END_CENTER
+   The table can be used to find the delay incurred by an antialiasing filter. For instance, if we want to have an attenuation at the Nyquist frequency equal to \(\beta = 0.01\), then a fourth-order Bessel low-pass filter will give a delay of about \(T_d = 3.2 h\), that is a delay of more than 3 sampling periods. 
+   1. What is the advantage of using an antialiasing filter of higher order than 2?
+   2. If we can only accept a time delay of maximum two sampling periods, what is the attenutation we can obtain at the Nyquist frequency?
+   3. \(\omega_B = \omega_N\) means that the antialiasing filter is chosen so that the Nyquist frequency is the same as the bandwidth of the filter. The attenuation at \(\omega_N\) is then 0.7=-3dB. If the sampling period is 0.4 seconds. What is the time delay due to a sixth-order antialiasing filter?
+   4. What is the attenuation of a forth-order filter at \(5\omega_B\)
+
+\clearpage
+
+*** Solution							   :noexport:
+    1. It will have increased roll-off after the cutoff frequency
+    2. Between 0.05 and 0.1, using a 4th order filter
+    3. The time delay is \(T_d = 0.9h\) so we get 0.36s
+    4. This would correspond to the situation \(\omega_N = 5\omega_B\) of \(\omega_B/\omega_N = 0.2\). Line two gives \(\beta=0.01\).
+
+   
+** Notch filter, preliminary exercise
+Sketch the Bode diagram of the (unrealizable) filter
+\[ F(s) = s^2 + \omega_1^2 = (s+i\omega_1)(s-i\omega_1)\]
+\[ |F(i\omega)| = |(i\omega + i\omega_1)||(i\omega - i\omega_1)| = |\omega - (-\omega_1)||\omega - \omega_1|\]
+\[ \arg F(i\omega) = \arg i(\omega + \omega_1) + \arg i(\omega -\omega_1) = 2\arg i + 0 + \arg(\omega - \omega_1) \]
+#+BEGIN_CENTER 
+ \includegraphics[width=0.85\linewidth]{../figures/bode-w1-empty}
+#+END_CENTER
+
+
+** Notch filter
+  Sketch the Bode diagram (\(Q=10\))of the second order continous-time notch filter
+  \[ F(s) = \frac{s^2 + \omega_1^2}{s^2 + \frac{\omega_1}{Q}s + \omega_1^2} \]
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.85\linewidth]{../figures/bode-notch-empty}
+#+END_CENTER

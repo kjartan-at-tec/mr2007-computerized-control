@@ -1,0 +1,8 @@
+SR	If the signal from the plant is analog (e.g. from a sensor), and the input signal to the plant  (controlling an actuator) is also analog, what are the steps to get the signals into the computer?
+SR	In the jupyter notebook Discrete-time-systems-intro.ipynb, why  is the error in the discrete approximation larger in the beginning than at the end of the step-response?	The discrete system approximates the derivatives in the continuos ODE. In the beginning of the response, the changes in the derivatives (both input- and output signal) between the sampling instants are largest.    
+SR	In your own words, why are performance specifications important when designing a controller?	Without the specifications, we have no way of evaluating our design.
+MA	Which of the following are common control performance specifications?	Rise time	correct	Maximum overshoot	correct	Return on investement	incorrect	Settling time	correct	Bandwidth	correct	Signal-to-noise ratio	incorrect	Steady-state error	correct	Phase margin	correct
+SR	Choose one of the performance specifications above and give its definition.
+SR	Please list 2-4 things you learned from the videos
+SR	Please list 2-4 things the you thought were difficult to understand in the videos
+

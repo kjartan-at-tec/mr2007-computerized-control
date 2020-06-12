@@ -1,0 +1,44 @@
+\documentclass[tikz,border=5]{standalone}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage[detect-all]{siunitx}
+
+\tikzset{
+   ragged border/.style={ decoration={random steps, segment length=1mm, amplitude=0.5mm},
+           decorate,
+   }
+}
+
+\begin{document}
+  \begin{tikzpicture}
+  \fill[cyan!30]
+        decorate[ragged border]{
+        (0,2) -- (6,2)
+        }
+        -- (6,0.3) -- (6.5,0.3) -- (6.5,0.0) -- (6,0.0) --(6,0) -- (0,0) -- cycle;
+  \fill[cyan!30] (-4,2.5) -- (0,2.5) to[in=120,out=0](0.7,1.9)-- (1.4,1.9)
+                  to[out=120,in=0] (0,3) -- (-4,3) -- cycle;
+  \draw (-0.5,2.5) -- (0,2.5) -- (0,0) -- (6,0) -- (6,0.0) -- (6.5,0.0);
+  \draw (-0.5,3) -- (0,3) -- (0,3.5) -- (6,3.5) -- (6,0.3) -- (6.5,0.3);
+  \draw[|-|] (-0.2,0) --
+  node[fill=white,font=\footnotesize,inner ysep=2pt,inner
+  xsep=0, anchor=east]{$h(t) = h_0 + y(t)$}(-0.2,2);
+  \draw (0,2.5) -- (-4, 2.5);              
+  \draw (0,3) -- (-4, 3);              
+                
+  \draw[stealth-] (-0.5,2.75) -- (-1,2.75)
+            node[anchor=east,font=\footnotesize,align=right]{$z(t) = z_0 + w(t)$};
+  \draw[-stealth] (6.5,0.15) -- (7.2,0.15)
+            node[anchor=west,font=\footnotesize]{$a\sqrt{2gh}$};
+  \node[anchor=north,font=\footnotesize] at (3,3) {};
+  \node[anchor=north,font=\footnotesize] at (3,2) {};
+  \node[anchor=north,font=\footnotesize] at (3,1) {Cross-sectional area $A$};
+  
+  \node[cyan!35] at (3,1.5) {\small \#yoPrefieroElLago};
+
+  \node[draw, minimum height=14mm, minimum width=20mm] (controller) at (-4, 1) {Controller};
+  \node (valve) at (-3.7,3.2) {\includegraphics[width=15mm]{butterfly-valve.png}};
+  
+  \draw[-stealth] (-2.1, 0.8) to[out=-90, in=0] (controller);
+  \draw[-stealth] (controller.west) to[out=180, in=180] (valve.west);
+\end{tikzpicture}%
+\end{document}

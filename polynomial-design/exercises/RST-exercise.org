@@ -1,0 +1,104 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper,fleqn]
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{tabularx}
+#+LaTex_HEADER: \usepackage{geometry}
+#+LaTex_HEADER: \usepackage{pgfplots}
+#+LaTex_HEADER: \pgfplotsset{compat=1.13}
+#+LaTex_HEADER: \geometry{top=20mm, bottom=20mm, left=24mm, right=18mm}
+
+#+title: Polynomial design (RST) exercise
+#+date: 
+
+* Choosing the closed-loop poles
+#+BEGIN_CENTER 
+*s-plane* \hspace*{0.4\linewidth} *z-plane*\\
+\includegraphics[height=0.34\textheight]{../figures/sgrid-crop} \hspace*{3mm}
+\includegraphics[height=0.34\textheight]{../figures/zgrid-crop}\\
+#+END_CENTER
+
+Plot the poles of the following closed-loop discrete-time systems (as crosses in the z-plane). Plot also the corresponding continous-time poles (in the s-plane) using the sampling period \(h=0.2\). Rank the systems from 1 to 5 according to how desirable the performance of each system is.
+- a ::  \( G_c(z) = \frac{0.026z + 0.024}{z(z-0.95)}\)
+- b ::  \( G_c(z) = \frac{0.13z + 0.12}{z^2 - z + 0.25} \)
+- c ::  \(G_c(z) = \frac{0.54z + 0.52}{(z-0.5)^2 + 0.81}\)
+- d ::  \(G_c(z) = \frac{0.025z + 0.025}{(z-0.8)^2 - 0.09}\)
+- e ::  \(G_c(z) = \frac{0.068z + 0.062}{(z-0.8)^2 + 0.09}\)
+
+** Notes							   :noexport:
+- a :: Poles in z=0 and z=0.95. Can write as G_c(z) = z^{-1} \frac{0.026z + 0.024}{z-0.95}, so it is
+       a first order system with a single time delay. In continuous-time we have with h=0.2
+       p = exp(\lambda h) so \lambda = log(p) / h. The pole in the origin of the z-plane maps to 
+       minus infinity. The other pole to \lambda = log(0.95)/0.2 = -0.051/0.2 = -0.25.
+- b :: (z-0.5)^2 = z^2 - z + 0.25, so poles in 0.5. In the s-domain: lambda = log(0.5)/0.2 = -3.47.
+- c :: Poles in z = 0.5 +/- i0.9. The magnitude is 1.03, so the poles are outside the unit circle. 
+       In the s-domain the poles are in lambda = log(0.5 +i0.9)/ 0.2 = 0.15 +/- 5.3 i. 
+       Maybe better to use polar form: p = 1.03 e^1.06im, 
+       lambda = (log 1.03 + im 1.06) / 0.2 = 0.15 + 5.3im
+- d :: Poles in z = 0.8 +/- 0.3 = 1.1, 0.5. One pole outside the unit circle. In the s-domain s=log(1.1)/0.2 = 0.48, s=log(0.5)/0.2 = -3.47.
+- e :: Poles in z = 0.8 +/- 0.3im. Inside unit circle.  In s-domain s = -0.79 +/- 1.8i. 
+       The damping ratio is \zeta = 0.4, so a bit low damping. Distance to origin is \omega_n = 1.96.
+       
+In order of good behaviour:
+ beacd
+
+\newpage 
+
+* Pole placement and step response
+  Pair each of the discrete-time systems in the previous exercise with the correct step response below.
+#+BEGIN_CENTER 
+ \includegraphics[width=\linewidth]{closed-loop-step-responsen}
+#+END_CENTER
+
+** Notes							   :noexport:
+   With the above analysis of the pole placement. We get
+   I - e
+   II - b
+   III - a
+   IV - d
+   V - c
+
+\newpage
+
+* Determine the order of the controller
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../figures/2dof-block-explicit}
+#+END_CENTER
+In each of the cases determine the order of the feedback controller $F_{b}(z)=\frac{S(z)}{R(z)}$ and write out the $R(z)$ and $S(z)$ polynomials. Determine also the order of the observer polynomial $A_o(z)$. You don't have to solve for the controller coefficients.
+
+** Case 1
+Plant is \(H(z) = \frac{b_0z+b_1}{z^3  + a_1z^2 + a_2z}\),  desired response to reference signal \(H_c(z) = \frac{0.2^2}{z(z-0.8)(z-0.8)}\), observer poles in the origin.
+
+\vspace*{27mm}
+
+*** Notes							   :noexport:
+The diophantine eqn becomes
+A(z)R(z) + B(z)S(z) = Ac(z)Ao(z)
+The number of eqns it gives is nA+nR.
+The controller has no integral action, so the number of unknown coefficients is nR+nR+1. So
+nR+NR+1 = nA+nR  => nR = nA-1 = 3-2 = 2.
+
+** Case 2
+Plant is \(H(z) = \frac{b_0z+b_1}{z^3  + a_1z^2 + a_2z}\),  desired response to reference signal \(H_c(z) = \frac{0.2^2}{(z-0.8)^3}\), observer poles in the origin and integral action in the feedback controller (incremental controller).
+
+
+\vspace*{27mm}
+
+*** Notes							   :noexport:
+Similar to above, but with integral control. The diophantine eqn becomes
+A(z)(z-1)R(z) + B(z)S(z) = Ac(z)Ao(z)
+The number of eqns it gives is nA+nR+1.
+The controller has integral action, so the number of unknown coefficients is nR+nR+2. So
+nR+NR+2 = nA+nR+1  => nR = nA-1 = 3-2 = 2. The controller is R(z) = (z-1)(z^2 + r_1z + r_2) and 
+S(z) = s_0z^3 + s_1z^2 + s_2z + s_3.
+
+
+** Case 3
+Plant is \(H(z) = \frac{b_0z+b_1}{z^2  + a_1z + a_2}\) and there is a delay of 2 sampling periods in the feedback path. The desired response to reference signal \(H_c(z) = \frac{0.2^2}{(z-0.8)(z-0.8)}\), observer poles in the origin and integral action in the feedback controller (incremental controller).
+
+*** Notes							   :noexport:
+The diophantine eqn becomes
+A(z)z^2(z-1)R(z) + B(z)S(z) = Ac(z)Ao(z)
+The number of eqns it gives is nA+2+1+nR.
+The controller has integral action, so the number of unknown coefficients is nR+nR+2. So
+nR+NR+2 = nA+nR+3  => nR = nA + 1 = 2+1 = 3. The controller is R(z) = (z-1)(z^3 + r_1z^2 + r_2z + r_3) and S(z) = s_0z^4 + s_1z^3 + s_2z^2 + s_3z + s_4.

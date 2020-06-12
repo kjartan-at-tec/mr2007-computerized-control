@@ -1,0 +1,121 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+
+#+title: Computerized control - homework 3
+#+date: Due 2018-03-07
+
+* The system
+Consider the linearized model of the tank that we looked at in class
+
+    \begin{center}
+    \includegraphics[width=0.7\linewidth]{../../MR2012/figures/tank-with-hole}
+    \end{center}
+    Using the parameter values 
+    \[ A = 1, \qquad a = 0.1, \qquad g = 9.8,\]
+    and the operating point given by
+    \[ h_0 = 1, \qquad z_0 = a\sqrt{2gh_0} \approx 0.44,\]
+    the linearized model of the tank is described by the first-order system
+    \[ G_1(s) = \frac{1}{s + 0.44}\]
+    from the deviation in flow $w(t)$ to the deviation in level $y(t)$.
+    
+    A valve is used to control the flow. The valve is a so-called control valve, which means it includes an inner controller that works as a position servo. That is, it will make sure the opening of the valve follows the input signal to the valve. This signal is named $u(t)$. The response of the opening of the valve $\theta(t)$ to the input signal $u(t)$ is well-described by a second-order, critically damped system
+    \[ G_2(s) = \frac{1}{(0.5s + 1)(0.5s+1)} = \frac{4}{(s+2)(s+2)}. \]
+    
+    The flow through the valve depends also on the square root of the pressure difference across the valve. In a linearized model, a change in pressure enters as an additive disturbance to the system. The complete model of the process is given in the block-diagram below.
+    
+     \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=18mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (input) {};
+     \node[block, right of=input] (valve) {$G_2(s)$};
+     \node[above of=valve, node distance=6mm] {valve};
+     \node[sumnode, right of=valve, node distance=16mm] (sum) {\tiny $\sum$};
+     \node[block, right of=sum, node distance=20mm] (tank) {$G_1(s)$};
+     \node[above of=tank, node distance=6mm] {tank};
+     \node[coordinate, right of=tank] (output) {};
+     \node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+
+     \draw[->] (input) -- node[above] {$u(t)$} (valve);
+     \draw[->] (valve) -- node[above] {} (sum);
+     \draw[->] (sum) -- node[above] {$w(t)$} (tank);
+     \draw[->] (tank) -- node[above] {$y(t)$} (output);
+     \draw[->] (disturbance) -- node[right, pos=0.2] {$v(t)$} (sum);
+
+     \end{tikzpicture}
+   \end{center}
+
+    The level of the tank is measured, and is available for feedback control. 
+       \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+     \node[block, right of=sumerr] (controller) {$F(s)$};
+     \node[above of=controller, node distance=6mm] {controller};
+     \node[block, right of=controller, node distance=24mm] (valve) {$G_2(s)$};
+     \node[above of=valve, node distance=6mm] {valve};
+     \node[sumnode, right of=valve, node distance=16mm] (sum) {\tiny $\sum$};
+     \node[block, right of=sum, node distance=20mm] (tank) {$G_1(s)$};
+     \node[above of=tank, node distance=6mm] {tank};
+     \node[coordinate, right of=tank, node distance=20mm] (output) {};
+     \node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)=0$} (sumerr);
+     \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+     \draw[->] (controller) -- node[above] {$u(t)$} (valve);
+     \draw[->] (valve) -- node[above] {} (sum);
+     \draw[->] (sum) -- node[above] {$w(t)$} (tank);
+     \draw[->] (tank) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+     \draw[->] (disturbance) -- node[right, pos=0.2] {$v(t)$} (sum);
+     \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+    \end{tikzpicture}
+   \end{center}
+    
+
+   A simulation model (=simulink=) of the system is available on Blackboard under =Course Documents/Matlab and Simulink= 
+
+* Exercises
+** Problem 1 - Tuning a PID
+
+   Perform a bumptest on the plant (valve+tank). This means to connect a step block (see =Sources= in the =Simulink Library Browser=) to the input of the valve. Determine the slope $R$, the apparent deadtime $L$, and the parameter $a=RL$ from the step response. See figure 8.13 in the text-book
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../figures/fig8-13.png}
+#+END_CENTER
+
+Include your simulated step-response in your report.
+
+Determine a PID controller using table 8.2 in the book.
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../figures/table8-2.png}
+#+END_CENTER
+
+** Problem 2 - Implement the PID in simulink
+
+   The controller is written
+   \[U(s) = K \left( U_c(s) - Y(s) + \frac{1}{sT_i}\big(U_c(s) - Y(s)\big) - \frac{sT_d}{1 + sT_d/N} Y(s)\right).\]
+
+   Set $N=10$ and implement the controller in simulink using the values for $K$, $T_i$ and $T_d$ that you determined in Problem 1.
+
+   Simulate the closed-loop system's response to step changes in both the set point, $u_c(t)$ and the disturbance, $v(t)$. Include the step-responses in your report and comment on the results.
+
+** Problem 3 - Discrete PID
+
+The discretized controller is written
+\[ R(\shift) u(kh) = T(\shift) u_c(kh) - S(\shift) y(kh), \]
+where
+\begin{align*}
+ R(\shift) &= (\shift -1)(\shift - a_d)\\
+ S(\shift) &= s_0\shift^2 + s_1\shift + s_2\\
+T(\shift) &= t_0\shift^2 + t_1\shift + t_2
+\end{align*}
+
+Determine the discrete PID controller parameters $a_d$, $s_0$, $s_1$, $s_2$, $t_0$, $t_1$ and $t_2$ using table 8.1 in the textbook (given below). You can use whichever of the three discretization methods provided.
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../figures/table8-1.png}
+#+END_CENTER
+

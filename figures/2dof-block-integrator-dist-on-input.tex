@@ -1,0 +1,50 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=2.2cm, block/.style={rectangle, draw, minimum height=8mm, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+  \node[block] (ffw) {$F_f(z)$};
+  \node[sumnode, right of=ffw] (sum) {\small $\Sigma$};
+  \node[block, right of=sum] (ugain) {$b_u$};
+  \node[sumnode, right of=ugain] (sumdist) {\small $\Sigma$};
+  \node[block, right of=sumdist] (plant) {$\frac{1}{z-1}$};
+  \node[block, below of=ugain] (ffb) {$F_b(z)$};
+  \node[block, below of=plant] (aa) {$z^{-1}$};
+
+  \draw[->] (plant) -- node[coordinate] (measure) {} node[above, pos=0.9] {$y(k)$} ++(3,0);
+
+  \node[sumnode, below of=measure] (sumnoise) {\small $\Sigma$};
+
+  \node[coordinate, left of=ffw, node distance=2cm] (input) {};
+  \node[block, above of=sumdist, node distance=1cm] (distgain) {$b_v$};
+  \node[coordinate, above of=distgain, node distance=1cm] (dist) {};
+  \node[coordinate, right of=sumnoise, node distance=1cm] (noise) {};
+
+
+  \draw[->] (input) -- node[above, pos=0.2] {$u_c(k)$} (ffw);
+  \draw[->] (ffw) to (sum);
+  \draw[->] (sum) -- node[above, ] {$u(k)$} (ugain);
+  \draw[->] (ugain) to (sumdist);
+  \draw[->] (sumdist) to (plant);
+  \draw[->] (measure) to (sumnoise);
+  \draw[->] (sumnoise) to (aa);
+  \draw[->] (aa) to (ffb);
+  \draw[->] (ffb) -| node[pos=0.9, right] {$-$} (sum);
+  \draw[->] (dist)  -- node[right, pos=0.2] {$v(k)$} (distgain);
+  \draw[->] (distgain)  -- node[right, pos=0.2] {} (sumdist);
+  \draw[->] (noise)  -- node[above, pos=0.2] {$n(k)$}(sumnoise);
+  
+  \draw[->, white] (ffb) -- ++(0, -8mm);
+
+\end{tikzpicture}
+
+\end{document}

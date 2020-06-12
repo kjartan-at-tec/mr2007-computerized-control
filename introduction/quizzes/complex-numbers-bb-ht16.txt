@@ -1,0 +1,4 @@
+MA	Which of the expressions correspond to this?	riktig	correct	också riktig	correct
+MA	Which of the expressions correspond to \(c_k\)?	riktig	correct	också riktig	correct
+MA	Which of the expressions correspond to $c_k$?	riktig	correct	också riktig	correct
+MA	Which of the expressions correspond to $$c_k$$?	riktig	correct	också riktig	correct

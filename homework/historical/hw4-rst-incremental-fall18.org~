@@ -1,0 +1,174 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+title: Computerized control - Homework 3
+#+date: Due 2018-09-07
+
+* Polynomial controller design (RST)
+
+** Two-degree of freedom controller
+#+BEGIN_LaTeX
+  \begin{figure}[h]
+    \begin{center}
+    \begin{tikzpicture}
+    \tikzset{node distance=2cm, 
+        block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm},
+        sumnode/.style={circle, draw, inner sep=2pt}        
+    }
+
+      \node[coordinate] (input) {};
+      \node[block, right of=input] (TR) {$F_f(z)=\frac{T(z)}{R(z)}$};
+      \node[sumnode, right of=TR, node distance=30mm] (sum) {$\sum$};
+      \node[block,right of=sum, node distance=30mm] (plant) {$H(z)$};
+      \node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+      \node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+      \node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+      \node[coordinate, right of=measure, node distance=10mm] (output) {};
+      \node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+      \node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+      \node[block,left of=sumnoise, node distance=30mm] (SR) {$F_b(z) = \frac{S(z)}{R(z)}$};
+
+      \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}$} (TR);
+      \draw[->] (TR) -- node[above] {$u_1$} (sum);
+      \draw[->] (sum) -- node[above] {$u$} (plant);
+      \draw[->] (plant) -- (sumdist);
+      \draw[->] (dist) -- node[at start, right] {$v$} (sumdist);
+      \draw[->] (sumdist) -- node[at end, above] {$y$} (output);
+      \draw[->] (measure) -- (sumnoise);
+      \draw[->] (noise) -- node[at start, above] {$n$} (sumnoise);
+      \draw[->] (sumnoise) -- (SR);
+      \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2$} node[left, pos=0.96] {$-$};
+    \end{tikzpicture}
+    \caption{Two-degree-of-freedom controller}
+    \label{fig:2dof}
+    \end{center}
+  \end{figure}
+#+END_LaTeX
+
+
+** The plant model
+
+  A plant to be controlled is described by the pulse-transfer function
+  \[ H(z) = \frac{\big(1-\frac{\sqrt{3}}{2}\big)z - \big(\frac{\sqrt{3}}{2}-1\big)}{z^2 - \sqrt{3}z + 1}.\]
+
+*** Plot the poles and zeros of the system
+    
+    
+    You can use matlab for convenience 
+    #+BEGIN_SRC octave
+    num = []; % numerator coefficients
+    den = []; % denominator coefficients
+    h = 1; % Normalized time scale
+    H = tf(num, den, h)
+    figure(1); clf;
+    pzmap(H)
+    zgrid
+    #+END_SRC
+
+    *Include the pole-zero map in your report, and describe briefly some interesting properties of the plant.*
+
+** Determine the desired closed loop poles
+   Assume that we want to achieve a closed-loop system from the reference signal $y_{ref}(k)$ to the output $y(k)$ that has two poles that are *equally fast as the plant*, but has a *damping ratio of 1* (critically damped poles).  
+
+   *Determine where the poles should be in the z-plane and calculate the desired characteristic polynomial \(A_c(z)\).*
+
+** Design a 2-DoF controller
+   Design a discrete-time controller with the structure given in figure \ref{fig:2dof}. The controller is given by 
+   \[ R(q)u = -S(q)y + T(q)u_c \]
+   and the the plant-model is
+   \[ A(q)y = B(q)u.\]
+   This gives the following difference equation for the closed-loop system
+   \[ \big( A(q)R(q) + B(q)S(q) \big) y = B(q)T(q) u_c. \]
+   Assume a suitable order (as low as possible) of the controller polynomials $R(q)$ and $S(q)$ and solve the diophantine equation 
+   \[ A(q)R(q) + B(q)S(q)  = A_c(q)A_o(q) \]
+   for $R$ and $S$. Place all observer poles in the origin (deadbeat observer).
+
+** Implement the controller
+   Implement your controller and closed-loop system in matlab (or simulink), and test step plots both from the reference signal $y_{ref}(k)$ and from the disturbance $v(k)$. 
+   *Discuss the performance of the closed-loop system in 3-4 sentences. Is it what you expected?*.
+
+Some code to help you
+#+BEGIN_SRC octave
+% The coefficients of the controller
+R_coeffs = 
+S_coeffs = 
+T_coeffs = 
+
+% The forward part of the controller
+TR = tf(T_coeffs, R_coeffs, h);
+% The feedback part of the controller
+SR = tf(S_coeffs, R_coeffs, h);
+
+% The closed-loop system from reference to output
+Hc = 
+
+% The closed-loop system from disturbance to output
+Hv =  
+
+figure(1)
+clf
+pzmap(Hc) % Verify that the closed-loop poles are as desired
+
+figure(2)
+clf
+step(Hc, Hv) % Expected performance?
+
+#+END_SRC
+
+* Solution							   :noexport:
+** Desired sampling period and closed-loop poles
+   From chapter 2.9 of the textbook we have the rule of thumb that the sampling period $h$ should be such that
+   \[ h\omega_n \approx  0.2 \; \text{to} \; 0.6, \]
+   where \omega_n is the distance from the origin of the dominating, complex conjugated poles. The textbook talks here about the poles of the  open-loop system (plant), but the rule-of-thumb is also relevant to use for the closed-loop system. Here we have three desired closed-loop poles at the distance of \(\omega_n = \sqrt{2}\) from the origin.
+   Choosing a bit conservative we get \[h = \frac{0.2}{\omega_n} = \frac{0.2}{\sqrt{2}} \approx  0.14. \]
+   We get the discrete-time poles
+   \pgfmathsetmacro{\samplingperiod}{0.14}
+   \pgfmathsetmacro{\realpole}{exp(-sqrt(2)*\samplingperiod)}
+   \begin{align*}
+   p_{d_1} &= \mexp{0.14(-1+i)} = \mexp{-0.14} \mexp{i0.14} \approx 0.86 + i0.12\\
+   p_{d_2} &= p_{d_1}^* = 0.86 - i0.12\\
+   p_{d_3} &= \mexp{0.14(-1)} = 0.87.
+   \end{align*}
+** Controller design
+   \pgfmathsetmacro{\bzero}{2*(0.5*\samplingperiod - 1 + exp(-0.5*\samplingperiod))}
+   \pgfmathsetmacro{\bone}{2*(1-exp(-\samplingperiod/2)-\samplingperiod/2*exp(-\samplingperiod/2))}
+   \pgfmathsetmacro{\poletwo}{exp(-\samplingperiod/2)}
+   # OBS: THe above macros give wrong results. Numerical issues?
+   
+   With the chosen sampling period we obtain the plant model
+   \[ H(z) = \frac{B(z)}{A(z)}= \frac{\frac{0.14^3}{6}(z^2 +4z + 1)}{(z-1)^3}. \]
+
+   The Diophantine equation is
+   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)\]
+   which gives \(n_A + n_R\) number of equations in the unknown controller parameters. The number of parameters to determine is \(2n_R + 1\) for \(F_b(z) = \frac{S(z)}{R(z)}\) with equal degree of the \(S\) and \(R\) polynomials. Hence, the controller should be of degree \(n_R = n_A - 1 = 2\). This means that \(A_o(z) = z^2\) in order for the polynomials of both sides of the Diophantine equation to be of equal degree. 
+
+  The feedback controller becomes \[ F_b(z) =  \frac{S(z)}{R(z)} = \frac{s_0z^2+s_1z + s_2}{z^2 + r_1z + r_2}, \]
+  and the Diophantine equation becomes
+
+   \[ (z-1)^3(z^2 + r_1z + r-2) + \frac{0.14^3}{6}(z^2 + 4z + 1)(s_0z^2 + s_1 z + s_2) = (z-0.86-i0.12)(z-0.86-i0.12)(z-0.87)z^2\]
+   From here on it is smart to use a symbolic math tool in order to avoid mistakes in multiplying the polynomials. Expanding both sides gives
+\begin{multiline}
+   z^5 + (r_1 + \frac{0.14^3}{6}s_0-3)z^4 + (-3r_1 + r_2 + \frac{4\cdot 0.14^3}{6}s_0 + \frac{0.14^3}{6}s_1 + 3)z^3 + (3r_1-3r_2+\frac{0.14^3}{6}s_0 + \frac{4\cdot 0.14^3}{6}s_1 + \frac{0.14^3}{6}s_2-1)z^2 + (-r_1+3r_2+\frac{0.14^3}{6}s_1 + \frac{4 \cdot 0.14^3}{6} s_2)z + (-r2+\frac{0.14^3}{6}s_2)\\ = z^5 -2.591z^4 + 2.252z^3 -0.657z^2 
+    \end{multiline}
+
+   Setting the coefficients on both sides equal gives a linear system of five  equations in the five unknowns. Solving gives
+   \[ R(z) = z^2 + 0.3292z + 0.068\]
+   \[ S(z) = 174 z^2 -322z + 149 \]
+
+   
+   The $T(z)$ polynomial is \(T(z) = t_0 A_o(z)\) where $t_0$ is determined from 
+   \[ H_c(1) = \frac{T(1)B(1)}{A_c(1)A_o(1)} = \frac{t_0B(1)}{A_c(1)} = 1 \]
+   which gives 
+   \[ t_0 = \frac{A_c(1)}{B(1)} = 1.6225. \]
+
+** Implementation
+   Implementing and simulating the system gives the result seen below. The pole-zero map shows that the desired poles are obtained. The response is well damped and the phase margin is \unit{40}{\degree}, which is OK, although it could be a bit better.  When there is a delay of two sampling periods in the feedback path (due to an anti-aliasing filter) the response is much more oscillatory, and the phase margin drops to  \unit{2.3}{\degree}, so the system is very close to unstable.  
+
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{hw3_step_fall17-crop}
+    \includegraphics[width=0.6\linewidth]{hw3_pzmap_fall17-crop}
+    \includegraphics[width=0.48\linewidth]{hw3_margin_fall17-crop}
+    \includegraphics[width=0.48\linewidth]{hw3_margin_delay_fall17-crop}
+   #+END_CENTER
+   

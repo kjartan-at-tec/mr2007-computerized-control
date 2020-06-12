@@ -1,0 +1,77 @@
+% Created 2015-09-08 Tue 13:53
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{parskip}
+\usepackage{standalone}
+\usepackage{tikz,pgf,pgfplots}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\pgfplotsset{compat=1.9}
+\newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+\newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+\newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+\newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+\newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+\newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+\newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+\newcommand*{\bbm}{\begin{bmatrix}}
+\newcommand*{\ebm}{\end{bmatrix}}
+\newcommand*{\obsmatrix}{\mathcal{O}}
+\newcommand*{\contrmatrix}{\mathcal{C}}
+\newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+\newcommand*{\swh}{\ensuremath{\sin \omega h}}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{Computerized control - homework 1}
+\author{Kjartan Halvorsen}
+\date{Due 2015-08-20}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Exercises}
+\label{sec-1}
+\subsection{Why a theory of sampled-data systems?}
+\label{sec-1-1}
+
+   Explain briefly \textbf{three different arguments} for why is makes sense to work with sampled-data description of control systems!
+\subsection{Sampling}
+\label{sec-1-2}
+
+The continuous-time system
+\begin{align*}
+\dot{x} &= \begin{bmatrix} 0 & \omega\\-\omega & 0 \end{bmatrix} x + \begin{bmatrix}1\\0\end{bmatrix} u\\
+y &= \begin{bmatrix} 1 & 0 \end{bmatrix} x
+\end{align*} 
+is sampled with sampling interval $h$. 
+\subsubsection{Determine the system matrices for the sampled system on state-space form.}
+\label{sec-1-2-1}
+\subsubsection{For which values of $h$ is the system observable?}
+\label{sec-1-2-2}
+
+\end{document}

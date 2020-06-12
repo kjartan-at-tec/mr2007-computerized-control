@@ -1,0 +1,140 @@
+% Created 2014-08-01 Fri 14:36
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{amsmath}
+\usepackage{tikz,pgf,pgfplots}
+\usepgfplotslibrary{groupplots} 
+\newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+\newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+\newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{PID-reglering}
+\author{Kjartan Halvorsen}
+\date{\today}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.8.02}}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Tank-exemplet från boken, Kap 3.3}
+\label{sec-1}
+
+  Överföringsfunktionen från störningen $v$ (ändring av trycket i vattenledningen) till utsignalen $y$ (avvikelse från önskad vattennivå) är
+\[ Y(s) = S(s) V(s) = \frac{G_2(s)}{1 + G_2(s)G_1(s)F(s)} V(s), \]
+där $F(s)$ är PID-regulatorns överföringsfunktion. Denna kan skrivas
+\[ F(s) = K_P + sK_D + \frac{K_I}{s}. \]
+För olika val av förstärkning för P- I- och D-delen fås olika egenskaper för det återkopplade systemet.
+
+Från exemplet i boken, har vi 
+\begin{align*}
+G_1(s) &= \frac{2}{s+1},\\
+G_2(s) &= \frac{4}{s+2}.
+\end{align*}
+\subsection{Visa}
+\label{sec-1-1}
+
+\[ S(s) = \frac{4s(s+1)}{s^3 + (3+8K_D)s^2  + (2+8K_P)s + 8K_I}. \]
+\vsp{4cm}
+\subsection{Set ihop rätt plot av poler och nollställen för $S(s)$ med rätt stegsvar och regulatorinställningar}
+\label{sec-1-2}
+
+Det finns tre set med parametrar
+
+\begin{center}
+\begin{tabular}{lrrr}
+      &  $K_P$  &  $K_I$  &  $K_D$  \\
+\hline
+ I    &      2  &      0  &      0  \\
+\hline
+ II   &      4  &      1  &      0  \\
+\hline
+ III  &      2  &      2  &      1  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+
+\begin{tikzpicture}[node distance=2cm]
+
+\pgfplotstableread{tank-pid-timeseries.txt}
+ \timeseriesdata
+
+  \begin{groupplot} [
+    group style={
+      group name=poles,
+      group size=1 by 3,
+      xlabels at=all}, 
+      height=3.5cm, width=4cm,
+      axis lines=middle,
+  ytick=\empty,
+  %xtick=data,
+  xtick=\empty,
+  %xticklabel=$a$,
+  xlabel=Re,
+  ylabel=Im,
+  xmin=-10,
+  xmax=10,
+  only marks,
+  ]
+    
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case1.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case1.txt};
+
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case2.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case2.txt};
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case3.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case3.txt};
+\end{groupplot}
+
+  \begin{axis} [
+  name=timeplot,
+  at={(poles c1r2.east)},
+  xshift=4cm,
+  anchor=west,
+  axis line style={->},
+  axis lines=left,
+  xlabel={$t$},
+  ylabel={$y$},
+  xtick=\empty,
+  %ytick=\XNOLL,
+  %yticklabel=$x_0$,
+  ]
+
+\addplot[solid,thick] table[y = 3] from \timeseriesdata ;
+\addplot[dashed,thick] table[y = 1] from \timeseriesdata ;
+\addplot[dotted,thick] table[y = 2] from \timeseriesdata ;
+
+\end{axis}
+
+\node at ($ (poles c1r1.west) + (-1cm, 0) $) {\large A};
+\node at ($ (poles c1r2.west) + (-1cm, 0) $) {\large B};
+\node at ($ (poles c1r3.west) + (-1cm, 0) $) {\large C};
+
+  \end{tikzpicture}
+
+\end{document}

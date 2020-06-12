@@ -1,0 +1,72 @@
+% Created 2016-04-26 tis 11:08
+% Intended LaTeX compiler: pdflatex
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{khpreamble}
+\author{Kjartan Halvorsen}
+\date{Due Tuesday 2016-05-03}
+\title{Computerized control - homework 5}
+\hypersetup{
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Computerized control - homework 5},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 24.5.1 (Org mode 8.3.4)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section*{Active suspension, contd.}
+\label{sec:orgheadline3}
+In the last homework you studied the \emph{quarter model} for the suspension of a car. In this homework, you will design a state feedback controller for the discretized state space model, and simulate a step-response.
+
+\subsection*{Choose the closed-loop poles}
+\label{sec:orgheadline1}
+The system is of order four, so you need to determine the placement of four closed-loop poles. Choose these poles (by trial-and-error), such that the system response to a step disturbance in \(w\) of \unit{10}{\centi\meter} settles in less than \unit{0.15}{\second} with forces in the active suspension that does not exceed \unit{20}{\kilo\newton}. Remember that the poles must be real, or complex-conjugated pairs. 
+
+\subsection*{Matlab code to form and simulate the closed-loop system}
+\label{sec:orgheadline2}
+
+\begin{verbatim}
+[Phi, Gamma, C, D] = ssdata(sys_uy_d); % Get the system matrices from the discrete-time model
+
+P = % Your choice of poles goes here
+
+[L, prec] = place(Phi, Gamma, P)  % Calculate the feedback gain L
+eig(Phi - Gamma*L) % Check that this is indeed the poles you specified in P
+
+% Form closed-loop system and simulate. Simulate the system with input from the disturbance w
+[Phi, Gammaw, C, D] = ssdata(sys_wy_d);
+Phic = Phi - Gamma*L;
+sys_c_d = ss(Phic, Gammaw, C, D, h); % Closed-loop system with input from disturbance w
+
+w = 0.1*ones(100,1);
+[y, T, x] = lsim(sys_c_d, w);
+
+figure(1)
+clf
+subplot(211)
+stairs(T, y)
+title('Closed-loop response to disturbance of 10cm')
+ylabel('z_1 -z_2 [m]')
+xlabel('Time [s]')
+subplot(212)
+stairs(T, -L*x')
+title('Feedback signal u=-Lx')
+ylabel('Active suspension force [N]')
+xlabel('Time [s]')
+\end{verbatim}
+\end{document}

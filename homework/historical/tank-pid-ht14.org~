@@ -1,0 +1,96 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{tikz,pgf,pgfplots}
+#+LaTex_HEADER: \newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+#+LaTex_HEADER: \newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+#+LaTex_HEADER: \newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+#+title: PID-reglering
+
+* Tank-exemplet från boken, Kap 3.3
+  Överföringsfunktionen från störningen $v$ (ändring av trycket i vattenledningen) till utsignalen $y$ (avvikelse från önskad vattennivå) är
+\[ Y(s) = G_v(s) V(s). \]
+** Para ihop rätt set med nollställen och lösning med rätt värde på parametern $a$
+\begin{center}
+\includegraphics[width=\linewidth]{exp-growth}
+\end{center}
+
+** Gör klar tabellen med Laplacetransformer
+
+#+begin_latex
+\renewcommand{\arraystretch}{2.5}
+\begin{tabular}{ll}
+Tidsdomän & Laplacedomän\\ \hline
+$x(t)$ & $X(s) =  \mathcal{L}\left\{x(t)\right\}(s)  =\int_{0}^{\infty} e^{-st} x(t)\,dt$\\
+$\frac{d}{dt} x$ & $ sX(s) - x(0)$\\
+$\frac{d^2}{dt^2} x$ & $s^2X(s) -$\\ 
+$ \frac{dx}{dt} = ax$ & $aX(s) = $\\
+$x(t) = x_0\mathrm{e}^{at}$ & $X(s)=$\\
+$a\frac{dx}{dt}+x(t) = u(t)$ & $X(s) = $\\ 
+$x(t)=\begin{cases} 0, & t<0,\\ 1, & t\ge 0 \end{cases}$ & $X(s)=$
+\end{tabular}
+#+end_latex
+ 
+* Komplexa tal
+** Rita i figuren nedanför och markera realdel, imaginärdel, argument och absolutbelopp för det komplexa talet representerad med ett kryss.
+#+begin_latex
+\begin{tikzpicture}
+\begin{axis}[
+axis lines=middle,
+axis line style={->},
+xtick=\empty,
+ytick=\empty,
+%xmin=-1,
+%xmax=1
+%ymin=-1,
+%ymax=1
+xlabel=Re,
+ylabel=Im,
+]
+\addplot[white] coordinates {(1,1) (-1,-1)};
+\addplot[mark=x] coordinates {(-0.4,0.6)};
+\end{axis}
+\end{tikzpicture}
+#+end_latex
+
+** Det komplexa talet $s=r\mathrm{e}^{i\omega}$ är på rektangulär form:
+   \vsp{1cm}
+** Det komplexa talet $s=a + bi$ är på polärform:
+   \vsp{1cm}
+** Hitta alla lösningar till $s^3=-1$
+   \vsp{2cm}
+** Antag följande villkor på det komplexa talet $s = \realpart{s} + i\impart{s}$:
+   1. $\realpart{s} < 0$
+   2. $\impart{s} < \realpart{s}$ 
+   Rita in i figuren nedanför rummet av alla komplexa tal som uppfyller vilkoren 
+
+#+begin_latex
+\begin{tikzpicture}
+\begin{axis}[
+axis lines=middle,
+axis line style={->},
+xtick=\empty,
+ytick=\empty,
+%xmin=-1,
+%xmax=1
+%ymin=-1,
+%ymax=1
+xlabel=Re,
+ylabel=Im,
+]
+\addplot[white] coordinates {(1,1) (-1,-1)};
+\end{axis}
+\end{tikzpicture}
+#+end_latex
+* Algebra
+** För att hitta egenvärdena till matrisen $A$ så måste man lösa följande ekvation:
+   \vsp{1cm}
+** Vad innebär det att en matris är singulär?
+   \vsp{1cm}
+** Om en matris är singulär, vad kan man då säga om egenvärdena?
+   \vsp{2cm}
+** Hur kan man enkelt bestämma egenvärdena till en matris som är diagonal eller triangulär?
+   \vsp{1cm}
+** Vad innebär det att en matris A ($n\times n$) har full rank?
+   \vsp{1cm}
+

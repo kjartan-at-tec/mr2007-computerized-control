@@ -1,0 +1,56 @@
+#+OPTIONS: toc:nil num:nil date:nil
+#+LaTeX_CLASS: koma-article 
+#+LATEX_CLASS_OPTIONS: [letterpaper]
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+LaTex_HEADER: \usepackage{geometry}
+#+LaTex_HEADER: \geometry{bmargin=12mm, tmargin=12mm}
+
+#+title: Implementing on an Arduino
+
+** Implementation of the discrete lead compensator
+\[F_d(z) = 10 \frac{0.81z - 0.60}{z-0.45}\]
+
+
+#+BEGIN_SRC C++
+// Sampling time
+int hMilliSec =        // h=0.2 s
+
+// values to be stored between sampling intervals
+
+double 
+double
+
+// Functions to read signals from input channels
+double read_y_value(){
+...
+}
+double read_yref_value(){
+...
+}
+// Function to write control signal to output channel
+void write_u_value(){
+...
+}
+
+void loop() {
+// Read inputs
+y = read_y_value();
+yref = read_yref_value();
+
+// Compute control signal
+
+double u = 
+
+
+// Write control signal 
+write_u_value(u);
+
+// Store values for the next iteration
+
+
+// Wait till next sampling instant
+delay(hMillisec);
+}
+#+END_SRC

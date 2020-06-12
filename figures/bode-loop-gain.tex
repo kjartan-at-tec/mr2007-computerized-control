@@ -1,0 +1,55 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+
+\def\wnull{1}
+
+\begin{tikzpicture}
+  \begin{semilogxaxis} [
+      xlabel={$\omega$},
+      ylabel=$\arg G_0(i\omega)$,
+      width=12cm,
+      height=4cm,
+      grid=both,
+      %ytick={0, -360},
+      %yticklabels={$-45^\circ$, $0^\circ$, $45^\circ$}, 
+      xtick={0.01, 0.1, 1, 10,100},
+      xticklabels={$0.01\omega_0$,$0.1\omega_0$, $\omega_0$, $10\omega_0$, $100\omega_0$},
+      ymin=-180, ymax=-140,
+      xmin=0.01, xmax=100,
+      %minor y tick num=4,
+      every major grid/.style={red, opacity=0.5},
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+  \addplot [thick, black, no marks, variable=w, domain=0.01:100, samples=800] 
+    { atan(2*w/\wnull) - 180 - atan(w/2/\wnull)};  
+  \end{semilogxaxis}
+  \begin{loglogaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      yshift = 2.8cm, 
+      width=12cm,
+      height=4cm,
+      grid=both,
+      %ytick={0.5, 2},
+      %yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=0.01, xmax=100,
+      every major grid/.style={red, opacity=0.5},
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+  \addplot [thick, black, no marks, variable=w, domain=0.01:100, samples=800] 
+    { \wnull^2*sqrt((2*w)^2 + \wnull^2) / ( w^2 * sqrt(w^2 + (2*\wnull)^2) ) };
+  \end{loglogaxis}
+\end{tikzpicture}
+
+\end{document}

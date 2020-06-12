@@ -1,0 +1,32 @@
+\documentclass[tikz]{standalone}
+%\usetikzlibrary{calc}
+\begin{document}
+
+\begin{tikzpicture}[block/.style={rectangle, draw, minimum height=15mm, minimum width = 15mm}, sumnode/.style={circle, draw, inner sep=2pt}, node distance=25mm]
+  \node[block] (motor) {$k_a$};
+  \node[sumnode, right of=motor,] (sumtorque) {$\sum$};
+  \node[block, right of=sumtorque] (inertia) {$\frac{1}{J}$};
+  \node[block, right of=inertia] (intacc) {$\frac{1}{s}$};
+  \node[block, right of=intacc, node distance=30mm] (intvel) {$\frac{1}{s}$};
+  \node[coordinate, right of=intvel] (output) {};
+  \node[block, left of=motor] (resistance) {$\frac{1}{R}$};
+  \node[sumnode, left of=resistance] (sumvolt) {$\sum$};
+  \node[coordinate, left of=sumvolt] (input) {};
+  \node[block, below of=inertia] (friction) {$f$};
+  \node[block, below of=friction] (backemf) {$k_v$};
+
+  \draw[->] (input) -- node[above] {$v$} (sumvolt);
+  \draw[->] (sumvolt) -- node[above] {$v_m$} (resistance);
+  \draw[->] (resistance) -- node[above] {$i$} (motor);
+  \draw[->] (motor) -- node[above] {$M_m$} (sumtorque);
+  \draw[->] (sumtorque) --  node[above]{$M$} (inertia);
+  \draw[->] (inertia) --  node[above]{$\ddot{\theta}$} (intacc);
+  \draw[->] (intacc) --  node[above](angvel) {$\dot{\theta}$} (intvel);
+  \draw[->] (intvel) --  node[above]{$\theta$} (output);
+
+  \draw[->] (angvel) |-  (friction) -| node [right, pos=0.95] {$-$} (sumtorque);
+  \draw[->] (angvel) |-  (backemf) -| node [right, pos=0.97] {$-$} (sumvolt);
+
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,33 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+%\usepackage{khpreamble}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+\def\axlim{1.8}
+\begin{tikzpicture}
+  \begin{axis}[
+     clip=false,
+     width=7cm,
+     height=7cm,
+     axis x line=center,
+     axis y line=center,
+     %xtick={-2, -1, -0.5},
+     %xticklabels={$-2\omega_0$, $-\omega_0$, $-\frac{\omega_0}{2}$},
+     %ytick={-1, 1},
+     %yticklabels={$-i\omega_0$, $i\omega_0$},
+     yticklabel pos=right,
+     ymin=-\axlim, ymax=\axlim,
+     xmin=-\axlim, xmax=\axlim,
+     xlabel={Re},
+     ylabel={Im},
+  ]
+    \addplot+ [black, dotted, no marks, variable=\t, domain=0:2*pi, samples=800] ( {cos(deg(t))}, {sin(deg(t))} );
+
+
+  \end{axis}
+  \end{tikzpicture}
+\end{document}

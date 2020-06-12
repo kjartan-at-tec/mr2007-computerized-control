@@ -1,0 +1,73 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+  \begin{tikzpicture}[node distance=2cm]
+
+\pgfplotstableread{tank-pid-timeseries.txt}
+ \timeseriesdata
+
+  \begin{groupplot} [
+    group style={
+      group name=poles,
+      group size=1 by 3,
+      xlabels at=all}, 
+      height=3.5cm, width=4cm,
+      axis lines=middle,
+  ytick=\empty,
+  %xtick=data,
+  xtick=\empty,
+  %xticklabel=$a$,
+  xlabel=Re,
+  ylabel=Im,
+  xmin=-10,
+  xmax=10,
+  %only marks,
+  ]
+    
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case1.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case1.txt};
+
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case2.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case2.txt};
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case3.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case3.txt};
+\end{groupplot}
+
+  \begin{axis} [
+  name=timeplot,
+  at={(poles c1r2.east)},
+  xshift=4cm,
+  anchor=west,
+  axis line style={->},
+  axis lines=left,
+  xlabel={$t$ [s]},
+  ylabel={$y$},
+  xtick={0,4,8},
+  %ytick=\XNOLL,
+  %yticklabel=$x_0$,
+  ]
+
+\addplot[solid,thick] table[y = 3] from \timeseriesdata ;
+\addplot[dashed,thick] table[y = 1] from \timeseriesdata ;
+\addplot[dotted,thick] table[y = 2] from \timeseriesdata ;
+
+\end{axis}
+
+\node at ($ (poles c1r1.west) + (-1cm, 0) $) {\large A};
+\node at ($ (poles c1r2.west) + (-1cm, 0) $) {\large B};
+\node at ($ (poles c1r3.west) + (-1cm, 0) $) {\large C};
+
+  \end{tikzpicture}
+\end{document}

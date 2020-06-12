@@ -1,0 +1,28 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc, shadings}
+
+\begin{document}
+
+
+\def\fsize{2}
+\begin{tikzpicture}
+
+\pgfmathsetmacro{\xmin}{1.3*\fsize}
+\pgfmathsetmacro{\unitc}{0.5*\xmin}
+
+\draw[->] (0,-\fsize) -- (0,\fsize);
+\draw[->] (-\xmin,0) -- (\fsize,0);
+
+\node at (0.5, \fsize) {Im};
+\node at (\fsize, -0.5) {Re};
+
+\node[black, draw, shading=radial, inner color=white, outer color=green!60, circle, minimum width=\xmin cm] at (0,0) {};
+
+\node at (-0.3, \unitc) {$i$};
+\node at (-0.3, -\unitc) {$-i$};
+\node at (\unitc, -0.3) {$1$};
+\node at (-\unitc, -0.3) {$-1$};
+
+\node[rotate=45] at (0, 0) {Stable poles};
+\end{tikzpicture}
+\end{document}

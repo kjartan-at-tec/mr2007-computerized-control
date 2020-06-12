@@ -1,0 +1,152 @@
+# OUTDATED. See overleaf 
+# 
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+title: Computerized control - homework 2
+#+date: Due 2018-08-24 at midnight
+
+* Exercises
+
+** 1 Sample the continuous-time harmonic oscillator
+ Consider the harmonic oscillator with transfer function 
+ \begin{equation}
+ G(s) = \frac{\omega_0^2 s}{s^2 + \omega_0^2}.
+ \label{eq:contsys}
+ \end{equation}
+ 
+1. Determine the poles of \(G(s)\).
+2. Compute the pulse-transfer function by zero-order-hold sampling (step-invariant sampling) of the transfer function \(G(s)\).
+3. Determine the poles of the pulse-transfer function. What is the relationship between these poles and the corresponding poles of \(G(s)\)?
+4. Let $\omega_0=1$. Describe in words how the poles depend on the sampling period $h$. In particular, discuss what happens when $\omega_0h > \pi$. 
+  
+** 2 Simulate the continuous- and the discrete-time harmonic oscillator
+Use matlab's control toolbox to simulate the system and verify your calculations. 
+
+***  Define systems
+First, define the continuous-time system in \eqref{eq:contsys}
+#+BEGIN_SRC octave
+omega0 = ?; % Use the average of the last digit of your two phone numbers.
+sys_c = tf(?,?)
+#+END_SRC
+Sample the system using the function =c2d=
+#+BEGIN_SRC octave
+h = 0.2/omega0; % This gives about 30 samples per period 
+sys_c2d = c2d(?,?)
+#+END_SRC
+Define the discrete-time system you calculated in the first part of the homework
+#+BEGIN_SRC octave
+den = [1 a1 a2];
+num = [b1 b2];
+sys_d = tf(num, den, h)
+#+END_SRC
+*Verify that the two discrete-time systems* =sys_c2d= *and* =sys_d= *are identical.*
+
+***  Simulate step responses
+Simulate for 4 complete periods 
+#+BEGIN_SRC octave
+Tc = linspace(0, 4*(2*pi/omega0), 800);
+[yc,tc] = step(sys_c, Tc);
+
+Td = h*(0:120);
+[yd,td] = step(sys_d, Td);
+
+figure()
+clf
+plot(tc,yc)
+hold on
+plot(td,yd, 'r*')
+#+END_SRC
+
+*Verify that the step response of the discrete-time system is exactly equal to that of the continuous-time system at the sampling instants. Explain why this is so!*
+
+*** Compute the discrete step response yourself
+    Write some lines of code that solves the difference equation
+    \[ y(k+2) = -a_1y(k+1) - a_2y(k) + b_1u(k+1) + b_2u(k) \]
+    for the harmonic oscillator. 
+   Use the initial state \(y(-1)=y(0)=0\) and compute the response to a step sequence 
+    \[ u(k) = \begin{cases} 1, & k \ge 0\\ 0, & \text{otherwise} \end{cases}.\]
+    Verify that your solution is the same as when using the =step= function in the previous exercise in this homework.
+ 
+
+* Solutions							   :noexport:
+
+** Sampling the oscillator
+   1. The characteristic equation is \(s^2 + \omega_0^2 = 0\) which has solution 
+      \[ s = \pm i\omega_0\] These are the poles of the system and they are on the imaginary axis.
+   2. Zero-order-hold sampling
+      1. Calculate the step response
+	 \begin{equation*}
+	  \begin{split} 
+            Y(s) &= G(s)\frac{1}{s} = \frac{\omega_0^2}{(s^2 + \omega_0^2)s}\\
+		 &= \frac{1}{s} - \frac{s}{s^2 + \omega_0^2}.
+	  \end{split}
+	 \end{equation*}
+      2. Transform to time domain (using transform table) 
+	 \[ y(t) = u(t) - u(t) \cos \omega0 t \]
+      3. Calculate z-transform of sampled output 
+	 \begin{equation*}
+	  \begin{split} 
+           Y(z) &= \ztrf{y(kh)} = \ztrf{u(kh) - u(kh)\cos(\omega k h)}\\
+		&= \ztrf{u(k)} - \ztrf{u(k)\cos(\omega hk)}\\
+		&= \frac{z}{z-1} - \frac{z(z-\cos(\omega h))}{z^2 -2\cos(\omega h)z +1}
+	  \end{split}
+	 \end{equation*}
+      4. Divide by the z-transform of the step input
+	 #+BEGIN_LaTex 
+	  \begin{equation*}
+           \begin{split}
+            H(z) &= \frac{Y(z)}{U(z)} = \frac{z-1}{z} \Big( \frac{z}{z-1} - \frac{z(z-\cos(\omega h))}{z^2 -2\cos(\omega h)z +1}\Big)\\
+		 &= 1 - \frac{(z-1)(z-\cos(\omega h))}{z^2 -2\cos(\omega h)z +1}\\
+		 &= \frac{z^2 - 2\cos(\omega h)z + 1 - z^2 +\cos(\omega h)z + z - \cos(\omega h)}{z^2 - 2\cos(\omega h)z + 1}\\
+		 &= \frac{\big(1-\cos(\omega h)\big)z + 1-\cos(\omega h)}{z^2 - 2\cos(\omega h)z + 1}.
+           \end{split}
+	  \end{equation*}
+	 #+END_LaTex
+   3. The characteristic polynomial is \(z^2 - 2\cos(\omega_0 h)z + 1\) which has roots
+      \[ z = \cos(\omega_0 h) \pm \frac{1}{2}\sqrt{4\cos^2(\omega_0 h) - 4} 
+           = \cos(\omega_0 h) \pm i\sin(\omega_0 h) = \mathrm{e}^{\pm i\omega_0 h} \]
+      which are two complex-conjugated points on the unit citcle in the z-plane. The angles (or argument) of the poles are \(\pm \omega_0 h\). The discrete-time poles are related to the continuous-time poles \(s = \pm i\omega_0\) as
+      \[ z = \mathrm{e}^{sh}. \]
+   4. With \(\omega_0 = 1\) the poles are \(z = \mathrm{e}^{\pm ih}\). If \(h>\pi\) then the poles of the oscillator will correspond to a discrete-time oscillator of lower frequency than \(\omega_0=1\). For instance, if \(h=\frac{3\pi}{2}\), then we get poles in \( z = \mathrm{e}^{i\frac{3\pi}{2}} = \mathrm{e}^{-i \frac{\pi}{2}}\) and \( z = \mathrm{e}^{-i\frac{3\pi}{2}} = \mathrm{e}^{i \frac{\pi}{2}}\). For this sampling period, these are the same poles as the oscillator with frequency \(\omega\) given by \(\omega h = \frac{\pi}{2}\) which gives \( \omega = \frac{\pi}{2h} = \frac{1}{3}.\) 
+
+
+** Simulations
+   The code  provided does much of the job. Define the numerator and denominator of the discrete-time system from the sampled model you obtained:
+   #+BEGIN_SRC octave
+a1 = -2*cos(omega*h);
+a2 = 1;
+b1 = 1-cos(omega*h);
+b2 = b1;
+
+den = [1 a1 a2];
+num = [0 b1 b2];
+sys_d = tf(num, den, h)
+   #+END_SRC
+** Own code for simulating system response
+   There are many ways to do this. Here is one
+   #+BEGIN_SRC octave
+% Calculate the step response by hand
+N = 120;
+u = ones(N,1);
+y = nan(N,1);
+% Pad with two zeros at beginning, corresponding to u(-2), u(-1), y(-2) and
+% y(-1)
+u = [zeros(2,1); u];
+y = [zeros(2,1); y];
+
+for kplustwo = 3:N
+    y(kplustwo) = -a1*y(kplustwo-1) -a2*y(kplustwo-2) + b1*u(kplustwo-1) + b2*u(kplustwo-2);
+end
+
+yd2 = y(3:end);
+plot(td,yd2, 'ko', 'markersize', 14)
+legend('Continous model', 'Discrete model', 'Own simulation')
+    #+END_SRC
+
+You should get something that looks like this:
+  #+BEGIN_CENTER
+  \includegraphics[width=0.7\linewidth]{oscillator-step-crop}
+  #+END_CENTER
+Note that the response of the sampled system is exactly equal to the continuous-time system at the sampling instants. This is why zero-order-hold sampling is also called *step-invariant sampling*. 

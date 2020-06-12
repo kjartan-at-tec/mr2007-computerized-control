@@ -1,0 +1,23 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc, shadings}
+
+\begin{document}
+
+
+\def\fsize{2}
+\begin{tikzpicture}
+
+\pgfmathsetmacro{\xmin}{1.5*\fsize}
+\pgfmathsetmacro{\stablemid}{-0.5*\xmin}
+
+\draw[->] (0,-\fsize) -- (0,\fsize);
+\draw[->] (-\xmin,0) -- (\fsize,0);
+
+\node at (0.5, \fsize) {Im};
+\node at (\fsize, -0.5) {Re};
+
+\node[right color=green!60, left color=white, rectangle, minimum width=\xmin cm, minimum height=37mm] at (\stablemid, 0) {};
+
+\node[rotate=45] at (\stablemid, 0) {Stable poles};
+\end{tikzpicture}
+\end{document}

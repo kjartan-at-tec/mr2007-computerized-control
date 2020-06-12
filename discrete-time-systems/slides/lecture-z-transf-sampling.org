@@ -1,0 +1,751 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Computerized Control - discrete-time systems, z-transform
+#+date: 2018-08-29
+
+* What do I want the students to understand?			   :noexport:
+  - How to sample cont-time system
+  - The z-transform
+  - Feedback in discrete-time systemsn
+
+* Which activities will the students do?			   :noexport:
+  1. Prove z-transform of a^k, using only definition and the identity
+     \sum_{k=0}^\infty r^k = 1/(1-r), if |r| < 1
+  2. Sample first-order system with zero
+  3. Root locus of simple system
+
+* Intro
+
+
+** Result from quizz
+   - z-transform
+   - State-space systems
+
+
+* Discrete-time system example
+
+** Discrete-time system example					   :noexport:
+
+Level control in a hydro power plant dam
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.5\linewidth]{../figures/kraftverk}
+ \includegraphics[width=0.48\linewidth]{../figures/dam-gates.jpg}
+#+END_CENTER
+
+* Zero-order hold, or step-invariant sampling preview
+
+** The world according to the discrete-time controller
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{../../figures/fig1-1-schematic.png}
+   #+END_CENTER
+
+** Step-invariant sampling (a.k.a ZOH sampling)
+
+   The idea is to sample the continuous-time system's response to a step input, in order to obtain a discrete approximation which is *exact* (at the sampling instants) for such an input signal. 
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
+#+END_CENTER
+
+   - Step-invariant sampling (zero order hold): \( u(t) = \begin{cases} 1, & t \ge 0\\0, & t<0 \end{cases} \)
+   
+** Why is step-invariant sampling a good idea?
+
+   A piecewise constant (stair-case shaped) function can be written as a sum of delayed step-responses!
+   #+BEGIN_LaTeX
+     \begin{center}
+       \begin{tikzpicture}
+         \small
+         \begin{axis}[
+           clip = false,
+           width=7cm,
+           height=2.5cm,
+           yshift=1.5cm,
+           xlabel={$t$},
+           ylabel={},
+           xmax=10.5,
+           ]
+           \addplot+[black, no marks] coordinates {(-1,0) (0,0) (0,1) (10,1) } node[pos=0.7,coordinate, pin=40:$u_H(t)$] {};
+         \end{axis}
+         \begin{axis}[
+           clip=false,
+           width=7cm,
+           height=2.5cm,
+           yshift=-1.5cm,
+           xlabel={$t$},
+           ylabel={},
+           xmax=10.5,
+           ]
+           \addplot+[black, no marks] coordinates {(-1,0) (1,0) (1,2) (10,2) } node[pos=0.7,coordinate, pin=40:$2u_H(t-1)$] {};;
+         \end{axis}
+         \begin{axis}[
+           clip=false,
+           width=7cm,
+           height=2.5cm,
+           xshift=7.5cm,
+           xlabel={$t$},
+           ylabel={},
+           xmax=10.5,
+           ]
+           \addplot+[black, no marks] coordinates {(-1,0) (0,0) (0,1) (1,1) (1,3) (10,3) }  node[pos=0.7,coordinate, pin=40:$u(t) + 2u_H(t-1)$] {};;
+         \end{axis}
+
+         \node at (2.2,0.2) {\huge  +};
+         \node at (6.5,0.2) {\huge  =};
+
+       \end{tikzpicture}
+     \end{center}
+   #+END_LaTeX
+
+
+** Why is step-invariant sampling a good idea? (contd)
+   Due to the system being LTI (linear time-invariant), the output to a sum of delayed step functions, is the same sum of delayed step-responses.
+
+   #+BEGIN_LaTeX
+        \begin{center}
+          \begin{tikzpicture}[node distance=20mm, block/.style={rectangle, draw, minimum width=15mm, }]
+
+            \node[coordinate] (input) {};
+            \node[block, right of=input, node distance=22mm] (lti) {LTI};
+            \node[coordinate, right of=lti, node distance=22mm] (output) {};
+
+            \draw[->] (input) -- node[above, near start] {$u_H(t)$} (lti);
+            \draw[->] (lti) -- node[above, near end] {$y_H(t)$} (output);
+          \end{tikzpicture}
+        \end{center}
+   #+END_LaTeX
+   Hence, $u(t) = \sum_{i} \alpha_i u_H(t-\tau_i)$ has the response \(y(t)=\). 
+
+** Why is step-invariant sampling a good idea? (contd)
+   Due to the system being LTI (linear time-invariant), the output to a sum of delayed step functions, is the same sum of delayed step-responses.
+
+   #+BEGIN_LaTeX
+        \begin{center}
+          \begin{tikzpicture}[node distance=20mm, block/.style={rectangle, draw, minimum width=15mm, }]
+
+            \node[coordinate] (input) {};
+            \node[block, right of=input, node distance=22mm] (lti) {LTI};
+            \node[coordinate, right of=lti, node distance=22mm] (output) {};
+
+            \draw[->] (input) -- node[above, near start] {$u_H(t)$} (lti);
+            \draw[->] (lti) -- node[above, near end] {$y_H(t)$} (output);
+          \end{tikzpicture}
+        \end{center}
+   #+END_LaTeX
+   Hence, $u(t) = \sum_{i} \alpha_i u_H(t-\tau_i)$ has the response $y(t) = \sum_i \alpha_i y_H(t-\tau_i)$. 
+
+   *If the sampling method is exact for step input signals, it will also be exact for piecwise-constant step input signals, and this is exactly what the ZOH-block produces!*
+
+* The z-transform						   :noexport:
+** Need the z-transform to perform step-invariant sampling 
+
+   The idea is to sample the continuous-time system's response to a step input, in order to obtain a discrete approximation which is *exact* (at the sampling instants) for such an input signal. 
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
+#+END_CENTER
+
+   - Step-invariant sampling (zero order hold): \( u(t) = \begin{cases} 1, & t \ge 0\\0, & t<0 \end{cases} \)
+   
+** The z-transform
+   
+   Definition of the one-sided z-transform:
+   \[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
+   
+** Two essential transforms (one whiteboard)			   :noexport:
+
+
+** The z-transform						   :noexport:
+   \[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
+   
+   So the z-transform of the pulse \(\delta(kh)\) is 
+   \[ \Delta(z) =  \ztrf{\delta(kh)} = \sum_{k=0}^{\infty} \delta(kh)z^{-k} = 1 \]
+** Basic properties of the z-transform
+   #+BEGIN_CENTER 
+    \includegraphics[height=0.8\textheight]{../../figures/table2-2.png}
+   #+END_CENTER
+
+
+* Zero-order hold sampling procedure
+** Impulse- step- and ramp-invariant sampling
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
+#+END_CENTER
+
+   - Impulse-invariant sampling: \( u(t) = \delta(t)\)
+   - Step-invariant sampling (zero order hold): \( u(t) = \begin{cases} 1, & t \ge 0\\0, & t<0 \end{cases} \)
+   - Ramp-invariant sampling: \( u(t) = \begin{cases} t, & t \ge 0\\0, & t<0 \end{cases} \)
+
+** Step-invariant sampling, or zero-order-hold sampling
+   Let the input to the continuous-time system be a step \(u(t)=\stepfcn,\) which has Laplace transform \(U(s)=\frac{1}{s}.\) In the Laplace-domain we get
+   \[Y(s) = G(s)\frac{1}{s}\]
+   1. Obtain the time-response by inverse Laplace: \(y(t)=\laplaceinv{Y(s)}\)
+   2. Sample the time-response to obtain the sequence \(y(kh)\) and apply  the z-transform to obtain \(Y(z) = \ztrf{y(kh)}\)
+   3. Calculate the pulse-transfer function by dividing with the z-transform of the input signal \(U(z) = \frac{z}{z-1}. \) \[H(z) = \frac{Y(z)}{U(z)} = \frac{z-1}{z}Y(z) \]
+
+* Zero-order hold sampling example
+** Example: First-order system
+   Let's apply step-invariant sampling to the system
+   \[ G(s) = \frac{1}{s + a}. \]
+
+** Example: First-order system					   :noexport:
+   Let's apply the above sampling methods to the system
+   \[ G(s) = \frac{1}{s - \lambda}. \]
+
+   By partial fracion expansion we get \[ Y(s) = G(s)\frac{1}{s} = \frac{1}{\lambda} \left( \frac{1}{s-\lambda} - \frac{1}{s} \right). \]
+
+   1. The step response becomes
+      \[ y(t) = \frac{1}{\lambda} \left( \mexp{\lambda{} t} - u_H(t) \right), \]
+      where \(u_H(t)\) is the step function.
+   2. Sampling and applying the z-transform gives
+      \[ Y(z) = \frac{1}{\lambda} \left( \frac{z}{z-\mexp{\lambda h}} - \frac{z}{z-1} \right). \]
+
+** Example: First-order system, contd.				   :noexport:
+   \[ G(s) = \frac{1}{s - \lambda}. \]
+
+   3. [@3] Calculate the pulse-transfer function
+      \begin{align*} 
+             H(z) &= \frac{Y(z)}{U(z)} = \frac{z-1}{z}Y(z)\\
+                  &= \frac{1}{\lambda} \left( \frac{ z-1 }{ z-\mexp{\lambda h} } - 1 \right)\\
+                  &= \frac{1}{\lambda} \frac{ (z-1) - (z-\mexp{\lambda h}) }{z-\mexp{\lambda h}}\\
+                  &= \frac{1}{\lambda} \left( \frac{ \mexp{\lambda h} - 1 }{ z - \mexp{\lambda h} } \right)
+      \end{align*}
+
+
+** Example: First-order system					   :noexport:
+   Let's apply the above sampling methods to the system
+   \[ G(s) = \frac{1}{s - \lambda}. \]
+
+   By partial fracion expansion we get \[ Y(s) = G(s)\frac{1}{s} = \frac{1}{\lambda} \left( \frac{1}{s-\lambda} - \frac{1}{s} \right). \]
+
+   1. The step response becomes
+      \[ y(t) = \frac{1}{\lambda} \left( \mexp{\lambda{} t} - u_H(t) \right), \]
+      where \(u_H(t)\) is the step function.
+   2. Sampling and applying the z-transform gives
+      \[ Y(z) = \frac{1}{\lambda} \left( \frac{z}{z-\mexp{\lambda h}} - \frac{z}{z-1} \right). \]
+   3. Calculate the pulse-transfer function
+      \begin{align*} 
+             H(z) &= \frac{Y(z)}{U(z)} = \frac{z-1}{z}Y(z)\\
+                  &= \frac{1}{\lambda} \left( \frac{z-1}{z-\mexp{\lambda h}} - 1 \right)\\
+                  &= \frac{1}{\lambda} \frac{(z-1) - (z-\mexp{\lambda h})}(z-\mexp{\lambda h}}\\
+                  &= \frac{1}{\lambda} \frac{ \mexp{\lambda h} - 1}{z - \mexp{\lambda h}}
+      \end{align*}
+
+** Do on your own: The double integrator
+
+   \[ G(s) = \frac{1}{s^2} \]
+
+* The solution to discrete-time systems
+** Another important property of the z-transform
+
+   
+** The z-transform and the solution to difference equations
+   Taking the z-transform of a difference equation 
+   \[ \left( \shift^2 + a_1\shift + a_2) y_k = \left(b_0\shift^2 + b_1\shift + b_2 \right) u_k\]
+   gives
+   \begin{equation*}
+   \begin{split}
+   z^{2}Y -z^2y(0) &- zy(1) + a_1zY - a_1zy(0) + a_2Y =\\
+   &     b_0z^2U -b_0z^2u(0) - b_0zu(1) + b_1zU - b_1zu(0) + b_2U
+   \end{split}
+   \end{equation*}
+   
+   \begin{equation*}
+   \begin{split}
+    Y(z) &= \underbrace{ \frac{ \big( y(0)-b_0u(0)\big) z^2 + \big(y(1)+a_1y(0) - b_0u(1) -b_1u(0)\big) z}{z^2 + a_1z + a_2}}_{\text{transient response}}\\
+    & \qquad + \underbrace{\underbrace{\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1z + a_2}}_{\text{pulse-transfer function}}U(z)}_{\text{response to input}}
+   \end{split}
+   \end{equation*}
+
+** The z-transform and the solution to difference equations
+
+   In general, the output of the discrete-time LTI 
+   
+      \[ \left( \shift^n + a_1 \shift^{n-1} + \cdots + a_n \right) y(k) = \left( b_0 \shift^m + b_1\shift^{m-1} + \cdots + b_m \right)  u(k) \]
+
+      is
+      \[ Y(z) = \frac{\beta(z)}{A(z)} + \frac{B(z)}{A(z)} U(z) \]
+
+      For systems that are intially at rest
+
+      \[ Y(z) = \frac{B(z)}{A(z)} U(z)  = G(z) U(z) \]
+
+** Convolution in the time-domain is multiplication in the z-domain
+
+   \[ \ztrf{g \ast u)} = \ztrf{g(kh)} \ztrf{u(kh)} = \left(\sum_{k=0}^{\infty} g(kh)z^{-k}\right) \left(\sum_{k=0}^{\infty} u(kh)z^{-k}\right)\]
+
+
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}[node distance=25mm]
+\node[rectangle, draw, minimum height=10mm, minimum width=14mm] (sys) {$G(z)$};
+\node[coordinate, left of=sys] (input) {};
+\node[coordinate, right of=sys] (output) {};
+\draw[->] (input) -- node [near start, above] {$u(kh)$} (sys);
+\draw[->] (sys) -- node [near end, above] {$y(kh)$} (output);
+\end{tikzpicture}
+\end{center}
+#+END_LaTeX
+ \[ y(kh) = g(kh) \ast u(kh) \]
+ \[ \ztrf{y(kh)} = \ztrf{g(kh) \ast u(kh)} \]
+ \[ Y(z) = G(z) U(z). \]
+
+   The z-transform plays the same role for discrete-time control  systems as the Laplace transform for continuous-time ontrol systems!
+
+
+
+
+* Discrete-time signals						   :noexport:
+
+** The discrete causal linear time-invariant system
+
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {g};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
+
+   If input signal is a pulse (delta-function)
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=14cm,
+  height=2.5cm,
+  xlabel={$k$},
+  ylabel={$u(k)$},
+  xmin=-2.5,
+  xmax=10.5,
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { (k==0)}; 
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace*{-5mm}
+
+#+END_LaTeX
+   \[ y(k) = \sum_{n=0}^\infty g(n) \delta(k-n) = ? \]
+
+** The discrete causal linear time-invariant system
+
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {g};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
+
+   If input signal is a pulse (delta-function)
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=14cm,
+  height=2.5cm,
+  xlabel={$k$},
+  ylabel={$u(k)$},
+  xmin=-2.5,
+  xmax=10.5,
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { (k==0)}; 
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace*{-5mm}
+
+#+END_LaTeX
+   \[ y(k) = \sum_{n=0}^\infty g(n) \delta(k-n) = g(k) \]
+
+** Causality
+
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {g};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   *Causality* means that the system output $y(n)$ at some time instant $n$ *does not* depend on future values of the input signal.
+
+   Which of the below pulse responses do *not* belong to a causal system?
+
+   \begin{tikzpicture}
+   \small
+   \begin{axis}[
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {0},
+   ]
+   \addplot+[black, ycomb, domain=-3:10, samples=14,variable=k] { exp(-0.20*k)};
+   \end{axis}
+
+   \begin{axis}[
+   xshift=7cm,
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {0},
+   ]
+   \addplot+[black, ycomb, domain=-3:10, samples=14,variable=k] { (k>=0)*exp(-0.20*k)};
+   \end{axis}
+
+   \begin{axis}[
+   xshift=0cm,
+   yshift=-2.5cm,
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {0},
+   ]
+   \addplot+[black, ycomb, domain=-5:8, samples=14,variable=k] { (k<0)*cos(30*k)};
+   \end{axis}
+
+   \begin{axis}[
+   xshift=7cm,
+   yshift=-2.5cm,
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {0},
+   ]
+   \addplot+[black, ycomb, domain=-5:8, samples=14,variable=k] { (k>0)*cos(30*k)};
+   \end{axis}
+
+
+   \end{tikzpicture}
+
+* Stuff not time for Tuesday Jan 16				   :noexport:
+
+** Linearity, time invariance and the pulse response
+
+   The input signal
+
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+  width=14cm,
+  height=3.5cm,
+  xlabel={$k$},
+  ylabel={$u(k)$},
+  xmin=-0.5,
+  xmax=10.5,
+  ytick = {-1, 0, 0.6, 2},
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { 0.6*(k==0) + 2*(k==1) - 1*(k==2)}; 
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace*{-5mm}
+
+#+END_LaTeX
+
+
+   Can be written 
+   \[u(k) = 0.6\delta(k) + 2\delta(k-1) - \delta(k-2) \]
+   Since the system's response to a pulse is given by $g(k)$, the output signal is
+   \[ y(k) = ?\]
+
+** Linearity, time invariance and the pulse response
+
+   The input signal
+
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+  width=14cm,
+  height=3.5cm,
+  xlabel={$k$},
+  ylabel={$u(k)$},
+  xmin=-0.5,
+  xmax=10.5,
+  ytick = {-1, 0, 0.6, 2},
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { 0.6*(k==0) + 2*(k==1) - 1*(k==2)}; 
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace*{-5mm}
+
+#+END_LaTeX
+
+
+   Can be written 
+   \[u(k) = 0.6\delta(k) + 2\delta(k-1) - \delta(k-2) \]
+   Since the system's response to a pulse is given by $g(k)$, the output signal is
+   \[ y(k) = 0.6g(k) + 2g(k-1) - g(k-2) \]
+
+*** Notes							   :noexport:
+    y(k) = \sum_{n=0}^\infty g(n) (0.6\delta(k) + 2\delta(k-1) - \delta(k-2))
+         = 0.6 \sum_{n=0}^\infty g(n) 0.6\delta(k-n) + 2\sum_{n=0}^\infty g(n) \delta(k-1-n) - \sum_{n=0}^\infty g(n) \delta(k-2-n)
+	 = 0.6 g(k) + 2g(k-1) - g(k-2).  
+
+
+
+* The shift operator						   :noexport:
+** The differential operator
+   - A mathematical operator is a mapping. In order to define an operator, we must specify what type of mathematical objects it operates on, and what the operator does with the object. 
+   - When working with differential equations, it can be convenient to introduce the *differential operator* often named $\diff$:
+     \[ \diff \triangleq \frac{d}{dt} \]
+     This operator is defined for differentiable functions $f(t)$, and returns the derivative
+     \[ \diff f(t) = \frac{d}{dt} f(t) = f'(t) = \dot{f} (t) \].
+
+** Linear differential equations using the differential operator   :noexport:
+   The general linear differential equation
+   \[ \frac{d^n}{dt^n} y + a_1 \frac{d^{n-1}}{dt^{n-1}} y + \cdots + a_n y =  b_0 \frac{d^m}{dt^m} u + b_1 \frac{d^{m-1}}{dt^{m-1}} u + \cdots + b_m u \]
+   can be written 
+   \[ \left( \diff^n + a_1 \diff^{n-1} + \cdots + a_n\right) y = \left( b_0 \diff^m + \diff^{m-1} + \cdots + b_m \right)  u \]
+# Examples on the whiteboard
+
+** The shift operator
+   - For difference equations the shift operator \(\shift\) is very useful.
+   - The shift operator is defined for double-infinite sequences $x_k$, i.e. the sequence $x_k$ must be infinitely long both for negative and positive $k$.
+   - The operator shifts the sequence ahead one step:
+     \[ \shift x_k = x_{k+1} \]
+   
+** Linear difference equations using the shift operator
+   The general linear difference equation
+   \[ y_{k+n} + a_1 y_{k+n-1} + \cdots + a_n y_k =  b_0 u_{k+m} + b_1 u_{k+m-1} + \cdots + b_m u_k \]
+   can be written 
+   \[ \underbrace{\left( \shift^n + a_1 \shift^{n-1} + \cdots + a_n\right)}_{A(\shift)} y(k) = \underbrace{\left( b_0 \shift^m + b_1\shift^{m-1} + \cdots + b_m \right)}_{B(\shift)}  u(k) \]
+
+   \[ y(k) = \underbrace{\frac{B(\shift)}{A(\shift)}}_{\text{pulse transfer operator}} u(k) \]
+
+*Important note:* In this course we work with /causal systems/. For such systems \(m \le n \), otherwise the output \(y_{k+n}\) would depend on future values of the input.
+
+# Example, third order on the whiteboard
+
+** The difference equation is a representation of a discrete-time dynamical systems
+
+#+BEGIN_LaTeX
+\begin{center}
+\begin{tikzpicture}[node distance=25mm]
+\node[rectangle, draw, minimum height=10mm, minimum width=14mm] (sys) {$G(\shift)$};
+\node[coordinate, left of=sys] (input) {};
+\node[coordinate, right of=sys] (output) {};
+
+\draw[->] (input) -- node [near start, above] {$u(k)$} (sys);
+\draw[->] (sys) -- node [near end, above] {$y(k)$} (output);
+
+\end{tikzpicture}
+\end{center}
+#+END_LaTeX
+
+   \[ \left( \shift^n + a_1 \shift^{n-1} + \cdots + a_n \right) y(k) = \left( b_0 \shift^m + b_1\shift^{m-1} + \cdots + b_m \right)  u(k) \]
+ 
+  \[ y(k) = \frac{b_0 \shift^m + b_1\shift^{m-1} + \cdots + b_m}{ \shift^n + a_1 \shift^{n-1} + \cdots + a_n} u(k) = \frac{B(\shift)}{A(\shift)} u(k) = G(\shift) u(k) \]
+
+# H(z) is called pulse transfer operator
+
+* First order system and pulse response				   :noexport:
+  
+** First order systems
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {$G(q)=\frac{q-1}{q}$};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   The system with pulse-transfer operator $G(q)=\frac{q-1}{q}$ corresponds to the difference equation
+   \[ y(k) = G(q)u(k) \Leftrightarrow y(k) = \frac{q-1}{q} u(k) \]
+   \[ y(k+1) = ?\]
+
+** First order systems
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {$G(q)=\frac{q-1}{q}$};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   The system with pulse-transfer operator $G(q)=\frac{q-1}{q}$ corresponds to the difference equation
+   \[ y(k) = G(q)u(k) \Leftrightarrow y(k) = \frac{q-1}{q} u(k) \]
+   \[ y(k+1) = u(k+1)-u(k), \quad \text{i.e.~a discrete-time differentiator}\]
+
+** First order systems
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {$G(q)=\frac{q}{q-a}$};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   The system with pulse-transfer operator $G(q)=\frac{q}{q-a}$ corresponds to the difference equation
+   \[ y(k) = G(q)u(k) \Leftrightarrow y(k) = \frac{q}{q-a} u(k) \]
+   \[ y(k+1) = ?\]
+
+** First order systems
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {$G(q)=\frac{q}{q-a}$};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   The system with pulse-transfer operator $G(q)=\frac{q}{q-a}$ corresponds to the difference equation
+   \[ y(k) = G(q)u(k) \Leftrightarrow y(k) = \frac{q}{q-a} u(k) \]
+   \[ y(k+1) = ay(k) + u(k+1). \quad \text{If $a=1$, the system is a discrete-time integrator}\]
+
+** Pulse-response of a first order system
+   \[ y(k+1) = ay(k) + u(k+1) \]
+** Pulse-response of a first order system
+   \[ y(k+1) = ay(k) + u(k+1) \]
+
+   Pair the impulse response to each of the values of $a$
+   \[ \text{I)}\; a=1 \qquad \text{II)}\; a=2 \qquad \text{III)}\; a = 0.5 \qquad \text{IV)}\; a=-0.9 \]
+
+   \begin{tikzpicture}
+   \small
+   \begin{axis}[
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {-1,0,1},
+   ymin = -1.2, ymax=1.2,
+   ]
+   \addplot+[black, ycomb, domain=-3:10, samples=14,variable=k] { (k>=0)*pow(1,k)};
+   \end{axis}
+
+   \begin{axis}[
+   xshift=7cm,
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {0},
+   ytick = {-1,0,1},
+   ymin = -1.2, ymax=1.2,
+   ]
+   \addplot+[black, ycomb, domain=-3:10, samples=14,variable=k] { (k>=0)*pow(-0.9,k)};
+   \end{axis}
+
+   \begin{axis}[
+   xshift=0cm,
+   yshift=-2.5cm,
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {0},
+   ytick = {-1,0,8},
+   ymin = -0.2, ymax=8.2,
+   ]
+   \addplot+[black, ycomb, domain=-5:8, samples=14,variable=k] {  (k>=0)*pow(2,k) };
+   \end{axis}
+
+   \begin{axis}[
+   xshift=7cm,
+   yshift=-2.5cm,
+   width=7cm,
+   height=2.5cm,
+   xlabel={$k$},
+   ylabel={$g(k)$},
+   xmin=-3.5,
+   xmax=10.5,
+   ytick = {0},
+   ytick = {-1,0,1},
+   ymin = -1.2, ymax=1.2,
+   ]
+   \addplot+[black, ycomb, domain=-5:8, samples=14,variable=k] {  (k>=0)*pow(0.5,k)};
+   \end{axis}
+
+
+   \end{tikzpicture}
+
+
+* Complex geometric sequences					   :noexport:
+** Complex geometric sequences
+
+#   From Alan Oppenheim's video we saw that signals of the form 
+   Signals of the form 
+   \[ \alpha^{kh} = \left( \alpha ^h \right)^k = a^k \]
+   are of special interest, since they are eigenfunctions of discrete-time LTIs.
+
+   Do exercise for sequences
+   \[ f(k) = a^k = \left( r \mathrm{e}^{i\theta} \right)^k = r^k \mathrm{e}^{i\theta k}. \]
+   
+
+** The z-transform of a geometric sequence
+   Consider \[ f(kh) = a^{kh}, \; k=0,1,\ldots \]
+   The z-transform is 
+   \begin{align*}
+   \ztrf{f(kh)} &= \ztransform{\big( a^h \big)^k}\\
+   &= \sum_{k=0}^{\infty} \left( \frac{a^h}{z} \right) ^k = \frac{ 1 }{1 - \frac{a^h}{z}}\\
+   &= \frac{z}{z-a^h}.
+   \end{align*}
+
+

@@ -1,0 +1,3 @@
+MA	In a stable system with PID control, increasing the proportional gain causes the closed-loop system to be	slower	incorrect	faster	correct	less stable	correct	more stable	incorrect
+MA	The integrating part of a PID controller serves to	make the system reponse smoother	incorrect	remove stationary control error	correct	make the system more stable	incorrect
+MC	If a system with PD control has a stationary control error that is zero, then the plant must have	a zero in the origin	incorrect	a pole in the origin	correct	zeroes in the right hand plane	incorrect

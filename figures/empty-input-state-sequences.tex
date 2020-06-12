@@ -1,0 +1,41 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+\usepackage{romannum}
+
+\usepgfplotslibrary{groupplots}
+
+\begin{document}
+
+
+
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=1 by 3, horizontal sep=16mm,},
+    height=3.0cm,width=8cm,
+    /tikz/font=\small,
+    xtick={0,1,2,3},
+    xticklabels={0,$h$, $2h$, $3h$},
+    % ytick=\empty,
+    xlabel={$t$},
+    xmin=-0.6,
+    xmax=3.3
+    % xmax=\axlim,
+    % ymin=-\axlim,
+    % ymax=\axlim,
+    % axis lines=middle,
+    ]
+    
+    \nextgroupplot [ytick={-1,0,1}, yticklabels={$$,$$}, ylabel={$u(kh)$}, ymin=-1.3, ymax=1.3]
+    \nextgroupplot [ytick={0,1}, yticklabels={$$,$$}, ylabel={$x_1(kh)$}, ymin=-.3, ymax=1.3]
+    \nextgroupplot [ytick={0,1}, yticklabels={$$,$$}, ylabel={$x_1(kh)$}, ymin=-.3, ymax=1.3]
+
+    
+  \end{groupplot}
+  
+\end{tikzpicture}
+\end{document}
