@@ -4,3 +4,11 @@
 *#
 *.out
 *.sh
+*~
+.ipynb_checkpoints/
+*.mat*
+*solution*.ipynb*
+*Solution.ipynb*
+send-mail*.ipynb
+.gitsecret/keys/random_seed
+!*.secret
