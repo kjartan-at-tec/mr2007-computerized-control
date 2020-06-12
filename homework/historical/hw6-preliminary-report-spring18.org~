@@ -1,0 +1,18 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+title: Computerized control - homework 6
+#+date: Due Wednesday 2016-11-09
+
+* Preliminary report on the project, and plan for the last week
+
+  Please prepare a written preliminary report about your work on the project. The report should contain
+  1. Solution to the first part of the assignment ("Derive a continuous-time model")
+  2. Description of work completed thus far
+  3. A detailed plan of the work needed to complete the project. Break the work up in suitable tasks and provide for each task
+     1. A description
+     2. Time required to complete the task
+     3. Deadline and scheduled time to accomplish the task
+     4. Responsible group member
+

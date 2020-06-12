@@ -1,0 +1,123 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=4cm]
+\begin{polaraxis}[
+   width=6cm,
+   height=6cm,
+   clip=false,
+   xtick=\empty,
+   %xticklabels={$ $, $\frac{\pi}{6}$, $\frac{\pi}{3}$, $ $, $\frac{2\pi}{3}$, $\frac{5\pi}{6}$, $ $, $\frac{7\pi}{6}$, $\frac{4\pi}{3}$, $ $, $\frac{5\pi}{3}$, $\frac{11\pi}{6}$},
+   ytick=\empty,
+   ymin=0, ymax=3,
+   y tick label style={anchor=north east},
+   %x coord trafo/.code=\pgfmathparse{#1+40},
+   %y coord inv trafo/.code=\pgfmathparse{#1-40},
+   %x dir=reverse,
+   %xticklabel style={anchor=-\tick-90},
+   %yticklabel style={anchor=east, xshift=-4.75cm},
+   %y axis line style={yshift=-4.75cm},
+   %ytick style={yshift=-4.75cm}
+]
+\draw[->, thick] (axis cs: 270, 3.6) -- (axis cs: 90, 3.6) node [left] {\small $\mathrm{Im}$};
+\draw[->, thick] (axis cs: 180, 3.6) -- (axis cs: 0, 3.6) node [below] {\small $\mathrm{Re}$};
+
+\addplot+[->,thick,domain=0.057:0.19, no markers, red, samples=800] (360*x,1)  node[above] {I}; %
+\addplot+[->,thick,domain=0.19:0.49, no markers, red, samples=800] (360*x,1); %
+\addplot+[->,thick,domain=0.49:0.69, no markers, orange, samples=800] (360*x,1)  node[above] {II}; %
+\addplot+[->,thick,domain=0.69:0.95, no markers, orange, samples=800] (360*x,1); %
+\draw[->, thin] (axis cs: 0, 0) -- (axis cs: 120, 1) node [left] {\tiny $r=1$};
+
+\draw[<-, thick, black!30!magenta] (axis cs: 3.6, 1.2) -- node[above] {VI} (axis cs: 1.2, 3);
+\draw[<-, thick, magenta] (axis cs: -1.2, 3) -- node[below] {IV}(axis cs: -3.6, 1.2);
+
+\draw[-, thick, black!60!green] (axis cs: 3.6, 1.22) arc [radius=2mm, start angle=-3.6, end angle=90] node[pos=0.5, above] {VII};
+\draw[-, thick, black!20!green] (axis cs: -19, 1) arc [radius=2mm, start angle=-90, end angle=1]  node[pos=0.5, below] {III};
+
+
+\addplot+[->,thick,domain=0.003:0.19, no markers, black!30!cyan, samples=800] (-360*x,3); %
+\addplot+[->,solid,thick,domain=0.19:0.39, no markers,  black!30!cyan, samples=800] (-360*x,3); %
+\addplot+[->,solid,thick,domain=0.39:0.69, no markers,  black!30!cyan, samples=800] (-360*x,3)  node[above] {V}; %
+\addplot+[->,solid,thick,domain=0.69:0.997, no markers,  black!30!cyan, samples=800] (-360*x,3); %
+
+\draw[->, thin] (axis cs: 0, 0) -- (axis cs: -30, 3) node [left] {\tiny $R=\infty$};
+
+\node[coordinate, pin=45:{$\gamma$}] at (axis cs: 50, 3) {}; 
+
+\node at (axis cs: 90, 6) {Nyquist contour};
+
+\node at (axis cs: 0, 1) {\large $\times$};
+\node at (axis cs: 0, 0.67) {\large $\times$};
+\node[circle, draw, inner sep=2pt] at (axis cs: 180, 0.86) {};
+
+%\draw[-, ultra thick] (axis cs: 260, 2) -- (axis cs: 100, 2);
+
+%\node at (axis cs: 200, 0.3) {$-a$};
+
+%\node[circle, fill, pin=-20:{$r$}, inner sep=0.5mm] at (axis cs: 30, 1) {};
+\end{polaraxis}
+
+\def\minomega{0.2}
+\begin{polaraxis}[
+   xshift=8cm,
+   width=6cm,
+   height=6cm,
+   clip=false,
+   xtick=\empty,
+   %xticklabels={$ $, $\frac{\pi}{6}$, $\frac{\pi}{3}$, $ $, $\frac{2\pi}{3}$, $\frac{5\pi}{6}$, $ $, $\frac{7\pi}{6}$, $\frac{4\pi}{3}$, $ $, $\frac{5\pi}{3}$, $\frac{11\pi}{6}$},
+   ytick=\empty,
+   ymin=0, ymax=3,
+   y tick label style={anchor=north east},
+   %x coord trafo/.code=\pgfmathparse{#1+40},
+   %y coord inv trafo/.code=\pgfmathparse{#1-40},
+   %x dir=reverse,
+   %xticklabel style={anchor=-\tick-90},
+   %yticklabel style={anchor=east, xshift=-4.75cm},
+   %y axis line style={yshift=-4.75cm},
+   %ytick style={yshift=-4.75cm}
+]
+\draw[->, thick] (axis cs: 270, 3.6) -- (axis cs: 90, 3.6) node [left] {\small $\mathrm{Im}$};
+\draw[->, thick] (axis cs: 180, 3.6) -- (axis cs: 0, 3.6) node [below] {\small $\mathrm{Re}$};
+
+\addplot+[->,thick, red, no markers, domain=-100:-0.5, samples=800] ( -90*sign(x) -2*atan(x/1), 1/(abs(x)*(x*x+1))); %
+\addplot+[->,thick, red, no markers, domain=-0.5:-\minomega, samples=100] ( -90*sign(x) -2*atan(x/1), 1/(abs(x)*(x*x+1))); %
+
+\addplot+[->,thick, red, no markers, domain=\minomega:0.5, samples=100] ( -90*sign(x) -2*atan(x/1), 1/(abs(x)*(x*x+1))); %
+\addplot+[->,thick, red, no markers, domain=0.5:100, samples=800] ( -90*sign(x) -2*atan(x/1), 1/(abs(x)*(x*x+1))); %
+
+\pgfmathsetmacro{\startangle}{ -90*sign(-\minomega) -2*atan(-\minomega/1) }
+\pgfmathsetmacro{\endangle}{ -90*sign(\minomega) -2*atan(\minomega/1) }
+
+\addplot+[->,thin, red, no markers, dashed, domain=\startangle:45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+
+
+
+\addplot+[->,thin, red, no markers, dashed, domain=45:0, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+
+\addplot+[->,thin, red, no markers, dashed, domain=0:0.6, samples=40] (0, (1-x)*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+\addplot+[->,thin, red, no markers, dashed, domain=0.6:1, samples=40] (0, (1-x)*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+
+\addplot+[->,thin, red, no markers, dashed, domain=0:0.6, samples=40] (0, x*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+\addplot+[->,thin, red, no markers, dashed, domain=0.6:1, samples=40] (0, x*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+
+
+\addplot+[->,thin, red, no markers, dashed, domain=0:-45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+\addplot+[->,thin, red, no markers, dashed, domain=-45:\endangle, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+
+
+\def\pinomega{-0.27}
+\pgfmathsetmacro{\pinangle}{ -90*sign(\pinomega) -2*atan(\pinomega) }
+\pgfmathsetmacro{\pindist}{ 1/(abs(\pinomega)*(\pinomega*\pinomega + 1))} 
+\node[coordinate, pin=135:{$H(\gamma)$}] at (axis cs: \pinangle +2, \pindist) {}; 
+
+\node at (axis cs: 90, 6) {Nyquist plot};
+\end{polaraxis}
+
+\end{tikzpicture}
+\end{document}

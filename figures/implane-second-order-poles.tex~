@@ -1,0 +1,79 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+%\usepackage{khpreamble}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+\begin{tikzpicture}[node distance=4cm]
+
+\begin{axis}[
+   clip=false,
+   width=8cm,
+   height=8cm,
+   axis x line=center,
+   axis y line=center,
+   %xtick=\empty,
+   %xticklabels={$ $, $\frac{\pi}{6}$, $\frac{\pi}{3}$, $ $, $\frac{2\pi}{3}$, $\frac{5\pi}{6}$, $ $, $\frac{7\pi}{6}$, $\frac{4\pi}{3}$, $ $, $\frac{5\pi}{3}$, $\frac{11\pi}{6}$},
+   %ytick={1},
+   ymin=-2.2, ymax=2.2,
+   xmin=-2.2, xmax=2.2,
+   %y tick label style={anchor=north east},
+   %x coord trafo/.code=\pgfmathparse{#1+40},
+   %y coord inv trafo/.code=\pgfmathparse{#1-40},
+   %x dir=reverse,
+   %xticklabel style={anchor=-\tick-90},
+   %yticklabel style={anchor=east, xshift=-4.75cm},
+   %y axis line style={yshift=-4.75cm},
+   %ytick style={yshift=-4.75cm}
+]
+
+\node[anchor=west] at (axis cs: 0.1, 2) {$\mathrm{Im}$};
+\node[anchor=south] at (axis cs: 2, 0.1) {$\mathrm{Re}$};
+
+\node at (axis cs: -1, 0) {\large $\times$};
+\node at (axis cs: -2, 2) {\large $\times$};
+\node at (axis cs: -2, -2) {\large $\times$};
+
+\node at (axis cs: 0, 1.5) {\large $\times$};
+\node at (axis cs: 0, -1.5) {\large $\times$};
+
+\node[anchor=north] at (axis cs: 0, -3) {Continuous-time poles};
+
+\end{axis}
+
+\begin{axis}[
+  xshift = 8cm,
+   clip=false,
+   width=8cm,
+   height=8cm,
+   axis x line=center,
+   axis y line=center,
+   %xtick=\empty,
+   %xticklabels={$ $, $\frac{\pi}{6}$, $\frac{\pi}{3}$, $ $, $\frac{2\pi}{3}$, $\frac{5\pi}{6}$, $ $, $\frac{7\pi}{6}$, $\frac{4\pi}{3}$, $ $, $\frac{5\pi}{3}$, $\frac{11\pi}{6}$},
+   %ytick={1},
+   ymin=-2.2, ymax=2.2,
+   xmin=-2.2, xmax=2.2,
+   %y tick label style={anchor=north east},
+   %x coord trafo/.code=\pgfmathparse{#1+40},
+   %y coord inv trafo/.code=\pgfmathparse{#1-40},
+   %x dir=reverse,
+   %xticklabel style={anchor=-\tick-90},
+   %yticklabel style={anchor=east, xshift=-4.75cm},
+   %y axis line style={yshift=-4.75cm},
+   %ytick style={yshift=-4.75cm}
+]
+
+\node[anchor=west] at (axis cs: 0.1, 2) {$\mathrm{Im}$};
+\node[anchor=south] at (axis cs: 2, 0.1) {$\mathrm{Re}$};
+
+\node[anchor=north] at (axis cs: 0, -3) {Discrete-time poles};
+
+\addplot+ [black, no markers, thin,  variable=\t, domain=0:360, samples=400] ({cos(\t) }, {sin(\t)});
+
+\end{axis}
+
+
+\end{tikzpicture}
+\end{document}

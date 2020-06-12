@@ -1,0 +1,85 @@
+% Created 2018-10-03 mié 06:01
+\documentclass[letterpaper,fleqn]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+\geometry{top=20mm, bottom=20mm, left=24mm, right=18mm}
+\author{Kjartan Halvorsen}
+\date{}
+\title{Polynomial design (RST) exercise}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.5.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\section*{Choosing the closed-loop poles}
+\label{sec-1}
+\begin{center}
+\textbf{s-plane} \hspace*{0.4\linewidth} \textbf{z-plane}\\
+\includegraphics[height=0.34\textheight]{../figures/sgrid-crop} \hspace*{3mm}
+\includegraphics[height=0.34\textheight]{../figures/zgrid-crop}\\
+\end{center}
+
+Plot the poles of the following closed-loop discrete-time systems (as crosses in the z-plane). Plot also the corresponding continous-time poles (in the s-plane) using the sampling period \(h=0.2\). Rank the systems from 1 to 5 according to how desirable the performance of each system is.
+\begin{description}
+\item[{a}] \( G_c(z) = \frac{0.026z + 0.024}{z(z-0.95)}\)
+\item[{b}] \( G_c(z) = \frac{0.13z + 0.12}{z^2 - z + 0.25} \)
+\item[{c}] \(G_c(z) = \frac{0.54z + 0.52}{(z-0.5)^2 + 0.81}\)
+\item[{d}] \(G_c(z) = \frac{0.025z + 0.025}{(z-0.8)^2 - 0.09}\)
+\item[{e}] \(G_c(z) = \frac{0.068z + 0.062}{(z-0.8)^2 + 0.09}\)
+\end{description}
+
+\section*{Pole placement and step response}
+\label{sec-2}
+Pair each of the discrete-time systems in the previous exercise with the correct step response below.
+\begin{center}
+\includegraphics[width=\linewidth]{closed-loop-step-responsen}
+\end{center}
+
+\section*{Determine the order of the controller}
+\label{sec-3}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../figures/2dof-block-explicit}
+\end{center}
+In each of the cases determine the order of the feedback controller $F_{b}(z)=\frac{S(z)}{R(z)}$ and write out the $R(z)$ and $S(z)$ polynomials. Determine also the order of the observer polynomial $A_o(z)$. You don't have to solve for the controller coefficients.
+
+\subsection*{Case 1}
+\label{sec-3-1}
+Plant is \(H(z) = \frac{b_0z+b_1}{z^3  + a_1z^2 + a_2z}\),  desired response to reference signal \(H_c(z) = \frac{0.2^2}{z(z-0.8)(z-0.8)}\), observer poles in the origin.
+
+\vspace*{27mm}
+
+\subsection*{Case 2}
+\label{sec-3-2}
+Plant is \(H(z) = \frac{b_0z+b_1}{z^3  + a_1z^2 + a_2z}\),  desired response to reference signal \(H_c(z) = \frac{0.2^2}{(z-0.8)^3}\), observer poles in the origin and integral action in the feedback controller (incremental controller).
+
+
+\vspace*{27mm}
+
+
+\subsection*{Case 3}
+\label{sec-3-3}
+Plant is \(H(z) = \frac{b_0z+b_1}{z^2  + a_1z + a_2}\) and there is a delay of 2 sampling periods in the feedback path. The desired response to reference signal \(H_c(z) = \frac{0.2^2}{(z-0.8)(z-0.8)}\), observer poles in the origin and integral action in the feedback controller (incremental controller).
+% Emacs 24.5.1 (Org mode 8.2.10)
+\end{document}

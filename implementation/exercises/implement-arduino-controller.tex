@@ -1,0 +1,80 @@
+% Created 2018-02-16 vie 11:46
+\documentclass[letterpaper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\usepackage{geometry}
+\geometry{bmargin=12mm, tmargin=12mm}
+\author{Kjartan Halvorsen}
+\date{}
+\title{Implementing on an Arduino}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.5.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\section*{Implementation of the discrete lead compensator}
+\label{sec-1}
+\[F_d(z) = 10 \frac{0.81z - 0.60}{z-0.45}\]
+
+
+\begin{verbatim}
+// Sampling time
+int hMilliSec =        // h=0.2 s
+
+// values to be stored between sampling intervals
+
+double 
+double
+
+// Functions to read signals from input channels
+double read_y_value(){
+...
+}
+double read_yref_value(){
+...
+}
+// Function to write control signal to output channel
+void write_u_value(){
+...
+}
+
+void loop() {
+// Read inputs
+y = read_y_value();
+yref = read_yref_value();
+
+// Compute control signal
+
+double u = 
+
+
+// Write control signal 
+write_u_value(u);
+
+// Store values for the next iteration
+
+
+// Wait till next sampling instant
+delay(hMillisec);
+}
+\end{verbatim}
+% Emacs 24.5.1 (Org mode 8.2.10)
+\end{document}

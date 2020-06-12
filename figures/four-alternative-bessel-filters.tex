@@ -1,0 +1,45 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\newcommand*{\bodeplot}[4]{%
+  \begin{loglogaxis} [
+      width=8cm,
+      height=4cm,
+      xshift={#1},
+      yshift={#2},
+      ylabel=$|H(i\omega)|$,
+      xlabel={$\omega$ [rad/s]},
+      %xticklabels=\empty,
+      grid=both,
+      %minor y tick num=9,
+      ymin=0.0001,
+      ymax=2,
+      ytick={0.0001, 0.001, 0.01, 0.1, 1},
+      xmax=1000,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+  ]
+  \addplot[thick, black, no marks] table [x index=0, y index=#3] {\bodetable};
+  \node[red!80!black] at (axis cs: 10, 0.01) {\Huge #4};
+  \end{loglogaxis}
+}
+
+\begin{document}
+
+\pgfplotstableread[col sep=comma]{../matlab/bessel-examples-fall18.dta}\bodetable% 
+
+\begin{tikzpicture}
+  \bodeplot{0cm}{0cm}{3}{A}
+  \bodeplot{9cm}{0cm}{1}{B}
+  \bodeplot{0cm}{-5cm}{2}{C}
+  \bodeplot{9cm}{-5cm}{4}{D}
+\end{tikzpicture}
+
+\end{document}

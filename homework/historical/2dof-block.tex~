@@ -1,0 +1,25 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+\begin{document}
+
+
+\begin{tikzpicture}
+
+  \node[draw, rectangle, thick, minimum height=4cm] (contr) {Controller};
+  \node[draw, rectangle, thick, minimum height=4cm, node distance=3cm, right of=Controller] (plant) {Plant};
+  \node[coordinate, below of=Plant, node distance=3cm] (fb) {};
+
+  \draw[->] (Controller) -- node[above] {$u$} (Plant);
+  \draw[->] (Controller.west) ++(-2cm, 1cm) -- node[above] {$u_c$} ++(2cm, 0cm);
+  \draw[->] (Plant.east) -- node[coordinate] (meas) {} node [above] {$y$} ++(2cm,0) |- (fb);  
+
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,33 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\pgfplotstableread[col sep=comma]{../matlab/bessel-examples-fall18.dta}\bodetable
+
+
+\begin{document}
+
+
+\begin{tikzpicture}
+  \begin{loglogaxis} [
+      width=8cm,
+      height=4cm,
+      ylabel=$|H(i\omega)|$,
+      %xticklabels=\empty,
+      grid=both,
+      minor y tick num=9,
+      %xmax=10,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+  ]
+  \addplot[thick, black, no marks] table [x index=0, y index=1] {\bodetable};
+  \end{loglogaxis}
+\end{tikzpicture}
+
+\end{document}

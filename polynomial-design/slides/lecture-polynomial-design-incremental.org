@@ -1,0 +1,120 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Computerized Control - Polynomial design
+# #+date: 2018-10-03
+
+* What do I want the students to understand?			   :noexport:
+  - RST design
+  - Incremental RST
+
+* Which activities will the students do?			   :noexport:
+  1. Determine order of the controller
+  2. Set up equations in controller parameters
+
+* Intro
+
+** Goal of today's lecture				     :slide:noexport:
+   - Practice RST controller design
+   - Understand the role of observer poles
+
+
+* 2-dof controller
+
+** Two-degree-of-freedom controller
+#+BEGIN_CENTER 
+ \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit-no-delay}
+#+END_CENTER
+   
+* Problem 5.3
+**  Åström & Wittenmark problem 5.3
+    Consider the system given by the pulse-transfer function
+    \[ H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \]
+    Use polynomial design (RST) to determine a controller such that the closed-loop system from command input to output has the characteristic polynomial
+    \[ A_c(z) = z^2 - 1.5z + 0.7. \]
+    Let the observer polynomial have as low order as possible, and place all observer poles in the origin (deadbeat observer). Consider three cases
+    - (a) :: Positional control with cancellation of the process zero
+    - (b) :: Positional control with no cancellation of the zero
+    - (c) :: Incremental controller with  no cancellation of the zero 
+
+** Why cancel the process zero?
+   Bode plots of closed-loop systems (from reference signal to output) with and without cancellation of the process zero:
+
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{../../figures/aw5_3_bode}
+   #+END_CENTER
+
+** Preliminary exercise
+
+Which of the closed-loop responses below  corresponds to (I) Positional control with zero cancellation (II), Positional control without zero cancellation, (III) Incremental control without zero cancellation.
+#+BEGIN_CENTER 
+ \includegraphics[width=0.45\linewidth]{../../figures/aw5_3_refstep}
+ \includegraphics[width=0.45\linewidth]{../../figures/aw5_3_diststep}
+#+END_CENTER
+
+*** Notes							   :noexport:
+    Yellow line - Incremental controller, since disturbance is eliminated
+    
+
+** Solution to problem 						   :noexport:
+
+    1. \(R(z) = (z+0.7)\bar{R}(z)\) in order to cancel the process zero.
+       Diophantine eqn
+       \[A(z)(z+0.7)\bar{R}(z) + (z+0.7)S(z) = (z+0.7)A_c(z)A_o(z)\]
+       \[A(z)\bar{R}(z) + S(z) = A_c(z)A_o(z)\]
+       - The number of unknown coeffs in the controller: \(2n_{\bar{R}} + 2\).
+       - The number of eqn from the Dioph eqn: \( n_A + n_{\bar{R}} \).
+       - Degree of \(\bar{R}\):  n_{\bar{R}} = n_A-2 = 2-2 = 0\)
+       - \(F_{b} = \frac{s_0z + s_1}{z+0.7}\)
+       - Diopn eqn:
+	 \[ (z^2 - 1.8z + 0.81) + s_0z + s_1 = z^2 - 1.5z + 0.7 \]
+	 i.e. A_o(z) = 1.
+       - Sys of eqns
+	 \[ s_0 = -1.5+1.8, \quad s_1 = 0.7-0.81 \]
+       - \(F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}\)
+       - \(G_c(z) = \frac{ \frac{T}{R}\frac{B}{A}}{1 + \frac{B}{A} \frac{S}{R}} = 
+                  = \frac{TB}{AR+BS} = \frac{t_0B}{BA_c} = \frac{t_0}{A_c}\)
+       - Want unit static gain
+	 \[ t_0 = A_c(1) = 0.2 \]
+    2. No cancelling
+       - Diophn eqn
+	 AR + BS = A_cA_o
+	 # Unknowns = 2nR+1
+	 # eqns = nA+nR 
+	 # => nR = nA-1 = 2-1 = 1.
+	 R = z + r_1, S=s0z + s1
+	 (z^2 - 1.8z + 0.81)(z+r1) + (z+0.7)(s0z + s1) = (z^2 - 1.5z + 0.7)z
+	 z^3 -1.8z^2 + 0.81z + r1z^2 - 1.8r1z + 0.81r1 + s0z^2 + 0.7s0z + s1z + 0.7s1 
+	                                            = z^3 - 1.5z^2 + 0.7z
+       - System of eqns
+	 z^2: r1 + s0 = -1.5-1.8
+	 z^1: -1.8r1 + 0.7s0 + s1 = 0.7-0.81
+	 z^0: 0.81r1 + 0.7s1 = 0
+    3. With integrator
+       - Diophn eqn
+	 A(z-1)Rbar + BS = Ac Ao
+	 # unknowns = 2*nRbar+2 
+	 # eqns = nA+1+nRbar
+	 # => nRbar = nA-1 = 2-1 = 1
+	 R = (z-1)(z+r1), S = s0z^2 + s1z + s2
+	 (z^2 - 1.8z + 0.81)(z-1)(z+r1) + (z+0.7)(s0z^2 + s1z + s2) = (z^2 - 1.5z + 0.7)z^2
+	 (z^3 -1.8z^2 + 0.81z - z^2 +1.8z - 0.81)(z + r1) + (s0z^3 + s1z^2 + s2z + 0.7s0z^2 + 0.7s1z + 0.7s2) = z^4 -1.5z^3 + 0.7z^2
+	 z^4 - 2.8z^3 + 2.61z^2 - 0.81z + r1z^3 - 2.8r1z^2 + 2.61r1z -0.81r1 
+          	 + s0z^3 + s1z^2 + s2z + 0.7s0z^2 + 0.7s1z + 0.7s2
+	            = z^4 -1.5z^3 + 0.7z^2
+       - System of eqns
+	 z^3: r1 + s0 = -1.5 + 2.8
+	 z^2: -2.8r1 + s1 + 0.7s0 = 0.7 - 2.61
+	 z^1: 2.61r1 + s2 + 0.7s1 = 0 + 0.81
+	 z^0: -0.81r1 + 0.7s2 = 0
+
+	          

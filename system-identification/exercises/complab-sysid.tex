@@ -1,0 +1,137 @@
+% Created 2019-10-02 mié 15:23
+\documentclass[letterpaper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\usepackage{khpreamble}
+\newcommand*{\shift}{\operatorname{q}}
+\author{Kjartan Halvorsen}
+\date{\today}
+\title{System identification using matlab}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.3.50.2 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\section{Least-squares parameter estimation}
+\label{sec-1}
+
+
+The model structure used is the so-called ARX (Auto-Regressive with eXogenous input) model:
+  \begin{center}
+  \begin{tikzpicture}[block/.style={rectangle, draw, minimum height=12mm, minimum width = 17mm}, sumnode/.style={circle, draw, inner sep=2pt}, node distance=30mm]
+
+  \node[coordinate] (input) {};
+  \node[block, right of=input] (H) {$\frac{B(\shift)}{A(\shift)}$};
+  \node[sumnode, right of=H] (sum) {\small $\Sigma$};
+  \node[coordinate, right of=sum] (output) {};
+  \node[block, above of=sum, node distance=16mm] (He) {$\frac{\shift^n}{A(\shift)}$};
+  \node[coordinate, above of=He, node distance=16mm] (dist) {};
+
+  \draw[->] (input) -- node[above, near start] {$u$} (H);
+  \draw[->] (H) -- node[above] {$$} (sum);
+  \draw[->] (dist) -- node[left, near start] {$e$} (He);
+  \draw[->] (He) -- node[left] {$$} (sum);
+  \draw[->] (sum) -- node[above, near end] {$y$} (output);
+
+  \end{tikzpicture}
+  \end{center}
+where \(u(k)\) is a known input signal, \(y(k)\) is the output signal and \(e(k)\) is a disturbance (an unknown input signal) in the form of a zero-mean white noise sequence.
+
+The model can be written
+\[ A(\shift) y(k) = B(\shift)u(k) + \shift^n e(k)\]
+\[ (\shift^n + a_1\shift^{n-1} + \cdots + a_n)y(k) = (b_0\shift^{m} + b_1\shift^{m-1} + \cdots + b_m)u(k) + \shift^n e(k)\]
+\[ y(k+n) + a_1 y(k+n-1) + \cdots + a_n y(k) = b_0u(k+m) + b_1u(k+m-1) + \cdots + b_m u(k) + e(k+n)\]
+\[ y(k+1) + a_1y(k) + \cdots + a_n y(k-n+1) = b_0 u(k+m-n+1) + b_1u(k+m-n) + \cdots + b_m u(k-n+1)) + e(k+1)\]
+The one-step-ahead predictor for this model becomes 
+\begin{align*}
+\hat{y}(k+1) &= -a_1 y(k) - a_2 y(k-1) - \cdots - a_n y(k-n+1) \\ &\qquad + b_0 u(k+m-n+1) + b_1 u(k+m-n) +  \cdots + b_m u(k-n+1)\\
+             & = \underbrace{\bbm -y(k) & \cdots & -y(k-n+1) & u(k+m-n+1) & \cdots & u(k-n+1)\ebm}_{\varphi\transp(k+1)} \underbrace{\bbm a_1\\\vdots\\a_n\\b_0\\\vdots\\b_m\ebm}_{\theta}\\
+ &= \varphi\transp(k+1)\theta.
+\end{align*}
+Note that the white noise term \(e(k+1)\) by definition cannot be predicted from knowledge of previous values in the sequence (which we don't know) nor from previous output values \(y(t), \; t \le k\) (which could have been used to estimate \(\hat{e}(k)\)). Therefore \(e(k+1)\) is predicted by its mean value which is zero. Note also that if our model with \(\theta = \theta^*\) is perfect (\(\theta^*\) contains the true parameters for the system which generated the data), then the prediction error equals the white noise disturbance: \(\epsilon(k+1) = y(k+1) - \varphi\transp(k+1)\theta^* = e(k+1)\). Therefore, we can check how good a models is by testing how close the prediction errors resembles a white noise sequence.
+
+The system of equations in the unknown system parameters \(\theta\) is
+\[ \Phi \theta = y, \]
+where
+\begin{align*}
+\Phi &= \bbm \varphi\transp(n+1)\\\varphi\transp(n+2)\\\vdots\\\varphi\transp(N)\ebm,\\
+y &= \bbm y(n+1)\\y(n+2)\\\vdots\\y(N)\ebm.
+\end{align*}
+
+The least-squares solution to this system of equations is, by definition, the solution \(\hat{\theta}\) which minimizes the sum of squares of the residuals \(\epsilon = y-\Phi\theta\), i.e. the solution that minimizes the criterion
+\[ J(\theta) = \epsilon\transp\epsilon = \sum_i \epsilon_i^2. \] 
+It is given by 
+\[ \hat{\theta}_{LS} = \underbrace{(\Phi\transp\Phi)^{-1}\Phi\transp}_{\Phi^+} y, \]
+where \(\Phi^+\) is called the \emph{Moore-Penrose invers} of the (typically) non-square, tall matrix \(\Phi\). 
+
+\subsection{Instructions}
+\label{sec-1-1}
+\begin{enumerate}
+\item Download the data: \url{http://alfkjartan.github.io/files/sysid_exercise_data.mat} The data consist of 12 vectors \texttt{u1}, \texttt{y1}, \texttt{u1\_val}, \texttt{y1\_val}, \texttt{u2}, \texttt{y2}, \texttt{u2\_val}, \texttt{y2\_val}, \texttt{u3}, \texttt{y3}, \texttt{u3\_val}, \texttt{y3\_val} corresponding to three different LTI systems.
+\begin{description}
+\item[{\texttt{ui}}] input data for system \(i\)
+\item[{\texttt{yi}}] output data for system \(i\)
+\item[{\texttt{ui\_val}}] validation input data for system \(i\)
+\item[{\texttt{yi\_val}}] validation output data for system \(i\)
+\end{description}
+The systems are 
+\begin{enumerate}
+\item \( H_1(z) = \frac{b}{z+a} = \frac{0.2}{z -0.8} \)
+\item \( H_2(z) = \frac{b_0 z + b_1}{z(z+a_1)} = \frac{0.0625z + 0.0375}{z(z - 0.9)} \)
+\item \( H_3(z) = \frac{b}{z^2 + a_1z + a_2} = \frac{0.18}{z^2 - 1.4z + 0.58} \)
+\end{enumerate}
+\item For each case estimate a model using the input-output data. Formulate the one-step ahead predictor \( \hat{y}(k) = \varphi\transp(k)\theta \) and the system of equations 
+\( \Phi \theta = y \), and find the least-squares solution to the system. Compare with the true parameters.
+\item Validate your model using the validation data. Let's say you have obtained estimates of the numerator \(\hat{B}(z)\) and denominator \(\hat{A}(z)\) of your model. You can then simulate the model using the validation data (a data set which is \textbf{not} used for parameter estimation) like this
+\begin{verbatim}
+H = tf(B, A, 1); % Create the discrete-time LTI model
+
+% Simulate the model. 
+ysim = lsim(H, u_val); 
+% The above is also known as infinite-step ahead prediction
+% and works only for stable models. It is often better to 
+% validate the model using a k-step ahead predictor. 
+
+e = y_val - ysim; % The error
+
+% Calculate the root mean square of the error
+RMSerror =      %Your code here 
+
+% Plot
+figure()
+subplot(121)
+stairs(y_val)
+hold on
+stairs(ysim)
+legend('Validation output', 'Simulated output')
+subplot(122)
+stairs(e)
+title(sprintf('Simulation error. RMS=%f', RMSerror))
+\end{verbatim}
+\end{enumerate}
+
+\subsection{About the validation simulation}
+\label{sec-1-2}
+In general it is preferred to compare the validation output to the output from a k-step ahead predictor, where k is chosen to correspond to a typical time interval of the data. For control models where we have used the rule-of-thumb of 4-10 sampling periods per rise time, a choice of k=10 is reasonable. A choice of k=1 (one-step ahead predictor) gives unreliable validation, since the trivial predictor \(\hat{y}(k+1) = y(k)\) can give good predictions if the sampling period is short ("the weather in one minute from now will be equal to the weather now"). Choosing k extremely large corresponds to pure simulation of the model (the predicted output sequence depends only on the input sequence) and will not work for unstable models. Also, for models with integration a small bias in the input sequence will be accumulated and give poor validation result, even for a good model. 
+
+The system identification toolbox provides such a function that computes the k-step ahead prediction. See  \url{https://www.mathworks.com/help/ident/ref/predict.html}. An implementation that uses only basic matlab functions can be downloaded here \url{http://alfkjartan.github.io/files/predictlti.m}. 
+% Emacs 25.3.50.2 (Org mode 8.2.10)
+\end{document}

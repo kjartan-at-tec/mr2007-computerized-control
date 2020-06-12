@@ -1,0 +1,64 @@
+\documentclass[tikz,border=0]{standalone}
+\tikzset{%
+  saturation block/.style={%
+    draw, 
+    path picture={
+      % Get the width and height of the path picture node
+      \pgfpointdiff{\pgfpointanchor{path picture bounding box}{north east}}%
+        {\pgfpointanchor{path picture bounding box}{south west}}
+      \pgfgetlastxy\x\y
+      % Scale the x and y vectors so that the range
+      % -1 to 1 is slightly shorter than the size of the node
+      \tikzset{x=\x*.4, y=\y*.4}
+      %
+      % Draw annotation
+      \draw (-1,0) -- (1,0) (0,-1) -- (0,1); 
+      \draw (-1,-.7) -- (-.7,-.7) -- (.7,.7) -- (1,.7);
+    }
+  }
+}
+
+\begin{document}
+\begin{tikzpicture}[
+    node distance=2cm, block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm}, smallblock/.style={rectangle, draw, minimum height=10mm, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input] (sum) {$\sum$};
+    \node[smallblock,right of=sum, node distance=15mm] (K) {$K$};
+    \node[coordinate, right of=K, node distance=5cm ] (P) {};
+    \node[block,above of=P] (D) {$\frac{T_ds}{1 + sT_d/N}$};
+    \node[smallblock,below of=P] (I) {$\frac{1}{s}$};
+    \node[sumnode, right of=P] (sumcontrol) {$\sum$};
+    \node[coordinate, below of=K] (Ip) {};
+    \node[smallblock, right of=Ip, node distance=18mm] (Ti) {$1/T_i$};
+    \node[sumnode, right of=Ti, node distance=18mm] (sumaw) {$\sum$};
+    \node[smallblock, below of=sumaw] (Tt) {$1/T_t$};
+
+    \node [saturation block, minimum size=1cm, right of=sumcontrol] (saturation) {};
+    \node[block,right of=saturation, node distance=3cm] (plant) {$G(s)$};
+    \node[coordinate, right of=plant, node distance=3cm] (output) {};
+    \node[sumnode, below of=saturation, node distance=3cm] (sumsat) {$\sum$};
+
+    \draw[->] (input) -- node[above] {$y_{ref}$} (sum);
+  \draw[->] (sum) -- node[above] {} (K);
+  \draw[->] (K) -- node[above] {$u_P$} (sumcontrol);
+  \draw[->] (K) -- ++(1cm,0) |- (D);
+  \draw[->] (D) -| node[right] {$u_D$} (sumcontrol);
+  \draw[->] (K) -- ++(1cm,0) |- (Ti);
+  \draw[->] (I) -| node[right] {$u_I$} (sumcontrol);
+  \draw[->] (sumcontrol) -- node[above] {$u$} node[coordinate] (measureu) {} (saturation);
+  \draw[->] (saturation) -- node[coordinate] (measureus) {} node[above] {$u_s$} (plant);
+  \draw[->] (plant) -- node[coordinate] (measure) {} node[at end, above] {$y$} (output);
+  \draw[->] (measure) -- ++(0,-6cm) -| (sum) node[left, pos=0.96] {$-$};
+
+      \draw[->] (measureus) |- (sumsat);
+    \draw[->] (measureu) |- (sumsat) node [above, pos=0.9] {$-$};
+    \draw[->] (sumsat) |- node [above, pos=0.8] {$u_s - u$} (Tt);
+    \draw[->] (Tt) -- (sumaw);
+    \draw[->] (Ti) -- (sumaw);
+    \draw[->] (sumaw) -- (I);
+    
+
+
+\end{tikzpicture}
+\end{document}

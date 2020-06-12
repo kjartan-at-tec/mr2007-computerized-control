@@ -1,0 +1,67 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{subfigure}
+
+#+title: Computerized control - homework 1
+#+date: Due 2016-01-22
+
+* Exercise
+** Block-diagram calculation
+   The block-diagram below shows a so-called /two-degrees-of-freedom/ feedback control system. Calculate the transfer function from each of the signals  $u_c$ (command signal), $d$ (disturbance signal) and $n$ (measurement noise) to the system output $y$.
+
+   \begin{center}
+   \includegraphics[width=0.6\linewidth]{2dof-block-complete}
+   \end{center}
+
+** Solution to a first-order system
+   Consider the first-order system
+   \[ \dot{x}(t) = -x(t) + u(t) \]
+
+   1. Write the solution to the system for the input signal 
+      \begin{displaymath}
+        u(t) = \begin{cases} 1, & 0 \le t \le 1\\ 0, & \text{otherwise}.
+      \end{displaymath}
+      The initial value is $x(t) = 0$.
+   2. Sketch the solution $x(t)$ for $0\le t \le 4$, (or generate the plot on the computer).
+   3. On Blackboard you can find a simulink-file with an implementation of the system. Use this to verify your solution. Include a screen-dump of the simulation output in your report.
+
+
+* Solution							   :noexport:
+** Block-diagram
+   One can use Mason's rule, and noting that the denominator of the transfer functions will be
+   \[ 1 + GF_b. \] The numerator is given by the direkt path from input to output, so we get
+   \begin{align*}
+   \frac{Y}{U_c} &= \frac{GF_f}{1+GF_b}\\
+   \frac{Y}{D} &= \frac{1}{1+GF_b}\\
+   \frac{Y}{N} &= -\frac{GF_b}{1+GF_b}
+   \end{align*}
+
+** First-order system
+   1. We can write the input as the sum of two step signals, of which the second is delayed. The solution is then given by summing the solution to each of the two step signals. Write the input as
+      \[ u(t) = u_1(t) + u_2(t), \]
+      with 
+      \begin{align*}
+          u_1(t) &= \begin{cases} 1, t \ge 0 \\ 0, & \text{otherwise}. 
+          U_1(s) &= \frac{1}{s}.
+          u_2(t) &= -u_1(t-1) = \begin{cases} -1, t \ge 1 \\ 0, & \text{otherwise}. 
+          U_2(s) &= -\mexp{-s}U_1(s) = \frac{\mexp{-s}{s}
+      \end{align*}
+
+      Solving using the Laplace transform we get 
+      \[ sX = -X + U_1 + U_2\]
+      which gives
+      \begin{align*}
+        X &= \frac{1}{s+1}\left( \frac{1}{s} - \frac{\mexp{-s}{s} \right)\\
+          &= \frac{1}{(s+1)s} - \mexp{-s} \frac{1}{(s+1)s},
+      \end{align*}
+      The first term is a unit step-response, and the second term is also a unit step response, but delayed and with negative sign. The step-response for the system is given by 
+      \[ x_1(t) = h(t)(1-\mexp{-t}), \]
+      where $h(t)$ is the Heaviside step-function. So the solution is 
+      \[ x(t) = x_1(t) + x_2(t) = x_1(t) - x_1(t-1) = h(t)(1 -\mexp{-t}) - h(t-1)\big(1 - \mexp{-(t-1)}\big). \]
+      
+   
+      
+
+
+

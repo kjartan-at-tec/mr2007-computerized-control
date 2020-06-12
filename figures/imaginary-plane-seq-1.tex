@@ -1,0 +1,35 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.9}
+
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=4cm]
+\begin{polaraxis}[
+   width=6cm,
+   height=6cm,
+   clip=false,
+   xtick={0,30,...,330},
+   xticklabels={$ $, $\frac{\pi}{6}$, $\frac{\pi}{3}$, $ $, $\frac{2\pi}{3}$, $\frac{5\pi}{6}$, $ $, $\frac{7\pi}{6}$, $\frac{4\pi}{3}$, $ $, $\frac{5\pi}{3}$, $\frac{11\pi}{6}$},
+   ytick={1},
+   ymin=0, ymax=1,
+   y tick label style={anchor=north east},
+   %x coord trafo/.code=\pgfmathparse{#1+40},
+   %y coord inv trafo/.code=\pgfmathparse{#1-40},
+   %x dir=reverse,
+   %xticklabel style={anchor=-\tick-90},
+   %yticklabel style={anchor=east, xshift=-4.75cm},
+   %y axis line style={yshift=-4.75cm},
+   %ytick style={yshift=-4.75cm}
+]
+%\addplot+[domain=0:1, no markers, black, samples=800] (360*x,1); %
+\draw[->, thick] (axis cs: 270, 1.6) -- (axis cs: 90, 1.6) node [left] {$\mathrm{Im}$};
+\draw[->, thick] (axis cs: 180, 1.6) -- (axis cs: 0, 1.6) node [below] {$\mathrm{Re}$};
+
+\node[circle, fill, pin=-20:{$a$}, inner sep=0.5mm] at (axis cs: 30, 1) {};
+\end{polaraxis}
+\end{tikzpicture}
+\end{document}

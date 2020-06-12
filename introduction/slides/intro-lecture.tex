@@ -1,0 +1,314 @@
+% Created 2019-08-15 jue 21:54
+\documentclass[presentation,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\usepackage{amssymb}
+\usepgfplotslibrary{groupplots}
+\usetheme{default}
+\author{Kjartan Halvorsen}
+\date{2019-08-15}
+\title{Computerized control - Introduction}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.3.50.2 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+
+\section{Presentation}
+\label{sec-1}
+\begin{frame}[label=sec-1-1]{Who am I?}
+\end{frame}
+
+\begin{frame}[label=sec-1-2]{Who are you?}
+\end{frame}
+
+\section{Intro}
+\label{sec-2}
+\begin{frame}[label=sec-2-1]{Goal of the course}
+To be able to \alert{analyze}, \alert{design}, \alert{implement} and \alert{evaluate} computerized product and process control systems with a focus on practical application.
+\end{frame}
+
+\begin{frame}[label=sec-2-2]{Feedback control}
+\begin{center}
+\includegraphics[width=0.6\linewidth]{../../figures/block1}
+\end{center}
+\end{frame}
+\begin{frame}[label=sec-2-3]{Feedback control}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/comp-contr-sys.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=sec-2-4]{Why computerized control?}
+\end{frame}
+
+\begin{frame}[label=sec-2-5]{Computers everywhere}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/electronics-in-cars.png}
+\end{center}
+{\tiny Winning share in automotive semiconductors. McKinsey report 2013 } 
+\end{frame}
+
+\begin{frame}[label=sec-2-6]{Two approaches to designing a  discrete-time controller}
+\begin{enumerate}
+\item Do design the controller in the continuous-time domain (methods from control engineering class). Then discretize the continuous-time controller.
+\item Determine discrete-time model of the plant. Do design in discrete-time domain.
+\end{enumerate}
+\end{frame}
+\section{Example: water-level control in hydro power plant}
+\label{sec-3}
+\begin{frame}[label=sec-3-1]{Example of design in the discrete time domain}
+\end{frame}
+\begin{frame}[label=sec-3-2]{Example - Hydro-power plant}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/alta.png}
+\end{center}
+\end{frame}
+\begin{frame}[label=sec-3-3]{Example - Hydro-power plant}
+\begin{center}
+\small
+\def\svgwidth{0.7\linewidth}
+\input{hydroplant.pdf_tex}
+\end{center}
+\end{frame}
+\begin{frame}[label=sec-3-4]{Which graph best illustrates the pulse response?}
+Let $h=\unit{60}{\second}$, $A=\unit{1.2\times 10^{5}}{\meter\square}$ and $K = \unit{10^3}{\meter\squared\per\second}$
+
+\begin{center}
+  \begin{tikzpicture}
+  \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+     width=7cm,
+     height=2.5cm,
+     xlabel={$k$ },
+     ylabel={$y(k)$},
+     xmin=-2,
+     xmax=15,
+     ytick = {0},
+     xtick = {0},
+     domain=-2:15,
+     samples=18,
+     variable=k,
+     ]
+
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*pow(0.5, k) };
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*(-1)*pow(0.5, k) };
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*(-1+pow(0.5, k)) };
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*(1-pow(0.5, k)) };
+     \end{groupplot}
+
+     \node[red] at (group c1r1.center) {\huge 1};
+     \node[red] at (group c2r1.center) {\huge 2};
+     \node[red] at (group c1r2.center) {\huge 3};
+     \node[red] at (group c2r2.center) {\huge 4};
+     \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=sec-3-5]{Which graph best illustrates the step response?}
+Let $h=\unit{60}{\second}$, $A=\unit{1.2\times 10^{5}}{\meter\square}$ and $K = \unit{10^3}{\meter\squared\per\second}$
+
+\begin{center}
+  \begin{tikzpicture}
+  \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+     width=7cm,
+     height=2.5cm,
+     xlabel={$k$ },
+     ylabel={$y(k)$},
+     xmin=-2,
+     xmax=15,
+     ytick = {0},
+     xtick = {0},
+     domain=-2:15,
+     samples=18,
+     variable=k,
+     ]
+
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*pow(0.5, k) };
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*(-1)*pow(0.5, k) };
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*(-1+pow(0.5, k)) };
+     \nextgroupplot[]
+      \addplot+[red, thick, ycomb] { (k>=0)*(1-pow(0.5, k)) };
+     \end{groupplot}
+
+     \node[red] at (group c1r1.center) {\huge 1};
+     \node[red] at (group c2r1.center) {\huge 2};
+     \node[red] at (group c1r2.center) {\huge 3};
+     \node[red] at (group c2r2.center) {\huge 4};
+     \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+\section{Further motivation for computerized control}
+\label{sec-4}
+\begin{frame}[label=sec-4-1]{Discrete design can give better performance}
+\includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
+\end{frame}
+
+\begin{frame}[label=sec-4-2]{Discrete design can give better performance}
+\includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
+\includegraphics[height=0.8\textheight]{../../figures/fig1-9.png}
+\end{frame}
+
+\begin{frame}[label=sec-4-3]{Why computerized control?}
+\begin{itemize}
+\item Almost all control systems are implemented on computers/microcontrollers
+\item Controllers designed in continuous-time must be discretized to be implemented on a computer - What does this mean for the performance?
+\item Design that takes into account the discrete nature of the computer can give better performance
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label=sec-4-4]{Challenges with computerized control}
+\begin{block}{Aliasing}
+\includegraphics[height=0.6\textheight]{../../figures/Moire_pattern_of_bricks.png} \hspace*{3mm} \includegraphics[height=0.6\textheight]{../../figures/Moire_pattern_of_bricks_small.png}
+\end{block}
+\end{frame}
+
+\begin{frame}[label=sec-4-5]{Challenges with computerized control}
+\begin{block}{Sampling causes delay}
+\includegraphics[width=0.9\textwidth]{../../figures/modulation-model-timeseries}
+\end{block}
+\end{frame}
+
+
+\section{Course content structure}
+\label{sec-5}
+
+\begin{frame}[label=sec-5-1]{Control concepts}
+\begin{center}
+\includegraphics[width=1.1\linewidth]{../../figures/computercontrol.png}
+\end{center}
+\end{frame}
+\begin{frame}[label=sec-5-2]{Course book}
+\begin{center}
+\includegraphics[width=0.2\linewidth]{../../figures/book.png}
+\end{center}
+Buy ebook at Google Books (573 MXN)
+\end{frame}
+
+\begin{frame}[label=sec-5-3]{Course overview}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/computer-control-approaches}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=sec-5-4]{Discrete time vs continuous time}
+\begin{center}
+\begin{tabular}{l}
+Continuous time\\
+\hline
+\includegraphics[width=0.4\linewidth]{../../figures/cont-fcn}\\
+\(y(t)\)\\
+\(\operatorname{p} y \triangleq \frac{d}{dt} y\)\\
+\( (\operatorname{p}+a) y = bu \;\Leftrightarrow\; \frac{d}{dt}y + ay = bu\)\\
+\(Y(s) \triangleq \laplace{y(t)}\)\\
+\( Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\)\\
+Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\)\\
+\includegraphics[width=0.22\linewidth]{../../figures/cont-stable}\\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=sec-5-5]{Discrete time vs continuous time}
+\begin{center}
+\begin{tabular}{ll}
+Continuous time & Discrete time\\
+\hline
+\includegraphics[width=0.4\linewidth]{../../figures/cont-fcn} & \includegraphics[width=0.4\linewidth]{../../figures/discrete-fcn}\\
+\(y(t)\) & \(y(kh)\) or \(y(k)\)\\
+\(\operatorname{p} y \triangleq \frac{d}{dt} y\) & \(\operatorname{q}y \triangleq y(kh+h)\)\\
+\( (\operatorname{p}+a) y = bu \;\Leftrightarrow\; \frac{d}{dt}y + ay = bu\) & \( (\operatorname{q} + \alpha) y = \beta u \; \Leftrightarrow \; y(k+1) + \alpha y(k) = \beta u(k)\)\\
+\(Y(s) \triangleq \laplace{y(t)}\) & \(Y(z) \triangleq \ztrf{y(kh)}\)\\
+\( Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\) & \(Y(z) = H(z)U(z) = \frac{\beta}{z+\alpha}U(z)\)\\
+Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\) & Pole of the system: \( z+\alpha = 0 \; \Rightarrow \; z = -\alpha \)\\
+\includegraphics[width=0.22\linewidth]{../../figures/cont-stable} & \includegraphics[width=0.22\linewidth]{../../figures/discrete-stable}\\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\section{Course structure}
+\label{sec-6}
+\begin{frame}[label=sec-6-1]{How we will work}
+\alert{Prepare, prepare, prepare} for classes:
+\begin{enumerate}
+\item Read text material and watch video
+\item Solve quizz (test) on Canvas (up to 100p, accounts for 1\% of final grade)
+\end{enumerate}
+In class:
+\begin{enumerate}
+\item Review of material
+\item Work with concepts
+\item Problem solving
+\item Summarize
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[label=sec-6-2]{Homework}
+\begin{itemize}
+\item About every second week
+\item Solved in groups of 2 (except first hw which is individual), handed in on Canvas
+\item Each homework accounts for 4\% of final grade (except first hw which is 2\%)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label=sec-6-3]{Project}
+\begin{itemize}
+\item Implement controller on arduino, accounts for 10\% of final grade
+\item Groups of 4 (self-elected)
+\item Partial reports (\(2\times 15\)p)
+\item Final report (30p)
+\item Demonstrate working open-loop setup (10p)
+\item Demonstrate controller design and  working closed-loop system (20p)
+\item Individual journal (10p)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label=sec-6-4]{Examination}
+\begin{itemize}
+\item Quizzes 10\%
+\item Homework 18\%
+\item Project 10\%
+\item 2 partial exams (1.5hrs) 36\%
+\item Final exam (3hrs) 26\%
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[label=sec-6-5]{Coming up}
+\begin{itemize}
+\item Homework 1: Repetition of stuff from control engineering. On Canvas.
+\item See preparation instructions for next week on Canvas
+\end{itemize}
+\end{frame}
+
+\section{Examples}
+\label{sec-7}
+% Emacs 25.3.50.2 (Org mode 8.2.10)
+\end{document}

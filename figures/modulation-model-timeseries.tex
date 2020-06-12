@@ -1,0 +1,40 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz,pgf,pgfplots}
+
+\begin{document}
+\pgfplotsset{
+  dirac/.style={
+    mark=triangle*,
+    mark options={scale=0.6},
+    ycomb,
+    scatter,
+    visualization depends on={y/abs(y)-1 \as \sign},
+    scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+  }
+}
+
+     \begin{tikzpicture}
+     \begin{axis}[
+       width=14cm,
+       height=4cm, 
+       xlabel={$t$},
+       ylabel={$$},
+       ytick=\empty,
+       xmin=-2.5,
+       xmax=10.5,
+       ymin=-0.5,
+       ymax=4.5,
+       xtick={0,1},
+       xticklabels={$kh$, $kh+h$},
+     ]
+
+     \addplot+[red, no marks, domain=-2:10, samples=400,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+     \addplot+[blue!60!red!90, thick, dirac, domain=-2:10, samples=13,variable=k] { 2 + sin(k*90) + cos(k*45)}; 
+     %\addplot+[const plot, ultra thick, no marks, domain=-2:10, samples=13,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+
+     \draw[blue!60!red!90, thick] (axis cs:-2,0) -- (axis cs: 10,0);
+
+     \end{axis}
+     \end{tikzpicture}
+\end{document}

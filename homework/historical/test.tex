@@ -1,0 +1,76 @@
+\documentclass[crop=true,border=2mm]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{polar}
+\usepgfplotslibrary{dateplot} 
+\usepackage{amsmath,amssymb,amsfonts}
+
+
+\newlength\figureheight
+\newlength\figurewidth
+\setlength\figureheight{4cm}
+\setlength\figurewidth{4cm}
+
+
+\pgfplotstableread[col sep=comma, trim cells=true]{
+%# mydata
+x,y
+0.0000,1.1686E+06
+0.0175,1.1686E+06
+0.0349,1.1446E+06
+0.0524,1.1165E+06
+0.0698,1.1034E+06
+0.0873,1.1038E+06
+0.1047,1.1059E+06
+0.1222,1.1317E+06
+0.1396,1.1500E+06
+0.1571,1.1372E+06
+0.1745,1.1173E+06
+0.1920,1.1218E+06
+0.2094,1.1257E+06
+0.2269,1.1203E+06
+0.2443,1.1078E+06
+0.2618,1.1043E+06
+0.2793,1.1239E+06
+0.2967,1.1228E+06
+0.3142,1.0912E+06
+0.3316,1.0909E+06
+}\mydata
+
+\begin{document}
+
+\begin{tikzpicture} %[scale=1.0]
+    \begin{polaraxis}[%
+        axis on top,
+        width = \figurewidth,
+        height = \figureheight,
+        scale only axis,
+        ymin=5.e5, ymax=1.5e6,
+        xtick      ={0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330},
+        xticklabels={0, $\frac{\pi}6$, $\frac{\pi}3$, $\frac{\pi}2$, $\frac{2\pi}3$, $\frac{5\pi}6$, 
+                    $\pi$ , $\frac{7\pi}6$, $\frac{4\pi}3$, $\frac{3\pi}2$, $\frac{5\pi}3$, $\frac{11\pi}6$},
+        ytick = {5e5, 1.e6, 1.5e6},
+    ]
+    \addplot[mark=*, mark size=0.2,draw=black, smooth] table [x=x, y=y,data cs=polarrad]{\mydata};
+    \end{polaraxis}
+\end{tikzpicture}
+\begin{tikzpicture} %[scale=1.0]
+    \begin{axis}[%
+        axis on top,
+        width = \figurewidth,
+        height = \figureheight,
+        scale only axis,
+        xmin=0, xmax=6.2832,
+        ymin=5.e5, ymax=1.5e6,
+        xlabel = {$\theta$},
+        ylabel = {$\Gamma_{\theta}$},
+        grid=major,
+        xtick      ={0, 0.7854, 1.5708, 2.3562, 3.1416, 3.9270, 4.7124, 5.4978, 6.2832},
+        xticklabels={0, $\frac{\pi}4$, $\frac{\pi}2$, $\frac{3\pi}4$, 
+                     $\pi$ , $\frac{5\pi}4$, $\frac{3\pi}2$, $\frac{7\pi}4$, $2\pi$},
+        ]
+        \addplot [mark=*, mark size=0.2,draw=black, smooth] table [x=x, y=y] {\mydata};
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}

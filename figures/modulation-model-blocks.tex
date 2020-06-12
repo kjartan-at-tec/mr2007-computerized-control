@@ -1,0 +1,88 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz,pgf,pgfplots}
+
+\begin{document}
+\pgfplotsset{
+  dirac/.style={
+    mark=triangle*,
+    mark options={scale=0.4},
+    ycomb,
+    scatter,
+    visualization depends on={y/abs(y)-1 \as \sign},
+    scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+  }
+}
+
+\begin{tikzpicture}[node distance=34mm]
+  \begin{axis}[
+    yshift=3mm,
+    width=4cm,
+    height=2cm, 
+    % xlabel={$t$},
+    % ylabel={$$},
+    ytick=\empty,
+    xmin=-2.5,
+    xmax=10.5,
+    % ymin=-0.5,
+    % ymax=4.5,
+    % xtick={0},
+    xtick=\empty,
+    ]
+    \addplot+[red, no marks, domain=-2:10, samples=400,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+  \end{axis}
+
+  \begin{axis}[
+    yshift=14mm,
+    xshift=38mm,
+    width=4cm,
+    height=2cm, 
+    % xlabel={$t$},
+    % ylabel={$$},
+    ytick=\empty,
+    xmin=-2.5,
+    xmax=10.5,
+    ymin=-0.5,
+    ymax=1.2,
+    % xtick={0},
+    xtick=\empty,
+    ]
+    \draw[blue,] (axis cs:-2,0) -- (axis cs: 10,0);
+    \addplot+[white, no marks, domain=-2:10, samples=40,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+    \foreach \x in {-1,0,1,2,...,9}{%
+      \edef\temp{\noexpand\draw [->, blue,] (axis cs:\x,0) -- (axis cs:\x, 1);}
+      \temp
+    }
+  \end{axis}
+  
+  \begin{axis}[
+    yshift=3mm,
+    xshift=48mm,
+    width=4cm,
+    height=2cm, 
+    % xlabel={$t$},
+    % ylabel={$$},
+    ytick=\empty,
+    xmin=-2.5,
+    xmax=10.5,
+    ymin=-0.5,
+    ymax=4.2,
+    % xtick={0},
+    xtick=\empty,
+    ]
+    \draw[blue!60!red!90,] (axis cs:-2,0) -- (axis cs: 10,0);
+    \addplot+[white!60!red, no marks, domain=-2:10, samples=40,variable=k] { 2 + sin(k*90) + cos(k*45) }; 
+     \addplot+[blue!60!red!90, dirac, domain=-2:10, samples=13,variable=k] { 2 + sin(k*90) + cos(k*45)}; 
+  \end{axis}
+
+  \node[coordinate] (ctsignal) {};
+  \node[circle, draw, inner sep=1pt, right of=ctsignal] (product) {$\times$};
+  \node[coordinate, right of=product] (sampledsignal) {};
+  \node[coordinate, above of=product, node distance=20mm] (pulsetrain) {};
+  
+  \draw[->] (ctsignal) -- node[below, near start] {$f(t)$} (product);
+  \draw[->] (product) -- node[below, near end] {$f_s(t)$} (sampledsignal);
+  \draw[->] (pulsetrain) -- node[left, near start] {$m(t)$} (product);
+\end{tikzpicture} 
+
+\end{document}

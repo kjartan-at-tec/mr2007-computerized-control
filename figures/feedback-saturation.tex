@@ -1,0 +1,48 @@
+\documentclass[tikz,border=0]{standalone}
+\tikzset{%
+  saturation block/.style={%
+    draw, 
+    path picture={
+      % Get the width and height of the path picture node
+      \pgfpointdiff{\pgfpointanchor{path picture bounding box}{north east}}%
+        {\pgfpointanchor{path picture bounding box}{south west}}
+      \pgfgetlastxy\x\y
+      % Scale the x and y vectors so that the range
+      % -1 to 1 is slightly shorter than the size of the node
+      \tikzset{x=\x*.4, y=\y*.4}
+      %
+      % Draw annotation
+      \draw (-1,0) -- (1,0) (0,-1) -- (0,1); 
+      \draw (-1,-.7) -- (-.7,-.7) -- (.7,.7) -- (1,.7);
+    }
+  }
+}
+
+\begin{document}
+\begin{tikzpicture}[
+    node distance=2cm, block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input] (sum) {$\sum$};
+    \node[block,right of=sum, minimum height=12mm, minimum width=15mm, node distance=15mm] (K) {$K$};
+    \node[coordinate, right of=K, node distance=3cm ] (P) {};
+    \node[block,above of=P] (D) {$\frac{T_ds}{1 + sT_d/N}$};
+    \node[block,below of=P] (I) {$\frac{1}{T_i s}$};
+    \node[sumnode, right of=P] (sumcontrol) {$\sum$};
+    \node [saturation block, minimum size=1cm, right of=sumcontrol] (saturation) {};
+    \node[block,right of=saturation] (plant) {$G(s)$};
+    \node[coordinate, right of=plant, node distance=3cm] (output) {};
+
+    \draw[->] (input) -- node[above] {$y_{ref}$} (sum);
+  \draw[->] (sum) -- node[above] {} (K);
+  \draw[->] (K) -- node[above] {$u_P$} (sumcontrol);
+  \draw[->] (K) -- ++(1cm,0) |- (D);
+  \draw[->] (D) -| node[right] {$u_D$} (sumcontrol);
+  \draw[->] (K) -- ++(1cm,0) |- (I);
+  \draw[->] (I) -| node[right] {$u_I$} (sumcontrol);
+  \draw[->] (sumcontrol) -- node[above] {$u$} (saturation);
+  \draw[->] (saturation) -- (plant);
+  \draw[->] (plant) -- node[coordinate] (measure) {} node[at end, above] {$y$} (output);
+  \draw[->] (measure) -- ++(0,-3cm) -| (sum) node[left, pos=0.96] {$-$};
+\end{tikzpicture}
+\end{document}

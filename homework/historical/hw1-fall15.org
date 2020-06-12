@@ -1,0 +1,128 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+
+#+LaTex_HEADER: \usepackage{amsmath}
+#+LaTex_HEADER: \usepackage{graphicx}
+#+LaTex_HEADER: \usepackage{subfigure}
+#+LaTex_HEADER: \usepackage{parskip}
+#+LaTex_HEADER: \usepackage{standalone}
+#+LATEX_HEADER: \usepackage{tikz,pgf,pgfplots}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \pgfplotsset{compat=1.9}
+#+LaTex_HEADER: \newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+#+LaTex_HEADER: \newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+#+LaTex_HEADER: \newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+#+LaTex_HEADER: \newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+#+LaTex_HEADER: \newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+#+LaTex_HEADER: \newcommand*{\bbm}{\begin{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\ebm}{\end{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\obsmatrix}{\mathcal{O}}
+#+LaTex_HEADER: \newcommand*{\contrmatrix}{\mathcal{C}}
+#+LaTex_HEADER: \newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+#+LaTex_HEADER: \newcommand*{\swh}{\ensuremath{\sin \omega h}}
+#+title: Computerized control - homework 1
+#+date: Due 2015-08-20
+
+* Exercises
+** Why a theory of sampled-data systems?
+   Explain briefly *three different arguments* for why is makes sense to work with sampled-data description of control systems!
+
+** Sampling 
+The continuous-time system
+\begin{align*}
+\dot{x} &= \begin{bmatrix} 0 & \omega\\-\omega & 0 \end{bmatrix} x + \begin{bmatrix}1\\0\end{bmatrix} u\\
+y &= \begin{bmatrix} 1 & 0 \end{bmatrix} x
+\end{align*} 
+is sampled with sampling interval $h$. 
+*** Determine the system matrices for the sampled system on state-space form.
+*** For which values of $h$ is the system observable?
+
+
+* Solutions
+** Why a theory of sampled systems
+   - Basically all modern control systems are digital and work in discrete time. A theory that does not take this into account can only be suboptimal.
+   - A simple discretizaction of an analog control design does not take into account the properties of the discrete controller. Performance will only approach that of the analog design as the sampling interval $h$ goes to zero.
+   - Discrete control can in some cases outperform analog control (e.g. deadbeat control).
+   - Many systems are discrete-time by nature, for instance radar, biological systems (at small scales), internal combustion, particle accelerator. See Å&W chapter 1.4.
+
+** Sampling
+
+*** Sampling the state-space system
+    Assume zero-hold sampling, hence inputs $u$ are constant between sampling instants. Solve the analog system using $x(kh) = x(k)$ as the initial state and $u(k)=u_k$ to be the constant input signal. We get
+\begin{equation*}
+x(k+1) = \Phi(h)x(k) + \Gamma B u_k = \mexp{Ah}x(k) + \int_0^h \mexp{As}ds B u_k.
+\end{equation*}
+There are several ways to compute the matrix exponential. One alternative is to use the Laplace transform. Note that the matrix exponential $\Phi(t)=\mexp{At}$ is the solution to the differential equation
+\begin{equation*}
+\frac{d}{dt} \Phi(t) = A\Phi(t),
+\end{equation*}
+with the initial condition $\Phi(0) = I$. Solving this differential equation using the Laplace transform gives
+\begin{equation*}
+s\laplace{\Phi} - \Phi(0) = A\laplace{\Phi} \quad \Rightarrow \quad \Phi = \laplaceinv{\big(sI - A\big)^{-1}}.
+\end{equation*}
+With the $A$-matrix given in the exercise we get
+\begin{equation*}
+\laplace{\Phi} = \bbm s & -\omega\\ \omega & s\ebm^{-1}
+               = \frac{1}{s^2 + \omega^2} \bbm s & \omega\\ -\omega & s \ebm, 
+\end{equation*}
+and taking the inverse laplace transform of each element we get (from standard table of the Laplace transform)
+\begin{equation*}
+\Phi(t) = \bbm \cos \omega t & \sin \omega t\\ -\sin \omega t & \cos \omega t \ebm.
+\end{equation*}
+
+To find the matrix $\Gamma$ we integrate to get
+\begin{equation*}
+\Gamma(h) = \int_0^h \mexp{As}ds\bbm 1\\0\ebm = \bbm \int_0^h \cos \omega s ds \\ -\int_0^h \sin \omega s ds \ebm  = \frac{1}{\omega} \bbm \sin \omega h \\ \cos \omega h - 1 \ebm.
+\end{equation*}
+
+To summarize, zero-order hold sampling gives the sampled system ($x(kh) = x(k)$)
+\begin{align*}
+x(k+1) &= \bbm \cos \omega h & \sin \omega h\\ -\sin \omega h & \cos \omega h \ebm x(k) + 
+          \frac{1}{\omega} \bbm \sin \omega h \\ \cos \omega h - 1 \ebm u(k), \\
+y(k) &= \bbm 1 & 0 \ebm x(k).
+\end{align*}
+
+*** Observability
+The observability matrix for this second-order system is given by
+\[
+\obsmatrix = \bbm C \\ C\Phi(h) \ebm
+           = \bbm 1 & 0\\ \cwh & \swh \ebm
+\]
+Observability is lost when the matrix becomes singular, which is for
+\[
+\det \obsmatrix = \swh = 0.
+\]
+
+Thus, the system is observable for 
+\[ 0 < h < \pi/\omega. \]
+*** Controlability						   :noexport:
+
+The controlability matrix for this second-order system is given by
+\begin{equation*}
+\calmatrix = \bbm \Gamma B & \Phi\Gamma B \ebm
+           = \bbm \sin \omega h & \cos \omega h \sin\omega h + \sin \omega h - \sin \omega h \cos \omega h \\ 1 - \cos \omega h & -\sin^2 \omega h + \cos \omega h - \cos^2 \omega h \ebm
+           = \bbm \sin \omega h & \sin \omega h \\ 1-\cos \omega h & \cos \omega h - 1 \ebm.
+\end{equation*}
+
+Controlability is lost whenever the matrix becomes singular, this happens when the determinant becomes zero
+\begin{equation*}
+\det \bbm \sin \omega h & \sin \omega h \\ 1-\cos \omega h & \cos \omega h - 1 \ebm = \sin \omega h \cos\omega h - \sin \omega h - \sin\omega h + \cos \omega h \sin \omega h 
+= 2 \sin \omega h (\cos \omega h - 1) = 0 
+\end{equation*}
+from which we see that the observability matrix looses rank whenever
+\[ \sin \omega h = 0 \]
+or \[ \cos \omega h = 1, \] which happens for 
+\begin{equation*}
+h = n\pi/\omega, \quad n=0,1,2,\ldots 
+\end{equation*}
+The system equations are periodic, so we need only consider values of $0 \le \omega h < 2\pi$. Hence the answer is that the system is  observable for 
+\[ 0 < h < \pi/\omega, \]
+and 
+\[ \pi/\omega < h < 2\pi/\omega. \]
+
+
+ 

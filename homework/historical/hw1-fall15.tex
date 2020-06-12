@@ -1,0 +1,141 @@
+% Created 2015-11-11 Wed 18:00
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{parskip}
+\usepackage{standalone}
+\usepackage{tikz,pgf,pgfplots}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\pgfplotsset{compat=1.9}
+\newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+\newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+\newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+\newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+\newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+\newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+\newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+\newcommand*{\bbm}{\begin{bmatrix}}
+\newcommand*{\ebm}{\end{bmatrix}}
+\newcommand*{\obsmatrix}{\mathcal{O}}
+\newcommand*{\contrmatrix}{\mathcal{C}}
+\newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+\newcommand*{\swh}{\ensuremath{\sin \omega h}}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{Computerized control - homework 1}
+\author{Kjartan Halvorsen}
+\date{Due 2015-08-20}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Exercises}
+\label{sec-1}
+\subsection{Why a theory of sampled-data systems?}
+\label{sec-1-1}
+
+   Explain briefly \textbf{three different arguments} for why is makes sense to work with sampled-data description of control systems!
+\subsection{Sampling}
+\label{sec-1-2}
+
+The continuous-time system
+\begin{align*}
+\dot{x} &= \begin{bmatrix} 0 & \omega\\-\omega & 0 \end{bmatrix} x + \begin{bmatrix}1\\0\end{bmatrix} u\\
+y &= \begin{bmatrix} 1 & 0 \end{bmatrix} x
+\end{align*} 
+is sampled with sampling interval $h$. 
+\subsubsection{Determine the system matrices for the sampled system on state-space form.}
+\label{sec-1-2-1}
+\subsubsection{For which values of $h$ is the system observable?}
+\label{sec-1-2-2}
+\section{Solutions}
+\label{sec-2}
+\subsection{Why a theory of sampled systems}
+\label{sec-2-1}
+
+\begin{itemize}
+\item Basically all modern control systems are digital and work in discrete time. A theory that does not take this into account can only be suboptimal.
+\item A simple discretizaction of an analog control design does not take into account the properties of the discrete controller. Performance will only approach that of the analog design as the sampling interval $h$ goes to zero.
+\item Discrete control can in some cases outperform analog control (e.g. deadbeat control).
+\item Many systems are discrete-time by nature, for instance radar, biological systems (at small scales), internal combustion, particle accelerator. See Å\&W chapter 1.4.
+\end{itemize}
+\subsection{Sampling}
+\label{sec-2-2}
+\subsubsection{Sampling the state-space system}
+\label{sec-2-2-1}
+
+    Assume zero-hold sampling, hence inputs $u$ are constant between sampling instants. Solve the analog system using $x(kh) = x(k)$ as the initial state and $u(k)=u_k$ to be the constant input signal. We get
+\begin{equation*}
+x(k+1) = \Phi(h)x(k) + \Gamma B u_k = \mexp{Ah}x(k) + \int_0^h \mexp{As}ds B u_k.
+\end{equation*}
+There are several ways to compute the matrix exponential. One alternative is to use the Laplace transform. Note that the matrix exponential $\Phi(t)=\mexp{At}$ is the solution to the differential equation
+\begin{equation*}
+\frac{d}{dt} \Phi(t) = A\Phi(t),
+\end{equation*}
+with the initial condition $\Phi(0) = I$. Solving this differential equation using the Laplace transform gives
+\begin{equation*}
+s\laplace{\Phi} - \Phi(0) = A\laplace{\Phi} \quad \Rightarrow \quad \Phi = \laplaceinv{\big(sI - A\big)^{-1}}.
+\end{equation*}
+With the $A$-matrix given in the exercise we get
+\begin{equation*}
+\laplace{\Phi} = \bbm s & -\omega\\ \omega & s\ebm^{-1}
+               = \frac{1}{s^2 + \omega^2} \bbm s & \omega\\ -\omega & s \ebm, 
+\end{equation*}
+and taking the inverse laplace transform of each element we get (from standard table of the Laplace transform)
+\begin{equation*}
+\Phi(t) = \bbm \cos \omega t & \sin \omega t\\ -\sin \omega t & \cos \omega t \ebm.
+\end{equation*}
+
+To find the matrix $\Gamma$ we integrate to get
+\begin{equation*}
+\Gamma(h) = \int_0^h \mexp{As}ds\bbm 1\\0\ebm = \bbm \int_0^h \cos \omega s ds \\ -\int_0^h \sin \omega s ds \ebm  = \frac{1}{\omega} \bbm \sin \omega h \\ \cos \omega h - 1 \ebm.
+\end{equation*}
+
+To summarize, zero-order hold sampling gives the sampled system ($x(kh) = x(k)$)
+\begin{align*}
+x(k+1) &= \bbm \cos \omega h & \sin \omega h\\ -\sin \omega h & \cos \omega h \ebm x(k) + 
+          \frac{1}{\omega} \bbm \sin \omega h \\ \cos \omega h - 1 \ebm u(k), \\
+y(k) &= \bbm 1 & 0 \ebm x(k).
+\end{align*}
+\subsubsection{Observability}
+\label{sec-2-2-2}
+
+The observability matrix for this second-order system is given by
+\[
+\obsmatrix = \bbm C \\ C\Phi(h) \ebm
+           = \bbm 1 & 0\\ \cwh & \swh \ebm
+\]
+Observability is lost when the matrix becomes singular, which is for
+\[
+\det \obsmatrix = \swh = 0.
+\]
+
+Thus, the system is observable for 
+\[ 0 < h < \pi/\omega. \]
+
+\end{document}

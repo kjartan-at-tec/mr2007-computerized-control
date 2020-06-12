@@ -1,0 +1,134 @@
+% Created 2015-11-13 Fri 09:36
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage[margin=18mm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{parskip}
+\usepackage{standalone}
+\usepackage{tikz,pgf,pgfplots}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\pgfplotsset{compat=1.9}
+\newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+\newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+\newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+\newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+\newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+\newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+\newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+\newcommand*{\bbm}{\begin{bmatrix}}
+\newcommand*{\ebm}{\end{bmatrix}}
+\newcommand*{\obsmatrix}{\mathcal{O}}
+\newcommand*{\contrmatrix}{\mathcal{C}}
+\newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+\newcommand*{\swh}{\ensuremath{\sin \omega h}}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{Computerized control - homework 2}
+\author{Kjartan Halvorsen}
+\date{Due 2015-09-03}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Exercises}
+\label{sec-1}
+\subsection{Sample the continuous-time transfer function}
+\label{sec-1-1}
+
+   The harmonic oscillator from Homework 1
+\begin{align*}
+\dot{x} &= \begin{bmatrix} 0 & \omega\\-\omega & 0 \end{bmatrix} x + \begin{bmatrix}1\\0\end{bmatrix} u\\
+y &= \begin{bmatrix} 1 & 0 \end{bmatrix} x.
+\end{align*} 
+has the transfer function 
+\[ G(s) = C(sI-A)^{-1}B + D = \frac{s}{s^2 + \omega^2}. \]
+Sampling the state space system with zero-order-hold gives the discrete-time state space system ($x(kh) = x(k)$)
+\begin{align*}
+x(k+1) &= \bbm \cos \omega h & \sin \omega h\\ -\sin \omega h & \cos \omega h \ebm x(k) + 
+          \frac{1}{\omega} \bbm \sin \omega h \\ \cos \omega h - 1 \ebm u(k), \\
+y(k) &= \bbm 1 & 0 \ebm x(k).
+\end{align*}
+
+\begin{enumerate}
+\item \textbf{Compute the pulse-transfer function} for the discrete-time system from the state-space representation using the expression \[ H(z) = C(zI-\Phi)^{-1}\Gamma. \]
+\item \textbf{Compute the pulse-transfer function} by sampling the transfer function $G(s)$.
+\end{enumerate}
+\subsection{Simulation of the continuous- and discrete-time harmonic oscillator}
+\label{sec-1-2}
+\subsubsection{Simulate step responses}
+\label{sec-1-2-1}
+
+Use matlab's control toolbox or the \href{http://python-control.sourceforge.net/}{python control module}  to simulate the systems. Use $\omega=1$. 
+
+First, define the continuous-time system \texttt{sys\_c} and the sampled system \texttt{sys\_d} using the \texttt{ss} function. The example below uses the python control toolbox. Using the matlab control toolbox is very similar.
+
+\begin{verbatim}
+import numpy as np
+import control.matlab as cm
+import matplotlib.plot as plt
+
+omega = 1.0
+h = omega / 10
+
+A = np.array([[0, omega], [-omega, 0]])
+B = np.array([[1],[0]])
+C = np.array([[1, 0]])
+D = np.array([[0]])
+sys_c = cm.ss(A,B,C,D)
+
+wh = omega*h
+F = np.array([[np.cos(wh), np.sin(wh)], [-np.sin(wh), np.cos(wh)]])
+G = 1.0/omega* np.array([[np.sin(wh)], [np.cos(wh)-1]])
+sys_d = cm.ss(F,G,C,D, h)
+
+Tc = np.linspace(0,4/omega,200)
+(yc,tc) = cm.step(sys_c, Tc)
+Td = h*np.arange(40)
+(yd,td) = cm.step(sys_d, Td)
+
+plt.plot(tc,yc)
+plt.plot(td,yd[0], '*')
+\end{verbatim}
+
+\textbf{Verify that the step response of the discrete-time system is equal to that of the continuous-time system at the sampling instants. Explain why this is so!}
+\subsubsection{Sampling the system with help of the computer}
+\label{sec-1-2-2}
+
+Use the function \texttt{c2d} to sample your continuous-time system \texttt{sys\_c}. \textbf{Verify that you get the same discrete-time system as your} \texttt{sys\_d} \textbf{above}. \emph{Hint}: Look at the system matrices returned by \texttt{ssdata}. 
+\subsubsection{Compute the discrete step response yourself}
+\label{sec-1-2-3}
+
+    Write some lines of code that solves the difference equation
+    \begin{align*}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y &= Cx(k)
+    \end{align*}
+
+given an initial state $x(0)=x_0$ and an input sequence $\{u(k)\}$. Use a step signal ($u(k)=1$) and verify that your solution is the same as when using the \texttt{step} function.
+ 
+
+\end{document}

@@ -1,0 +1,35 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+
+\begin{tikzpicture}
+\pgfplotstableread[col sep=comma]{ultimate_exp.dat}\stepdata;
+
+  \begin{axis} [
+      width=12cm,
+      height=5cm,
+      ylabel={$y$},
+      xlabel={$time [s]$},
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+  ]
+    \addplot [thick, black, no marks, ]  table [] {\stepdata};
+
+    \draw[<->, red, thick] (axis cs: 2.1805,0.013268) -- node [above] {$T_u = 0.702$} (axis cs: 2.8822,0.01456); 
+
+
+
+  \end{axis}
+
+\end{tikzpicture}
+
+\end{document}

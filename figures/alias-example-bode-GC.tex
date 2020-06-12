@@ -1,0 +1,58 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.13}
+
+
+\begin{document}
+
+\def\sysDisc{tf([0, 0.1198, 0.2609, -0.6533, 0.1809, 0.0998], [1.0000, -2.5198, 1.6591, 0.1413, -0.1809, -0.0998], 1);}
+
+
+\begin{tikzpicture}
+\pgfplotstableread[col sep=comma]{./alias-example-GC-bode.dta}\mydata;
+  \begin{semilogxaxis} [
+      xlabel={$\omega$ [rad/s]},
+      ylabel=$\arg G_c(i\omega)$,
+      width=7cm,
+      height=3cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      %ytick={-270, -225, -180, -135, -90},
+      %yticklabels={$-45^\circ$, $0^\circ$, $45^\circ$}, 
+      %xtick={0.1, 1, 10},
+      %xticklabels={$0.1\omega_0$, $\omega_0$, $10\omega_0$},
+      %ymin=-270, ymax=-90,
+      xmin=0.1, xmax=10,
+      minor y tick num=8,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot [thick,black, no marks, ] table [ x expr=\thisrowno{0}, y expr=\thisrowno{2} ] {\mydata};
+  \end{semilogxaxis}
+  \begin{loglogaxis} [
+      xlabel={$\omega$ [rad/s]},
+      ylabel=$|G_c(i\omega)|$,
+      xshift = -7.5cm, 
+      width=7cm,
+      height=3cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      %ytick={0.5, 2},
+      %yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      %xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=0.1, xmax=10,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot [thick,black, no marks, ] table [ x expr=\thisrowno{0}, y expr=\thisrowno{1} ] {\mydata};
+  \end{loglogaxis}
+  
+\end{tikzpicture}
+
+\end{document}

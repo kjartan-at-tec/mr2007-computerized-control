@@ -1,0 +1,63 @@
+#+OPTIONS: toc:nil num:nil title:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper] 
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{subfigure}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+#+LaTex_HEADER: \addtolength{\oddsidemargin}{-4mm}
+#+LaTex_HEADER: \addtolength{\evensidemargin}{-4mm}
+#+LaTex_HEADER: \addtolength{\textheight}{33mm}
+
+# #+title: LTI and geometric sequences exercise 
+# #+title: Root locus, Bode- and Nyquist plots, relative stability
+#+title: 
+#+date: 
+
+
+* Root locus, Bode- and Nyquist plots, relative stability
+  Kjartan Halvorsen, September 2019
+
+** Draw a root locus for PI-control of the reservoir
+   #+BEGIN_LaTeX
+        \begin{center}
+          \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+            
+            \node[coordinate] (input) {};
+            \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+            \node[block, right of=sum, node distance=25mm] (controller)  {$F(z) = K\frac{z-0.5}{z-1}$};
+            \node[block, right of=controller, node distance=35mm] (plant)  {$G(z) = \frac{1}{z-1}$};
+            \node[coordinate, right of=plant, node distance=30mm] (output) {};
+
+            \draw[->] (input) -- node[above, pos=0.3] {$y_{ref}(k)$} (sum);
+            \draw[->] (sum) -- node[above] {$e(k)$} (controller);
+            \draw[->] (controller) -- node[above] {$u(k)$} (plant);
+            \draw[->] (plant) -- node[coordinate] (measure) {}  node[above, near end] {$y(k)$} (output);
+            \draw[->] (measure) -- ++(0,-14mm) -| node[pos=0.95, left] {$-$} (sum);
+          \end{tikzpicture}
+        \end{center}
+
+   #+END_LaTeX
+
+\includegraphics[width=0.36\linewidth]{../../figures/imaginary-plane-empty}
+\includegraphics[width=0.36\linewidth]{../../figures/imaginary-plane-empty}\\
+
+** Frequency response primer: The product of two complex numbers
+   - At time \(k=2\), the discrete-time complex exponential signal \(u(k) = \mathrm{e}^{i\frac{\pi}{12}k}\) has the value \(u(2) = \mathrm{e}^{i\frac{\pi}{6}}\). 
+   - A pulse-transfer function \(H(z)\) is a mapping from the complex plane to the complex plane, that is \( H: \; \mathbb{C} \rightarrow \mathbb{C}\). Consider a specific pulse-transfer function \(H(z)\) that when evaluated at \(z=\mathrm{e}^{i\frac{\pi}{12}}\) has the value  \(H(\mathrm{e}^{i\frac{\pi}{12}}) = 2\mathrm{e}^{-i\frac{\pi}{3}}\). 
+
+*Determine the magnitude, the argument and the imaginary part of the product \(H(\mathrm{e}^{i\frac{\pi}{12}})u(2)\). Then mark the first few values of the sequence \(H(\mathrm{e}^{i\frac{\pi}{12}})u(k)\).*
+
+\includegraphics[width=0.34\linewidth]{../../figures/imaginary-plane-two-points}
+
+
+** Bode plot and Nyquist plots
+Sketch the Nyquist plot corresponding to the Bode plot! Then mark the phase margin and amplitude margins!
+#+BEGIN_CENTER 
+ \includegraphics[width=0.95\linewidth]{../../figures/bode-nyquist-exc-1}
+#+END_CENTER
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.95\linewidth]{../../figures/bode-nyquist-exc-2}
+#+END_CENTER
+
+

@@ -1,0 +1,56 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+
+\begin{tikzpicture}
+  \begin{semilogxaxis} [
+      xlabel={$\omega$},
+      ylabel=$\arg F_b(i\omega)$,
+      width=12cm,
+      height=4cm,
+      %grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ytick={-45, 0, 45},
+      %yticklabels={$-45^\circ$, $0^\circ$, $45^\circ$}, 
+      yticklabels={$$, $0^\circ$, $$}, 
+      xtick={0.1, 1, 10},
+      xticklabels={$0.1\omega_0$, $\omega_0$, $10\omega_0$},
+      ymin=-60, ymax=60,
+      xmin=0.1, xmax=10,
+      minor y tick num=8,
+      every major grid/.style={red, opacity=0.5},
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+ %   \addplot 
+ %   shell[thick,black, no marks, prefix=pgfshell_, id=bodenm,] {julia -q --eval  "G=tf([3],[(1.0/\omegazero)^2, 3/\omegazero, 3]); print_bode_phase(G, -2, 2);"};
+  \end{semilogxaxis}
+  \begin{loglogaxis} [
+      ylabel=$|F_b(i\omega)|$,
+      yshift = 2.8cm, 
+      width=12cm,
+      height=4cm,
+      %grid=both,
+      ytick={0.5, 2},
+      %yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      yticklabels={$$,$$},
+      xticklabel=\empty,
+      ymin=0.2, ymax=6,
+      xmin=0.1, xmax=10,
+      every major grid/.style={red, opacity=0.5},
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+ %   \addplot 
+ %   shell[thick,black, no marks, prefix=pgfshell_, id=bodenm,] {julia -q --eval  "G=tf([3],[(1.0/\omegazero)^2, 3/\omegazero, 3]); print_bode_phase(G, -2, 2);"};
+  \end{loglogaxis}
+\end{tikzpicture}
+
+\end{document}

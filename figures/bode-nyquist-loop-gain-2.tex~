@@ -1,0 +1,74 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+
+
+\def\sysCont{2*tf([1], [1, 0])*tf([2], [1, 2])*tf([3], [1, 4]);}
+\def\samplePeriod{0.4}
+
+
+\begin{tikzpicture}
+  \begin{semilogxaxis} [
+      xlabel={$\omega$},
+      ylabel=$\arg G_o(i\omega)$,
+      width=12cm,
+      height=5cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ytick={-270, -225, -180, -135, -90},
+      %yticklabels={$-45^\circ$, $0^\circ$, $45^\circ$}, 
+      %xtick={0.1, 1, 10},
+      %xticklabels={$0.1\omega_0$, $\omega_0$, $10\omega_0$},
+      ymin=-270, ymax=-90,
+      xmin=0.1, xmax=10,
+      minor y tick num=8,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+  %\addplot shell[thick,black, no marks, prefix=pgfshell_, id=bodephc,] {julia -q --eval  "G=\sysCont  print_bode_phase(G, -2, 2);"};
+    \addplot+ shell[thick,black,  no marks, prefix=pgfshell_, id=bodephd,] {julia -q --eval  "G=\sysCont  H=c2d(G, \samplePeriod); print_bode_phase(H, -2, 2);"};
+  \end{semilogxaxis}
+  \begin{loglogaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      yshift = 4.8cm, 
+      width=12cm,
+      height=5cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      %ytick={0.5, 2},
+      %yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      %xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=0.1, xmax=10,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+   % \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodemc,] {julia -q --eval  "G=\sysCont  print_bode_mag(G, -2, 2);"};
+    \addplot+ shell[thick,black, no marks, prefix=pgfshell_, id=bodemd,] {julia -q --eval  "G=\sysCont  H=c2d(G, \samplePeriod); print_bode_mag(H, -2, 2);"};
+  \end{loglogaxis}
+
+  \begin{axis} [
+    xshift=12cm,
+    width=7cm,
+    height=7cm,
+    axis lines=middle,
+    ylabel=Im,
+    xlabel=Re,
+    xmin=-2, xmax=1,
+    ymin=-2, ymax=1,
+    ]
+    %\addplot  shell[thick,black, no marks, prefix=pgfshell_, id=nyqc,] {julia -q --eval  "G=\sysCont  print_nyq_real_im(G, -1, 1);"};
+    \addplot+ shell[thick,black, no marks, prefix=pgfshell_, id=nyqd,] {julia -q --eval  "G=\sysCont  H=c2d(G, \samplePeriod); print_nyq_real_im(H, -1, 1);"};
+    \addplot+ [black, dotted, no marks, variable=\t, domain=0:2*pi, samples=800] ( {cos(deg(t))}, {sin(deg(t))} );
+  \end{axis}
+  
+\end{tikzpicture}
+
+\end{document}

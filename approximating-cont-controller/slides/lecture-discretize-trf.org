@@ -1,0 +1,139 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Computerized Control - Discretizing continuous-time controllers
+#+date: 2019-11-21
+
+
+* What do I want the students to understand?			   :noexport:
+  - Map z = e^{sh}
+  - Tustin's 
+
+* Which activities will the students do?			   :noexport:
+  1. Concept questions:
+     Pair continuous and discrete poles, discretized with pole-zero mapping
+  2. 
+
+* Intro
+
+** Repetition						     :slide:noexport:
+# From the videos and previous lecture
+
+
+** Goal of today's lecture 					      :slide:
+   - Understand discrete approximations of continuous-time controllers
+
+** Result from quizz
+   - Frequency warping and prewarping
+   - How to choose approximation method
+
+* Discretization
+** Discretizing a controller
+   - Have a controller \(F(s)\) obtained from a design in continuous time. 
+   - Discretize in order to implement on a computer
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
+#+END_CENTER
+
+*** Notes							   :noexport:
+   When we first encountered the problem of obtaining a discrete model from a continous model, in the case of finding a discrete pulse-tranfer function to describe our continuous-time dynamic plant model, we used zero-order-hold sampling. Why is this not such a good idea for approximating the controller $F(s)$?
+
+** Discretization methods
+   1. Forward difference. Substitute 
+      \[ s = \frac{z-1}{h} \] in $F(s)$ to get
+      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
+   2. Backward difference. Substitute 
+      \[ s = \frac{z-1}{zh} \] in $F(s)$ to get
+      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
+** Discretization methods, contd.
+   3. [@3] Tustin's method (also known as the bilinear transform). Substitute
+      \[ s = \frac{2}{h}\frac{z-1}{z+1} \] in $F(s)$ to get
+      \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
+   4. Ramp invariance. This is similar to ZoH, which is step-invariant approximation. 
+      Since a unit ramp has z-transform $\frac{zh}{(z-1)^2}$ and Laplace-transform $1/s^2$,  the discretization becomes
+      \[ F_d(z) = \frac{(z-1)^2}{zh} \ztrf{\laplaceinv{\frac{F(s)}{s^2}}}. \]   
+
+** Frequency warping using Tustin's
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}
+   #+END_CENTER
+   The infinite positive imaginary axis in the s-plane is mapped to the finite-length upper half of the unit circle in the z-plane.
+** Exercise
+   Find the discrete approximation of the lead-compensator $F(s) = \frac{s+b}{s+a}$, and determine the pole for 
+   1. Forward difference. Substitute 
+      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
+   2. Backward difference. Substitute 
+      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
+   3. Tustin's approximation
+      \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
+
+*** Solution							   :noexport:
+   1. F_d(z) = \frac{ \frac{z-1}{h} + b}{\frac{z-1}{h} + a}
+             = \frac{z-1+bh}{z-1+ah}
+      Pole in z = 1-ah, stable as long as |z| < 1  => z<1 OK -z < 1 => -1+ah < 1 => h < 2/a
+   2. F_d(z) = \frac{ \frac{z-1}{zh} + b}{\frac{z-1}{zh} + a}
+             = \frac{ z-1 + zhb}{z-1+zha} = \frac{(1+bh)z - 1}{(1+ah)z - 1}
+      Pole in z= 1/(1+ah).  |z| < 1 for all a,h
+   3. F_d(z) = \frac{ g\frac{z-1}{z+1} + b}{g\frac{z-1}{z+1} + a}
+             = \frac{g(z-1) + b(z+1)}{g(z-1) + a(z+1)}
+             = \frac{(g+b)z - (g-b)}{(g+a)z - (g-a)}
+      Pole in z = \frac{g-a}{g+a}. Since g,a > 0 if g=2/h >> a  => z \approx 1, g=2/h << a => -1 
+                = \frac{2-ah}{2+ah}
+     Note that z_f/z_b = (1-ah)/(1/(1+ah)) = (1-ah)(1+ah) = 1 - (ah)^2 approx 1 if ah << 1
+
+     z_b / z_T  = \frac{2+ah}{(2-ah)(1+ah)} = \frac{2+ah}{2 + ah - (ah)^2} \approx 1 if (ah) << 1
+** Forward difference exercise
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
+   #+END_CENTER
+
+*** Solution							   :noexport:
+Simply insert z = 1 + sh = 1 + i\pi/4. 
+
+Or more general. Let s=-\lambda + i\mu
+z = 1-\lambda h + i \mu h
+Re{z} = 1-\lambda h
+Im{z} = \mu h
+
+** Backward difference exercise
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
+   #+END_CENTER
+
+*** Solution							   :noexport:
+    - Note that
+      s = \frac{z-1}{zh} solved for z gives
+      zhs = z-1
+      z-zhs = 1
+      z = \frac{1}{1-sh}
+    - Simply insert z = \frac{1}{1 - sh} = \frac{1}{1 - i\pi/4}
+      Then do 
+      | z | = \frac{1}{ | 1 -i\pi/4 | } = \frac{1}{\sqrt{1 +  \pi^2/16}} |
+
+** Tustin's approximation, harmonic oscillator			   :noexport:
+
+   Write the approximation as
+         \[ F_d(z) = F(s')|_{s'= g\frac{z-1}{z+1}}, \quad g > 0 \]
+   Clearly for the standard Tustin's approximation we have  \(g = \frac{2}{h}\).
+
+   Apply the approximation to the system
+   \[ F(s) = \frac{\omega_n^2}{s^2 + \omega_n^2} = \frac{\omega_n^2}{(s + i\omega_n)(s -i\omega_n)} \]
+
+   *Determine the poles. What is the angle (argument) of the discrete-time poles?*
+*** Notes							   :noexport:
+[[file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's%20approximation%20of%20harmonic%20oscillator.ipynb][file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's approximation of harmonic oscillator.ipynb]]    
+    
+F(z) = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
+     = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
+     = \frac{\omega_n^2(z+1)^2}{g^2(z^2 -2z + 1) + \omega_n^2(z^2 + 2z + 1)}
+     = \frac{\omega_n^2(z+1)^2}{(g^2+\omega_n^2)z^2 + 2(\omega_n^2 -g^2)z + (g^2 + \omega_n^2)}

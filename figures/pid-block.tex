@@ -1,0 +1,41 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+%\pgfplotsset{compat=1.9}
+
+
+\begin{document}
+
+
+\begin{tikzpicture}[
+    node distance=2cm, block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sume) {$\sum$};
+  \node[coordinate,right of=sume, node distance=10mm] (split) {};
+  \node[block,right of=sume, node distance=30mm] (I) {I};
+  \node[block,above of=I, node distance=20mm] (P) {P};
+  \node[block,below of=I, node distance=20mm] (D) {D};
+  \node[sumnode, right of=I] (sumc) {$\sum$};
+  \node[block,right of=sumc, node distance=30mm] (plant) {G(s)};
+  \node[coordinate, right of=plant, node distance=15mm] (measure) {};
+  \node[coordinate, right of=measure, node distance=10mm] (output) {};
+
+  \draw[->] (input) -- node[above] {$u_c$} (sume);
+  \draw[->] (sume) -- node[above,near start] {$e$} (I);
+  \draw[->] (split) -- (I);
+  \draw[->] (split) |- (P);
+  \draw[->] (split) |- (D);
+  \draw[->] (P) -| (sumc);
+  \draw[->] (I) -- (sumc);
+  \draw[->] (D) -| (sumc);
+  \draw[->] (sumc) -- node[above] {$u$} (plant);
+  \draw[->] (plant) -- node[at end, above] {$y$} (output);
+  \draw[->] (measure) |- ++(-20mm,-40mm) -| node [pos=0.96, left] {$-$} (sume);
+\end{tikzpicture}
+\end{document}
+
+

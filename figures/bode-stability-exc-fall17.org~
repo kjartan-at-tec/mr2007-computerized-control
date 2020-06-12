@@ -1,0 +1,149 @@
+#+OPTIONS: toc:nil date:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper] 
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{subfigure}
+
+#+title: Step-response exercise 
+#+date: 2017-08-21
+
+** Identify model of a valve
+An electrically actuated valve has operating point where the constant voltage $V_0$ corresponds to the constant flow $x_0$. The variables $u(t)$ and $x(t)$ are  deviations from the operating point. A step experiment
+\[ u(t) = \begin{cases} 0 & t<0\\ 1 & t\ge 0 \end{cases} \]
+gives the response shown in the graph below. Determine the parameters $k$ and $T_v$ in the first-order model 
+\[ X(s) = \frac{k}{sT_v + 1} U(s). \]
+
+#+BEGIN_LaTeX
+  \def\tubelength{15mm}
+  \def\tubewidth{4mm}
+  \def\tuberad{2mm}
+  \def\valvelength{3mm}
+
+     \begin{center}
+
+     \begin{tikzpicture}[node distance=20mm]
+     \draw (0,0) -- (\tubelength, 0);
+     \draw (0,\tubewidth) -- (\tubelength, \tubewidth);
+     \draw (\tubelength, 0) -- ++(\valvelength, \tuberad) node[coordinate, at end] (valve) {};
+     \draw (\tubelength, \tubewidth) -- ++(\valvelength, -\tuberad);
+     \draw (valve) -- ++(\valvelength, \tuberad);
+     \draw (valve) -- ++(\valvelength, -\tuberad);
+     \draw (valve) ++(\valvelength, \tuberad) -- ++(\tubelength, 0);
+     \draw (valve) ++(\valvelength, -\tuberad) -- ++(\tubelength, 0);
+
+     \node[rectangle, draw, minimum height=6mm, minimum width=8mm, below of=valve, node distance=8mm] (box) {};
+     
+     \draw[-o] (box.south) ++(-2mm, 0) -- ++(0,-4mm);
+     \draw[-o] (box.south) ++(2mm, 0) -- ++(0,-4mm);
+
+     \node[below of=box, node distance=10mm] {$V_0 + u(t)$};
+
+     \draw (box) to (valve);
+
+     \draw[->, thick] (valve) ++(12mm,0) -- node[near end, anchor=south west] {$x_0 + x(t)$} ++(10mm,0);
+
+     \def\Timeconst{0.3}
+     \def\Gain{1.2}
+     \begin{axis} [
+       xshift=8cm,
+       yshift=-3cm,
+       width=8cm,
+       height=5cm,
+       xlabel={$t$},
+       ylabel={$x$},
+       grid = both,
+       minor tick num=9,
+       minor grid style={gray!25},
+       major grid style={black!50},
+       ]
+       
+       \addplot+[no marks, black, domain=-0.2:2.1, samples=200 ] {(x>0) *  \Gain * (1 - exp(-x/\Timeconst)};
+     \end{axis}
+     
+     \end{tikzpicture}
+
+
+     \end{center}
+#+END_LaTeX
+
+** Step response of first-order system
+
+#+BEGIN_LaTeX
+
+  \begin{center}
+  \begin{minipage}[c]{0.4\linewidth}
+Sketch the step-response for the following systems
+  \begin{align*}
+  G_1(s) &= \frac{1}{s+1}\\
+  G_2(s) &= \frac{1}{10s+1}\\
+  G_3(s) &= \frac{11s + 2}{(s+1)(10s+1)} %G_1(s) + G_2(s) = \frac{1}{s+1} + \frac{1}{10s+1}
+  \end{align*}
+  \end{minipage}
+  \begin{minipage}[c]{0.5\linewidth}
+  \begin{center}
+  \includestandalone[mode=buildnew,width=0.99\linewidth]{stepresponse-firstorder-exc}
+  \end{center}
+  \end{minipage}
+  \end{center}
+
+#+END_LaTeX
+
+** Step response of second-order system
+\begin{center}
+\begin{tabular}{p{0.55\linewidth}p{0.4\linewidth}}
+The second-order system  
+\( G(s) = \frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2} \)
+has step-response given by 
+\[ y(t) = 1 - \frac{\mexp{-\zeta\omega_n t}}{\sqrt{1 - \zeta^2}} \sin \left( \omega_n t \sqrt{1-\zeta^2} + \theta \right), \]
+   where \( \theta = \cos^{-1} \zeta\).
+& Pair the system with the correct step-response!\\
+\begin{tabular}{c}
+\includegraphics[width=0.75\linewidth]{ct_step_response}
+\end{tabular}
+& \begin{tabular}{r@{: }c}
+A & $\omega_n = 2, \quad \zeta = 0.7 $\\ %G2
+B & $\omega_n = 1, \quad \zeta = 0.7 $\\ %G1
+C & $\omega_n = 1, \quad \zeta = 0.35 $\\ %G3
+\end{tabular}
+\end{tabular}
+\end{center}
+
+** Identify damping ratio and natural frequency
+
+#+BEGIN_LaTeX
+
+  \begin{minipage}[c]{0.4\linewidth}
+  For a second-order system with complex-conjugated poles the peak time (time of first peak) is given by 
+  \[ t_p = \frac{\pi}{\omega_n \sqrt{1 - \zeta^2}}. \]
+  The settling time ($\pm$ 2\%) is approximately $t_s = \frac{4}{\zeta\omega_n}$.
+  Find the natural frequency $\omega_n$ and the damping ratio $\zeta$ from the step-response.
+  \end{minipage}
+  \begin{minipage}[c]{0.5\linewidth}
+      \begin{tikzpicture}
+         \def\zzeta{0.2}
+         \def\wwn{1.4}
+         \pgfmathsetmacro{\impart}{sqrt(1-\zzeta*\zzeta)}
+         \pgfmathsetmacro{\ffreq}{\impart * \wwn}
+         \pgfmathsetmacro{\ttheta}{acos(\zzeta)}
+
+         \begin{axis} [
+           width=10cm,
+           height=8cm,
+           xlabel={$t$},
+           ylabel={$y$},
+           grid = both,
+           minor tick num=9,
+           minor grid style={gray!25},
+           major grid style={black!50},
+           ]
+           
+           \addplot+[no marks, black, domain=-0.2:20.1, samples=200, variable=\t ] { (t>0) * (1 - exp(-\zzeta*\wwn*t)/\impart * sin( deg(\ffreq * t) + \ttheta))};
+
+         \end{axis}
+         \end{tikzpicture}
+      \end{minipage}
+   \end{center}
+
+#+END_LaTeX
+
+

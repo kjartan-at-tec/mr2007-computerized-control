@@ -1,0 +1,337 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Computerized Control - analysis of discrete-time systems
+#+date: 2019-09-05
+
+* What do I want the students to understand?			   :noexport:
+  - Root locus in discrete time
+  - Relative stability
+  - Sensitivity and robustness
+
+* Which activities will the students do?			   :noexport:
+  1. Draw simple root locus
+  2. Bode to nyquist and nyquist to bode
+  3. Derive robustness criterion
+
+* Intro
+** Result from quizz
+   - Very good results!
+   - Nyquist plot + criterion
+   - Robustness
+
+** Z-transform and difference equations				   :noexport:
+* Pole placement
+** Pole-placement and time-response
+Pair the pole-placement with the correct time-response (from HW1)
+*** pzmap
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :END:
+    #+BEGIN_CENTER 
+     \includegraphics[width=\linewidth]{../../figures/pzmap-apollo}
+    #+END_CENTER
+*** response
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+BEGIN_CENTER 
+     \includegraphics[width=\linewidth]{../../figures/step-response-apollo}
+    #+END_CENTER
+
+** Mapping of poles from continuous time to discrete time
+| Continuous time                                                              | Discrete time                                                                                       |
+|------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| \(Y(s) \triangleq \laplace{y(t)}\)                                           | \(Y(z) \triangleq \ztrf{y(kh)}\)                                                                    |
+| \( Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\)                                     | \(Y(z) = H(z)U(z) = \frac{\beta}{z+\alpha}U(z)\)                                                    |
+| Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\)                       | Pole of the system: \( z+\alpha = 0 \; \Rightarrow \; z = -\alpha \)                                |
+| \includegraphics[width=0.22\linewidth]{../../figures/cont-stable}            | \includegraphics[width=0.22\linewidth]{../../figures/discrete-stable}                               |
+|------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+
+   The *s-domain* of continuous-time systems is related to the *z-domain* of discrete-time systems as  \[z = \mathrm{e}^{sh}\]
+ 
+** Mapping of poles from continuous time to discrete time
+   Do excercise on paper!
+
+* Root locus
+
+
+** Root locus: A brief review
+   #+BEGIN_LaTeX
+        \begin{center}
+          \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+            
+            \node[coordinate] (input) {};
+            \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+            \node[block, right of=sum, node distance=20mm] (plant)  {$H(z)=\frac{B(z)}{A(z)}$};
+            \node[block, below of=plant, node distance=12mm] (controller)  {$F(z)=K\frac{D(z)}{C(z)}$};
+            \node[coordinate, right of=plant, node distance=30mm] (output) {};
+
+            \draw[->] (input) -- node[above, pos=0.3] {} (sum);
+            \draw[->] (sum) -- node[above] {} (plant);
+            \draw[->] (plant) -- node[coordinate] (measure) {} node[above, near end] {} (output);
+            \draw[->] (measure) |- (controller);
+            \draw[->] (controller) -| (sum);
+          \end{tikzpicture}
+        \end{center}
+
+   #+END_LaTeX
+
+   - The loop pulse-transfer function (loop gain) becomes \(L(z) = H(z)F(z) = K\frac{\overbrace{B(z)D(z)}^{Q(z)}}{\underbrace{A(z)C(z)}_{P(z)}} = K \frac{Q(z)}{P(z)}\).
+   - The roots of \(Q(z)\) are called the *open loop zeros*.
+   - The roots of \(P(z)\) are called the *open loop poles*.
+   - The characteristic equation for the closed-loop system is \[ 1 + K\frac{Q(z)}{P(z)} = 0 \quad \Leftrightarrow \quad P(z) + KQ(z) = 0\]
+
+
+** Root locus: Definition
+
+Let
+\[\begin{cases} P(z)&=z^n+a_1z^{n-1}+\dots+a_n = (z-p_1)(z-p_2)\cdots(z-p_n)\\ 
+Q(z)&=z^m+b_1 z^{m-1}+\dots+b_m=(s-q_1)(z-q_2)\cdots(z-q_m) \end{cases},\ \ \ n\ge m \]
+
+The root locus shows how the *solution* to the characteristic equation
+\begin{equation}
+\label{eq:P(z)+KQ(z)=0}
+P(z)+K\cdot Q(z)=0,\ \ \ 0\le K<\infty
+\end{equation}
+ depend on the parameter $K$. The root locus consists of the set of all points in the complex plane that are solutions to \eqref{eq:P(z)+KQ(z)=0} for some non-negative value of $K$.
+
+** Root locus: Characteristics
+- Start points :: The \(n\) roots of \(P(z)\), marked by crosses
+- End points :: The \(m\) roots of \(Q(z)\), marked  by circles
+- Asymptotes :: Number equal to the /pole excess/ \(n-m\)
+- Real axis :: Some segments of the real axis belong to the root locus
+
+** Root locus: Direction of the asymptotes
+   The characteristic equation \(P(z)+K Q(z)=0\) can be written \(\frac{P(z)}{Q(z)} = -K\) and for large $z$ it can be approximated as 
+   \[ \frac{z^n}{z^m} = -K \quad \Leftrightarrow \quad z^{n-m} = -K.\]
+   
+   Taking the argument of both sides of the equation gives 
+   \( (n-m)\arg z = \pi + k2\pi, \; k \in  \mathbb{Z} \)
+   So, the *directions* of the asymptotes are given by the expression
+   \[ \theta_k = \arg z = \frac{(2k+1)\pi}{n-m}, \; k \in \mathbb{Z} \]
+
+** Root locus: The asymptotes' intersection with the real axis 
+  
+\[ z_{ip} = \frac{ \sum_{i=0}^n p_i - \sum_{i=0}^m q_i}{n-m}, \]
+where $\{p_i\}$ are the starting points (open-loop poles) and $\{q_i\}$ are the end points (open-loop zeros). 
+
+** Root locus exerise: Pair the pulse-trf fcn and root locus
+
+*** math
+    :PROPERTIES:
+    :BEAMER_col: 0.35
+    :END:
+    
+    #+BEGIN_LaTeX
+       \small
+      \begin{align*}
+        G_1(z) &= K\frac{(z+2.9)(z+0.2)}{(z-1)^2(z-0.3)}\\[3mm]
+        G_2(z) &= K\frac{(z-0.5)(z+0.4)}{(z-1)(z-0.3)(z-0.1)}\\[3mm]
+        G_3(z) &= K\frac{(z-0.5)(z+0.8)}{(z-1)^2(z-0.3)}\\[3mm]
+        G_4(z) &= K \frac{z-0.6}{(z-1)(z-0.3)}
+      \end{align*}
+
+     #+END_LaTeX
+   
+*** fig	
+    :PROPERTIES:
+    :BEAMER_col: 0.65
+    :END:
+   #+BEGIN_CENTER 
+    \includegraphics[width=1.04\linewidth]{../../matlab/rlocus_2x2-crop}
+   #+END_CENTER
+
+**** Solution 							   :noexport:
+    G_1 = B, G_2 = D, G_3=A, G_4=C
+
+
+** Draw a root locus 
+
+Level control in a hydro power plant dam
+
+#+BEGIN_CENTER 
+\small
+\def\svgwidth{0.5\linewidth}
+\input{hydroplant.pdf_tex}
+#+END_CENTER
+
+Discrete-time model: \(y(k+1) - y(k) = \frac{h}{A} u(k) + \frac{h}{A}v(k)\), where \(y(k)\) is the deviation in water level from a standard level, \(u(k)\) is the (negative) deviation in flow through the dam ports and \(v(k)\) is a deviation in other flows (disturbance). 
+
+# +BEGIN_CENTER 
+# \includegraphics[width=0.5\linewidth]{../figures/kraftverk}
+# \includegraphics[width=0.48\linewidth]{../figures/dam-gates.jpg}
+# +END_CENTER
+
+** What happens if the poles are *on the* unit circle?
+   Say, in \(z = \mathrm{e}^{\pm i \omega_0}\)
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.3\linewidth]{../../figures/rlocusA.png}
+   #+END_CENTER
+
+   \[H_c(z) = \frac{k z}{(z-\mathrm{e}^{i \omega_0})(z-\mathrm{e}^{-i \omega_0})} \overbrace{+ \cdots}^{\text{stable term}}\].
+
+*** Notes							   :noexport:
+    denominator:
+    z^2 - (exp(-iw)+exp(+iw))z + exp(-iw)(exp(iw) = z^2 -2\cos\omega_0 z + 1
+
+** What happens if the poles are *on the* unit circle?
+   Say, in \(z = \mathrm{e}^{\pm i \omega_0}\)
+   #+BEGIN_CENTER 
+     \includegraphics[width=0.3\linewidth]{../../figures/rlocusA.png}
+     \includegraphics[height=0.34\textheight]{../../figures/zgrid-crop}\\
+   #+END_CENTER
+
+   \begin{align*}
+   H_c(z) &= \frac{k z}{(z-\mathrm{e}^{i \omega_0})(z-\mathrm{e}^{-i \omega_0})} + \cdots\\
+          &= \frac{k z}{z^2 -2\cos\omega_0 z + 1} + \cdots
+   \end{align*}
+       
+   If \(\omega_0 = \frac{\pi}{6}\) and the sampling period is \unit{0.4}{\second}, what is the *frequency* (in \unit{}{\radian\per\second} and in Hz) of the oscillations in the pulse response?
+*** Notes							   :noexport:
+    Since table gives h(k) = \sin(\omega_0 k) + ..., where the oscillations is expressed as the sampled sinusoid \sin(\omega_c kh), we have that \omega_0 = \omega_c h, or \omega_c = \omega_0/h.
+    Here \omega_c = pi/6/0.4 = pi*10/(6*4) = 5 \pi/12 rad/s, or in Hertz f = \omega_c/(2pi) = 5/24 hz.
+
+* Bode diagrams and Nyquist plots
+** Bode diagram and Nyquist plots
+
+** Sine in --- sine out
+
+#+BEGIN_LaTeX
+  \begin{center}
+    \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+      
+      \node[coordinate] (input) {};
+      \node[block, right of=sum, node distance=25mm] (plant)  {$H(z)$};
+      \node[coordinate, right of=plant, node distance=40mm] (output) {};
+      
+      \draw[->] (input) -- node[above, pos=0.3] {$u(kh) = \sin(\omega kh)$} (plant);
+      \draw[->] (plant) -- node [above, pos=1.1] {$y(kh) = |H(\mathrm{e}^{i\omega h})|\sin(\omega kh + \arg H(\mathrm{e}^{i\omega h}))$} (output);
+    \end{tikzpicture}
+  \end{center}
+#+END_LaTeX
+** Sine in --- sine out
+
+#+BEGIN_LaTeX
+  \begin{center}
+    \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+      
+      \node[coordinate] (input) {};
+      \node[block, right of=sum, node distance=25mm] (plant)  {$H(z)$};
+      \node[coordinate, right of=plant, node distance=40mm] (output) {};
+      
+      \draw[->] (input) -- node[above, pos=0.3] {$u(kh) = \sin(\omega kh)$} (plant);
+      \draw[->] (plant) -- node [above, pos=1.1] {$y(kh) = |H(\mathrm{e}^{i\omega h})|\sin(\omega kh + \arg H(\mathrm{e}^{i\omega h}))$} (output);
+    \end{tikzpicture}
+  \end{center}
+#+END_LaTeX
+*Prove it!* Some hints:
+- Write \(\sin(\omega kh) = \mathrm{Im}\{\mathrm{e}^{i\omega kh}\}\).
+- Use \(H(z)U(z) \stackrel{\mathcal{Z}}{\leftrightarrow} h(k)\ast u(k)\), and write out the discrete-time convolution \(h \ast u = \sum_{n=-\infty}^\infty h(n)u(k-n) = \sum_{n=0}^\infty h(n)u(k-n) \)
+- Try to rewrite to obtain as a factor \(\sum_{n=0}^\infty h(n) \mathrm{e}^{-i\omega nh} = H(\mathrm{e}^{i\omega h})\).
+
+*** Notes							   :noexport:
+	   u(kh) = exp(iwh)^k, y(kh) = h*u = \sum_{n=-\infty}^\infty h(nh)u(kh-nh) = \sum_{n=0}^\infty h(nh)exp(iwh)^(k-n)
+                                     = exp(iwh)^k \sum_{n=0}^\infty h(nh)exp(iwh)^{-1} = exp(iwh)^k H(z)|_{z=exp(iwh)}= H(exp(iwh)) exp(iwh)^k
+
+
+* Relative stability
+
+** The Nyquist plot
+Example of a *Nyquist plot* or *frequency curve*.
+#+BEGIN_LaTeX
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0,0) {\includegraphics[width=0.4\linewidth]{../../figures/fig3-3.png}};
+      \node[pin=120:{$H(z)$ evaluated at $z=\mathrm{e}^{i\omega h}$, $0<\omega<\frac{\pi}{h}$}] at (-1,1) {};
+      \node[pin=40:{$G(s)$ evaluated at $s=i\omega$, $0<\omega<\infty$}] at (-0.98,0.4) {};
+    \end{tikzpicture}
+  \end{center}
+
+#+END_LaTeX
+
+
+   
+The system \(G(s) = \frac{1}{s^2 + 1.4s + 1}\) is sampled with ZOH-sampling (\(h=\unit{0.4}{\second}\)) to get \(H(z) = \frac{0.066z + 0.055}{z^2 - 1.45 z + 0.571}\)
+
+** Simplified Nyquist criterion
+#+BEGIN_CENTER 
+ \includegraphics[width=0.4\linewidth]{../../figures/fig3-3.png}
+#+END_CENTER   
+   
+   Consider the loop pulse-transfer function $L(z)$ of a closed-loop system. If $L(z)$ is stable (no poles outside the unit circle), then the closed-loop system with characteristic equation $1 + L(z) = 0$ will be stable iff $L(z)$ evaluated on the unit circle (i.e, the Nyquist plot of $L$) has the point *-1 to the left*.
+
+** Stability margins - phase margin
+#+BEGIN_CENTER 
+ \includegraphics[width=0.38\linewidth]{../../figures/implane-nyquist-margins}
+#+END_CENTER
+   - Cross-over frequency: The frequency \(\omega_c\) for which \(|L(\mathrm{e}^{i\omega h})| = 1\). 
+   - Phase margin: The angle \(\varphi_m\) to the negative real axis for the point where the Nyquist curve intersects the unit circle. \[\varphi_m = \arg L(\mathrm{e}^{i\omega_c h}) - (-180\degree) = \arg L(\mathrm{e}^{i\omega_c h}) + 180\degree\]
+
+** Stability margins - gain margin
+#+BEGIN_CENTER 
+ \includegraphics[width=0.34\linewidth]{../../figures/implane-nyquist-margins}
+#+END_CENTER
+   - phase-cross-over frequency: The frequency \(\omega_p\) for which \(\arg L(\mathrm{e}^{i\omega h}) = -180\degree\). 
+   - Gain margin: The gain $K=A$ that would make the Nyquist curve of \(K L(\mathrm{e}^{i\omega h})\) go through the point \(-1 + i0\). This means that \[ |L(\mathrm{e}^{i\omega_p h})| = \frac{1}{A}. \]
+  
+** The relationship between Bode diagrams and frequency curves (Nyquist plots)
+They are both showing the value of a pulse-transfer function $H(z)$ evaluated for $z = \mathrm{e}^{i\omega h}$, $0<\omega \le \frac{\pi}{h}$.
+
+#+BEGIN_CENTER 
+ \includegraphics[width=\linewidth]{../../figures/fig3-3-4.png}
+#+END_CENTER
+
+
+
+* Robustness and sensitivity					   :noexport:
+
+** The sensitivity function
+   Recall from previous lecture
+
+      #+BEGIN_LaTeX
+      
+        \begin{center}
+         \small
+          \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+            
+            \node[coordinate] (input) {};
+            \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+            \node[block, right of=sum, node distance=20mm] (plant)  {$H(z)$};
+            \node[block, below of=plant, node distance=12mm] (controller)  {$F_b(z)$};
+            \node[sumnode, right of=plant, node distance=16mm] (sumdist) {\tiny $\Sigma$};
+            \node[coordinate, right of=sumdist, node distance=20mm] (output) {};
+            \node[coordinate, above of=sumdist, node distance=20mm] (dist) {};
+
+            \draw[->] (input) -- node[above, pos=0.3] {$$} (sum);
+            \draw[->] (sum) -- node[above] {} (plant);
+            \draw[->] (plant) --  (sumdist);
+            \draw[->] (sumdist) -- node[coordinate] (measure) {} node[above, near end] {$y(k)$} (output);
+            \node[sumnode, below of=measure, node distance=12mm] (sumnoise) {\tiny $\Sigma$};
+            \draw[->] (measure) -- (sumnoise);
+            \draw[->] (sumnoise) -- (controller);
+            \draw[->] (controller) -| (sum);
+            \draw[->] (sumnoise) ++(12mm,0) -- node[above, near start] {$v(k) $} (sumnoise);
+            \draw[->] (sumdist) ++(0,12mm) -- node[right, near start] {$d(k) $} (sumdist);
+          \end{tikzpicture}
+        \end{center}
+
+   #+END_LaTeX
+
+   The pulse-transfer function \(L(z) = F_b(z)H(z)\) is the  *loop transfer function* . The transfer function \(S_s(z) = \frac{1}{1 + L(z)}\) is called the *sensitivity function*. Note that it is the *inverse of the distance of  \(L(z)\) from -1*. 
+
+   
+
+
+
+
+

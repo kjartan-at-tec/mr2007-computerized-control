@@ -1,0 +1,21 @@
+#+OPTIONS: toc:nil date:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper] 
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{subfigure}
+
+#+title: Bode plot and relative stability exercise 
+#+date: 2017-08-22
+
+** Sampling introduces delay
+The continuous-time system 
+\[ G(s) = \frac{12}{s(s+2)(s+3)} \]
+is sampled using zero-order-hold. The figure below shows the Bode plot and the Nyquist plot for both the continuous-time system (solid lines) and the discrete-time system (dashed lines). 
+#+BEGIN_CENTER 
+ \includegraphics[width=\linewidth]{bode-loop-gain-sol}
+#+END_CENTER
+
+1. Determine the amplitude margins and the phase margins for both systems.
+2. What is the delay due to the sampling?
+3. What is the sampling period?
+

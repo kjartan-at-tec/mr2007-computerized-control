@@ -1,0 +1,78 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper,fleqn]
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{tabularx}
+#+LaTex_HEADER: \usepackage{geometry}
+#+LaTex_HEADER: \usepackage{pgfplots}
+#+LaTex_HEADER: \pgfplotsset{compat=1.13}
+#+LaTex_HEADER: \geometry{top=20mm, bottom=20mm, left=24mm, right=18mm}
+
+#+title: State feedback exercise
+#+date: 
+
+* Input signal design
+Consider the sampled double-integrator on state-space form
+\begin{equation}
+\begin{aligned}
+x(kh+h) &= \underbrace{\bbm 1 & h\\ 0 & 1\ebm}_{\Phi(h)} x(kh) + \underbrace{\bbm \frac{h^2}{2}\\h\ebm}_{\Gamma(h)} u(kh)\\
+y(kh) &= \bbm 1 & 0 \ebm x(kh)
+\end{aligned}
+\label{eq:ss}
+\end{equation}
+We want to find the input sequence $u(0)$, $u(h)$ that takes the system from the origin of the state space $x(0) = \bbm 0 & 0 \ebm\transp$ to the point $x(2h) = \bbm a & 0 \ebm\transp$ in two time steps. 
+
+** Iterate the state space model
+   ... in order to find an expression for $x(2h)$ in terms of the unknown input signals
+\begin{align*}
+x(h) &= \Phi x(0) + \Gamma u(0) \\
+x(2h) &= \Phi x(h) + \Gamma u(h) = \Phi\left(\Phi x(0) + \Gamma u(0)\right) + \Gamma u(h)\\
+          &= \Phi^2x(0) + \Phi\Gamma u(0) + \Gamma u(h)
+	  = \Phi^2x(0) + \underbrace{\bbm & & & & \ebm}_{W_c} \bbm u(h)\\u(0) \ebm  
+\end{align*}
+
+** Set up system of equations
+   With \(u = \bbm u(h) & u(0) \ebm\transp\) we get the linear system of equations \(W_c u = x(2)-\Phi^2x(0)\). In the particular case we are considering here this gives
+   \[ \bbm & & & & &\\ & & & & &\\ & & & & & \ebm \bbm u(h)\\u(0)\ebm = \bbm & &  \\ && \\ &&\ebm.\]
+
+
+\newpage
+
+* Verify the result
+
+** Calculate the state sequence
+  \begin{align*}
+  x(h) &= \\
+  x(2h) &= 
+  \end{align*}
+
+** Plot the results
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{../figures/empty-input-state-sequences}
+   #+END_CENTER
+
+* The deadbeat control law
+  We are looking for the linear control law \(u(kh) = l_0y_{ref}(kh) - Lx(kh) = l_0y_{ref}(kh) - l_1x_1(kh) -l_2x_2(kh)\) that produced the result above.
+** Set up the equations
+   - \(k=0\): :: \(u(0) = \)
+   - \(k=1\): :: \(u(h) = \)
+   - \(k=2\): :: \(u(2h) = \)
+
+** Solve the system of equations
+   Write the system of equations
+
+   \[ \bbm & & & & & & & &\\ & & & & & & & &\\ & & & & & & & & \\ & & & & & & & &  \ebm \bbm l_0\\l_1\\l_2\ebm = \bbm && &  \\ &&& \\ &&& \\ && &\ebm.\]
+
+\newpage
+
+** The poles of the closed-loop system
+
+Inserting the control law \(u(kh) = l_0y_{ref}(kh) - Lx(kh)\) into the state-space system \eqref{eq:ss} gives the closed-loop system
+\begin{equation*}
+\begin{aligned}
+ x(kh+h) &= \Phi x(kh) + \Gamma u(kh) = \Phi x(kh) - \Gamma L x(kh) + \Gamma l_0y_{ref}(kh)\\
+    &= \\
+\end{aligned}
+\end{equation*}
+
+Determine the poles of the closed-loop system.

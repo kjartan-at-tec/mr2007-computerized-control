@@ -1,0 +1,98 @@
+% Created 2015-10-27 Tue 13:20
+\documentclass{scrartcl}
+\usepackage[AUTO]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{hw5-fall15}
+\author{Kjartan Halvorsen}
+\date{Due 2015-11-06}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Controller design}
+\label{sec-1}
+
+  Zero-order-hold sampling of the DC-motor with transfer function
+  \[ G(s) = \frac{K_m}{s(\tau{}s+1)} \]
+  gives a discrete-time system with pulse transfer function
+  \begin{equation*}
+  \begin{split}
+  G_d(z) &= \frac{B(z)}{A(z)}\\
+  &= K_m \frac{\tau\big(\frac{h}{\tau}-1+\mexp{-\frac{h}{\tau}}\big)z + \tau\big(1-\mexp{-\frac{h}{\tau}}-\frac{h}{\tau}\mexp{-\frac{h}{\tau}}\big)}{(z-1)\big(z-\mexp{-\frac{h}{\tau}}\big)}.
+  \end{split}
+  \end{equation*}
+\subsection{Determine a specific model for the DC-motor in the control lab}
+\label{sec-1-1}
+
+   Use the model of the DC-motor you determined in Homework 3 to obtain a pulse transfer function. Consider the input signal $u$ to be the voltage over the DC-motor and output signal $y$ to be a voltage related to the angular position of the motor axle as given by the optical encoder. 
+\subsection{Determine sampling period and desired closed loop poles}
+\label{sec-1-2}
+
+   In a continuous-time description of the desired closed-loop system we want the system to have two dominating poles at
+   \[ -7 \pm i7. \]
+   In addition to the two dominating poles, we want a third pole at
+   \[ a=-14 \]
+   Determine a suitable sampling period $h$, and determine the poles (and characteristic polynomial) of the desired discrete-time closed-loop system.
+\subsection{Design a 2-DoF controller}
+\label{sec-1-3}
+
+   Assume a structure of the controller as given in figure \ref{fig:2dof}. The controller is given by 
+   \[ R(q)u = -S(q)y + T(q)u_c. \]
+   With the plant-model
+   \[ A(q)y = B(q)u\]
+   we get the following difference equation for the closed-loop system
+   \[ \big( A(q)R(q) + B(q)S(q) \big) y = B(q)T(q) u_c. \]
+   Assume a suitable order (as low as possible) of the controller polynomials $R(q)$ and $S(q)$ and solve the diophantine equation 
+   \[ A(q)R(q) + B(q)S(q)  = Ac(q) \]
+   for $R$ and $S$. 
+
+   Solve the equations for arbitrary $a$: Use a symbol $a$ in your calculations so that you can easily recalculate your controller for a different value of $a$. 
+\subsection{Implement the controller}
+\label{sec-1-4}
+
+\begin{enumerate}
+\item Implement the controller and the plant in Simulink. Simulate a step-response. Hand in the graph.
+\item Implement the controller in Simulink and interface with the true system using the Real-Time toolbox. Make a step-response and hand in the graph. What are the main differences compared to the simulated results?
+\item Perform a step-response using a (much) smaller value of $a=$, for instance $a=-2$. What are the differences compared to $a=-14$?
+\end{enumerate}
+\section{Solutions}
+\label{sec-2}
+\subsection{Desired sampling period and closed-loop poles}
+\label{sec-2-1}
+
+   Since we have dominating complex-conjugated poles, the sampling period should be such that
+   \[ h\omega_n = 0.18 -- 0.45. \]
+   Choose \[h = \frac{0.3}{\omega_n} = \frac{0.3}{\sqrt{7^2+7^2}} = \frac{0.3}{7\sqrt{2}} \approx 0.03. \]
+   We get the discrete-time poles
+   \begin{align*}
+   p_{d_1} &= \mexp{0.03(-7+i7)} = \mexp{-0.21} \mexp{i0.21} = 0.81\big(\cos(0.21) + i\sin(0.21)\big) = 0.79 + i0.17\\
+   p_{d_1} &= p_{d_1}^* = 0.79 - i0.17\\
+   p_{d_3} &= \mexp{ah} = \mexp{0.03(-14)} \approx 0.66.
+   \end{align*}
+
+   
+
+\end{document}

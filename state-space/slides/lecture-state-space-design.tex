@@ -1,0 +1,205 @@
+% Created 2019-11-06 mié 14:50
+\documentclass[presentation,aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble, euscript}
+\DeclareMathOperator{\atantwo}{atan2}
+\newcommand*{\ctrb}{\EuScript{C}}
+\newcommand*{\obsv}{\EuScript{O}}
+\usetheme{default}
+\author{Kjartan Halvorsen}
+\date{2018-03-06}
+\title{Computerized control - state feedback}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.3.50.2 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+
+\section{Intro}
+\label{sec-1}
+
+\begin{frame}[label=sec-1-1]{Goal of today's lecture}
+\begin{itemize}
+\item Understand state feedback design
+\end{itemize}
+\end{frame}
+
+\section{State space models repetition}
+\label{sec-2}
+
+\begin{frame}[label=sec-2-1]{Stability}
+A system 
+\begin{equation*}
+x(k+1)=\Phi x(k), \ \ x(0)=x_0
+\end{equation*}
+is \emph{asymptotically stable}  if  $\underset{t\to\infty}{\lim}x(kh)=0$ for all  $x_0\in\Bbb{R}^n$.\\
+
+A system is asymptotically stable if and only if \alert{all eigenvalues of \(\Phi\) are inside the unit circle.}
+\end{frame}
+
+\begin{frame}[label=sec-2-2]{Reachability (controllability)}
+Reachability is the answer to the question "Can we by choosing a suitable input sequence \(u(k),\; k=0,1,2,\ldots,n-1\) reach any point in the state space?"
+
+Consider
+\[ x(k+1) = \Phi x(k) + \Gamma u(k). \]
+With initial state \(x(0)\) given. The solution at time \(n\) where \(n\) is the order of the system is
+\begin{equation}
+\begin{split}
+x(n) &= \Phi^nx(0) + \Phi^{n-1}\Gamma u(0) + \cdots + \Gamma u(n-1)\\
+     &= \Phi^nx(0) + W_c U, 
+\end{split}
+\end{equation}
+where
+\begin{align*}
+W_c &= \bbm \Gamma & \Phi\Gamma & \cdots & \Phi^{n-1}\Gamma\ebm\\
+U &= \bbm u(n-1) & u(n-2) & \cdots & u(0) \ebm\transp
+\end{align*}
+\end{frame}
+
+\begin{frame}[label=sec-2-3]{Reachability (controllability), contd}
+To find the input sequence that takes the state to \(x(n) = x_d\) we solve the equation
+\[ x_d = \Phi^nx(0) + W_cU\]
+for \(U\). 
+
+\[ U = W_c\inv \left(x_d - \Phi^nx(0)\right) \]
+
+This requires the matrix \(W_x\) to be \alert{invertible}. This gives Theorem 3.7 in Å\&W:
+
+THEOREM 3.7 REACHABILITY The state space system above is reachable if and only if the matrix \(W_c\) has rank \(n\). 
+
+This is equivalent to 
+\[ \det W_c \neq 0.\]
+\end{frame}
+
+\section{State feedback}
+\label{sec-3}
+\begin{frame}[label=sec-3-1]{State feedback}
+Have state space model
+ \begin{equation}
+ \begin{split}
+  x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+  y(k) &= C x(k)
+ \end{split}
+ \label{eq:ssmodel}
+\end{equation}
+and measurements (or estimates) of the state vector \(x(k)\). 
+
+\alert{Linear state feedback} is the control law
+\begin{equation*}
+\begin{split}
+ u(k) &= f\big((x(k), u_c(k)\big) = -l_1x_1(k) - l_2x_2(k) - \cdots - l_n x_n(k) + mu_c(k)\\
+      &= -Lx(k) + mu_c(k), 
+\end{split}
+\end{equation*}
+where \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
+
+Insert the control law into the state space model \eqref{eq:ssmodel} to get
+\end{frame}
+\begin{frame}[label=sec-3-2]{State feedback}
+Have state space model
+ \begin{equation}
+ \begin{split}
+  x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+  y(k) &= C x(k)
+ \end{split}
+ \label{eq:ssmodel}
+\end{equation}
+and measurements (or estimates) of the state vector \(x(k)\). 
+
+\alert{Linear state feedback} is the control law
+\[ u(k) = -l_1x_1(k)  -l_2x_2(k) - \cdots - l_n x_n(k) + mu_c(k)= -Lx(k) + mu_c(k), \]
+where \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
+
+Insert the control law into the state space model \eqref{eq:ssmodel} to get
+ \begin{equation}
+ \begin{split}
+  x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + m\Gamma u_c(k)\\
+  y(k) &= C x(k)
+ \end{split}
+ \label{eq:closedloop}
+\end{equation}
+\end{frame}
+
+\begin{frame}[label=sec-3-3]{Pole placement by state feedback}
+Assume the desired performance of the control system is given as a set of desired closed loop poles \(p_1, p_2, \ldots, p_n\), corresponding to the desired characteristic polynomial
+\begin{equation}
+a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
+\label{eq:desiredpoles}
+\end{equation}
+
+With state feedback we get the the closed-loop system
+ \begin{equation}
+ \begin{split}
+  x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + m\Gamma u_c(k)\\
+  y(k) &= C x(k)
+ \end{split}
+ \label{eq:closedloop}
+\end{equation}
+with characteristic equation
+\begin{equation}
+\det\left(zI - (\Phi - \Gamma L)\right) = z^n + \beta_1(l_1,\ldots,l_n) z^{n-1} + \cdots \beta_n(l_1, \ldots, l_n).
+\label{eq:poles}
+\end{equation}
+
+Equate the coefficients in \eqref{eq:desiredpoles} and \eqref{eq:poles} to get the system of equations
+\begin{equation*}
+\begin{split}
+\beta_1(l_1, \ldots, l_n) &= \alpha_1\\
+\beta_2(l_1, \ldots, l_n) &= \alpha_2\\
+&\vdots\\
+\beta_n(l_1, \ldots, l_n) &= \alpha_n
+\end{split}
+\label{eq:coeffs}
+\end{equation*}
+\end{frame}
+
+\begin{frame}[label=sec-3-4]{Pole placement by state feedback, contd.}
+The system of equations
+\begin{equation*}
+\begin{split}
+\beta_1(l_1, \ldots, l_n) &= \alpha_1\\
+\beta_2(l_1, \ldots, l_n) &= \alpha_2\\
+&\vdots\\
+\beta_n(l_1, \ldots, l_n) &= \alpha_n
+\end{split}
+\label{eq:coeffs}
+\end{equation*}
+is always linear in the unknown controller parameters, so it can be written
+\begin{equation*}
+A L\transp = \alpha,
+\end{equation*}
+Where \(\alpha\transp = \bbm \alpha_1 & \alpha_2 & \cdots & \alpha_n \ebm.\)
+\end{frame}
+
+\begin{frame}[label=sec-3-5]{Pole placement and reacability}
+It can be shown that the controllability matrix \(W_c\) is a factor of the matrix \(A\)
+\[ A = \bar{A} W_c. \] Hence, in general the system of equations
+\begin{equation}
+\bar{A}W_c L\transp = \alpha
+\label{eq:poleplace}
+\end{equation}
+has a solution only if \(W_c\) is invertible, i.e. the system is \emph{reachable}.
+
+Note that equation \eqref{eq:poleplace} can still have a solution for unreachable systems if \alert{\(\alpha\) is in the \emph{column space} of \(A\)}, i.e. \(\alpha\) can be written
+\[ \alpha = b_1 A_{:,1} + b_2A_{:,2} + \cdots + b_mA_{:,m}, \; m < n \]
+\end{frame}
+% Emacs 25.3.50.2 (Org mode 8.2.10)
+\end{document}

@@ -1,0 +1,41 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+title: Computerized control - Homework 6
+#+date: Due 2015-11-20
+
+* Controller design by state feedback
+  Sampling the DC-motor with transfer function and state-space representation
+  \[ G(s) = \frac{1}{s(s+1)} \]
+   \begin{align*}
+   \dot{x} &= \bbm 0 & 1\\0 & -1\ebm x + \bbm 0\\1\ebm \\
+   y &= \bbm 1 & 0\ebm x
+   \end{align*}
+   gives the discrete-time state-space model
+   \begin{align*}
+   x(k+1) &= \Phi x(k) + \Gamma u(k) = \bbm \mexp{-h} & 1-\mexp{-h}\\ 0 & 1\ebm x(k) + \bbm \mexp{-h}+h-1\\ h \ebm \\
+   y(k) &= Cx(k) = \bbm 1 & 0 \ebm x(k).
+   \end{align*}
+
+** Determine the pulse-transfer function
+   Show that the corresponding pulse-transfer operator is given by
+  \begin{equation}
+  \begin{split}
+   H(q) &= \frac{B(q)}{A(q)} = \frac{(q-1)(\mexp{-h}+h-1) + h(1-\mexp{-h})}{(q-1)(q-\mexp{-h})}.
+  \end{split}
+  \label{eq:Gd}
+  \end{equation}
+
+** Reachability and observability
+   Show that the discrete-time system is both reachable and observable.
+
+** Design the feedback control
+   Choose a suitable sampling period $h$ and determine $L$ and $m_0$ in the state feedback
+   \[ u(k) = -Lx(k) + m_0u_c(k) \]
+   such that the closed loop system has poles in \(0.5\pm i0.5,\) and so that the closed-loop system has static gain equal to 1.
+
+** Implement the model 
+   Implement the model in Simulink or in Matlab. Simulate a step-response and attach to your report. Verify that the sampling period is reasonable based on the step-response: Determine the rising time and compare it to the sampling period you chose. 
+
+

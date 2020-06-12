@@ -1,0 +1,46 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+\def\omegazero{0.3}
+\def\hmax{24}
+\def\vmax{1.5}
+\def\pwr{6}
+
+\begin{tikzpicture}
+  \begin{axis} [
+      width=16cm,
+      height=7cm,
+      ymin = -\vmax,
+      ymax = \vmax,
+      xmin = -\hmax,
+      xmax = \hmax,
+      xlabel = {$t$ [s]},
+      ylabel = {$y(t)=\sin \omegazero t$},
+      %ylabel={Real part of spectrum},
+      %xtick={-\omegazero, 0, \omegazero},
+      %xticklabels={$-\omega_1$, 0, $\omega_1$},
+      %ytick={0, \pwr},
+      %yticklabels={0, $a$},
+      grid=both,
+      %minor y tick num=9,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      %every major grid/.style={red, opacity=0.5},
+  ]
+    \addplot+ [thick, no marks] [variable=\t, domain = -\hmax:\hmax, samples = 800]
+            {sin(180/pi*\omegazero * t) };
+
+%            \node at (axis cs: 3,0.5) {$\frac{\sin \omega_1 t}{\omega_1 t}$  with $\omega_1 = \omegazero \pi$ rad/s};
+            
+  \end{axis}
+
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,99 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper]
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{epic}
+#+LaTex_HEADER: \usepackage{eepic}
+#+LaTex_HEADER: \usepackage{epsfig}
+#+LaTex_HEADER: \usepackage{psfrag}
+#+LaTex_HEADER: \usepackage{rawfonts}
+
+#+title: PID exercises
+#+date: 2018-02-20
+      
+* A PID controller with anti-windup
+  The figure below taken from Åström & Wittenmark shows a block-diagram of a PID controller with anti-windup.
+#+BEGIN_CENTER 
+ \includegraphics[width=0.51\linewidth]{../figures/fig8-10.png}
+#+END_CENTER
+  Consider the PID controller as having the output signal \(v(t)\) and three input signals: The control error \(e(t) = y_{ref}(t) - y(t)\), the output feedback signal \(y(t)\) and the output signal of the actuator model \(u(t)\). 
+  1. Determine the transfer functions in 
+     \[V(s) = F_y(s) Y(s) + F_e(s)E(s) + F_u(s) U(s). \]
+  2. Determine the pole(s) of the controller.
+  3. Determine the steady-state output of the controller for step input signals (all at once) \(Y(s) = \frac{\alpha}{s}\), \(E(s) = \frac{\beta}{s}\) and \(U(s) = \frac{\gamma}{s}\).
+  4. How should we interpret the steady-state value if the actuator is not saturating, so that \(u(t) = v(t)\)?
+
+
+** Solution							   :noexport:
+1. Transfer functions
+    \[ V = -KT_dsY + KE + 1/s \big(K/T_i E + 1/T_t (U - V) \big) \]
+    \[ V + 1/(T_t s)V = -KT_ds Y + (K + K/(T_i s)) E + 1/(T_t s) U \]
+    \[ V = \frac{-K T_d s}{1 + 1/(T_t s)} Y + \frac{ K + K/( T_i s) }{1 + 1/( T_t s)} E + \frac{1/(T_t s)}{1 + 1/(T_t s)} \]
+    \[ V = \frac{ - K T_d s^2}{s + 1/T_t} Y + \frac{ K (s + 1/T_i)}{ s + 1/T_t} E + \frac{ 1/T_t }{ s + 1/T_t} U \]
+2. Final value for step-response from the three insignals: 
+
+   \[ \lim_{t\to\infty} v(t) = \lim_{s\to 0} s \frac{ - K T_d s^2}{s + 1/T_t} \alpha/s + 
+   \lim_{s\to 0} s \frac{K (s+1/T_i) }{s + 1/T_t} \beta/s + 
+   \lim_{s\to 0} s \frac{ 1/T_t}{s + 1/T_t} \gamma/s \]
+   \[ \lim_{t\to\infty} v(t) = 0\cdot\alpha + \frac{K T_t}{T_i} \beta + \gamma \]
+   
+3.  Interpretation: Output of controller does not grow, even with constant error signal \(e(t)\). If \(u=v\), then the final value must be \(v(\infty) = \gamma\). This can only happen if \(\beta=0\), i.e. the control error is zero. So, as long as the actuator does not saturate, the controller will give zero steady-state error. If the actuator does saturate, then $v(\infty) > \gamma $ and so $\beta>0$, i.e. there will be a steady-state error 
+
+* The effect of PID controller parameters
+Assume a certain system being controlled by a PID regulator, \( U(s)=(K_P+K_I \frac{1}{s}+K_D s) E(s)\). In the figure below shows four step responses for the parameter
+triples 
+\begin{eqnarray*}
+\begin{array}{cccc}
+i) & K_P=1 & K_I=0 & K_D=0 \\
+ii) & K_P=1 & K_I=1 & K_D=0 \\
+iii) & K_P=1 & K_I=0 & K_D=1 \\
+iv) & K_P=1 & K_I=1 & K_D=1 
+\end{array}
+\end{eqnarray*}
+Match each one of the parameter triples to one of the step 
+responses. Justify your answer!
+
+#+BEGIN_CENTER  
+ \includegraphics[width=0.48\linewidth]{../figures/fig930115-1a-1}
+ \includegraphics[width=0.48\linewidth]{../figures/fig930115-1a-2}\\
+ \includegraphics[width=0.48\linewidth]{../figures/fig930115-1a-3}
+ \includegraphics[width=0.48\linewidth]{../figures/fig930115-1a-4}
+#+END_CENTER
+
+* Ziegler-Nichols ultimate gain tuning
+
+Ziegler and Nichols developed their tuning rules for PID
+regulators given that the system can be approximated as a first order system with time delay:
+\( G(s) = \frac{e^{-sT}}{s+a} \).
+We perform a resonance test according to Ziegler-Nichols' ultimate gain method and
+with the proportional gain $K = 5 = K_u$ we get the closed-loop step response seen below
+#+BEGIN_CENTER 
+ \includegraphics[width=0.4\linewidth]{../figures/zn_excercise_step-crop}
+#+END_CENTER
+1. What is the period \(T_u\) and angular frequency \(\omega_u\) of the oscillations?
+2. Determine the parameters  \(T\) and \(a\) in the transfer function \(G(s)\).
+3. Tune a PI regulator \[u(t)=K_{p}\left(e(t)+{\frac{1}{T_{i}}}\int _{0}^{t}e(\tau )d\tau \right)\] according to Ziegler-Nichols' recipe.
+
+  | Controller type | \(K_p\)      | \(T_i\)     | \(T_d\)   |
+  |-----------------+--------------+-------------+-----------|
+  | P               | \(0.5 K_u\)  |             |           |
+  | PI              | \(0.45 K_u\) | \(T_u/1.2\) |           |
+  | PD              | \(0.8 K_u\)  |             | \(T_u/8\) |
+  | PID             | \(0.6 K_u\)  | \(T_u/2\)   | \(T_u/8\) |
+  |-----------------+--------------+-------------+-----------|
+4. The Nyquist plot of the resulting loop gain \(G_o(s) = F(s)G(s)\) is shown below. What are the stability margins?
+   #+BEGIN_CENTER 
+   \includegraphics[width=0.5\linewidth]{zn_excercise_nyq-crop}
+   #+END_CENTER
+5. The cross-over frequency is \(\omega_c = \unit{0.39}{\rad\per\second}\) with the tuned PI controller. Determine a sampling period \(h\) for a discrete-time implementation of the PI controller, such that the phase margin is reduced by about \unit{10}{\degree}.
+
+** Solution							   :noexport:
+   1. Period \(T_u = (12-1.5)/5 = 2.1\) sec. Corresponding to \(\omega_u = \frac{2\pi}{T_u} = \unit{3.0}{\radian\per\second}\).
+   2. The loop gain is \(G_o(s) = {5 \frac{\mexp{-sT}}{s+a}\). Since we have undamped oscillations of frequency \(\omega_u = \unit{3}{\rad\per\second}\), then the closed-loop system must have poles on the imaginary axis at \(\pm i\omega_u\). That is have \( 1 + G_o(i\omega_u) = 0 \) or \(G_o(i\omega_u) = -1\). The Nyquist curve goes through the critical point -1. We get the equations 
+      \[ | G_o(i\omega_u)|= 1\]
+      \[ \arg G_o(i\omega_u) = \pi \]
+   3. \[F(s) = 0.45K_u(1 + \frac{1.2}{T_u s}) = 2.25(1 + \frac{1.2}{2.1 s}).\]
+   4. Phase margin about 100 degrees, amplitude margin about 2.
+   5. The discretization gives a delay of about h/2, which contributes with negative phase to the loop gain. We get \(G_{d,o}(i\omega) \approx \mexp{-i\omega h/2} G_o(i\omega). \) At the cross-over frequency, the negative phase contribution from delay is \(\arg \mexp{-i\omega_c h/2} = -\omega_c h/2 = -10*pi/180\) which gives \( \omega_c h =  2*20*pi/180 = 0.35 \) Note: rule-of-thumb says \( \omega_c h \approx 0.15 - 0.5\). Here: h = 0.35/0.39 \approx 0.90 s. 
+
+ 

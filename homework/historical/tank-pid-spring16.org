@@ -1,0 +1,102 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{tikz,pgf,pgfplots}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots} 
+#+LaTex_HEADER: \newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+#+LaTex_HEADER: \newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+#+LaTex_HEADER: \newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+#+title: PID control exercise
+
+* Tank-exemplet från boken, Kap 3.3
+
+  Överföringsfunktionen från störningen $v$ (ändring av trycket i vattenledningen) till utsignalen $y$ (avvikelse från önskad vattennivå) är
+\[ Y(s) = S(s) V(s) = \frac{G_2(s)}{1 + G_2(s)G_1(s)F(s)} V(s), \]
+där $F(s)$ är PID-regulatorns överföringsfunktion. Denna kan skrivas
+\[ F(s) = K_P + sK_D + \frac{K_I}{s}. \]
+För olika val av förstärkning för P- I- och D-delen fås olika egenskaper för det återkopplade systemet.
+
+Från exemplet i boken, har vi 
+\begin{align*}
+G_1(s) &= \frac{2}{s+1},\\
+G_2(s) &= \frac{4}{s+2}.
+\end{align*}
+
+** Visa
+\[ S(s) = \frac{4s(s+1)}{s^3 + (3+8K_D)s^2  + (2+8K_P)s + 8K_I}. \]
+\vsp{4cm}
+
+** Set ihop rätt plot av poler och nollställen för $S(s)$ med rätt stegsvar och regulatorinställningar
+Det finns tre set med parametrar
+|     | $K_P$ | $K_I$ | $K_D$ |
+|-----+-------+-------+-------|
+| I   |     2 |     0 |     0 |
+|-----+-------+-------+-------|
+| II  |     4 |     1 |     0 |
+|-----+-------+-------+-------|
+| III |     2 |     2 |     1 |
+|-----+-------+-------+-------|
+
+
+#+begin_latex
+\begin{tikzpicture}[node distance=2cm]
+
+\pgfplotstableread{tank-pid-timeseries.txt}
+ \timeseriesdata
+
+  \begin{groupplot} [
+    group style={
+      group name=poles,
+      group size=1 by 3,
+      xlabels at=all}, 
+      height=3.5cm, width=4cm,
+      axis lines=middle,
+  ytick=\empty,
+  %xtick=data,
+  xtick=\empty,
+  %xticklabel=$a$,
+  xlabel=Re,
+  ylabel=Im,
+  xmin=-10,
+  xmax=10,
+  only marks,
+  ]
+    
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case1.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case1.txt};
+
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case2.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case2.txt};
+ \nextgroupplot   
+  \addplot[mark=x, mark size=4pt, only marks]  table {tank-pid-poles-case3.txt};
+  \addplot[mark=o, mark size=4pt, only marks]  table {tank-pid-zeros-case3.txt};
+\end{groupplot}
+
+  \begin{axis} [
+  name=timeplot,
+  at={(poles c1r2.east)},
+  xshift=4cm,
+  anchor=west,
+  axis line style={->},
+  axis lines=left,
+  xlabel={$t$},
+  ylabel={$y$},
+  xtick=\empty,
+  %ytick=\XNOLL,
+  %yticklabel=$x_0$,
+  ]
+
+\addplot[solid,thick] table[y = 3] from \timeseriesdata ;
+\addplot[dashed,thick] table[y = 1] from \timeseriesdata ;
+\addplot[dotted,thick] table[y = 2] from \timeseriesdata ;
+
+\end{axis}
+
+\node at ($ (poles c1r1.west) + (-1cm, 0) $) {\large A};
+\node at ($ (poles c1r2.west) + (-1cm, 0) $) {\large B};
+\node at ($ (poles c1r3.west) + (-1cm, 0) $) {\large C};
+
+  \end{tikzpicture}
+#+end_latex

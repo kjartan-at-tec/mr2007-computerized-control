@@ -1,0 +1,189 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper] 
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+
+#+title: System identification using matlab
+
+* Least-squares parameter estimation
+
+
+  The model structure used is the so-called ARX (Auto-Regressive with eXogenous input) model:
+  #+BEGIN_LaTeX
+    \begin{center}
+    \begin{tikzpicture}[block/.style={rectangle, draw, minimum height=12mm, minimum width = 17mm}, sumnode/.style={circle, draw, inner sep=2pt}, node distance=30mm]
+  
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (H) {$\frac{B(\shift)}{A(\shift)}$};
+    \node[sumnode, right of=H] (sum) {\small $\Sigma$};
+    \node[coordinate, right of=sum] (output) {};
+    \node[block, above of=sum, node distance=16mm] (He) {$\frac{\shift^n}{A(\shift)}$};
+    \node[coordinate, above of=He, node distance=16mm] (dist) {};
+
+    \draw[->] (input) -- node[above, near start] {$u$} (H);
+    \draw[->] (H) -- node[above] {$$} (sum);
+    \draw[->] (dist) -- node[left, near start] {$e$} (He);
+    \draw[->] (He) -- node[left] {$$} (sum);
+    \draw[->] (sum) -- node[above, near end] {$y$} (output);
+
+    \end{tikzpicture}
+    \end{center}
+  where \(u(k)\) is a known input signal, \(y(k)\) is the output signal and \(e(k)\) is a disturbance (an unknown input signal) in the form of a zero-mean white noise sequence.
+  #+END_LaTeX
+
+  The model can be written
+  \[ A(\shift) y(k) = B(\shift)u(k) + \shift^n e(k)\]
+  \[ (\shift^n + a_1\shift^{n-1} + \cdots + a_n)y(k) = (b_0\shift^{m} + b_1\shift^{m-1} + \cdots + b_m)u(k) + \shift^n e(k)\]
+  \[ y(k+n) + a_1 y(k+n-1) + \cdots + a_n y(k) = b_0u(k+m) + b_1u(k+m-1) + \cdots + b_m u(k) + e(k+n)\]
+  \[ y(k+1) + a_1y(k) + \cdots + a_n y(k-n+1) = b_0 u(k+m-n+1) + b_1u(k+m-n) + \cdots + b_m u(k-n+1)) + e(k+1)\]
+  The one-step-ahead predictor for this model becomes 
+  \begin{align*}
+  \hat{y}(k+1) &= -a_1 y(k) - a_2 y(k-1) - \cdots - a_n y(k-n+1) \\ &\qquad + b_0 u(k+m-n+1) + b_1 u(k+m-n) +  \cdots + b_m u(k-n+1)\\
+               & = \underbrace{\bbm -y(k) & \cdots & -y(k-n+1) & u(k+m-n+1) & \cdots & u(k-n+1)\ebm}_{\varphi\transp(k+1)} \underbrace{\bbm a_1\\\vdots\\a_n\\b_0\\\vdots\\b_m\ebm}_{\theta}\\
+   &= \varphi\transp(k+1)\theta.
+  \end{align*}
+  Note that the white noise term \(e(k+1)\) by definition cannot be predicted from knowledge of previous values in the sequence (which we don't know) nor from previous output values \(y(t), \; t \le k\) (which could have been used to estimate \(\hat{e}(k)\)). Therefore \(e(k+1)\) is predicted by its mean value which is zero. Note also that if our model with \(\theta = \theta^*\) is perfect (\(\theta^*\) contains the true parameters for the system which generated the data), then the prediction error equals the white noise disturbance: \(\epsilon(k+1) = y(k+1) - \varphi\transp(k+1)\theta^* = e(k+1)\). Therefore, we can check how good a models is by testing how close the prediction errors resembles a white noise sequence.
+
+  The system of equations in the unknown system parameters \(\theta\) is
+  \[ \Phi \theta = y, \]
+  where
+  \begin{align*}
+  \Phi &= \bbm \varphi\transp(n+1)\\\varphi\transp(n+2)\\\vdots\\\varphi\transp(N)\ebm,\\
+  y &= \bbm y(n+1)\\y(n+2)\\\vdots\\y(N)\ebm.
+  \end{align*}
+
+  The least-squares solution to this system of equations is, by definition, the solution \(\hat{\theta}\) which minimizes the sum of squares of the residuals \(\epsilon = y-\Phi\theta\), i.e. the solution that minimizes the criterion
+  \[ J(\theta) = \epsilon\transp\epsilon = \sum_i \epsilon_i^2. \] 
+  It is given by 
+  \[ \hat{\theta}_{LS} = \underbrace{(\Phi\transp\Phi)^{-1}\Phi\transp}_{\Phi^+} y, \]
+  where \(\Phi^+\) is called the /Moore-Penrose invers/ of the (typically) non-square, tall matrix \(\Phi\). 
+
+**  Instructions
+  1. Download the data: [[http://alfkjartan.github.io/files/sysid_exercise_data.mat]] The data consist of 12 vectors =u1=, =y1=, =u1_val=, =y1_val=, =u2=, =y2=, =u2_val=, =y2_val=, =u3=, =y3=, =u3_val=, =y3_val= corresponding to three different LTI systems.
+     - =ui= :: input data for system \(i\) 
+     - =yi= :: output data for system \(i\) 
+     - =ui_val= :: validation input data for system \(i\) 
+     - =yi_val= :: validation output data for system \(i\)
+     The systems are 
+     1. \( H_1(z) = \frac{b}{z+a} = \frac{0.2}{z -0.8} \)
+     2. \( H_2(z) = \frac{b_0 z + b_1}{z(z+a_1)} = \frac{0.0625z + 0.0375}{z(z - 0.9)} \)
+     3. \( H_3(z) = \frac{b}{z^2 + a_1z + a_2} = \frac{0.18}{z^2 - 1.4z + 0.58} \)
+  2. For each case estimate a model using the input-output data. Formulate the one-step ahead predictor \( \hat{y}(k) = \varphi\transp(k)\theta \) and the system of equations 
+     \( \Phi \theta = y \), and find the least-squares solution to the system. Compare with the true parameters.
+  3. Validate your model using the validation data. Let's say you have obtained estimates of the numerator \(\hat{B}(z)\) and denominator \(\hat{A}(z)\) of your model. You can then simulate the model using the validation data (a data set which is *not* used for parameter estimation) like this
+     #+BEGIN_SRC octave
+     H = tf(B, A, 1); % Create the discrete-time LTI model
+
+     % Simulate the model. 
+     ysim = lsim(H, u_val); 
+     % The above is also known as infinite-step ahead prediction
+     % and works only for stable models. It is often better to 
+     % validate the model using a k-step ahead predictor. 
+
+     e = y_val - ysim; % The error
+     
+     % Calculate the root mean square of the error
+     RMSerror =      %Your code here 
+
+     % Plot
+     figure()
+     subplot(121)
+     stairs(y_val)
+     hold on
+     stairs(ysim)
+     legend('Validation output', 'Simulated output')
+     subplot(122)
+     stairs(e)
+     title(sprintf('Simulation error. RMS=%f', RMSerror))
+     #+END_SRC
+
+** About the validation simulation 
+In general it is preferred to compare the validation output to the output from a k-step ahead predictor, where k is chosen to correspond to a typical time interval of the data. For control models where we have used the rule-of-thumb of 4-10 sampling periods per rise time, a choice of k=10 is reasonable. A choice of k=1 (one-step ahead predictor) gives unreliable validation, since the trivial predictor \(\hat{y}(k+1) = y(k)\) can give good predictions if the sampling period is short ("the weather in one minute from now will be equal to the weather now"). Choosing k extremely large corresponds to pure simulation of the model (the predicted output sequence depends only on the input sequence) and will not work for unstable models. Also, for models with integration a small bias in the input sequence will be accumulated and give poor validation result, even for a good model. 
+
+The system identification toolbox provides such a function that computes the k-step ahead prediction. See  https://www.mathworks.com/help/ident/ref/predict.html. An implementation that uses only basic matlab functions can be downloaded here [[http://alfkjartan.github.io/files/predictlti.m]]. 
+# * The sysid toolbox
+
+* Identify a model simulated in Simulink			   :noexport:
+
+  The objective of this exercise is to practice the steps of doing system identification. You will do simulations in simulink of a continuous-time model including an antialiasing filter, a zero-order hold block and a sampler. The simulations will generate input-output data, which you then use to estimate a discrete-time transfer function to represent the system. Finally, you take your discrete-time model back to simulink and test by simulation to see how good the model is.
+
+** The general procedure of system identification
+#+BEGIN_CENTER 
+ \includegraphics[width=\linewidth]{basic-steps.png}
+From "System Identification Toolbox - User's guide" by Lennart Ljung, Mathworks Inc. 
+#+END_CENTER
+
+** The system: A non-minimum phase model of the elevation dynamics of an aircraft
+   We consider the model is of the aircraft model we discusses in class this week. The input signal is the angle of the elevator and the output is the vertical acceleration of the aircraft. A positive angle gives a downward force that changes the angle of attack of the plane. The larger angle of attack then gives an upward force. 
+#+BEGIN_CENTER 
+ \includegraphics[width=0.4\linewidth]{aircraft-control.png}
+From Bandun-aeromodeling.com
+#+END_CENTER
+The response of the sytem is initially in the oposite direction of the input. Such a system has a zero in the right half plane. The specific model is given by the transfer function
+\[ G(s) = \frac{-2(s+6)(s-6)}{(s+3)(s+8s+32)}. \]
+
+We are interested in obtaining a discrete-time transfer function that represents the complete system from the zero-order-hold block via the plant, the antialiasing filter and the sampler. This model is provided as a simulink simulation model 
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{sim-modle}
+   #+END_CENTER
+   
+** Generating an input signal
+   To simulate the system and get data for system identification we need good input data.  
+   The system identification toolbox has a convenient function =idinput= for generating suitable excitation signals (input signals) to a system we want to identify. A common choice is to use a /pseudo-random binary sequence/ (PRBS). You can think of such a signal as containing a sequence of step inputs at random times, where every second step goes from -1 to 1 and every second from 1 to -1. Such a signal is good for exiting all modes (frequencies) of the system. The steps should come at suitable intervals so the system has some time to react to one step before the next step arrives.
+
+   A PRBS can be generated with the sysid toolbox using the function =idinput=. For instance,
+#+BEGIN_SRC octave
+u = idinput(800, 'prbs', [0, 1/8]);
+#+END_SRC
+   generates an PRBS input signal =u= of length 800, where the signal is constant on average 8 samples. That means that it is about 100 steps in the sequence of length 800. 
+
+   The simulink model reads an input signal from the workspace. 
+#+BEGIN_CENTER 
+ \includegraphics[width=0.2\linewidth]{from-workspace.png}
+#+END_CENTER
+This block expects that there exists a variable =u_signal= of two columns, where the first column is the time vector and the second column is the input signal. The sample period is \(h=0.04\), so to create a PRBS signal of length 800 you can do
+#+BEGIN_SRC octave
+h = 0.04;
+tvec = (0:799)*h;
+u = idinput(800, 'prbs', [0, 1/8]);
+u_signal = cat(2, tvec', u);
+#+END_SRC  
+   *Generate one long input signal* corresponding to 160 seconds of simulation. Split this signal into two parts. One input signal will be used to generate identification data, the other to generate validation data. The time vector should be the same for both signals.
+
+ 
+** The result from the simulation
+   When simulated until the time 80, the output signal from the simulink model is sent to the workspace as the variable =y_signal=. This is a /timeseries/ object. The time vector is contained in =y_signal.Time= and the ouput signal values in =y_signal.Data=. Check the length of the time vector in =y_signal.Time=, since it may be longer or shorter than the time vector in the input signal, depending on how you defined your input signal. 
+
+   *Create two data objects* to use in the subsequent system identification, for instance as 
+#+BEGIN_SRC octave
+u_id = u_signal(:,2);
+y_id = y_signal.Data;
+aircraft_id = iddata(y_id, u_id, h);
+#+END_SRC 
+   and similarly to create the data object containing validation data.
+
+** Find model using the system identification GUI
+   Now that you have two sets of data, it is time to try to determine a good discrete-time model for the system. Start the sysid gui with the command =ident=. First you must import the data from the workspace. Click /Time Domain data/ in the drop-down cell /import data/ in the upper left of the GUI.
+#+BEGIN_CENTER 
+ \includegraphics[width=\linewidth]{import-data.png}
+#+END_CENTER
+
+   Import both the identification data and the validation data. Drag the identification data =aircraft_id= to the box /Working Data/ (if it is not already there), and drag the validation data from the impored data into the box called /Validation Data/. Now it is time to estimate models. Choose /Transfer Function Model/ in the box below /Working Data/. This brings up a new dialog
+#+BEGIN_CENTER 
+ \includegraphics[width=\linewidth]{estimate-tf.png}
+#+END_CENTER 
+
+   Start by trying some simple, low order models. Then you may try to see if more complex models give better results. Things to consider: What is the order of the plant and the anti-aliasing filter? What order would we expect the discrete-time model to have? Should we include delays in the model? How much delay? 
+
+
+** Simulate the estimated model in simulink
+
+   When you have identified a good model, you can try to simulate the model in simulink and compare with the existing model. You can see the pulse-transfer function of the model by right-clicking on the model in the GUI. Note that the transfer function is given in delays (negative exponents of z). Just multiply with \(z^n\) above and below the fraction line to get it on the form we use in this course with positive exponents of \(z\).
+
+   You will need a discrete transfer function from the simulink library. Connect it as seen in the figure below. Enter the coefficients for the numerator and denominator, and enter the sampling time in the dialog for the discrete transfer function.
+#+BEGIN_CENTER 
+ \includegraphics[width=\linewidth]{sim-id-model.png}
+#+END_CENTER
+

@@ -1,0 +1,8 @@
+
+MC	What does zero-order hold mean?	The signal is held at zero except at sampling instants	incorrect	The signal is held constant between sampling instants at the value of the lates sample	correct	The signal varies linearly between sampling instants	incorrect
+MA	Why do we use zero-order hold to sample a system?	It is simpler than higher order holds	correct	It gives the best result	incorrect	The input signal to the system is piece-wise constant	correct  
+SR	What does equidistant sampling mean?	A continuous signal is converted into a sequence of numbers, which are taken at time instants that are equally far apart in time.
+MC	In this course we use the symbol $$h$$ for the sampling period. What is the correct expression to obtain the sampling frequency in radians per second?	$$1/h$$	incorrect	$$\frac{2\pi}{h}$$	correct 
+SR	Write three things you learned from reading the material
+SR	Write three concepts or problems that we should discuss more in class
+OP	Did you find the study material (text/videos) valuable for your learning?

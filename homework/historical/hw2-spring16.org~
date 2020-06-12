@@ -1,0 +1,79 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage{khpreamble}
+
+#+title: Computerized control - homework 2
+#+date: Due 2016-02-05
+
+* Exercises
+** Sample the continuous-time transfer function
+   Consider the harmonic oscillator with transfer function 
+   \begin{equation}
+    G(s) = \frac{\omega^2}{s^2 + \omega^2}.
+    \label{eq:contsys}
+    \end{equation}
+
+
+   *Compute the pulse-transfer function* by sampling the transfer function $G(s)$. 
+
+** Simulation of the continuous- and discrete-time harmonic oscillator
+Use matlab's control toolbox or the [[http://python-control.sourceforge.net/][python control module]]  to simulate the system and verify your calculations. 
+
+***  Define systems
+First, define the continuous-time system in \eqref{eq:contsys}
+#+BEGIN_SRC octave
+omega = 1; % Just a suggestion
+h = 0.2/omega; % Completely undamped system. This gives about 30 samples per period 
+sys_c = tf([omega^2],[1 0 omega^2])
+#+END_SRC
+Sample the system using the function =c2d=
+#+BEGIN_SRC octave
+sys_c2d = c2d(sys_c, h)
+#+END_SRC
+Define the discrete-time system you calculated in the first part of the homework
+#+BEGIN_SRC octave
+num = [1 a1 a2];
+den = [b1 b2];
+sys_d = tf(num, den, h)
+#+END_SRC
+*Verify that the two discrete-time systems* =sys_c2d= *and* =sys_d= *are identical.*
+
+***  Simulate step responses
+Simulate for 4 complete periods 
+#+BEGIN_SRC octave
+Tc = linspace(0, 4*(2*pi/omega), 800);
+[yc,tc] = step(sys_c, Tc);
+
+Td = h*(0:120);
+[yd,td] = step(sys_d, Td);
+
+figure()
+clf
+plot(tc,yc)
+hold on
+plot(td,yd, 'r*')
+#+END_SRC
+
+*Verify that the step response of the discrete-time system is exactly equal to that of the continuous-time system at the sampling instants. Explain why this is so!*
+
+*** Compute the discrete step response yourself
+    Write some lines of code that solves the difference equation
+    \[ y(k+2) = -a_1y(k+1) - a_2y(k) + b_1u(k+1) + b_2u(k) \]
+    for the harmonic oscillator. 
+   Use the initial state \(y(-1)=y(0)=0\) and compute the response to a step sequence 
+    \[ u(k) = \begin{cases} 1, & k \ge 0\\ 0, & \text{otherwise} \end{cases}.\]
+    Verify that your solution is the same as when using the =step= function in the previous exercise in this homework.
+ 
+
+* Not now							   :noexport:
+** Simulate ramp response
+   Simulate a ramp response using the function \texttt{lsim} for both the continous-time and the sampled system. *Why are the responses different?* *Why is the amplitude of the response not increasing with time?*
+
+** Calculate the eigenvalues
+   Verify by hand-calculation and with help of the computer that the identity
+   \[ \lambda_i = \mexp{p_ih} \]
+   holds for the relationship between the poles of the continous and sampled systems.
+
+** Step response as sampling interval increases
+   Simulate step responses for values of $h$ around $\omega h = \pi$. 
+

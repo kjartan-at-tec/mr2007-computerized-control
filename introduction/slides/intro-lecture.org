@@ -1,0 +1,671 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+#+title: Computerized control - Introduction
+#+date: 2019-08-15
+
+* What do I want the students to understand?			   :noexport:
+  - Why a theory of discrete-time systems are important
+  - Important stuff from MR2004
+    - Poles and zeros
+    - Step response
+    - Transfer function
+  - The course structure
+  - The system for evaluation and grading
+
+* Which activities will the students do?			   :noexport:
+  1. Discuss why a jagged input signal does not yield a jagged output
+  2. Discuss what a suitable choice of $h$ could be
+
+* Presentation
+** Who am I?
+
+*** Skip							   :noexport:
+# Norwegian migrated to Sweden and now to Mexico
+\begin{center}
+\includegraphics[width=0.4\linewidth]{../../figures/map.png}\\
+\end{center}
+
+** Who are you?							   
+*** Notes							   :noexport:
+- Who rides their bicycle to tec?
+- Knowledge of
+  - Matlab
+  - Root locus
+  - Bode plot
+  - Lead-lag filter design
+  - State feedback
+  - Bessel lowpass filter
+
+* Intro
+  # Velkommen til dette kurset i reguleringsteknik!
+** Goal of the course
+   To be able to *analyze*, *design*, *implement* and *evaluate* computerized product and process control systems with a focus on practical application.
+
+** Feedback control
+#+BEGIN_CENTER
+\includegraphics[width=0.6\linewidth]{../../figures/block1}
+#+END_CENTER
+
+*** notes							   :noexport:
+    - Familiar from control ing course
+    - Blocks represent LTI. Plant, controller
+    - Negative feedback
+    - Objective is that the output of the system follows the reference signal (set point)
+    - Is not reality, but a very useful model/abstraction/approximation
+    - Use it to analyze properties of the closed-loop system before trying out on the real system.
+    - Interesting properties? (Write down at least 3)
+      - Stability
+      - Speed
+      - Damping
+      - Stationary error
+      - Disturbance attenuation
+    - Response and stability - poles of the system. Given by the characterstic equation. Write this!
+    - Unfortunately, this is not reality. A more realistic model looks like this: 
+** Feedback control
+#+BEGIN_CENTER
+\includegraphics[width=0.7\linewidth]{../../figures/comp-contr-sys.png}
+#+END_CENTER
+
+*** notes							   :noexport:
+    - In real life things are a bit more complicated.
+    - The process to be controlled consists of actuators and sensors.
+    - There are disturbances and noise affecting the system
+    - Most importantly: almost all controllers are implemented on computers (desktop, embedded, microcontrollers, programmable logic controller (digital process controller)
+    - Computers work in discrete time and with digital values.
+      - Digital: Error due to finite precision of analog signal
+      - Time discretization, or sampling: More important.
+    - Sampling has profound effects on the system:
+      - Affects the performance of the control system (delay)
+      - Can introduce new (unwanted) frequencies in the system through what is called aliasing (high frequencies signal masquerade as low frequency).
+    - Gives new possibilities if we make use of the discrete nature of a computer-controlled system.
+
+** Why computerized control?
+
+** Computers everywhere
+# Around 100 microcontrollers in a well-equiped car
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/electronics-in-cars.png}
+\end{center}
+#+BEGIN_LaTeX
+{\tiny Winning share in automotive semiconductors. McKinsey report 2013 } 
+#+END_LaTeX
+
+# Anti-lock braking system (ABS)
+
+** Computers everywhere						   :noexport:
+\begin{center}
+\includegraphics[width=0.8\linewidth]{./microcontrollers.png}
+\end{center}
+
+Sales of microcontrollers 2012-2019. 
+
+** Two approaches to designing a  discrete-time controller 
+   1. Do design the controller in the continuous-time domain (methods from control engineering class). Then discretize the continuous-time controller.
+   2. Determine discrete-time model of the plant. Do design in discrete-time domain.
+* Example: water-level control in hydro power plant
+** Example of design in the discrete time domain
+** Example - Hydro-power plant
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/alta.png}
+#+END_CENTER
+** Example - Hydro-power plant
+#+BEGIN_CENTER 
+\small
+\def\svgwidth{0.7\linewidth}
+\input{hydroplant.pdf_tex}
+#+END_CENTER
+
+*** On whiteboard						   :noexport:
+    - "Pay attention! If you understand this example, you have understood very important concepts in the course!"
+    - Draw gates and flow out through the gates. Draw actuator, draw depth sensor, draw computer (or chip/microcontroller).
+    - Draw signal flow. 
+    - Draw inflow Q_i(t) and two outflows Q_g(t), through the dam gates, and Q_p(t). Introduce level of water L(t)
+    - Introduce sampling time h.  use minutes as unit of time. Then signals become
+      - Q_i(k), Q_g(k), Q_p(k) [m^3/s], L(k) [m], k=0,1,2,...
+    - Introduce discrete-time dynamical model
+      - A*L(k+1) - A*L(k) = Q_i(k)*h - Q_g(k)*h - Q_p(k)*h, where
+	- L [m] is height of water surface above turbine, also known as the head.
+        - A [m^2] is cross-sectional area. Actually, A(L), Sketch?
+      - L(k+1) = L(k) + h/A*(Q_i(k) - Q_g(k) - Q_p(k)) (**)
+    - Introduce deviation signals
+      - L(k) = L_0 + y(k), where L_0 is typical (usually desired) level
+      - Q_i(k) = Q_{i,0} + v(k), where Q_{i,0} is typically flow into the reservoir
+      - Q_p(k) = Q_{p,0} + w(k), where Q_{p,0} is typically flow through the power plant
+      - Q_g(k) = Q_{g,0} - u(k), where Q_{g,0} is chosen typical flow through the gates
+    - Discuss: How should we choose Q_{g,0}?
+      - Answer: Equilibrium: Flow in equal to flow  out for the typical values.
+      - Q_{i,0}  = Q_{p,0} + Q_{g,0}, or
+      - Q_{i,0} - Q_{p,0} - Q_{g,0} = 0
+    - Insert the expressions with the deviations in the model (**)
+      - L_0 + y(k+1) = L_0 + y(k) + h/A ( Q_{i,0} + v(k) - Q_{p,0} -  w(k) - Q_{g,0} - (-u(k)) )
+      - y(k+1) = y(k) + h/A ( u(k) + v(k) - w(k) )
+    - Draw block diagram
+    - A controller is a function (or algorithm)
+      u(k) = f(y(k-l), y_{ref](k),u(k-1-l)), l=0,1,2,...,k
+      or in words: based on current and past output (feedback) signals y(k), current and past reference signals, and previous control signals, calculate the control signal.  
+    - Let's try the simplest controller possible: A proportional controller
+      - u(k) = K ( y_ref(k) - y(k)). What is the unit of K? "Change in flow through gates per meter error in water level" [m^3/s/m] = [m^2/s]
+    - This gives the closed-loop system
+      - y(k+1) = y(k) + h/A K (y_ref(k) -  y(k) ) + h/A v(k) + - h/A w(k)
+      - y(k+1) = (1-h/A K) y(k) + h/AK y_ref(k) + h/A v(k) - h/A w(k), write as
+    - Let's study a pulse-response from w(k), i.e. An abrupt peak in the flow to the turbine.
+      w(k) = {1, k=0, 0 otherwise
+      v(k)=0, y_ref(k)=0, y(0) = 0
+      - y(k+1) = (1-Kh/A)y(k) - h/A w(k), y(0)=0
+	y(1) = (1-Kh/A)0 - h/A = -h/A
+	y(2) = (1-kh/A)(-h/A) - 0 = -(1-Kh/A)h/A
+	y(3) = (1-Kh/A)(-(1-Kh/A)h/A = - (1-Kh/A)^2 h/A
+	     :
+	y(n) = -(1-Kh/A)^{n-1} h/A
+** Which graph best illustrates the pulse response?
+   Let $h=\unit{60}{\second}$, $A=\unit{1.2\times 10^{5}}{\meter\square}$ and $K = \unit{10^3}{\meter\squared\per\second}$
+   
+#+BEGIN_LaTeX
+  \begin{center}
+    \begin{tikzpicture}
+    \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+       width=7cm,
+       height=2.5cm,
+       xlabel={$k$ },
+       ylabel={$y(k)$},
+       xmin=-2,
+       xmax=15,
+       ytick = {0},
+       xtick = {0},
+       domain=-2:15,
+       samples=18,
+       variable=k,
+       ]
+
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*pow(0.5, k) };
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*(-1)*pow(0.5, k) };
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*(-1+pow(0.5, k)) };
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*(1-pow(0.5, k)) };
+       \end{groupplot}
+
+       \node[red] at (group c1r1.center) {\huge 1};
+       \node[red] at (group c2r1.center) {\huge 2};
+       \node[red] at (group c1r2.center) {\huge 3};
+       \node[red] at (group c2r2.center) {\huge 4};
+       \end{tikzpicture}
+  \end{center}
+#+END_LaTeX
+
+** Which graph best illustrates the step response?
+   Let $h=\unit{60}{\second}$, $A=\unit{1.2\times 10^{5}}{\meter\square}$ and $K = \unit{10^3}{\meter\squared\per\second}$
+   
+#+BEGIN_LaTeX
+  \begin{center}
+    \begin{tikzpicture}
+    \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+       width=7cm,
+       height=2.5cm,
+       xlabel={$k$ },
+       ylabel={$y(k)$},
+       xmin=-2,
+       xmax=15,
+       ytick = {0},
+       xtick = {0},
+       domain=-2:15,
+       samples=18,
+       variable=k,
+       ]
+
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*pow(0.5, k) };
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*(-1)*pow(0.5, k) };
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*(-1+pow(0.5, k)) };
+       \nextgroupplot[]
+        \addplot+[red, thick, ycomb] { (k>=0)*(1-pow(0.5, k)) };
+       \end{groupplot}
+
+       \node[red] at (group c1r1.center) {\huge 1};
+       \node[red] at (group c2r1.center) {\huge 2};
+       \node[red] at (group c1r2.center) {\huge 3};
+       \node[red] at (group c2r2.center) {\huge 4};
+       \end{tikzpicture}
+  \end{center}
+#+END_LaTeX
+
+*** Notes							   :noexport:
+    1-K*h/A = 1 - 60*10^3/(1.2*10^5) = 1 - 60/120 = 0.5
+
+      
+* Further motivation for computerized control 
+** Discrete design can give better performance
+\includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
+# \includegraphics[height=0.8\textheight]{../../figures/fig1-9.png}
+
+*** Notes							   :noexport:
+Performance critera:
+- Speed
+- Accuracy
+- Stability
+- Overshoot
+- Input signal magnitude
+
+** Discrete design can give better performance
+\includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
+\includegraphics[height=0.8\textheight]{../../figures/fig1-9.png}
+
+** Why computerized control?
+   - Almost all control systems are implemented on computers/microcontrollers
+   - Controllers designed in continuous-time must be discretized to be implemented on a computer - What does this mean for the performance?
+   - Design that takes into account the discrete nature of the computer can give better performance
+
+** Challenges with computerized control
+
+*** Aliasing
+\includegraphics[height=0.6\textheight]{../../figures/Moire_pattern_of_bricks.png} \hspace*{3mm} \includegraphics[height=0.6\textheight]{../../figures/Moire_pattern_of_bricks_small.png}
+
+*** Notes							    :noexport:
+Works very nicely! Shows clearly that the sampling of the spatial frequency with too large pixels give something in the image that was not there in reality.
+
+** Challenges with computerized control
+
+*** Sampling causes delay
+\includegraphics[width=0.9\textwidth]{../../figures/modulation-model-timeseries}
+
+*** Notes							   :noexport:
+- Name cont-time signal y(t)
+- Sampling at equidistant time instants.
+- Define h
+- Sketch discrete-time signal
+- Sketch zero-order-hold signal.
+- Explain signals
+- One signal used in analog control. The other used in discrete control.
+- Pick time between sampling instants: CT uses fresh information. DT uses old information
+- After and close to sampling instant: Info is fresh.
+- Right before next sampling instant info is old.
+- On average delay is about half the sampling period.
+
+
+* Skip								   :noexport:
+** Uppsala
+
+# Norwegian migrated to Sweden and now to Mexico
+\begin{center}
+\includegraphics[width=0.8\linewidth]{../../MR2004/figures/uu-mic.png}\\
+\includegraphics[width=0.8\linewidth]{../../MR2004/figures/syscon.png}\\
+\end{center}
+
+** Research
+\begin{center}
+\includegraphics[height=0.3\linewidth]{../../MR2004/figures/football.png}
+\includegraphics[height=0.3\linewidth]{../../MR2004/figures/humanbalance.png}\\
+\includegraphics[height=0.3\linewidth]{../../MR2004/figures/alejandro.png}
+\end{center}
+
+** On my spare time
+\begin{center}
+\includegraphics[height=0.4\linewidth]{../../MR2004/figures/mountain-bike.png}
+\includegraphics[height=0.4\linewidth]{../../MR2004/figures/gf.png}
+\end{center}
+
+* Course content structure
+
+** Control concepts
+\begin{center}
+\includegraphics[width=1.1\linewidth]{../../figures/computercontrol.png}
+\end{center}
+
+*** Notes							   :noexport:
+    - Some seen from previous course
+    - The same concepts are relevant in this course also
+    - Interesting differences
+      - Mathematical models: Discrete math, difference equations, z-transform
+      - System identification
+** Course book
+\begin{center}
+\includegraphics[width=0.2\linewidth]{../../figures/book.png}
+\end{center}
+Buy ebook at Google Books (573 MXN)
+
+** Course overview
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/computer-control-approaches}
+\end{center}
+
+** Discrete time vs continuous time
+| Continuous time                                                              |
+|------------------------------------------------------------------------------|
+| \includegraphics[width=0.4\linewidth]{../../figures/cont-fcn}                |
+| \(y(t)\)                                                                     |
+| \(\operatorname{p} y \triangleq \frac{d}{dt} y\)                             |
+| \( (\operatorname{p}+a) y = bu \;\Leftrightarrow\; \frac{d}{dt}y + ay = bu\) |
+| \(Y(s) \triangleq \laplace{y(t)}\)                                           |
+| \( Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\)                                     |
+| Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\)                       |
+| \includegraphics[width=0.22\linewidth]{../../figures/cont-stable}            |
+|------------------------------------------------------------------------------|
+
+*** Notes							   :noexport:
+    - Discrete signals - sequences of numbers, signal defined at specific time instants called the sampling instants.
+    - Derivative of signals. Here using the differential operator operating on differentiable functions. In discrete time work with the shifted sequences. Here shift operator operating on sequences shifting ahead one step.
+    - ODE difference eqs
+    
+** Discrete time vs continuous time
+| Continuous time                                                              | Discrete time                                                                                       |
+|------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| \includegraphics[width=0.4\linewidth]{../../figures/cont-fcn}                | \includegraphics[width=0.4\linewidth]{../../figures/discrete-fcn}                                   |
+| \(y(t)\)                                                                     | \(y(kh)\) or \(y(k)\)                                                                               |
+| \(\operatorname{p} y \triangleq \frac{d}{dt} y\)                             | \(\operatorname{q}y \triangleq y(kh+h)\)                                                            |
+| \( (\operatorname{p}+a) y = bu \;\Leftrightarrow\; \frac{d}{dt}y + ay = bu\) | \( (\operatorname{q} + \alpha) y = \beta u \; \Leftrightarrow \; y(k+1) + \alpha y(k) = \beta u(k)\) |
+| \(Y(s) \triangleq \laplace{y(t)}\)                                           | \(Y(z) \triangleq \ztrf{y(kh)}\)                                                                    |
+| \( Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\)                                     | \(Y(z) = H(z)U(z) = \frac{\beta}{z+\alpha}U(z)\)                                                    |
+| Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\)                       | Pole of the system: \( z+\alpha = 0 \; \Rightarrow \; z = -\alpha \)                                |
+| \includegraphics[width=0.22\linewidth]{../../figures/cont-stable}            | \includegraphics[width=0.22\linewidth]{../../figures/discrete-stable}                               |
+|------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+
+*** Notes							   :noexport:
+    - Discrete signals - sequences of numbers, signal defined at specific time instants called the sampling instants.
+    - Derivative of signals. Here using the differential operator operating on differentiable functions. In discrete time work with the shifted sequences. Here shift operator operating on sequences shifting ahead one step.
+    - ODE difference eqs
+    
+* Course structure
+** How we will work
+   *Prepare, prepare, prepare* for classes:
+   1. Read text material and watch video
+   2. Solve quizz (test) on Canvas (up to 100p, accounts for 1% of final grade)
+   In class:
+   1. Review of material
+   2. Work with concepts
+   3. Problem solving
+   4. Summarize
+
+** Homework
+   - About every second week
+   - Solved in groups of 2 (except first hw which is individual), handed in on Canvas
+   - Each homework accounts for 4% of final grade (except first hw which is 2%)
+
+** Project
+   - Implement controller on arduino, accounts for 10% of final grade
+   - Groups of 4 (self-elected)
+   - Partial reports (\(2\times 15\)p)
+   - Final report (30p)
+   - Demonstrate working open-loop setup (10p)
+   - Demonstrate controller design and  working closed-loop system (20p)
+   - Individual journal (10p)
+
+** Examination
+   - Quizzes 10%
+   - Homework 18%
+   - Project 10%
+   - 2 partial exams (1.5hrs) 36%
+   - Final exam (3hrs) 26%
+
+
+** Example of preparation work					   :noexport:
+   1. Watch video
+   2. Try notebook
+   3. Answer quizz
+
+** Coming up
+   - Homework 1: Repetition of stuff from control engineering. On Canvas.
+   - See preparation instructions for next week on Canvas
+
+* Examples
+
+** On the whiteboard instead 					   :noexport:
+    - Draw plant-block.
+      - Representation, model, formal description:
+	- Differential equation \( \frac{d^n}{dt^n} y + a_1 \frac{d^{n-1}}{dt^{n-1}} + \cdots + a_n y = b_0 \frac{d^m}{dt^m} u + \cdots + b_m u\)
+	- Transfer function \( G(s) = \frac{b_0s^m + \cdots + b_m}{s^n + a_1s^{n-1} + \cdots + a_n} \)
+	- State space.
+    - Draw disturbance at input.
+    - Draw feedback - name signals
+      - What is the purpose of the feedback?
+      - Define servo-problem and regulator problem
+      - Controller also dynamical system \( F(s) \)
+    - Erase all but plant and disturbance
+    - Draw large block - computer. Inside computer:
+      - AD converter. Write sequence of numbers \( \{y(kh)\} \)
+      - Controller algorithm. Output \( \{ u(kh) \}
+      - DA converter. Must deliver continuous signal \( u(t) \).
+---      - Clock that controls AD/DA.
+
+# \begin{center}
+# \includegraphics[width=0.8\linewidth]{./figures/fig7-1.png}
+# \end{center}
+
+# \begin{center}
+# \includegraphics[width=0.7\linewidth]{./figures/fig7-2.png}
+# \end{center}
+** Example - Control of a harddrive arm (Å&W example 1.2)	   :noexport:
+\begin{center}
+\includegraphics[width=0.4\linewidth]{../../figures/diskdrive.png}
+\end{center}
+
+#+BEGIN_LaTeX
+{\tiny "Laptop-hard-drive-exposed" by Evan-Amos - Own work. Licensed under CC BY-SA 3.0 via Commons } 
+#+END_LaTeX
+
+*** On whiteboard						   :noexport:
+    - Principle sketch:
+      - Arm with inertia - moment of inertia - resistance to angular acc
+      - No friction
+      - Input signal is torque acting at pivot point of arm - ignoring dynamics in actuator (electric motor).
+      - Output signal is angular position
+      - Model: \( J \ddot{y} = k u \), Newton's second law 
+    - Block diagram
+      - Plant \( G(s) = \frac{k}{Js^2} = \frac{b}{s^2} \) 
+      - Continuous-time 2dof controller:
+	- Feedback path: \( K\frac{s+b}{s+a} \)
+	- Feedforward: \( K \frac{b}{a} \)
+	- Third order closed loop system. Find characteristic polynomial: \(s^3 + a_1s^2 + a_2s + a_3\)
+    - Reasonable continuous-time design
+      - Parameters in controller: 3. Should be able to place closed-loop poles arbitrarily.
+      - Assume desired poles on circle with radius \(\omega_0 \) in \( (-\omega_0,0) \), \( (-0.5\omega_0, 0.866\omega_0) \) and \( (-0.5\omega_0, -0.866\omega_0) \).
+	Gives desired characteristic equation
+      - Reparameterization in 1 parameter $\omega_0$
+      - \( a=2\omega_0 \)
+      - \( b = \omeg_0/2 \)
+      - \( K = 2\frac{J\omega_0^2}{k} \) 
+      - 
+      - Discuss: How does the properties of the closed loop system depend on the choice of $\omega_0$?
+    - Simple sampling of continuous controller. See Å&W eq (1.3)
+    - When sampling a cont-time design to obtain a discrete-time system that can be implemented on a computer, we get another parameter to choose: The sampling time $h$.
+      - Ideas on how to choose the sampling time?
+
+
+* Example results						   :noexport:
+** Limitations of discretizing a continuous-time control design (Å&W example 1.2)
+\begin{center}
+\includegraphics[width=0.7\linewidth]{fig1-8.png}
+\end{center}
+
+** Design based on discrete-time theory
+
+\begin{center}
+\includegraphics[width=0.6\linewidth]{fig1-9.png}
+\end{center}
+
+
+* Review of basic control					   :noexport:
+
+** Step response						   :noexport:
+[[file:step-response-exc-spring16.org][Separate document]]
+
+** Root locus							   :noexport:
+[[file:root-locus-exc-spring16.org][Separate document]]
+
+[[file:root-locus-exc-spring16.org][Separate document]]
+
+* Theory							   :noexport:
+
+** The plant as seen from the computer
+\begin{center}
+\includegraphics[width=0.7\linewidth]{./figures/fig2-1.png}
+\end{center}
+
+
+** Sampling a continuous-time system
+*** What do we want?
+    Go from 
+    \begin{align*}
+    \dot{x} &= Ax + Bu \quad \text{to} \quad    &x(k+1) = \Phi x(k) + \Gamma u(k)\\
+    y &= Cx + D.    \quad \quad &y(k) = Cx(k) + Du(k),
+    \end{align*}
+
+**** Continuous-time properties
+     - Stability
+     - Pole location
+     - Bandwidth
+     - Resonance
+     - Controllability
+     - Observability
+**** Discrete-time properties
+     - The same!
+*** The general case without time-delay
+    Given continuous-time state-space model
+    \begin{align*}
+    \dot{x} &= Ax + Bu\\
+    y &= Cx + D.
+    \end{align*}
+    Will show that by assuming the input $u$ to be constant during the sampling intervals, a linear sampled system can be obtained that is an *exact* representation of the continuos-time system *at the sample instants*.
+
+    Assume known initial state $x(t_k) = x(kh) = x(k)$ and constant input $u(t)=u(t_k)=u(k)$ with $t>t_k$. Solving the differential equation gives
+    \begin{align*}
+    x(t) &= \mexp{A(t-t_k)}x(t_k) + \int_{t_k}^t \mexp{A(t-s')}Bu(s')ds', \quad u(s')=u(k)=const.\\ 
+         &= \mexp{A(t-t_k)}x(k) + \int_{t_k}^{t} \mexp{A(t-s')}ds'B u(k), \quad \text{change of variables} \; s=t-s'\; ds = -ds'\\
+        &= \mexp{A(t-t_k)}x(k) - \int_{t-t_k}^0 \mexp{As}ds' Bu(k)\\
+        &= \mexp{A(t-t_k)t}x(k) + \int_0^{t-t_k} \mexp{As}ds' Bu(k)\\.
+    \end{align*}
+   
+    Setting in $t=t_{k+1}=(k+1)h$, we get the sampled system
+
+    \begin{align*}
+    x(k+1) &= \Phi(h) x(k) + \Gamma(h) u(k)\\
+    y(k) &= Cx(k) + Du(k),
+    \end{align*}
+    where
+    \begin{align*}
+    \Phi(h) &= \mexp{Ah}\\
+    \Gamma(h) &= \int_0^h \mexp{As}dsB.
+    \end{align*}
+*** Example 
+    Sample the first order system with transfer function (single pole in $s=-a$) 
+    \[ G(s) = \frac{b}{s+a}. \]
+    Write
+    \[ (s+a)Y(s) = bU(s) \quad \Leftrightarrow \quad \dot{y} + ay = bu, \]
+    which can be written on state-space form as 
+    \begin{align*}
+    \dot{x} &= -ax + bu\\
+    y &= x
+    \end{align}
+
+    The sampled system has the system "matrices"
+    \[ \Phi(h) = \mexp{-ah} \]
+    and
+    \[ \Gamma(h) = \int_0^h \mexp{-as}dsb = -\frac{b}{a} (\mexp{-ah} - 1) = \frac{b}{a}\big(1-\mexp{-ah}\big). \]
+    Which give
+    \begin{align*}
+    x(k+1) &= \mexp{-ah}x(k) + \frac{b}{a}\big( 1 - \mexp{-ah} \big) u(k).
+    \end{align*}
+
+** Solution to the sampled equation
+   Assume initial state $x(0) = x_0$ and input sequence $u(k)$. We get
+   \begin{align*}
+   x(1) &= \Phi x_0 + \Gamma u(0), \\
+   x(2) &= \Phi \big( \Phi x_0 + \Gamma u(0) \big) + \Gamma u(1) = \Phi^2x_0 + \Phi\Gamma u(0) + \Gamma u(1), \\
+   x(3) &= \Phi \big( \Phi^2 x_0 + \Phi \Gamma u(0) +  \Gamma u(1)\big) + \Gamma u(2) = \Phi^3x_0 + \Phi^2\Gamma u(0) + \Phi\Gamma u(1) + \Gamma u(2), \\
+        & \vdots \\
+   x(k) &= \Phi^kx_0 + \sum_{j=0}^{k-1}\Phi^{k-1-j}\Gamma u(j)
+   \end{align*}
+
+*** The example
+    The solution to 
+    \[ x(k+1) = \mexp{-ah}x(k) + \frac{b}{a}\big(1-\mexp{-ah}\big)u(k) = \lambda x(k) + \gamma u(k) \]
+    is
+    \[ x(k) = \lambda^k x_0 + \sum_{j=0}^{k-1} \lambda^{k-1-j}\gamma u(k)
+            = \lambda^k x_0 + \gamma \sum_{j=0}^{k-1} \lambda^{k-1-j} u(k). \]
+    We see clearly that the behaviour of the solution will depend very much on whether $|\lambda| < 1$ or not.
+
+*** Generalize to diagonal system
+    A system 
+    \begin{align*}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y(k) &= C x(k) + D u(k)
+    \end{align*}
+    can be diagonalized if $\Phi$ has distinct eigenvalues. Let this diagonalization be given by the transformation of states $z=Tx$. The system becomes
+    \begin{align*}
+    z(k+1) &= Tx(k+1) = T \Phi x(k) + T \Gamma u(k) = T\Phi T^{-1} z(k) + T \Gamma u(k)\\
+    y(k) &= C x(k) + D u(k) = C T^{-1} x(k) + D u(k),
+    \end{align*}
+    where 
+    \[ \bar{\Phi} = T\Phi T^{-1} \] is diagonal and will have the eigenvalues of $\Phi$ on its diagonal.
+
+    The solution to the diagonalized difference equation now becomes
+    \begin{align*}
+    z(k) &= \bar{\Phi}^k z_0 + \sum_{j=0}^{k-1} \bar{\Phi}^{k-1-j}\Gamma u(j)\\
+         &= \bbm \lambda_1^k & 0 & \cdots & 0\\ 0 & \lambda_2^k & \cdots & 0\\ 0 & 0 & \ddots & 0\\ \vdots & \vdots & \vdots & \vdots\\ 0 & 0 & \cdots & \lambda_n^k \ebm z_0 
+ + \sum_{j=0}^{k-1}  \bbm \lambda_1^j & 0 & \cdots & 0\\ 0 & \lambda_2^j & \cdots & 0\\ 0 & 0 & \ddots & 0\\ \vdots & \vdots & \vdots & \vdots\\ 0 & 0 & \cdots & \lambda_n^j \ebm T\Gamma u(j).
+   \end{align*}
+
+   Again, we see the importance of the magnitude of the eigenvalues $\{\lambda_j | j=0,1,\ldots, n \}$. 
+
+
+** Continuous-time poles <-> discrete-time poles		   :noexport:
+In complete analogy to the continous-time case, the *poles of the discrete-time state-space system are the eigenvalues of the matrix* $\Phi$.
+
+For the first-order (one-dimensional) example we have
+\[ \lambda = \mexp{-ah}, \]
+where $-a$ is the pole of the continuous-time system. This holds in general:
+\[ \lambda_i = \mexp{a_ih}, \]
+where $a_i$ is the continuous-time pole. 
+
+We can now sketch how the discrete-time pole depends on the continous-time pole  and the sampling interval $h$ for our simple example. For very small $h$, the discrete-time pole is close to 1 on the real axis. As $h$ grows, it moves towards the origin.
+
+** The shift operator $q$					   :noexport:
+   It is convenient to introduce a shift operator when working with difference equations. The operator is denoted with $q$, and is defined for infinite number series $\{x(k)| k \in \mathbb{Z}\}$:
+   \[ qx(k) = x(k+1) \].
+
+   The general linear difference equation corresponding to a discrete, causal system ($n \le m$) 
+   \[y(k+n) + a_1 y(k+n-1) + \cdots + a_n y(k) = b_0 u(k+m) + b_1 u(k+m-1) + \cdots + b_m u(k) \]  can thus be written
+   \[ (q^n + a_1q^{n-1} + \cdots + a_n)y(k) = (b_0q^m + b_1q^{m-1} + \cdots + b_m)u(k), \]
+   \[ A(q)y(k) = B(q)u(k), \]
+   \[ y(k) = \frac{B(q)}{A(q)} u(k). \]
+
+   
+* Structure of the course					   :noexport:
+** Homework in groups
+      - 5 homeworks with student presentations (4\% per hw).
+      - Groups of up to 3 students. One solution per group.
+      - Groups present solution in class.
+      - Presentation can only improve score (up to 10 extra points).
+      - Criteria for improving score:
+	- All members take part in presentation and discussion
+	- Proof of insight beyond what is present in written report
+
+** Practica in the laboratory
+   - Mini-project: Design of a discrete position servo for a DC motor
+     \begin{center}
+     \includegraphics[width=0.39\linewidth]{../labs/dc-motor-circuit}
+     \includegraphics[width=0.59\linewidth]{../homework/2dof-block-complete}
+     \end{center}
+   - Two weeks with lab assistance (Feb 15 to Feb 26)
+   - Deadline March 4
+
+** Examination
+   - Homework 20%
+   - Lab 10%
+   - 2 partial exams (36hrs, take home) 40%
+   - Final exam (2hrs, single sheet of notes) 30%
+     
+* On the use of computers in real control systems		   :noexport:
+** Airbus A320
+ 

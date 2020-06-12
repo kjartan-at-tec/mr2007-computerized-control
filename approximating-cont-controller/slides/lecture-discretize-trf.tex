@@ -1,0 +1,117 @@
+% Created 2019-11-21 jue 18:44
+\documentclass[presentation,aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{khpreamble}
+\usepackage{amssymb}
+\DeclareMathOperator{\shift}{q}
+\DeclareMathOperator{\diff}{p}
+\usetheme{default}
+\author{Kjartan Halvorsen}
+\date{2019-11-21}
+\title{Computerized Control - Discretizing continuous-time controllers}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.3.50.2 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+
+
+\section{Intro}
+\label{sec-1}
+
+\begin{frame}[label=sec-1-1]{Goal of today's lecture}
+\begin{itemize}
+\item Understand discrete approximations of continuous-time controllers
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label=sec-1-2]{Result from quizz}
+\begin{itemize}
+\item Frequency warping and prewarping
+\item How to choose approximation method
+\end{itemize}
+\end{frame}
+
+\section{Discretization}
+\label{sec-2}
+\begin{frame}[label=sec-2-1]{Discretizing a controller}
+\begin{itemize}
+\item Have a controller \(F(s)\) obtained from a design in continuous time.
+\item Discretize in order to implement on a computer
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=sec-2-2]{Discretization methods}
+\begin{enumerate}
+\item Forward difference. Substitute 
+\[ s = \frac{z-1}{h} \] in $F(s)$ to get
+\[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
+\item Backward difference. Substitute 
+\[ s = \frac{z-1}{zh} \] in $F(s)$ to get
+\[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
+\end{enumerate}
+\end{frame}
+\begin{frame}[label=sec-2-3]{Discretization methods, contd.}
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item Tustin's method (also known as the bilinear transform). Substitute
+\[ s = \frac{2}{h}\frac{z-1}{z+1} \] in $F(s)$ to get
+\[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
+\item Ramp invariance. This is similar to ZoH, which is step-invariant approximation. 
+Since a unit ramp has z-transform $\frac{zh}{(z-1)^2}$ and Laplace-transform $1/s^2$,  the discretization becomes
+\[ F_d(z) = \frac{(z-1)^2}{zh} \ztrf{\laplaceinv{\frac{F(s)}{s^2}}}. \]
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[label=sec-2-4]{Frequency warping using Tustin's}
+\begin{center}
+\includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}
+\end{center}
+The infinite positive imaginary axis in the s-plane is mapped to the finite-length upper half of the unit circle in the z-plane.
+\end{frame}
+\begin{frame}[label=sec-2-5]{Exercise}
+Find the discrete approximation of the lead-compensator $F(s) = \frac{s+b}{s+a}$, and determine the pole for 
+\begin{enumerate}
+\item Forward difference. Substitute 
+\[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
+\item Backward difference. Substitute 
+\[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
+\item Tustin's approximation
+\[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
+\end{enumerate}
+\end{frame}
+\begin{frame}[label=sec-2-6]{Forward difference exercise}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=sec-2-7]{Backward difference exercise}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
+\end{center}
+\end{frame}
+% Emacs 25.3.50.2 (Org mode 8.2.10)
+\end{document}

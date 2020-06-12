@@ -1,0 +1,35 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.9}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=18mm, block/.style={rectangle, draw, minimum width=15mm, }]
+
+\node[coordinate] (input) {};
+\node[block, right of=input] (G) {$G(s)$};
+\node[circle, fill, inner sep=1pt, right of=G] (sampleyin) {}; 
+\node[coordinate, right of=sampleyin, node distance=8mm] (sampleyout) {}; 
+\node[block, right of=sampleyout, node distance=18mm] (ztrfY) {$\mathcal{Z}\{\cdot \}$}; 
+\node[circle, fill, inner sep=1pt,below of=sampleyin, node distance=12mm] (sampleuin) {};
+\node[coordinate, right of=sampleuin, node distance=8mm] (sampleuout) {}; 
+\node[block, below of=ztrfY, node distance=12mm] (ztrfU) {$\mathcal{Z}\{\cdot \}$}; 
+\node[coordinate, right of=ztrfU, node distance=36mm] (Hztmp) {};
+\node[block, minimum height=20mm, above of=Hztmp, node distance=6mm] (Hz) {$H(z)=\frac{Y(z)}{U(z)}$};
+
+\draw[->] (input) -- node[coordinate] (measureu) {} node[above] {$u(t)$} (G);
+\draw[->] (G) -- node[above] {$y(t)$} (sampleyin);
+\draw (sampleyin) -- ++(7mm,4mm);
+\draw[->] (sampleyout) -- node[above] {$y(kh)$} (ztrfY);
+\draw[->] (measureu) |- (sampleuin);
+\draw (sampleuin) -- ++(7mm,4mm);
+\draw[->] (sampleuout) -- node[above] {$u(kh)$} (ztrfU);
+\draw[->] (ztrfU) -- node[above] {$U(z)$} node [above, pos=0.9] {$\div$} (ztrfU -| Hz.west);
+\draw[->] (ztrfY) -- node[above] {$Y(z)$} node [above, pos=0.9] {$\times$} (ztrfY -| Hz.west);
+
+\end{tikzpicture}
+\end{document}

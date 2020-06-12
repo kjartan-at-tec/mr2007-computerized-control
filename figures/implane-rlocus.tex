@@ -1,0 +1,29 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+%\usepackage{khpreamble}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+     clip=false,
+     width=7cm,
+     height=8cm,
+     axis x line=center,
+     axis y line=center,
+     xtick={-2, -1, -0.5},
+     xticklabels={$-2\omega_0$, $-\omega_0$, $-\frac{\omega_0}{2}$},
+     ytick={-1, 1},
+     yticklabels={$-i\omega_0$, $i\omega_0$},
+     yticklabel pos=right,
+     ymin=-2.2, ymax=2.2,
+     xmin=-2.2, xmax=1,
+  ]
+  \node[anchor=west] at (axis cs: 0.03, 2.2) {$\mathrm{Im}$};
+  \node[anchor=south] at (axis cs: 1.1, 0.03) {$\mathrm{Re}$};
+  \end{axis}
+  \end{tikzpicture}
+\end{document}
