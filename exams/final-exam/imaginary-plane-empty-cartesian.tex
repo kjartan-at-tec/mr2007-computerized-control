@@ -1,0 +1,12 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.9}
+
+\begin{document}
+\begin{tikzpicture}[node distance=4cm]
+\draw[->, thick] ( 0, -3) -- ( 0, 3) node [left] {$\mathrm{Im}$};
+\draw[->, thick] ( -3, 0) -- ( 3, 0) node [below] {$\mathrm{Re}$};
+\end{tikzpicture}
+\end{document}

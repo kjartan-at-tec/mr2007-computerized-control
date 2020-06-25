@@ -1,0 +1,27 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\def\OctavePlant{zpk([2], [-2, 0],-1)}
+
+\begin{tikzpicture}
+  \begin{axis} [
+      xlabel=Time (sec),
+      ytick={0.0, 1.0, 2},
+      grid=both,
+      minor x tick num=1,
+      ]
+    \addplot 
+    shell[no marks, black, thick, prefix=pgfshell_, id=octave] {octave -q --eval  "format long; G=\OctavePlant ; F=2; G0=G*F; Gc = feedback(G0); [y,t]=step(Gc); disp(cat(2,t,y))"};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,73 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepackage{SIunits}
+
+
+
+\begin{document}
+
+\pgfplotstableread[col sep=comma]{bode-exam-dta.dta}\datatable
+
+\begin{tikzpicture}
+  \pgfmathsetmacro{\WC}{0.803}
+  \pgfmathsetmacro{\PM}{57.8}
+  \pgfmathsetmacro{\WP}{2.81}
+  \pgfmathsetmacro{\GM}{2.335}
+  \pgfmathsetmacro{\WN}{15.71}
+  \pgfmathsetmacro{\GPH}{-180 + \PM}
+  \pgfmathsetmacro{\GMAG}{1.0/\GM}
+
+
+  \begin{loglogaxis} [
+      width=12cm,
+      height=7cm,
+      ylabel=$|G_o|$,
+      xticklabels=\empty,
+      ytick={10, 1, 0.1, 0.01, 0.001, 0.0001, 0.0001, 0.00001},
+      grid=both,
+      minor y tick num=4,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+      xmax=30,
+  ]
+    \addplot[thick,black, no marks] table[x index=0,y index=1]{\datatable}; 
+
+    \draw[-, dashed, thick, blue] (axis cs:\WC, 1) -- (axis cs: \WC, 0.003);
+
+    \draw[<->, red, thick] (axis cs: \WP, 1) -- node [right] {$A_m = \GM$} (axis cs: \WP, \GMAG);
+
+  \end{loglogaxis}
+  \begin{semilogxaxis} [
+      xlabel=$\omega$,
+      ylabel=$\arg G_o$,
+      yshift = -5.5cm, 
+      width=12cm,
+      height=7cm,
+      grid=both,
+      ytick={0, -90, -180, -270, -360},
+      minor y tick num=4,
+      every major grid/.style={red, opacity=0.5},
+      %xtick={0.01, 0.1, \WC, 1, \WP, \WN},
+      xmax=30,
+  ]
+    \addplot[thick,black, no marks] table[x index=0,y index=2]{\datatable}; 
+
+    \draw[-, dashed, thick, blue] (axis cs:\WC, -85) -- (axis cs: \WC, -440);
+    \node[coordinate, black,pin={[black, solid] 170:{$\omega_c\approx \unit{0.8}{\rad\per\sec}$}}] at (axis cs: \WC, -440) {};
+
+    \draw[<->, red, thick] (axis cs: \WC, -180) -- node [left] {$\varphi_m = \unit{\PM}{\degree}$} (axis cs: \WC, \GPH);
+
+    \draw[-, dashed, thick, blue] (axis cs:\WP, -180) -- (axis cs: \WP, -440);
+    \node[coordinate, black,pin={[black, solid] 20:{$\omega_p\approx \unit{2.8}{\rad\per\sec}$}}] at (axis cs: \WP, -440) {};
+    
+  \end{semilogxaxis}
+\end{tikzpicture}
+
+\end{document}

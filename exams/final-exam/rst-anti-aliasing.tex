@@ -1,0 +1,26 @@
+\documentclass[tikz]{standalone}
+%\usetikzlibrary{calc}
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=2cm, block/.style={rectangle, draw, minimum height=12mm, minimum width=20mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+  \node[coordinate] (input) {};
+  \node[block, right of=input] (TR) {$\frac{T(z)}{R(z)}$};
+  \node[sumnode, right of=TR] (sum) {$\sum$};
+  \node[block,right of=sum, node distance=30mm] (plant) {$\frac{B(z)}{A(z)}$};
+  \node[sumnode, right of=plant] (sum2) {$\sum$};
+  \node[coordinate, above of=sum2, node distance=15mm] (disturbance) {};
+  \node[coordinate, right of=sum2, node distance=35mm] (output) {};
+  \node[block,below of=plant, node distance=25mm] (SR) {$\frac{S(z)}{R(z)}$};
+  \node[block,right of=SR, node distance=25mm] (AA) {$\frac{1}{z^2}$};
+
+  \draw[->] (input) -- node[above] {$u_c$} (TR);
+  \draw[->] (TR) -- node[above] {} (sum);
+  \draw[->] (sum) -- node[above] {$u$} (plant);
+  \draw[->] (plant) -- (sum2);
+  \draw[->] (disturbance) -- node[right] {$d$} (sum2);
+  \draw[->] (sum2) -- node[coordinate] (feedback) {} node[near end, above] {$y$} (output);
+  \draw[->] (feedback) |- (AA) -- (SR) -| (sum) node[left, pos=0.96] {$-$};
+
+\end{tikzpicture}
+\end{document}

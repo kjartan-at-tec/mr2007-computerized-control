@@ -1,0 +1,70 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\def\AXRANGE{2.2}
+\def\AXRANGED{1.2}
+
+\begin{tikzpicture}
+
+
+  \begin{axis} [
+      axis lines=middle,
+      width=8cm,
+      height=8cm,
+      ylabel=Im,
+      ytick={-1, 1},
+      yticklabels={$-i$, $i$},
+      xtick={-2,-1, 1},
+      xlabel=Re,
+      xmin=-\AXRANGE,
+      xmax=\AXRANGE,
+      ymin=-\AXRANGE,
+      ymax=\AXRANGE,
+  ]
+    %\addplot [black!60, thick, domain=0:360, samples=360, variable=\t] ({cos(t)}, {sin(t)} ); 
+
+  %\node[red] at (axis cs: -1,0) {\Large $\times$}; 
+  %\node[orange] at (axis cs: -2,0) {\Large $\times$}; 
+
+  \end{axis}
+
+  \begin{axis} [
+    xshift=8cm, 
+    clip=false,
+    axis lines=middle,
+      width=8cm,
+      height=8cm,
+      ylabel=Im,
+      ytick={-1, 1},
+      yticklabels={$-i$, $i$},
+      xtick={-1, 1},
+      xlabel=Re,
+      xmin=-\AXRANGED,
+      xmax=\AXRANGED,
+      ymin=-\AXRANGED,
+      ymax=\AXRANGED,
+  ]
+    \addplot [black!60, thick, domain=0:360, samples=360, variable=\t] ({cos(t)}, {sin(t)} ); 
+
+    \pgfmathsetmacro{\poleone}{exp(-0.2)}
+    \pgfmathsetmacro{\poletwo}{exp(-0.4)}
+    \pgfmathsetmacro{\zero}{-0.1076/0.13147}
+
+    %\node[red] at (axis cs: \poleone,0) {\Large $\times$}; 
+    %\node[orange] at (axis cs: \poletwo,0) {\Large $\times$}; 
+    %\node[blue] at (axis cs: \zero,0) {\Large $\circ$}; 
+
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

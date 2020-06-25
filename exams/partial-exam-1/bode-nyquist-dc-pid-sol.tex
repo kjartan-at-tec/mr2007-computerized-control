@@ -1,0 +1,105 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+\def\sampleh{0.2}
+\def\omegaN{15.708}
+\def\omegamin{0.1}
+\def\omegac{0.9}
+\def\omegap{7.2}
+
+
+\def\sysDisc{tf([6, -11.1, 5.18], [1, -1.2, 0.2], \sampleh)*tf([0.01873, 0.01752], [1, -1.819, 0.8189], \sampleh);}
+
+\begin{tikzpicture}
+  \begin{semilogxaxis} [
+      xlabel={$\omega$},
+      ylabel=$\arg L(\mathrm{e}^{i\omega h})$,
+      width=12cm,
+      height=5cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ytick={-270, -225, -180, -135, -112,-90},
+      %yticklabels={$-45^\circ$, $0^\circ$, $45^\circ$}, 
+      %xtick={0.1, 1, 10},
+      %xticklabels={$0.1\omega_0$, $\omega_0$, $10\omega_0$},
+      ymin=-270, ymax=-90,
+      xmin=0.1, xmax=\omegaN,
+      minor y tick num=8,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+      clip=false,
+  ]
+  %\addplot shell[thick,black, no marks, prefix=pgfshell_, id=bodephc,] {julia -q --eval  "G=\sysCont  print_bode_phase(G, -2, 2);"};
+    \addplot+ shell[thick,black,  no marks, prefix=pgfshell_, id=bodeph,] {julia -q --eval  "H=\sysDisc print_bode_phase(H, log10(\omegamin), log10(\omegaN));"};
+    \draw[red!60!black,<->] (axis cs: \omegac, -180) -- node[right] {$\varphi_m = 72^\circ$} (axis cs:\omegac, -180+72);
+    \draw[red!60!black,-] (axis cs: \omegap, -180) -- (axis cs:\omegap, -290) node[below] {$\omega_p \approx 7.2$};
+  \end{semilogxaxis}
+  \begin{loglogaxis} [
+      ylabel=$|L(\mathrm{e}^{i\omega h})|$,
+      yshift = 4.8cm, 
+      width=12cm,
+      height=5cm,
+      %grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ytick={0.01,0.1,1,10,100},
+      %yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      %xticklabel=\empty,
+      ymin=0.01, ymax=100,
+      xmin=0.1, xmax=\omegaN,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+      clip=false,
+  ]
+   % \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodemc,] {julia -q --eval  "G=\sysCont  print_bode_mag(G, -2, 2);"};
+    \addplot+ shell[thick,black, no marks, prefix=pgfshell_, id=bodem,] {julia -q --eval  "H=\sysDisc  print_bode_mag(H, log10(\omegamin), log10(\omegaN));"};
+    \draw[red!60!black,<->] (axis cs: \omegap, 1) -- node[right] {$A_m \approx \frac{1}{0.13} \approx 7.8 \approx 18$dB} (axis cs:\omegap, 0.13);
+    %\draw[red!60!black,-] (axis cs: \omegac, 1) -- (axis cs:\omegac, 0.001) node[below] {$\omega_c \approx 0.9$};
+  \end{loglogaxis}
+  \begin{semilogxaxis} [
+      yshift = 4.8cm, 
+      width=12cm,
+      height=5cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ymin=-40, ymax=40,
+      ytick={-40,-20,0,20,40},
+      minor y tick num=9,
+      xmin=0.1, xmax=\omegaN,
+      axis y line* = right,
+      ylabel=dB,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+      clip=false,
+  ]
+    \draw[red!60!black,-] (axis cs: \omegac, 0) -- (axis cs:\omegac, -50) node[below] {$\omega_c \approx 0.9$};
+  \end{semilogxaxis}
+
+  \begin{axis} [
+    xshift=12cm,
+    width=7cm,
+    height=7cm,
+    axis lines=middle,
+    ylabel=Im,
+    xlabel=Re,
+    xmin=-2, xmax=1,
+    ymin=-2, ymax=1,
+    ]
+    \addplot+ shell[thick,black, no marks, prefix=pgfshell_, id=nyq,] {julia -q --eval  "H=\sysDisc   print_nyq_real_im(H, log10(\omegamin), log10(\omegaN));"};
+    \addplot+ [black, dotted, no marks, variable=\t, domain=0:2*pi, samples=800] ( {cos(deg(t))}, {sin(deg(t))} );
+    \node[red!60!black,coordinate, pin=140:$\frac{1}{A_M} \approx 0.13$] at (-0.12, 0) {};
+    
+    \draw[red!60!black, dashed] (axis cs: 0,0) -- (axis cs: -0.3, -0.9);
+    \draw[red!60!black, ->] (axis cs: -0.28, -0.8) arc[radius=0.9, start angle=-112, end angle=-178];
+    \node at (-0.5, -0.5) {\small $\varphi \approx 72^\circ$}; 
+  \end{axis}
+  
+\end{tikzpicture}
+
+\end{document}

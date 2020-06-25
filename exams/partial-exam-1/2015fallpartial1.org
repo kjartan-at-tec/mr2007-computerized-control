@@ -1,0 +1,108 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage[margin=18mm]{geometry}
+#+LaTex_HEADER: \usepackage{amsmath}
+#+LaTex_HEADER: \usepackage{graphicx}
+#+LaTex_HEADER: \usepackage{subfigure}
+#+LaTex_HEADER: \usepackage{parskip}
+#+LaTex_HEADER: \usepackage{standalone}
+#+LATEX_HEADER: \usepackage{tikz,pgf,pgfplots}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \pgfplotsset{compat=1.9}
+#+LaTex_HEADER: \newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+#+LaTex_HEADER: \newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\ztrf}[1]{\ensuremath{\mathcal{Z} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\ztrfinv}[1]{\ensuremath{\mathcal{Z}^{-1} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+#+LaTex_HEADER: \newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+#+LaTex_HEADER: \newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+#+LaTex_HEADER: \newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+#+LaTex_HEADER: \newcommand*{\bbm}{\begin{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\ebm}{\end{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\obsmatrix}{\mathcal{O}}
+#+LaTex_HEADER: \newcommand*{\contrmatrix}{\mathcal{C}}
+#+LaTex_HEADER: \newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+#+LaTex_HEADER: \newcommand*{\swh}{\ensuremath{\sin \omega h}}
+#+LaTex_HEADER: \newcommand*{\numc}{(2z-1)\big(1 - \mexp{-2h}\big)}
+#+LaTex_HEADER: \newcommand*{\denc}{(z-1)\big(z - \mexp{-2h}\big)}
+
+#+title: Computerized control - partial exam 1
+#+date: 2015-09-18
+
+* Problem 1
+Consider the continuous-time system with the transfer function
+\[ G(s) = \frac{2}{s+2} \]
+The system is sampled with sampling interval $h$ using zero-order hold. *Show that the pulse-transfer function for the sampled system is*
+\[ H(z) = \frac{1-\mexp{-2h}}{z-\mexp{-2h}}. \]
+
+* Problem 2
+  The sampled system in Problem 1 is controlled using the discrete-time controller
+  \[ F(z) = 1 + \frac{1}{2(z-1)} = \frac{2z-1}{z-1}. \]
+  \begin{center}
+  \includestandalone[width=0.5\linewidth]{feedbackc}
+  \end{center}
+
+  1. *Calculate the pulse-transfer function* of the closed-loop system from $u_c(kh)$ to $y(kh)$.
+  2. Let $h=\frac{\ln 2}{2} \approx 0.35$. *Is the closed-loop system stable?*
+
+* Solutions
+
+** Problem 1
+   First calculate the step-response of the continous-time system
+   \[G(s)\frac{1}{s} = \frac{2}{s(s+2)} = \frac{1}{s} - \frac{1}{s+2}.\]
+   The inverse Laplace-transform gives
+   \[ y(t) = 1 - \mexp{-2t}. \]
+   Sampling this function gives
+   \[ y(kh) = 1 - \big(\mexp{-2h}\big)^k, \]
+   which has the Z-transform
+   \[Y(z) = \frac{z}{z-1} - \frac{z}{z-\mexp{-2h}}.\]
+   Dividing the z-transform of the system response with that of the input (the step) gives
+   \begin{align*}
+   H(z) &= \frac{Y(z)}{U(z)} = \frac{z-1}{z}\left(\frac{z}{z-1} - \frac{z}{z-\mexp{-2h}}\right)\\
+        &= 1 - \frac{z-1}{z-\mexp{-2h}} = \frac{1-\mexp{-2h}}{z-\mexp{-2h}}.
+   \end{align*}
+
+** Problem 2
+
+   1. The closed loop system becomes
+      \begin{align*}
+          H_c(z) &= \frac{F(z)H(z)}{1+F(z)H(z)}
+                 = \frac{\frac{\numc}{\denc}}{1 + \frac{\numc}{\denc}}\\
+                 &= \frac{\numc}{\denc + \numc}.
+      \end{align*}
+
+   2. With $h=\frac{\ln 2}{2}$ we have $\mexp{-2h} = \frac{1}{2}$ and the characteristic polynomial of the closed loop system becomes
+      \begin{align*}
+      (z-1)(z-\frac{1}{2}) + (2z-1)(1-\frac{1}{2}) &= z^2 - \frac{3}{2}z + \frac{1}{2} + z-\frac{1}{2}\\
+       &= z(z-\frac{1}{2}).
+      \end{align*}
+      We see directly that the closed-loop poles are in $z=0$ and $z=\frac{1}{2}$. *The closed-loop system is stable*.
+
+      Time response (not asked for):
+      \[
+      Y(z) &= H(z)U_c(z) = \frac{z-\frac{1}{2}}{z(z-\frac{1}{2})}U_c(z) = \frac{1}{z}U_c(z).
+      \]
+      Since \[\ztrf{x(k-1)} = z^{-1} \ztrf{x(k)}\]
+      we get
+      \[ y(k) = u_c(k-1). \]
+      This is an example of *dead-beat control.*
+
+      Step response:
+      \begin{center}
+      \includegraphics[width=0.6\linewidth]{step-dead-beat}
+      \end{center}
+
+* Use later							   :noexport:
+      If we half the sampling period ($h=\frac{\ln 2}{4}$) we get \[\mexp{-2h} = \mexp{-\frac{\ln 2}{2}} = \left(\mexp{-\ln 2}\right)^{\frac{1}{2}} = \frac{1}{\sqrt{2}} = \frac{\sqrt{2}}{2}\] The closed loop system becomes
+      \begin{align*}
+        H(z) &= \frac{(2z-1)(1-\frac{\sqrt{2}}{2})}{(z-1)(z-\frac{\sqrt{2}}{2}) + (2z-1)(1-\frac{\sqrt{2}}{2})}\\
+            &= \frac{(2z-1)\frac{2-\sqrt{2}}{2}}{z^2 - \frac{3\sqrt{2}-2}{2}z + \frac{2\sqrt{2}-2}{2}}.
+      \end{align*}
+      with step response given below
+      \begin{center}
+      \includegraphics[width=0.6\linewidth]{step-half-sampling-time}
+      \end{center}
+

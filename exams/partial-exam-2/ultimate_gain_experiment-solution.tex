@@ -1,0 +1,39 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\def\GTRF{zpk([], [-1, -1, -3],1)}
+\def\KU{31.9891}
+\def\TU{2.37}
+
+\begin{tikzpicture}
+
+  \begin{axis} [
+      width=12cm,
+      height=7cm,
+      ylabel={$y$},
+      xlabel={$time [s]$},
+      grid=both,
+      minor x tick num=9,
+      every major grid/.style={red, opacity=0.5},
+  ]
+    \addplot [thick, black, no marks, ]  
+    shell [prefix=pgfshell_, id=step] {octave -q --eval  "format long; Ku=\KU; G=\GTRF; Gc=feedback(Ku*G, 1); [y,t]=step(Gc, 15); disp(cat(2,t,y))"};
+
+    \draw[<->, red, thick] (axis cs: 2.1805,0.5) -- node [above] {$T_u = \TU$} ++(axis cs: \TU,0); 
+
+
+
+  \end{axis}
+
+\end{tikzpicture}
+
+\end{document}

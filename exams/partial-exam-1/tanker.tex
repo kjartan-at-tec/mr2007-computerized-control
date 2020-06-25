@@ -1,0 +1,39 @@
+\documentclass[tikz,border=4mm]{standalone}
+\usetikzlibrary{intersections,calc}
+\begin{document}
+  \begin{tikzpicture}[x=12mm,y=12mm,line cap=round]
+    \pgfmathsetmacro{\HEADING}{30}
+    \pgfmathsetmacro{\RANGLE}{-20}
+    \pgfmathsetmacro{\BLENGTH}{4}
+    \pgfmathsetmacro{\SIDELENGTH}{2.4}
+    \pgfmathsetmacro{\BWIDTH}{0.6}
+    \pgfmathsetmacro{\RLENGTH}{1}
+    \pgfmathsetmacro{\BOWANGLE}{140}
+
+    \begin{scope}[rotate=\HEADING]
+      \node[coordinate] (stern) at (\BLENGTH,0) {};
+      \node[coordinate] (aft) at (0,0) {};
+    
+      \draw[thick] (aft) -- (0,\BWIDTH) -- ++(\SIDELENGTH,0) to[out=0,in=\BOWANGLE,looseness=1.2] (stern);
+      \draw[thick] (aft) -- (0,-\BWIDTH) -- ++(\SIDELENGTH,0) to[out=0,in=-\BOWANGLE,looseness=1.2] (stern);
+ 
+      \draw[->] (stern) -- node[coordinate] (heading) {} ++(3,0);
+      \draw[dashed] (aft) -- node[coordinate,pos=0.6] (neutral) {} ++(-1.5*\RLENGTH,0);
+
+      \begin{scope}[rotate=\RANGLE]
+        \draw[thick] (aft) -- node[coordinate,pos=0.9] (rudder) {} ++(-\RLENGTH,0);
+      \end{scope}
+
+      \draw[->] (neutral) to[out=90, in=\RANGLE-90] node[left] {$u$} (rudder);
+
+    \end{scope}
+    
+    \node[coordinate] (orig) at (0,0) {};
+
+    \draw[dashed] (stern) -- node[coordinate] (ref) {} ++(3,0) ;
+    \draw[->] (ref) to[out=90, in=\HEADING-90] node[right] {$y$} (heading);
+
+
+  
+  \end{tikzpicture}
+\end{document}

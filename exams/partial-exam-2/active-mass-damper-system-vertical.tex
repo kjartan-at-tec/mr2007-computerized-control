@@ -1,0 +1,88 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usetikzlibrary{calc,patterns,decorations.pathmorphing,decorations.markings}
+\usepackage{xstring}
+
+ \newcommand{\nvar}[2]{%
+    \newlength{#1}
+    \setlength{#1}{#2}
+}
+
+% Define a few constants for drawing
+\nvar{\buildh}{5cm}
+\nvar{\buildw}{4cm}
+\nvar{\massh}{1cm}
+\nvar{\massw}{2cm}
+\nvar{\xone}{2cm}
+\nvar{\grounddist}{1cm}
+
+
+\newcommand\centerofmass{%
+    \tikz[radius=0.4em] {%
+        \fill (0,0) -- ++(0.4em,0) arc [start angle=0,end angle=90] -- ++(0,-0.8em) arc [start angle=270, end angle=180];%
+        \draw (0,0) circle;%
+    }%
+}
+
+
+\newcommand{\amd}[1]{%
+\tikzstyle{spring}=[thick,decorate,decoration={zigzag,pre length=0.3cm,post length=0.3cm,segment length=6}]
+\tikzstyle{damper}=[thick,decoration={markings,%  
+  mark connection node=dmp,%
+  mark=at position 0.5 with %
+  {%
+    \node (dmp) [thick,inner sep=0pt,transform shape,rotate=-90,minimum width=15pt,minimum height=3pt,draw=none] {};%
+    \draw [thick] ($(dmp.north east)+(2pt,0)$) -- (dmp.south east) -- (dmp.south west) -- ($(dmp.north west)+(2pt,0)$);%
+    \draw [thick] ($(dmp.north)+(0,-5pt)$) -- ($(dmp.north)+(0,5pt)$);%
+  }
+}, decorate]
+\tikzstyle{ground}=[fill,pattern=north east lines,draw=none,minimum width=5cm,minimum height=0.3cm]
+%
+% The building
+\node (house) [minimum width=\buildw, minimum height=\buildh] {};
+\node (building) [draw=none, below of=house, node distance=\grounddist] {};
+\node[ground, minimum width=1.8\buildw,below of=house ,anchor=north, node distance=0.7\buildh] (ground1) {};
+\node[ground, minimum width=\buildw,below of=house, node distance=\grounddist] (ground2) {};
+\draw [spring] (house.south) -- node[right, draw=none] {$k$} (ground1);
+\draw[dashed, thin] (ground2.west) -- ++(-0.5\buildw,0);
+\draw[solid, , ->] (building.center) ++(-0.9\buildw, 0) -- node[left, draw=none] {$y$} ++(0, \massh);
+\node[below of=ground2, node distance=0.5\massh, draw=none] {$M$};
+\draw[solid,  thick, ->] (house.east) -| node[right, draw=none] {$F$} ++(0.2\buildw, 0.5\buildh);
+
+\IfEqCase{#1}{%
+  {passive}{%
+\node (mass) [minimum width=\massw, minimum height=\massh, above of=ground2, node distance=\xone] {\centerofmass};
+\node[right of=mass, node distance=0.4\massh, draw=none] {$m$};
+\draw [spring] (ground2) ++(0.3\massw, 0) -- node[right, draw=none, pos=0.3] {$k_m$}  ++(0, \xone-0.5\massh);
+\draw [damper] (ground2) ++(-0.3\massw, 0) -- node[left, draw=none, pos=0.3] {$f$} ++ (0, \xone-0.5\massh);
+\draw[dashed, thin] (mass.center) -- ++(-\buildw,0);
+\draw[solid, , ->] (mass.center) ++(-0.9\buildw, 0) -- node[left, draw=none] {$x$} ++(0, \massh);
+%\draw[solid, thick, <->] (mass.south) -- node[right, draw=none] {$u$} (building.north);
+}
+  {active}{
+\node (mass) [minimum width=\massw, minimum height=\massh, above of=building, node distance=\xone] {\centerofmass};
+\node[right of=mass, node distance=0.4\massh, draw=none] {$m$};
+\draw [spring] (ground2) ++(0.3\massw, 0) -- node[right, draw=none, pos=0.3] {$k_m$}  ++(0, \xone-0.5\massh);
+\draw [damper] (ground2) ++(-0.3\massw, 0) -- node[left, draw=none, pos=0.3] {$f$} ++ (0, \xone-0.5\massh);
+\draw[dashed, thin] (mass.center) -- ++(-\buildw,0);
+\draw[solid, , ->] (mass.center) ++(-0.9\buildw, 0) -- node[left, draw=none] {$x$} ++(0, \massh);
+\draw[solid, thick, <->] (mass.south) -- node[right, draw=none] {$u$} (building.north);
+}
+  {undamped}{}
+}[\PackageError{amd}{Undefined option to amd: #1}{}]%
+}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={draw,outer sep=0pt,thick}]
+\begin{scope}
+\amd{undamped}
+\end{scope}
+\begin{scope}[xshift=8cm]
+\amd{passive}
+\end{scope}
+\begin{scope}[xshift=16cm]
+\amd{active}
+\end{scope}
+\end{tikzpicture}
+
+\end{document}

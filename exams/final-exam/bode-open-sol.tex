@@ -1,0 +1,61 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepackage{khpreamble}
+
+
+
+\begin{document}
+
+%\def\OctaveGo{zpk([2], [-2, 0],-1)*tf([1,2], [1/3, 2/3+2])}
+\pgfplotstableread[col sep=comma]{final-bode-open.dat}\bodedata
+
+\begin{tikzpicture}
+  \begin{loglogaxis} [
+      clip=false,
+      width=12cm,
+      height=5cm,
+      ylabel=$|H_o|$,
+      xticklabels=\empty,
+      ytick={100, 1, 0.01, 0.0001, 0.00001},
+      ymax=1000,
+      ymin=0.000001,
+      grid=both,
+      minor y tick num=9,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+  ]
+    \addplot [thick, black, no marks,] table [x index=0, y index=1] {\bodedata};
+
+    \node[coordinate, pin=-120:{$|H_o(1.77)|=1$}] at (axis cs: 1.77, 1){};
+   
+  \end{loglogaxis}
+  \begin{semilogxaxis} [
+      xlabel=$\omega$,
+      ylabel=$\arg H_o$,
+      yshift = -3.5cm, 
+      width=12cm,
+      height=5cm,
+      grid=both,
+      ytick={90, 0, -90, -180, -270},
+      ymax= 90,
+      ymin=-270,
+      minor y tick num=4,
+      every major grid/.style={red, opacity=0.5},
+  ]
+    \addplot [thick, black, no marks] table [x index=0, y index=2] {\bodedata};
+    
+    \pgfmathsetmacro{\argH}{-180+37.2}
+
+    \draw[<->] (axis cs: 1.77, \argH) -- node [left, at end] {$\varphi_m = 37.2\degree$} (axis cs: 1.77, -180);
+  
+  \end{semilogxaxis}
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,22 @@
+\documentclass[tikz]{standalone}
+%\usetikzlibrary{calc}
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=2cm, block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+  \node[coordinate] (input) {};
+  \node[block, right of=input] (TR) {$\frac{t_0z}{z+r_1}$};
+  \node[sumnode, right of=TR] (sum) {$\sum$};
+  \node[block,right of=sum, node distance=30mm] (plant) {$H(z)$};
+  \node[coordinate, right of=plant, node distance=35mm] (output) {};
+  \node[block,below of=plant, node distance=25mm] (SR) {$\frac{S(z)}{R(z)}=\frac{s_0z+s_1}{z+r_1}$};
+
+
+  \draw[->] (input) -- node[above] {$u_c$} (TR);
+  \draw[->] (TR) -- node[above] {} (sum);
+  \draw[->] (sum) -- node[above] {$u$} (plant);
+  \draw[->] (plant) -- node[coordinate] (feedback) {} node[near end, above] {$y$} (output);
+  \draw[->] (feedback) |- (SR) -| (sum) node[left, pos=0.96] {$-$};
+
+\end{tikzpicture}
+\end{document}

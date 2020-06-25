@@ -1,0 +1,92 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage[margin=18mm]{geometry}
+#+LaTex_HEADER: \usepackage{amsmath}
+#+LaTex_HEADER: \usepackage{graphicx}
+#+LaTex_HEADER: \usepackage{subfigure}
+#+LaTex_HEADER: \usepackage{parskip}
+#+LaTex_HEADER: \usepackage{standalone}
+#+LATEX_HEADER: \usepackage{tikz,pgf,pgfplots}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \pgfplotsset{compat=1.9}
+#+LaTex_HEADER: \newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+#+LaTex_HEADER: \newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+#+LaTex_HEADER: \newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+#+LaTex_HEADER: \newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+#+LaTex_HEADER: \newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+#+LaTex_HEADER: \newcommand*{\bbm}{\begin{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\ebm}{\end{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\obsmatrix}{\mathcal{O}}
+#+LaTex_HEADER: \newcommand*{\contrmatrix}{\mathcal{C}}
+#+LaTex_HEADER: \newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+#+LaTex_HEADER: \newcommand*{\swh}{\ensuremath{\sin \omega h}}
+#+LaTex_HEADER: \newcommand*{\zethree}{\big(z - \mexp{-3h}\big)}
+
+#+title: Computerized control - partial exam 1 (dummy)
+#+date: Due 2015-09-18
+
+* Problem 1
+Consider the continuous-time system with the following transfer function
+\[ G(s) = \frac{s+1}{s(s+3)}. \]
+The system is sampled with sampling interval $h$ using zero-order hold. *Show that the pulse-transfer function for the sampled system is*
+\[ H(z) = \frac{(2z-2+3h)\zethree{} - 2(z-1)^2}{9(z-1)\zethree{}}. \]
+
+* Problem 2
+  The sampled system in Problem 1 is controlled using proportional control with gain equal to 1. 
+  \begin{center}
+  \includestandalone[width=0.5\linewidth]{feedback}
+  \end{center}
+
+  1. Calculate the closed-loop pulse-transfer function
+  2. Let $h=\frac{\ln 2}{3} \approx 0.23$. Is the closed-loop system stable?
+
+* Solutions
+
+** Problem 1
+   First calculate the step-response of the continous-time system
+   \[G(s)\frac{1}{s} = \frac{s+1}{s^2(s+3)} = \frac{2}{9s} + \frac{1}{3s^2} - \frac{2}{9(s+3)}.\]
+   The inverse Laplace-transform gives
+   \[ y(t) = \frac{2}{9} + \frac{1}{3}t - \frac{2}{9}\mexp{-3t}. \]
+   Sampling this function gives
+   \[ y(kh) = \frac{2}{9} + \frac{1}{3}kh - \frac{2}{9}\big(\mexp{-3h}\big)^k, \]
+   which has the Z-transform
+   \[Y(z) = \frac{2z}{9(z-1)} + \frac{hz}{3(z-1)^2} - \frac{2z}{9\zethree{}}. \]
+   Dividing the z-transform of the system response to that of the input (the step) gives
+   \begin{align*}
+   H(z) &= \frac{Y(z)}{U(z)} = \frac{z-1}{z}Y(z) = \frac{2}{9} + \frac{h}{3(z-1)} - \frac{2(z-1)}{9\zethree{}}\\
+        &= \frac{2(z-1)\zethree{} + 3h\zethree{} - 2(z-1)^2}{9(z-1)\zethree{}}\\
+	&= \frac{(2z-2+3h)\zethree - 2(z-1)^2}{9(z-1)\zethree{}}.
+   \end{align*}
+
+** Problem 2
+
+   1. The closed loop system becomes
+      \begin{align*}
+          H_c(z) &= \frac{H(z)}{1+H(z)}\\
+                 &= \frac{(2z-2+3h)\zethree{} - 2(z-1)^2}{(2z-2+3h)\zethree{} - 2(z-1)^2+9(z-1)\zethree{}}\\
+                 &= \frac{(2z-2+3h)\zethree{} - 2(z-1)^2}{(2z-2+3h+9z-9)\zethree{} - 2(z-1)^2}\\
+                 &= \frac{(2z-2+3h)\zethree{} - 2(z-1)^2}{(11z+3h-11)\zethree{} - 2(z-1)^2}
+      \end{align*}
+   2. Stability of the closed-loop system. Substituting $h=\frac{\ln2}{3}$ gives the characteristic equation
+      \[ (11z + \ln2 - 11)\big(z-\frac{1}{2}\big) - 2z^2 +4z - 2
+           = 9z^2 - (12.5-\ln2)z + 3.5 - 0.5\ln 2 = 0. \]
+      Apply Jury's  criterion:
+
+      | $9$                                   | $-11.81$                                     | $3.15$ |                                              |
+      | $3.15$                                | $-11.81$                                     | $9$    | $\alpha_2 = \frac{3.15}{9}$                  |
+      |---------------------------------------+----------------------------------------------+--------+----------------------------------------------|
+      | $9-\frac{3.15^2}{9}\approx 7.9$       | $-11.81 + \frac{3.15}{9}11.81 \approx -7.68$ |        |                                              |
+      | $-7.68$                               | $7.9$                                        |        | $\alpha_1 = -\frac{7.68}{7.9} \approx -0.97$ |
+      |---------------------------------------+----------------------------------------------+--------+----------------------------------------------|
+      | $7.9 - 0.96 \cdot 7.68 \approx 0.44$  |                                              |        |                                              |
+
+      The first element in each odd row in the table are positive $\Rightarrow$ *The closed loop system is stable.*
+
+      Step response (not asked for):
+      \begin{center}
+      \includegraphics[width=0.7\linewidth]{stepresponse}
+      \end{center}

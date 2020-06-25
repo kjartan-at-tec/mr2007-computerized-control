@@ -1,0 +1,38 @@
+\documentclass{standalone}
+
+\usepackage{amsmath}
+\usepackage{tikz,pgf,pgfplots}
+\usetikzlibrary{intersections,calc}
+
+\begin{document}
+
+
+\begin{tikzpicture}[x=2.5cm, y=2.5cm]
+
+\pgfmathsetmacro{\xlim}{1.4}
+\pgfmathsetmacro{\ylim}{1.4}
+
+
+\draw[->] (-\xlim,0) -- node[below, at end] {$\operatorname{Re}$} (\xlim , 0);
+\draw[->] (0,-\ylim) -- node[left, at end] {$\operatorname{Im}$} (0, \ylim );
+
+\draw[-] (-0.05, 1) -- (0,1);
+\node at (-0.1, 1) {$i$};
+\draw[-] (-0.05, -1) -- (0,-1);
+\node at (-0.1, -1) {$-i$};
+\draw[-] (-1, -0.05) -- (-1,0);
+\node at (-1, -0.1) {$-1$};
+\draw[-] (1, -0.05) -- (1,0);
+\node at (1, -0.1) {$1$};
+
+\draw[gray, dashed, domain=0:360,smooth,samples=400,variable=\u,] plot ({cos(\u)},{sin(\u)});
+
+\begin{scope}[very thick,decoration={
+    markings,
+    mark=at position 0.5 with {\arrow{>}}}
+    ] 
+    \draw [thick,postaction={decorate}] plot file {nyquist150907.out};
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

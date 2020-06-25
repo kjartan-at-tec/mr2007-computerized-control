@@ -1,0 +1,78 @@
+% Created 2017-02-14 mar 14:21
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage[margin=18mm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{parskip}
+\usepackage{standalone}
+\usepackage{tikz,pgf,pgfplots}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\pgfplotsset{compat=1.9}
+\newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+\newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+\newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+\newcommand*{\ztrf}[1]{\ensuremath{\mathcal{Z} \{#1\}}}
+\newcommand*{\ztrfinv}[1]{\ensuremath{\mathcal{Z}^{-1} \{#1\}}}
+\newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+\newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+\newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+\newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+\newcommand*{\bbm}{\begin{bmatrix}}
+\newcommand*{\ebm}{\end{bmatrix}}
+\newcommand*{\obsmatrix}{\mathcal{O}}
+\newcommand*{\contrmatrix}{\mathcal{C}}
+\newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+\newcommand*{\swh}{\ensuremath{\sin \omega h}}
+\newcommand*{\numc}{(2z-1)\big(1 - \mexp{-2h}\big)}
+\newcommand*{\denc}{(z-1)\big(z - \mexp{-2h}\big)}
+\author{Kjartan Halvorsen}
+\date{2015-09-18}
+\title{Computerized control - partial exam 1}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.5.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+\label{sec-1}
+Consider the continuous-time system with the transfer function
+\[ G(s) = \frac{2}{s+2} \]
+The system is sampled with sampling interval $h$ using zero-order hold. \textbf{Show that the pulse-transfer function for the sampled system is}
+\[ H(z) = \frac{1-\mexp{-2h}}{z-\mexp{-2h}}. \]
+
+\section*{Problem 2}
+\label{sec-2}
+The sampled system in Problem 1 is controlled using the discrete-time controller
+\[ F(z) = 1 + \frac{1}{2(z-1)} = \frac{2z-1}{z-1}. \]
+\begin{center}
+\includestandalone[width=0.5\linewidth]{feedbackc}
+\end{center}
+
+\begin{enumerate}
+\item \textbf{Calculate the pulse-transfer function} of the closed-loop system from $u_c(kh)$ to $y(kh)$.
+\item Let $h=\frac{\ln 2}{2} \approx 0.35$. \textbf{Is the closed-loop system stable?}
+\end{enumerate}
+% Emacs 24.5.1 (Org mode 8.2.10)
+\end{document}

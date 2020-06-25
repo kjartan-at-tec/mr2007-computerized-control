@@ -1,0 +1,54 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\def\AXRANGE{1.6}
+
+\begin{tikzpicture}
+
+
+  \begin{axis} [
+      axis lines=middle,
+      width=8cm,
+      height=8cm,
+      ylabel=Im,
+      ytick={-1, 1},
+      yticklabels={$-i$, $i$},
+      xtick={-1, 1},
+      xlabel=Re,
+      xmin=-\AXRANGE,
+      xmax=\AXRANGE,
+      ymin=-\AXRANGE,
+      ymax=\AXRANGE,
+  ]
+    %\addplot [black!60, thick, domain=0:360, samples=360, variable=\t] ({cos(t)}, {sin(t)} ); 
+  \end{axis}
+  \begin{axis} [
+    xshift=8cm,  
+    axis lines=middle,
+      width=8cm,
+      height=8cm,
+      ylabel=Im,
+      ytick={-1, 1},
+      yticklabels={$-i$, $i$},
+      xtick={-1, 1},
+      xlabel=Re,
+      xmin=-\AXRANGE,
+      xmax=\AXRANGE,
+      ymin=-\AXRANGE,
+      ymax=\AXRANGE,
+  ]
+    \addplot [black!60, thick, domain=0:360, samples=360, variable=\t] ({cos(t)}, {sin(t)} ); 
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

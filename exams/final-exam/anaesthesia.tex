@@ -1,0 +1,34 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+
+\begin{document}
+
+
+\begin{tikzpicture}[
+    node distance=2cm, block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {$\sum$};
+  \node[block,right of=sum, node distance=30mm] (controller) {Controller};
+  \node[sumnode, right of=controller] (sumdist) {$\sum$};
+  \node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+  \node[block,right of=sumdist, node distance=20mm] (plant) {$\frac{1}{1+120s}$};
+  \node[block,right of=plant, node distance=30mm] (int) {$\frac{1}{s}$};
+  \node[coordinate, right of=int, node distance=15mm] (measure) {};
+  \node[coordinate, right of=measure, node distance=10mm] (output) {};
+
+  \draw[->] (input) -- node[above] {$y_{ref}$} (sum);
+  \draw[->] (sum) -- node[above] {$e$} (controller);
+  \draw[->] (controller) -- node[above] {$u$} (sumdist);
+  \draw[->] (sumdist) -- (plant);
+  \draw[->] (dist) -- node[at start, right] {$v$} (sumdist);
+  \draw[->] (plant) -- (int);
+  \draw[->] (int) -- node[at end, above] {$y$} (output);
+  \draw[->] (measure) -- ++(0, -20mm) -| node[left, pos=0.9] {$-$} (sum);
+
+\end{tikzpicture}
+\end{document}
+
+

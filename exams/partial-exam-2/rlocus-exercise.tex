@@ -1,0 +1,107 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+%\usepackage{khpreamble}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.13}
+
+\usepackage{xcolor}
+
+\begin{document}
+
+\definecolor{leadgreen}{rgb}{0,0.6,0}
+
+
+\pgfmathsetmacro{\realpart}{-0.9}
+\pgfmathsetmacro{\impart}{3}
+
+\pgfmathsetmacro{\leadzero}{-4}
+
+\pgfmathsetmacro{\poleone}{-1}
+\pgfmathsetmacro{\poletwo}{-3}
+
+\pgfmathsetmacro{\thetaone}{atan2(\impart, \realpart-\poleone)}
+\pgfmathsetmacro{\thetatwo}{atan2(\impart, \realpart-\poletwo)}
+\pgfmathsetmacro{\thetalz}{atan2(\impart, \realpart-\leadzero)}
+
+\pgfmathsetmacro{\thetalp}{180-\thetaone-\thetatwo+\thetalz}
+
+\pgfmathsetmacro{\leadpole}{\realpart -\impart/tan(\thetalp)}
+
+
+\pgfmathsetmacro{\anglerad}{1.5}
+
+\pgfmathsetmacro{\thetaonestart}{\poleone+\anglerad}
+
+
+\begin{tikzpicture}[node distance=4cm]
+
+\begin{axis}[
+   clip=false,
+   width=16cm,
+   height=7cm,
+   axis x line=center,
+   axis y line=center,
+   xtick={\leadpole, \leadzero, \poletwo,\poleone},
+   %xticklabels={$\zeta \omega_n=6$},
+   ytick={\impart},
+   %yticklabels={},
+   yticklabel pos=right,
+   %xticklabels={$ $, $\frac{\pi}{6}$, $\frac{\pi}{3}$, $ $, $\frac{2\pi}{3}$, $\frac{5\pi}{6}$, $ $, $\frac{7\pi}{6}$, $\frac{4\pi}{3}$, $ $, $\frac{5\pi}{3}$, $\frac{11\pi}{6}$},
+   %ytick={1},
+   ymin=-0.3, ymax=3.5,
+   xmin=\leadpole, xmax=2,
+   %y tick label style={anchor=north east},
+   %x coord trafo/.code=\pgfmathparse{#1+40},
+   %y coord inv trafo/.code=\pgfmathparse{#1-40},
+   %x dir=reverse,
+   %xticklabel style={anchor=-\tick-90},
+   %yticklabel style={anchor=east, xshift=-4.75cm},
+   %y axis line style={yshift=-4.75cm},
+   %ytick style={yshift=-4.75cm}
+]
+
+%\node[anchor=west] at (axis cs: 0.03, \impart) {$i\omega_n\sqrt{1-\zeta^2}$};
+%\node[anchor=south] at (axis cs: \realpart, 0.03) {$\zeta\omega_n$};
+
+\node[anchor=west] at (axis cs: 0.3, 4) {$\mathrm{Im}$};
+\node[anchor=south] at (axis cs: 3, 0.3) {$\mathrm{Re}$};
+
+\node[blue!50] at (axis cs: \realpart, \impart) {\Large $\times$};
+%\node[blue!59] at (axis cs: \realpart, -\impart) {\Large $\times$};
+
+% Plant poles
+\node at (axis cs: \poleone,0) {\Large $\times$};
+\node at (axis cs: \poletwo,0) {\Large $\times$};
+
+% Lead zero
+\node[color=leadgreen] at (axis cs: \leadzero,0) {\Large $\circ$};
+
+% Lead pole
+\node[color=leadgreen] at (axis cs: \leadpole,0) {\Large $\times$};
+
+
+\addplot+ [no markers, thin, dashed, black] coordinates {(\poleone,0) (\realpart,\impart)};
+
+\addplot+ [no markers, thin, dashed, black] coordinates {(\poletwo,0) (\realpart,\impart)};
+\addplot+ [leadgreen, no markers, thin, dashed] coordinates {(\leadzero,0) (\realpart,\impart)};
+\addplot+ [leadgreen, no markers, thin, dashed] coordinates {(\leadpole,0) (\realpart,\impart)};
+
+\draw [->,line width=0.5pt] (axis cs: \thetaonestart, 0)  arc (0:\thetaone:\anglerad) ; % --++(110:2mm);
+\node at (axis cs: \poleone+\anglerad,\anglerad) {$\theta_1=\thetaone^\circ$};
+
+%\draw [->,line width=0.5pt] (axis cs: -0.5, 0)  arc (0:\thetatwo:1.5) ; % --++(110:2mm);
+%\node at (axis cs: -0.5,1.1) {$\theta_2=\thetatwo$};
+
+\draw [->,line width=0.5pt] (axis cs: \leadzero+\anglerad, 0)  arc (0:\thetalz:1.5) ; % --++(110:2mm);
+\node at (axis cs: \leadzero+\anglerad,\anglerad) {$\theta_z=\thetalz^{\circ}$};
+
+\draw [->,line width=0.5pt] (axis cs: \leadpole+1.5, 0)  arc (0:\thetalp:1.5) ; % --++(110:2mm);
+\node at (axis cs: \leadpole,1.5) {$\theta_p=180^{\circ}-\thetaone^{\circ}-\thetatwo^{\circ}+\thetalz^{\circ}=\thetalp^{\circ}$};
+
+\node[coordinate, pin=-135:{$-a=\realpart -\frac{\impart}{\tan (\thetalp)}$}] at (axis cs: \leadpole, 0) {}; 
+\end{axis}
+
+
+\end{tikzpicture}
+\end{document}

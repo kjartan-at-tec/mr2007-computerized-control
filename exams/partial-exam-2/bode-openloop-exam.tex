@@ -1,0 +1,48 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\pgfplotstableread[col sep=comma]{bode-exam-dta.dta}\datatable
+
+\begin{tikzpicture}
+  \begin{loglogaxis} [
+      width=12cm,
+      height=7cm,
+      ylabel=$|G_o|$,
+      xticklabels=\empty,
+      ytick={10, 1, 0.1, 0.01, 0.001, 0.0001, 0.0001, 0.00001},
+      grid=both,
+      minor y tick num=4,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+      xmax=30,
+  ]
+    \addplot[thick,black, no marks] table[x index=0,y index=1]{\datatable}; 
+  \end{loglogaxis}
+  \begin{semilogxaxis} [
+      xlabel=$\omega$,
+      ylabel=$\arg G_o$,
+      yshift = -5.5cm, 
+      width=12cm,
+      height=7cm,
+      grid=both,
+      ytick={0, -90, -180, -270, -360},
+      minor y tick num=4,
+      every major grid/.style={red, opacity=0.5},
+      xmax=30,
+  ]
+    \addplot[thick,black, no marks] table[x index=0,y index=2]{\datatable}; 
+  \end{semilogxaxis}
+\end{tikzpicture}
+
+\end{document}
