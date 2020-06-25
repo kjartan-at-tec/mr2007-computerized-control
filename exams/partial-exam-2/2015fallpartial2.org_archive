@@ -1,0 +1,31 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file /home/kjartan/Dropbox/undervisning/tec/MR2007/exams/2015fallpartial2/2015fallpartial2.org
+
+
+* Problem 1
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2015-10-23 Fri 08:38
+  :ARCHIVE_FILE: ~/Dropbox/undervisning/tec/MR2007/exams/2015fallpartial2/2015fallpartial2.org
+  :ARCHIVE_OLPATH: Solutions
+  :ARCHIVE_CATEGORY: 2015fallpartial2
+  :END:
+  1. The sampled controller using the forward difference becomes
+     \[F_d(z) = F(s')|_{s'=\frac{z-1}{h}} = 3 \frac{\frac{z-1}{h} + 2}{\frac{z-1}{h} + 8} = 3 \frac{z-1+2h}{z-1+8h}. \]
+  2. With $h=0.2$ we get the characteristic equation 
+     \[ z-1+8(0.2) = z+0.6 = 0. \]
+     Clearly, the controller has a single pole in $-0.5$ which is inside the unit disk, and hence is stable.
+  3. The phase of the controller at $\omega_c = 0.8$ is 
+     \[\arg F(i\omega_c) = \arg (i\omega_c + 2) - \arg (i\omega_c + 8) = \arctan \frac{0.8}{2} - \arctan \frac{0.8}{8} \approx \unit{0.28}{\rad} = \unit{16.1}{\degree}. \]
+  4. The sampled controller will have a phase which is less than \unit{16.1}{\degree}, since the sample-and-hold of the discrete controller introduces a time-delay of about half the sampling period. More argumentation than this is not necessary for full points. But for the interested: In this case, the (approximate) time-delay is \unit{0.1}{\sec} and the corresponding phase contribution of the sample-and-hold at the cross-over frequency is
+     \[ \arg \mexp{-i0.1\omega_c} = \unit{-0.08}{\rad} \approx \unit{-4.58}{\degree}. \]
+     In fact, the phase of the discrete time controller at $\omega_c$ can be calculated exactly as
+     \begin{equation*}
+     \begin{split}
+      \arg F_d(\mexp{i\omega_ch} &= \arg \big(\mexp{i0.2\omega_c}-1+2(0.2)\big) - \arg \big(\mexp{i0.2\omega_c}+0.6\big)\\
+      &= \arg \big( \cos(0.16) -0.6 + i\sin(0.16) \big) - \arg \big(\cos(0.16)+0.6 + i\sin(0.16)\big) = \arctan \frac{0.159}{0.987-0.6} - \arctan \frac{0.159}{0.987+0.6}\\
+      &\approx \unit{0.290}{\rad} \approx \unit{16.6}{\degree}.
+     \end{split}
+     \end{equation*}
+

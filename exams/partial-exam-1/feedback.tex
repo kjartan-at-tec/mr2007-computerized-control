@@ -1,0 +1,18 @@
+\documentclass[tikz]{standalone}
+%\usetikzlibrary{calc}
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=2cm, block/.style={rectangle, draw, minimum height=15mm, minimum width=20mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {$\sum$};
+  \node[block,right of=sum, node distance=35mm] (plant) {$H(z)$};
+  \node[coordinate, right of=plant, node distance=35mm] (output) {};
+
+  \draw[->] (input) -- node[above] {$u_c$} (sum);
+  \draw[->] (sum) -- node[above] {$e$} (plant);
+  \draw[->] (plant) -- node[coordinate] (feedback) {} node[near end, above] {$y$} (output);
+  \draw[->] (feedback) |- ++(0,-20mm) -| (sum) node[left, pos=0.96] {$-$};
+
+\end{tikzpicture}
+\end{document}

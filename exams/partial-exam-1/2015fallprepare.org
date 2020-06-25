@@ -1,0 +1,118 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTex_HEADER: \usepackage[margin=18mm]{geometry}
+#+LaTex_HEADER: \usepackage{amsmath}
+#+LaTex_HEADER: \usepackage{graphicx}
+#+LaTex_HEADER: \usepackage{subfigure}
+#+LaTex_HEADER: \usepackage{parskip}
+#+LaTex_HEADER: \usepackage{standalone}
+#+LATEX_HEADER: \usepackage{tikz,pgf,pgfplots}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing,patterns}
+#+LATEX_HEADER: \usetikzlibrary{arrows,snakes,backgrounds,patterns,matrix,shapes,fit,calc,shadows,plotmarks,decorations.markings,datavisualization,datavisualization.formats.functions,intersections,external}
+#+LATEX_HEADER: \pgfplotsset{compat=1.9}
+#+LaTex_HEADER: \newcommand*{\mexp}[1]{\ensuremath{\mathrm{e}^{#1}}}
+#+LaTex_HEADER: \newcommand*{\laplace}[1]{\ensuremath{\mathcal{L} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\laplaceinv}[1]{\ensuremath{\mathcal{L}^{-1} \{#1\}}}
+#+LaTex_HEADER: \newcommand*{\realpart}[1]{\ensuremath{\operatorname{Re}(#1)}}
+#+LaTex_HEADER: \newcommand*{\impart}[1]{\ensuremath{\operatorname{Im}(#1)}}
+#+LaTex_HEADER: \newcommand*{\vsp}[1]{\rule{0pt}{#1}}
+#+LaTex_HEADER: \newcommand*{\tderiv}[1]{\ensuremath{\frac{d^{#1}}{dt^{n}}}}
+#+LaTex_HEADER: \newcommand*{\bbm}{\begin{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\ebm}{\end{bmatrix}}
+#+LaTex_HEADER: \newcommand*{\obsmatrix}{\mathcal{O}}
+#+LaTex_HEADER: \newcommand*{\contrmatrix}{\mathcal{C}}
+#+LaTex_HEADER: \newcommand*{\cwh}{\ensuremath{\cos \omega h}}
+#+LaTex_HEADER: \newcommand*{\swh}{\ensuremath{\sin \omega h}}
+#+LaTex_HEADER: \newcommand*{\zethree}{\big(z - \mexp{-3h}\big)}
+
+#+title: Computerized control - preparation for partial exam 1
+# #+date: Due 2015-09-08
+
+* The Nyquist criterion
+The figure below shows the Nyquist curve for the open-loop pulse-transfer function 
+\[ H(z) = \frac{0.25K}{(z-1)(z-0.5)} \]
+for the case when $K=1$. 
+\begin{center}
+\includestandalone[width=0.4\linewidth]{nyquist}
+\end{center}
+
+(a) Indicate the phase marginal and the amplitude marginal in the figure.
+
+(b) If the loop is closed as in the figure below, then for which values of $K$ is the closed-loop system stable?
+\begin{center}
+\includestandalone[width=0.4\linewidth]{feedback}
+\end{center}
+
+* The Nyquist criterion and choice of sampling interval
+The figure below shows the Nyquist curve for the continous-time system (dashed line)
+\[ G(s) = \frac{1}{s(s+1)} \]
+and for the corresponding discrete-time system sampled with different sampling periods: $h \in \{0.1, 0.4, 1 \}$. 
+\begin{center}
+\includestandalone[width=0.3\linewidth]{nyquist2}
+\end{center}
+
+(a) Describe briefly in own words how the Nyquist curve changes with increasing sampling period, and what this means for stability of the closed-loop system. 
+
+(b) State the rule-of-thumb for choosing sampling period based on the Nyquist diagram.
+
+* Å&W problem 2.10
+The figure below shows a system of two tanks, where the input is the flow to the first tank and the output is the level in the second tank.
+\begin{center}
+\includegraphics[width=0.2\linewidth]{tanks.png}
+\end{center}
+Use of the levels as state variables gives the system
+\begin{align*}
+\frac{dx}{dt} &= \bbm -0.0197 & 0\\0.0178 & -0.0129 \ebm x + \bbm 0.0263\\0 \ebm u\\
+y &= \bbm 0 & 1\ebm x.
+\end{align*}
+
+(a) Sample the system with sampling period $h=12$.
+
+(b) Verify that the pulse-transfer operator for the system is
+\[ H(q) = \frac{0.030q + 0.026}{q^2 -1.65q + 0.68}. \]
+
+* Å&W problem 3.2
+Consider the closed-loop system below with
+\[ H(z) = \frac{K}{z(z-0.2)(z-0.4)}. \]
+\begin{center}
+\includestandalone[width=0.4\linewidth]{feedback}
+\end{center}
+
+Determine the valuse of $K$ for which the closed-loop system is stable.
+
+* Å&W problem 3.20
+
+Given the system
+\[ (q^2 + 0.4q)y(k) = u(k) \]
+
+(a) For which values $K$ in the proportional controller 
+\[ u(k) = K\big(u_c(k) - y(k)\big) \]
+is the closed-loop system stable?
+
+(b) Determine the stationary error $e = u_c-y$ when $u_c(k)$ is a step and $K=0.5$ in the controller in (a).
+
+
+
+
+* Solutions
+** The Nyquist criterion
+   (a) The amplitude marginal is denoted $A_m$ and the phase marginal $\varphi_m$ in the figure below.
+   \begin{center}
+   \includestandalone[width=0.4\linewidth]{nyquist-solution}
+   \end{center}
+   
+   (b) Since the open loop system $H(z)$ has no poles outside the unit disc (the pole in $1$ is excluded in the domain studied), the closed loop system \[H_c(z) = \frac{H(z)}{1+H(z)} \] will be stable as long as the nyquist curve does not encircle the point $-1$ on the negative real axis. The plot shows the nyquist curve for the system \[H_1(z) = \frac{1}{(z-1)(z-0.5)}.\] Since multiplication by a positive real value $K$ will only change the magnitude of each point on the curve, not the phase, the point of interest is the intersction with the negative real axis, and the corresponding amplitude marginal $A_m$. Wee see that the closed loop system will be stable as long as 
+   \[\frac{K}{A_m} < 1, \] hence,
+   \[K < A_m = 2, \]
+   where the numerical value is obtained by visual inspection of the graph. The result also exemplifies the point of the amplitude marginal: It is the maximum amplification of the open loop system that is possible before the closed loop system becomes unstable.   
+
+** Nyquist criterion and sampling
+   (a) The important changes in the nyquist curve when sampling the system are 
+   1. The curve intersects the real axis, so instability will occur for proportional control with high gain.
+   2. The phase marginal decreases with increasing sampling period $h$. 
+
+   (b) The sampling period should be chosen so that the phase marginal is decreased by 5-15 degrees. 
+
+** For the problems from Å&W, see the solution manual
+
+   

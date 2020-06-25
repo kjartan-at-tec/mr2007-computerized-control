@@ -1,0 +1,54 @@
+\documentclass{standalone}
+
+\usepackage{amsmath}
+\usepackage{tikz,pgf,pgfplots}
+\usetikzlibrary{intersections,calc,decortations.markings}
+
+\begin{document}
+
+
+\begin{tikzpicture}[x=2.5cm, y=2.5cm, arcnode/.style 2 args={                
+            decoration={
+                        raise=#1,             
+                        markings,   
+                        mark=at position 0.5 with { 
+                                    \node[inner sep=0] {#2};
+                        }
+            },
+            postaction={decorate}
+}]
+
+\pgfmathsetmacro{\xlim}{1.4}
+\pgfmathsetmacro{\ylim}{1.4}
+
+
+\draw[->] (-\xlim,0) -- node[below, at end] {$\operatorname{Re}$} (\xlim , 0);
+\draw[->] (0,-\ylim) -- node[left, at end] {$\operatorname{Im}$} (0, \ylim );
+
+\draw[-] (-0.05, 1) -- (0,1);
+\node at (-0.1, 1) {$i$};
+\draw[-] (-0.05, -1) -- (0,-1);
+\node at (-0.1, -1) {$-i$};
+\draw[-] (-1, -0.05) -- (-1,0);
+\node at (-1, -0.1) {$-1$};
+\draw[-] (1, -0.05) -- (1,0);
+\node at (1, -0.1) {$1$};
+
+\draw[-] (-0.5, -0.05) -- (-0.5,0);
+\node at (-0.5, 0.14) {$\frac{1}{A_m}$};
+
+\draw[gray, dashed, domain=0:360,smooth,samples=400,variable=\u, name path=unitcircle] plot ({cos(\u)},{sin(\u)});
+
+%\begin{scope}[very thick,decoration={
+%    markings,
+%    mark=at position 0.5 with {\arrow{>}}}
+%    ] 
+    \draw [thick,postaction={decorate}, name path=nyq] plot file {nyquist150907.out};
+%\end{scope}
+
+
+\draw[thin, name intersections={of=unitcircle and nyq},] (0,0) -- (intersection-1);
+
+\draw[->,arcnode={14pt}{$\varphi_m$}] (-0.7,0) arc (180:212:0.7);
+\end{tikzpicture}
+\end{document}

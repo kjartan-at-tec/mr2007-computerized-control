@@ -1,0 +1,20 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.9}
+
+
+\def\AXLENGTH{4}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=4cm]
+\draw[->, thick] ( 0, -\AXLENGTH) -- ( 0, \AXLENGTH) node [left] {$\mathrm{Im}$};
+\draw[->, thick] ( -\AXLENGTH, 0) -- ( \AXLENGTH, 0) node [below] {$\mathrm{Re}$};
+
+\pgfmathsetmacro{\polemag}{1.0/120.0}
+\node[pin=90:{$-\frac{1}{120}$}] at (-3, 0) {\Large $\times$};
+\node[pin=45:{$0$}] at (0, 0) {\Large $\times$};
+\end{tikzpicture}
+\end{document}

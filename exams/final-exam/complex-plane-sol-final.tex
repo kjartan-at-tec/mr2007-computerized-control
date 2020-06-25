@@ -1,0 +1,43 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\def\AXRANGE{1.6}
+
+\begin{tikzpicture}
+
+
+  \begin{axis} [
+      clip mode=individual,
+      axis lines=middle,
+      width=8cm,
+      height=8cm,
+      ylabel=Im,
+      ytick={-1, 1},
+      yticklabels={$-i$, $i$},
+      xtick={-1, 1},
+      xlabel=Re,
+      xmin=-\AXRANGE,
+      xmax=\AXRANGE,
+      ymin=-\AXRANGE,
+      ymax=\AXRANGE,
+  ]
+    \addplot [black!60, thick, domain=0:360, samples=360, variable=\t] ({cos(t)}, {sin(t)} ); 
+
+    \node[pin=-120:{Zero}] at (axis cs: -1, 0) {$\circ$};
+    \node[pin=70:{Pole}] at (axis cs: 1, 0) {$\times$};
+    \node[pin=-90:{Pole}] at (axis cs: 1.2, 0) {$\times$};
+
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}
