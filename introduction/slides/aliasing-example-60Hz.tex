@@ -1,0 +1,66 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.12}
+\usepgfplotslibrary{groupplots}
+
+\begin{document}
+
+
+\def\freq{60}
+\def\samplefreq{90}
+
+\begin{tikzpicture}
+  \pgfmathsetmacro\omegaO{\freq*2*pi}
+  \pgfmathsetmacro\omegaS{\samplefreq*2*pi}
+  \pgfmathsetmacro\omegaN{\omegaS*0.5}
+  \pgfmathsetmacro\sampleperiod{1.0/\samplefreq}
+  \pgfmathsetmacro\omegaAlias{\omegaN - (\omegaO - \omegaN)}
+  \pgfmathsetmacro\tendms{160}
+  \pgfmathsetmacro\nsamples{\tendms / (\sampleperiod*pow(10,3)}
+  
+\begin{groupplot}[
+  group style={group size=1 by 3, vertical sep=16mm,},
+  width=12cm,
+  height=4cm,
+  % hide y axis,
+  % ymin = 0,
+  % ymax = \vmax,
+  % xmin = -3,
+  % xmax = \hmax,
+  xlabel = {$t$ [ms]},
+  ytick = \empty,
+  ylabel = {$w(t)$, $w_s(kh)$},
+  % ylabel={Real part of spectrum},
+  % xtick={-1, 0, 1, 5},
+  % xticklabels={$-\omega_0$, 0, $\omega_0$, $5\omega_0$},
+  % grid=both,
+  % minor y tick num=9,
+  % extra y ticks={.5}, % how to convert to fixed point tick label ?
+  % extra y tick style={log identify minor tick positions=true},
+  % every major grid/.style={red, opacity=0.5},
+  ]
+
+  \nextgroupplot
+  \addplot+[ycomb,] [variable=\k, domain = 0:14, samples = 15]
+  ({k*\sampleperiod*pow(10,3)}, {-sin(deg(\omegaAlias)*k*\sampleperiod)});
+  \addplot+ [ultra thick, no marks] [variable=\t, domain = 0:\tendms, samples = 400]
+  {sin(deg(\omegaO)*t*pow(10,-3)) };
+
+    \nextgroupplot[ylabel={$w_s(kh)$}]
+  \addplot+[ycomb,] [variable=\k, domain = 0:14, samples = 15]
+  ({k*\sampleperiod*pow(10,3)}, {-sin(deg(\omegaAlias)*k*\sampleperiod)});
+
+    \nextgroupplot[ylabel={$w_s(kh)$}]
+  \addplot+[ycomb,] [variable=\k, domain = 0:14, samples = 15]
+  ({k*\sampleperiod*pow(10,3)}, {-sin(deg(\omegaAlias)*k*\sampleperiod)});
+  \addplot+[thin,no marks] [variable=\t, domain = 0:\tendms, samples = 400]
+  {-sin(deg(\omegaAlias)*t*pow(10,-3)) };
+  
+\end{groupplot}
+\end{tikzpicture}
+\end{document}
+      
