@@ -8,8 +8,11 @@
 #+LaTex_HEADER: \usepackage{khpreamble}
 #+LaTex_HEADER: \usepackage{amssymb}
 #+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+
 #+title: Computerized control - Introduction
-#+date: 2019-08-15
+#+date: 2020-06-29
 
 * What do I want the students to understand?			   :noexport:
   - Why a theory of discrete-time systems are important
@@ -29,30 +32,59 @@
 
 *** Skip							   :noexport:
 # Norwegian migrated to Sweden and now to Mexico
+# Lived almost 5 years in Mexico. 
+# Previously at Division of Systems and control, UU.
+# Research Collaboration with UU when not teacing at Tec
+# 4 kids. My oldest son will begin prepatec in August
+# Like to ride bicycles on freetime and commuting
+# Had a very short but exremely fun carreer as an actor
+
+
 \begin{center}
 \includegraphics[width=0.4\linewidth]{../../figures/map.png}\\
 \end{center}
 
 ** Who are you?							   
 *** Notes							   :noexport:
-- Who rides their bicycle to tec?
+- Write your hometown and tec campus in the chat (to everyone)
+- How many of classmates do you know from before (show with fingers)?
+- Who has taken a summer course before (thumbs up in window)?
+- Attitude to online (MDF) vs presencial (thumbs)?
 - Knowledge of
+  - Canvas
+  - Zoom
+  - Remind
   - Matlab
+  - Simulink
+  - Python
   - Root locus
   - Bode plot
+  - Bessel lowpass filter
   - Lead-lag filter design
   - State feedback
-  - Bessel lowpass filter
 
 * Intro
   # Velkommen til dette kurset i reguleringsteknik!
 ** Goal of the course
    To be able to *analyze*, *design*, *implement* and *evaluate* computerized product and process control systems with a focus on practical application.
 
-** Feedback control
+** Feedback control in continuous time model
 #+BEGIN_CENTER
 \includegraphics[width=0.6\linewidth]{../../figures/block1}
 #+END_CENTER
+
+*** notes							   :noexport:
+
+I want, rigth from the start to kindly ask you to provide me with feedback if there are things that are not working for you with this course. If you want more student activity during online sessions, if material online is unclear etc. 
+
+And do not wait with providing the feedback.  Timely feedback is needed to do corrections. And in a feedback system like this time delays are BAD for performance.
+
+** Feedback control in continuous time model
+#+BEGIN_CENTER
+\includegraphics[width=0.6\linewidth]{../../figures/block1}
+#+END_CENTER
+
+*Activity* Write down three interesting **properties** of a control system (write as PM in the chat)
 
 *** notes							   :noexport:
     - Familiar from control ing course
@@ -69,10 +101,22 @@
       - Disturbance attenuation
     - Response and stability - poles of the system. Given by the characterstic equation. Write this!
     - Unfortunately, this is not reality. A more realistic model looks like this: 
-** Feedback control
+** Feedback control in real system
 #+BEGIN_CENTER
 \includegraphics[width=0.7\linewidth]{../../figures/comp-contr-sys.png}
 #+END_CENTER
+#+begin_export latex
+\footnotesize From Åström and Murray \emph{Feedback systems: An introduction for scientists and engineers}
+#+end_export
+
+** Feedback control in real system
+#+BEGIN_CENTER
+\includegraphics[width=0.7\linewidth]{../../figures/fig7-2.png}
+#+END_CENTER
+#+begin_export latex
+\footnotesize From Åström and Wittenmark \emph{Computer-controlled systems}
+#+end_export
+
 
 *** notes							   :noexport:
     - In real life things are a bit more complicated.
@@ -109,8 +153,30 @@ Sales of microcontrollers 2012-2019.
 
 ** Two approaches to designing a  discrete-time controller 
    1. Do design the controller in the continuous-time domain (methods from control engineering class). Then discretize the continuous-time controller.
+     \includegraphics[width=0.7\linewidth]{../../figures/block1} \(F_d(z) \approx F(s)\)
    2. Determine discrete-time model of the plant. Do design in discrete-time domain.
-* Example: water-level control in hydro power plant
+      #+begin_export latex
+	\begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+	  \node[coordinate,] (refinput) {};
+	  \node[block, right of=refinput] (controller)  {Controller};
+	  \node[block, right of=controller, node distance=30mm] (zoh)  {Hold};
+	  \node[block, right of=zoh, node distance=26mm] (plant)  {Process};
+	  \node[block, right of=plant, node distance=26mm] (sampler)  {Sampler};
+	  \node[coordinate, right of=sampler, node distance=20mm] (output) {};
+
+	  \draw[->] (refinput) -- node[above, near start] {$y_{ref}(k)$} (controller);
+	  \draw[->] (controller) -- node[above, pos=0.4] {$u(k)$} (zoh);
+	  \draw[->] (zoh) -- node[above] {$u(t)$} (plant);
+	  \draw[->] (plant) -- node[above] {$y(t)$} (sampler);
+	  \draw[->] (sampler) -- node[pos=0.8, coordinate] (measure) {} node[above, near end] {$y(k)$} (output);
+	  \draw[->] (measure) -- ++(0,-20mm) -| (controller);
+	  \draw[red] (42mm, -13mm) rectangle (114mm, 8mm);
+	  \node[red] at (100mm, -10mm) {Discrete model};
+	\end{tikzpicture}
+
+      #+end_export
+* Example: water-level control in hydro power plant                :noexport:
 ** Example of design in the discrete time domain
 ** Example - Hydro-power plant
 #+BEGIN_CENTER 
@@ -245,10 +311,43 @@ Sales of microcontrollers 2012-2019.
     1-K*h/A = 1 - 60*10^3/(1.2*10^5) = 1 - 60/120 = 0.5
 
       
-* Further motivation for computerized control 
-** Discrete design can give better performance
+* Example: Diskdrive arm position control
+** Position control of a diskdrive arm
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
 \includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
-# \includegraphics[height=0.8\textheight]{../../figures/fig1-9.png}
+
+#+begin_export latex
+\tiny "Laptop-hard-drive-exposed" by Evan-Amos - Own work. Licensed under CC BY-SA 3.0 via Commons
+#+end_export
+*** Equations
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+    
+    \[ J\ddot{\theta}(t) = u(t) + v(t) \]
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=10mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+	\node[coordinate] (input) {};
+	\node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+	\node[block, right of=sum, node distance=18mm] (plant)  {$\frac{1}{Js^2}$};
+	\node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+	\node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+	\draw[->] (input) -- node[above, pos=0.3] {$u(t)$} (sum);
+	\draw[->] (sum) -- node[above] {} (plant);
+	\draw[->] (plant) -- node[above, near end] {$\theta(t)$} (output);
+	\draw[->] (disturbance) -- node[right, pos=0.2] {$v(t)$} (sum);
+      \end{tikzpicture}
+    \end{center}
+
+    #+end_export
+
+    *Activity* Write three relevant performance criteria for the closed-loop control system (position servo)!
 
 *** Notes							   :noexport:
 Performance critera:
@@ -258,26 +357,374 @@ Performance critera:
 - Overshoot
 - Input signal magnitude
 
+** Controller design in continuous time
+   #+begin_export latex
+
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=24mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$K\frac{b}{a}$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$\frac{1}{Js^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$K\frac{s+b}{s+a}$};
+
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(t)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(t)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(t)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(t)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(t)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+   #+end_export
+
+   Characteristic equation:
+   \[ 1 + \frac{1}{Js^2}K\frac{s+b}{s+a} = 0\]
+   \[ s^2(s+a) + \frac{K}{J}(s+b) = 0\]
+
+** Controller design in continuous time - root locus
+   *Activity* 1) Install Remind app, 2) sign up to the class group 8fa3fea, 3) Complete the root locus, 4) Photograph the root locus and send as PM on Remind!
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}
+       \draw[->] (-4, 0) -- (2,0);
+       \draw[->] (0, -3) -- (0,3);
+       \node[red, pin=45:{2 plant poles}] at (0,0) {\large $\times$};
+       \node[red, pin=135:{controller pole}] at (-3.5,0) {\large $\times$};
+       \node[green!70!black, pin=-45:{controller zero}] at (-0.5,0) {\Large $\circ$};
+       \node at (-3.5, -0.5) {$-a$};
+       \node at (-0.5, -0.5) {$-b$};
+       \draw[dashed] (-1,-3) -- (-1,3);
+       \node[coordinate, pin=180:{asymptote}] at (-1,2.5);
+       \node[coordinate, pin=-135:{$\frac{-a+b}{2}$}] at (-1, 0) {}; 
+     \end{tikzpicture}
+   \end{center}
+
+   #+end_export
+
+** Controller design in continuous time - root locus
+   *Activity* Mark with crosses a choice of closed-loop poles that give good performance!
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}
+       \draw[->] (-4, 0) -- (2,0);
+       \draw[->] (0, -3) -- (0,3);
+       \node[red,] at (0,0) {\large $\times$};
+       \node[red, ] at (-3.5,0) {\large $\times$};
+       \node[green!70!black, ] at (-0.5,0) {\Large $\circ$};
+       \node at (-3.5, -0.5) {$-a$};
+       \node at (-0.5, -0.5) {$-b$};
+       \draw[dashed] (-1,-3) -- (-1,3);
+       \node[coordinate, ] at (-1,2.5);
+       \node[coordinate, pin=-135:{$\frac{-a+b}{2}$}] at (-1, 0) {}; 
+     \end{tikzpicture}
+   \end{center}
+
+   #+end_export
+
+** Controller design in continuous time - root locus
+   *Activity* Mark with crosses a choice of closed-loop poles that give good performance!
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}
+       \draw[->] (-4, 0) -- (2,0);
+       \draw[->] (0, -3) -- (0,3);
+       \node[red, pin=45:{2 plant poles}] at (0,0) {\large $\times$};
+       \node[red, pin=135:{controller pole}] at (-3.5,0) {\large $\times$};
+       \node[green!70!black, pin=-45:{controller zero}] at (-0.5,0) {\Large $\circ$};
+       \node at (-3.5, -0.5) {$-a$};
+       \node at (-0.5, -0.5) {$-b$};
+       \draw[dashed] (-1,-3) -- (-1,3);
+       \node[coordinate, ] at (-1,2.5);
+       \node[coordinate, pin=-135:{$\frac{-a+b}{2}$}] at (-1, 0) {}; 
+       \draw[ultra thick, color=blue, domain=0:4] plot ({-pow((1-exp(-\x)),2)}, \x/4*2.5);
+       \draw[ultra thick, color=orange, domain=0:4] plot ({-pow((1-exp(-\x)),2)}, -\x/4*2.5);
+       \draw[ultra thick, color=magenta, domain=-3.5:-0.5] plot (\x, 0);
+     \end{tikzpicture}
+   \end{center}
+
+   #+end_export
+
+** Controller design in continuous time
+   #+begin_export latex
+
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=24mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$K\frac{b}{a}$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$\frac{1}{Js^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$K\frac{s+b}{s+a}$};
+
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(t)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(t)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(t)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(t)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(t)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+   #+end_export
+** From continuous-time design to discrete controller
+   Let $y(t)=\theta(t)$. The feedback controller is given in the Laplace-domain as 
+   #+begin_export latex
+   \begin{center}
+   \begin{tikzpicture}
+   \tikzset{node distance=2cm, 
+       block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+       sumnode/.style={circle, draw, inner sep=2pt}        
+   }
+
+     \node[coordinate] (input) {};
+     \node[block, left of=input] (SR) {$K\frac{s+b}{s+a}$};
+     \node[coordinate, left of=SR] (output) {};
+     \draw[->] (input) -- node[above, near start] {$y(t)$} (SR);
+     \draw[->] (SR) -- node[above, near end] {$u_2(t)$} (output);
+   \end{tikzpicture}
+   \end{center}
+   #+end_export
+   \begin{align*}
+   U_2(s) &= K \frac{s+b}{s+a} Y(s)\\
+   (s+a)U_2(s) &= K(s+b)Y(s)
+   \end{align*}
+   *Activity* Which is the correct corresponding ODE?
+   | 1: \(\dot{u}_2 + a = K\dot{y} + by\)      | 1: \(\dot{u}_2 + a = K\dot{y} + Kby\) |
+   | 3: \(a u_2 + \dot{u}_2 = Kby + K\dot{y}\) | 4: \( a u_2 + \dot{u}_2 = K\dot{y} + by\) |
+
+** Simple discretization
+   #+begin_export latex
+   \begin{center}
+   \begin{tikzpicture}
+   \pgfmathsetmacro\tone{2}
+   \pgfmathsetmacro\ttwo{4}
+   \pgfmathsetmacro\xone{0.1*\tone*sin(10*\tone)}
+   \pgfmathsetmacro\xtwo{0.1*\ttwo*sin(10*\ttwo)}
+   \pgfmathsetmacro\xdot{(\xtwo-\xone)/(\ttwo-\tone)}
+   
+   \begin{axis}[width=7cm, height=5cm, xtick={\tone, \ttwo}, xticklabels={$t_1$, $t_1+h$},
+   ytick={\xone, \xtwo}, yticklabels={$x(t_1)$, $x(t_1+h)$}]
+   \addplot+[no marks, thick, variable=\t, domain = 0:8, samples=100] {0.1*t*sin(10*t)} node[coordinate, pos=0.8, pin=90:{$x(t)$}] {};
+   \addplot+[ycomb,] coordinates  {(\tone, \xone) (\ttwo, \xtwo)};
+   \addplot+[this, no marks, variable=\t, domain = -1:3, samples=10] ({\tone + t}, {\xone + \xdot*t});
+   \end{axis}
+
+   \node at (8,3) {\( \dot{x}(t) \approx \frac{\Delta x}{\Delta t} = \frac{x(t + h) - x(t)}{h} \)};
+   \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+   Approximating the controller, assuming equidistant sampling  $t = kh$:
+   \begin{align*}
+   a u_2 + \dot{u}_2 &= Kby + K\dot{y}\\
+   a u_2(kh) + \frac{1}{h} \big(u_2(kh+h) - u_2(kh)\big) &= Kby(kh) + \frac{K}{h}\big(y(kh+h) - y(kh)\big)
+   \end{align*}
+
+** Simple discretization, contd
+
+   Approximating the controller, assuming equidistant sampling  $t = kh$:
+   \begin{align*}
+   a u_2 + \dot{u}_2 &= Kby + K\dot{y}\\
+   a u_2(kh) + \frac{1}{h} \big(u_2(kh+h) - u_2(kh)\big) &= Kby(kh) + \frac{K}{h}\big(y(kh+h) - y(kh)\big)
+   \end{align*}
+   \[ u_2(kh+h) = (1-ah)u_2(kh) + Ky(kh+h) - K(1-bh)y(kh) \]
+
+   This is an algorithm that can easily be implemented on a microcontroller. 
+   #+begin_center
+   \includegraphics[width=0.35\linewidth]{../../figures/fig1-7.png} \tiny From Åström and Wittenmark, Computer-controlled systems
+
+   #+end_center
+
+   # *Activity* Assume 
+
+
+** Two approaches to designing a  discrete-time controller 
+   1. Do design the controller in the continuous-time domain (methods from control engineering class). Then discretize the continuous-time controller.
+     \includegraphics[width=0.7\linewidth]{../../figures/block1} \(F_d(z) \approx F(s)\)
+   2. Determine discrete-time model of the plant. Do design in discrete-time domain.
+      #+begin_export latex
+	\begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+	  \node[coordinate,] (refinput) {};
+	  \node[block, right of=refinput] (controller)  {Controller};
+	  \node[block, right of=controller, node distance=30mm] (zoh)  {Hold};
+	  \node[block, right of=zoh, node distance=26mm] (plant)  {Process};
+	  \node[block, right of=plant, node distance=26mm] (sampler)  {Sampler};
+	  \node[coordinate, right of=sampler, node distance=20mm] (output) {};
+
+	  \draw[->] (refinput) -- node[above, near start] {$y_{ref}(k)$} (controller);
+	  \draw[->] (controller) -- node[above, pos=0.4] {$u(k)$} (zoh);
+	  \draw[->] (zoh) -- node[above] {$u(t)$} (plant);
+	  \draw[->] (plant) -- node[above] {$y(t)$} (sampler);
+	  \draw[->] (sampler) -- node[pos=0.8, coordinate] (measure) {} node[above, near end] {$y(k)$} (output);
+	  \draw[->] (measure) -- ++(0,-20mm) -| (controller);
+	  \draw[red] (42mm, -13mm) rectangle (114mm, 8mm);
+	  \node[red] at (100mm, -10mm) {Discrete model};
+	\end{tikzpicture}
+
+      #+end_export
+
+** Discretizing the plant model
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.3
+    :END:
+\includegraphics[height=0.4\textheight]{../../figures/diskdrive.png}
+
+#+begin_export latex
+\tiny "Laptop-hard-drive-exposed" by Evan-Amos - Own work. Licensed under CC BY-SA 3.0 via Commons
+#+end_export
+*** Equations
+    :PROPERTIES:
+    :BEAMER_col: 0.7
+    :END:
+    
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=10mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+	\node[coordinate] (input) {};
+	\node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+	\node[block, right of=sum, node distance=18mm] (plant)  {$\frac{1}{Js^2}$};
+	\node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+	\node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+	\draw[->] (input) -- node[above, pos=0.3] {$u(t)$} (sum);
+	\draw[->] (sum) -- node[above] {} (plant);
+	\draw[->] (plant) -- node[above, near end] {$\theta(t)$} (output);
+	\draw[->] (disturbance) -- node[right, pos=0.2] {$v(t)$} (sum);
+      \end{tikzpicture}
+    \end{center}
+
+    #+end_export
+    \[ J\ddot{\theta}(t) = u(t) + v(t) \]
+
+    \begin{align*} 
+      \ddot{\theta}(t) &\approx \frac{ \dot{\theta}(t+h) - \dot{\theta}(t)}{h}\\
+                       &\approx \frac{ \frac{ \theta(t+h+h)-\theta(t+h)}{h} - \frac{\theta(t+h)-\theta(t)}{h}}{h}\\
+		       &=
+\end{align*}
+
+*Activity* Simplify the expression!
+
+*** Notes							   :noexport:
+Performance critera:
+- Speed
+- Accuracy
+- Stability
+- Overshoot
+- Input signal magnitude
+
+** Controller design in discrete time
+   #+begin_export latex
+
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$\theta(k) = \frac{h^2}{J(\shift-1)^2}u(k)$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b$};
+
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+   #+end_export
+
+   Plant model, using the shift operator $\shift$ (\(\shift f(k) = f(k+1)\)) and assuming $h=1$:
+   \begin{align*}
+   \theta(k+2) - 2\theta(k+1) + \theta(k) &= \frac{h^2}{J} u(k)\\ 
+   \shift^2 \theta(k) - 2\shift \theta(k) + \theta(k) &= \frac{h^2}{J} u(k)\\
+   (\shift^2 - 2\shift + 1) \theta(k) &= \frac{h^2}{J} u(k)
+   \end{align*}
+
+
+** Discretizing analog design will be worse than the analog performance
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/fig1-8.png}
+\end{center}
+
 ** Discrete design can give better performance
-\includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
-\includegraphics[height=0.8\textheight]{../../figures/fig1-9.png}
+# \includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
+\includegraphics[height=0.6\linewidth]{../../figures/fig1-9.png}
 
-** Why computerized control?
-   - Almost all control systems are implemented on computers/microcontrollers
-   - Controllers designed in continuous-time must be discretized to be implemented on a computer - What does this mean for the performance?
-   - Design that takes into account the discrete nature of the computer can give better performance
+** Challenges with computerized control - aliasing
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}
+	\node {\includegraphics[width=0.99\linewidth]{../../figures/comp-contr-sys.png}};
+	\node[pin=145:{60Hz mains hum}] at (2.7,2.4) {};
+	\node[pin=-60:{90Hz sampling freq}] at (0.5,-1.4) {};
+      \end{tikzpicture}
+    \end{center}
+    #+end_export    
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :END:
 
-** Challenges with computerized control
+\includegraphics[width=0.99\linewidth]{./aliasing-example-60Hz}
 
+
+** Challenges with computerized control - aliasing
 *** Aliasing
 \includegraphics[height=0.6\textheight]{../../figures/Moire_pattern_of_bricks.png} \hspace*{3mm} \includegraphics[height=0.6\textheight]{../../figures/Moire_pattern_of_bricks_small.png}
+#+begin_export latex
+{\tiny From wikipedia, Creative Commons}
+#+end_export
+
+*Sampling can create frequencies that do not exist in the real signal*
 
 *** Notes							    :noexport:
 Works very nicely! Shows clearly that the sampling of the spatial frequency with too large pixels give something in the image that was not there in reality.
 
 ** Challenges with computerized control
 
-*** Sampling causes delay
+*** Sampling causes a delay of approximately half the sampling period
 \includegraphics[width=0.9\textwidth]{../../figures/modulation-model-timeseries}
 
 *** Notes							   :noexport:
@@ -293,6 +740,11 @@ Works very nicely! Shows clearly that the sampling of the spatial frequency with
 - Right before next sampling instant info is old.
 - On average delay is about half the sampling period.
 
+
+** Why computerized control?
+   - Almost all control systems are implemented on computers/microcontrollers/PLCs
+   - Controllers designed in continuous-time must be discretized to be implemented on a computer - What does this mean for the performance?
+   - Design that takes into account the discrete nature of the computer can give better performance
 
 * Skip								   :noexport:
 ** Uppsala
@@ -318,7 +770,7 @@ Works very nicely! Shows clearly that the sampling of the spatial frequency with
 
 * Course content structure
 
-** Control concepts
+** Control concepts                                                :noexport:
 \begin{center}
 \includegraphics[width=1.1\linewidth]{../../figures/computercontrol.png}
 \end{center}
@@ -330,17 +782,18 @@ Works very nicely! Shows clearly that the sampling of the spatial frequency with
       - Mathematical models: Discrete math, difference equations, z-transform
       - System identification
 ** Course book
-\begin{center}
-\includegraphics[width=0.2\linewidth]{../../figures/book.png}
-\end{center}
-Buy ebook at Google Books (573 MXN)
+   #+begin_center
+   \includegraphics[width=0.4\linewidth]{../../figures/tec-book.png}
+   #+end_center
+#    \includegraphics[width=0.2\linewidth]{../../figures/book.png}
 
-** Course overview
+
+** Course overview                                                 :noexport:
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/computer-control-approaches}
 \end{center}
 
-** Discrete time vs continuous time
+** Discrete time vs continuous time                                :noexport:
 | Continuous time                                                              |
 |------------------------------------------------------------------------------|
 | \includegraphics[width=0.4\linewidth]{../../figures/cont-fcn}                |
@@ -358,7 +811,7 @@ Buy ebook at Google Books (573 MXN)
     - Derivative of signals. Here using the differential operator operating on differentiable functions. In discrete time work with the shifted sequences. Here shift operator operating on sequences shifting ahead one step.
     - ODE difference eqs
     
-** Discrete time vs continuous time
+** Discrete time vs continuous time                                :noexport:
 | Continuous time                                                              | Discrete time                                                                                       |
 |------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
 | \includegraphics[width=0.4\linewidth]{../../figures/cont-fcn}                | \includegraphics[width=0.4\linewidth]{../../figures/discrete-fcn}                                   |
@@ -377,7 +830,7 @@ Buy ebook at Google Books (573 MXN)
     - ODE difference eqs
     
 * Course structure
-** How we will work
+** How we will work                                                :noexport:
    *Prepare, prepare, prepare* for classes:
    1. Read text material and watch video
    2. Solve quizz (test) on Canvas (up to 100p, accounts for 1% of final grade)
@@ -388,11 +841,11 @@ Buy ebook at Google Books (573 MXN)
    4. Summarize
 
 ** Homework
-   - About every second week
-   - Solved in groups of 2 (except first hw which is individual), handed in on Canvas
-   - Each homework accounts for 4% of final grade (except first hw which is 2%)
+   - Every week
+   - Solved in groups of 3, handed in on Canvas
+   - Each homework accounts for 7% of final grade 
 
-** Project
+** Project                                                         :noexport:
    - Implement controller on arduino, accounts for 10% of final grade
    - Groups of 4 (self-elected)
    - Partial reports (\(2\times 15\)p)
@@ -401,24 +854,24 @@ Buy ebook at Google Books (573 MXN)
    - Demonstrate controller design and  working closed-loop system (20p)
    - Individual journal (10p)
 
-** Examination
-   - Quizzes 10%
-   - Homework 18%
-   - Project 10%
-   - 2 partial exams (1.5hrs) 36%
-   - Final exam (3hrs) 26%
+** Examination and grading
+   - Homework 35%
+   - Partial exam 1 20%
+   - Partial exam 2 20%
+   - Final exam 25%
 
+     Each exam consists of quiz on Canvas (50%) and video assignment (50%)
 
 ** Example of preparation work					   :noexport:
    1. Watch video
    2. Try notebook
    3. Answer quizz
 
-** Coming up
+** Coming up                                                       :noexport:
    - Homework 1: Repetition of stuff from control engineering. On Canvas.
    - See preparation instructions for next week on Canvas
 
-* Examples
+* Examples                                                         :noexport:
 
 ** On the whiteboard instead 					   :noexport:
     - Draw plant-block.

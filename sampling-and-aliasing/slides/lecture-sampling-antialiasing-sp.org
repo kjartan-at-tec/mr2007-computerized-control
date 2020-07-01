@@ -11,16 +11,15 @@
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
-#+title: Computerized Control - Sampling and aliasing
+#+title: Control Computarizado - Muestreo y el efecto de alias
 #+date: 2020-07-01
 
-* What do I want the students to understand?			   :noexport:
-  - The sampling theorem
-  - antialiasing filter
+* Qué quiero que entienden los estudiantes? :noexport:
+  - El teorema del muestro
+  - El efecto de alias
 
-* Which activities will the students do?			   :noexport:
-  1. Aliasing exercise
-  2. Read and apply table 7.3 Å & W
+* Actividades?                :noexport:
+  1. Varios ejercicios de espectros de linea (sinusoides)
 
 * Intro
 
@@ -37,12 +36,13 @@
 \includegraphics[width=\linewidth]{../../figures/computer-control-approaches}
 \end{center}
 
-** Repetition
+** Sistemas híbridas
    #+BEGIN_CENTER 
     \includegraphics[width=0.7\linewidth]{../../figures/fig7-2.png}
    #+END_CENTER
 
-
+*** Notas                                                          :noexport:
+En aplicaciones de control computarizado estamos trabajando con sistemas híbridas. Es decir sistemas que contienen señales continuas y discretas.
 
 * Intro example - Use later!					   :noexport:
 ** Introductory example: Level control of a tank
@@ -97,8 +97,8 @@
 
    
 
-* The sampling theorem
-** Challenges with computerized control - aliasing
+* El teorema del muestro
+** Retos en control computarizado - fenómeno de alias
 *** Graphics
     :PROPERTIES:
     :BEAMER_col: 0.6
@@ -127,21 +127,26 @@
    #+END_CENTER
    A high-frequency sinusoid ( \(\omega_1 = 1800\pi \) rad/s ) masquerading as a lower frequency sinusoid ( \( 200 \pi \) rad/s ) due to aliasing.
 
+*** Notas                                                          :noexport:
+    Este ejemplo vimos en la primera sesión el lunes. Aquí una señal de ruido entra al sistema. El ruido es una sinusoide con la frecuencia de 60Hz. La fuente de este ruido es el red electrica de corriente alterna. Se muestrea la señal de salida del sistem, con el ruido con una frecuencia de 90Hz. Este es demasioado bajo como para representar la sinusoide de 90Hz. Aplicando el teorema de muestreo (en capitulo 3 del libro de texto) se deberia usar una frecuencia de muestreo de más que el doble de la frecuencia más alta de la señal. Es decir 120Hz o más. 
+
+    En realidad estamos muestreando con la frecuencia de 90Hz. Entonces la frecuencia conocida como la frecuencia de Nyquist es la mitad de ese valor, o 45Hz. Y todo la energía en la señal continua que se encuentra en la banda de frecuencias encima de la frecuencia de Nyquist se trasla a energia en frecuencias bajo de la frecuencia de Nyquist 45Hz. 
+
 ** Aliasing                                                        :noexport:
    #+BEGIN_CENTER 
     \includegraphics[width=0.7\linewidth]{../../figures/aliasing-definition.png}
    #+END_CENTER
 
-** Spatial aliasing
+** Efecto de alias en imágenes
    #+BEGIN_CENTER 
     \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks.png}
     \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks_small.png}
    #+END_CENTER
 
-** The sampling theorem
-Shannon and Nyquist:
+** El teorema del muestreo
+Shannon y Nyquist:
 
-A continuous-time signal with Fourier transform that is zero outside the interval \( (-\omega_0, \omega_0) \)  can be completely reconstructed from equidistant samples of the signal, as long as the sampling frequency is at least \(2\omega_0\). 
+Una señal continua cuya transformada de Fourier es cero fuera del intervalo \( (-\omega_0, \omega_0) \)  puede ser reconstruido completamente usando valores (muestros) equidistantes de la señal, siempre cuando la frecuencia de muestreo sea por lo menos \(2\omega_0\). 
 
 #+begin_export latex
 \begin{center}
@@ -159,8 +164,11 @@ A continuous-time signal with Fourier transform that is zero outside the interva
 \end{center}
 #+end_export
 
-** The impulse modulation model
-   The *impulse train*, a.k.a the *Dirac comb*:
+*** Notas                                                          :noexport:
+    Este es un teorema fundamental de procesado de señales. Si conocemos el espectro de frecuencias de una señal que vamos a muestrear, podemos usar este teorema para determinar la frecuencia de muestreo y entonce el tiempo de muestreo.  
+
+** Un modelo del muestreo
+   Una señal muestreada tiene una representación en tiempo continuo usando el modelo de modulación por un *tren de impulsos*
    #+BEGIN_CENTER 
    \( m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh) \)\hspace*{10mm}
     \includegraphics[width=0.4\linewidth]{../../../figures/modulation-model-blocks}
@@ -174,6 +182,14 @@ A continuous-time signal with Fourier transform that is zero outside the interva
 #+END_CENTER
 
 *** Notes							   :noexport:
+    Para establecer la relación entre una señal continua y su versión muestreada, utlizamos un modelo con nombre modulación por tren de impulsos. 
+    Modulación significa multiplicación. Y cuando multiplicamos la señal continua con el tren de impulsos llegamos a ese expresión que es también un tren de impulsos, pero aquí cada impulso es multiplicado por el valor de la señal f(t) caundo el impulso occurre. Se puede visualizar como en esta gráfica  abajo.
+
+    Es importante entender que f_s(t) es una representación continua de la señal muestreada (discreta). La señal f_s(t) existe en tiempo continua, y podemos usar métodod del tiempo continua para analisarla. 
+Por ejemplo calculando su TRANSFORMADA DE FOURIER.
+
+
+
     The laplace transform of f_s(t):
     F_s(s) = \int_t (\sum_k f(t)\delta(t-kh)) exp(-st) dt
            = \sum_k f(kh) \int_t \delta(t-kh) exp(-st) dt
@@ -196,15 +212,25 @@ A continuous-time signal with Fourier transform that is zero outside the interva
     F_s(s) = F(s) \ast M(s) = \int_{x=-\infty}^{\infty} M(s) F(s-x)
            = \int_x \sum_j \delta(s-i\omega_j) F(s-x
 
-** Fourier transform of the sampled signal
+** Transformada de Fourier de la señal muestreada
 
-   The Fourier transform of $f_s$ and the Fourier transform of $f$ are related as
-   \[ F_s(\omega) = \frac{1}{h} \sum_n F(\omega + n\omega_s). \]
+   La relación entre la transformada de la señal continua $f(t)$ y la de su versión muestreada $f_s(t)$:
 
-   Because the Fourier transform of the sampled signal equals the Fourier transform of the continuous-time signal repeated at every multiple of the sampling frequency and added, we get /frequency-folding/ or /aliasing/.
+   \[ F_s(\omega) = \frac{1}{h} \sum_n F(\omega + n\omega_s) \]
 
+*** Text
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+
+   $F_s(\omega)$ se obtiene sumando repeticiones de $F(\omega)$ en cada múltiple de la frecuencia de muestro $\omega_s$. Esta es la causa del fenómeno de *alias* y la distorsión conocido como *plegado de frecuencia* (/frequency folding/).
+
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
 #+BEGIN_CENTER 
- \includegraphics[width=0.28\linewidth]{../../figures/frequency-folding.png}
+ \includegraphics[width=0.68\linewidth]{../../figures/frequency-folding.png}
 #+END_CENTER 
 *** Notes							   :noexport:
     - Draw symmetric spectrum on whiteboard.
@@ -429,8 +455,8 @@ A continuous-time signal with Fourier transform that is zero outside the interva
 #+END_CENTER 
 
 * Exercises using line spectra
-** Fourier transform of a complex exponential
-   The function $x(t) = \mathrm{e}^{i\omega_1 t}$ 
+** Transformada de Fourier de un exponencial complejo
+   La función  $x(t) = \mathrm{e}^{i\omega_1 t}$ 
    #+begin_export latex
    \begin{center}
      \begin{tikzpicture}[scale=2]
@@ -446,11 +472,11 @@ A continuous-time signal with Fourier transform that is zero outside the interva
      \end{tikzpicture}
    \end{center}
    #+end_export
-   has Fourier transform 
-   \[X(i\omega) = \int_{-\infty}^{\infty} x(t) \mathrm{e}^{-i\omega t}dt = \int_{-\infty}^{\infty} \mathrm{e}^{i(\omega_1 - \omega) t}dt = \delta(\omega_1 - \omega)\] 
+   tiene la transformada de Fourier
+   \[X(\omega) = \int_{-\infty}^{\infty} x(t) \mathrm{e}^{-i\omega t}dt = \int_{-\infty}^{\infty} \mathrm{e}^{i(\omega_1 - \omega) t}dt = \delta(\omega_1 - \omega)\] 
 
-** Fourier transform of a sinusoid
-   A sinusoidal signal $y(t) = \sin(\omega_1 t)$ has all its power concentrated at one single frequency, $\omega=\unit{\omega_1}{rad\per\second}$. 
+** Transformada de Fourier de una sinusoide
+   Una sinusoide $y(t) = \sin(\omega_1 t)$ tiene toda su energía concentrada en una sola frecuencia, $\omega=\unit{\omega_1}{rad\per\second}$. 
    #+begin_export latex
      \begin{center}
      \begin{tikzpicture}
@@ -473,15 +499,14 @@ A continuous-time signal with Fourier transform that is zero outside the interva
      \end{tikzpicture}
      \end{center}
    #+end_export
-   Since \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{i \omega_1 t} \right)\]
-   the Fourier transform of a sinusoid becomes
-   \[ Y(i\omega) = \frac{1}{2i} \left( \delta(\omega_1 - \omega) - \delta(\omega_1 + \omega) \right)\]
+   Dado de que \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{i \omega_1 t} \right)\]
+   la transformada de Fourier es
+   \[ Y(\omega) = \frac{1}{2i} \left( \delta(\omega_1 - \omega) - \delta(\omega_1 + \omega) \right)\]
 
-** Exercise 1: Fourier transform of a sinusoid
-   Consider the signal below
+** Ejercicio 1: La transformada de Fourier de una sinusoide
+   Considera la siguiente señal
 
    #+begin_export latex
-
      \begin{center}
      \begin{tikzpicture}
      \small
@@ -504,7 +529,7 @@ A continuous-time signal with Fourier transform that is zero outside the interva
      \end{center}
    #+end_export
 
-   Which of the below is the correct Fourier transform (magnitude plot shown)?
+   Cuál de los espectros abajo ($|Y(i\omega)|$) corresponde a la señal?
 
    #+begin_export latex
 
@@ -563,8 +588,8 @@ A continuous-time signal with Fourier transform that is zero outside the interva
    #+end_export
 *** Notes							   :noexport:
     - Given  T, so freq in Hz is f=1/T and in rad/s w=2pi/T 
-** Exercise 2: Two sinusoids
-   Consider a signal with Fourier transform  
+** Ejercicio 2: Dos sinusoides
+   Considera una señal con la siguiente transformada de Fourier
    #+begin_export latex
 
      \pgfplotsset{
@@ -599,7 +624,7 @@ A continuous-time signal with Fourier transform that is zero outside the interva
      \end{center}
    #+end_export
    
-   Which of the below time series could this Fourier transform correspond to?
+   Cuál de las señales abajo corresponde a la transformada de Fourier arriba?
 
    #+begin_export latex
 
@@ -653,8 +678,8 @@ A continuous-time signal with Fourier transform that is zero outside the interva
     - 4 has a higher freq with 10 periods over 2pi, so freq of 10 *2pi/2pi = 10
     - 1 and 2 has correct high freq
     - 2 has high freq with too large amplitude
-** Exercise 3: Fourier transform of a sampled sinusoid
-   Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
+** Ejercicio 3: Transformada de Fourier de una sinusoide muestreada
+   La figura siguiente enseña una sinusoide con periodo $T$ y su versión muestreada con period de muestreo \(h=\frac{2}{3}T\).
 
    #+begin_export latex
 
@@ -704,14 +729,19 @@ A continuous-time signal with Fourier transform that is zero outside the interva
        \end{center}
    #+end_export
 
-   What is the frequency of the sinusoid? What is the sampling frequency \(\omega_s\) and the Nyquist frequency \(\omega_N\)?
+   Determine
+
+   1. La frecuencia de la sinusoide
+   2. La frecuencia de muestreo \(\omega_s\)
+   3. La frecuencia de Nyquist \(\omega_N\)
 
 *** Notes							   :noexport:
     - w = 2pi/T, so to minimum sampling period in  order to avoid aliasing is 2*w = 4pi/T
     - ws = 2pi/h = 2pi/(2/3T) = 3pi/T < 4 pi/T
     - wN  = pi/h = 3/2 pi/T
-** Exercise 3: Fourier transform of a sampled sinusoid
-   Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
+** Ejercicio 4: Transformada de Fourier de una sinusoide muestreada
+
+   Considera la misma situación que en ejercicio 3 (periodo de muestreo $h=\frac{2}{3}T$).
 
    #+begin_export latex
 
@@ -762,7 +792,7 @@ A continuous-time signal with Fourier transform that is zero outside the interva
 
 
    #+end_export
-   Which of the below corresponds to the Fourier transform of the *sampled signal*?
+   Cuál de los siguientes espectros corresponde a la *sinusoide muestreada*?
 
    #+begin_export latex
      \pgfplotsset{
@@ -846,20 +876,18 @@ A continuous-time signal with Fourier transform that is zero outside the interva
       wA(1)^+ = 5pi/T, wA(1)^- = pi/T
       wA(-1)^+ = pi/T(2-3) =-pi/T,  wA(1)^- = (-2 -3)pi/T = -5 pi/T
     - Clearly, the correct one must be 3.
-** Alias frequency
-   To find the low frequency alias \(\omega_a<\omega_N\) of a high freqency sinusoid \(\omega_1\), The expression 
+** Frecuencia de alias
+   Para determinar la frecuencia de alias más bajo \(\omega_a<\omega_N\) de una sinusoide \(\omega_1\), se puede usar la expresión 
 \[ \omega_a = \left| \big( (\omega_1 + \omega_N) \, \text{mod}\, \omega_s\big) - \omega_N\right|\] 
-can be used.
 
-** Aliasing example                                               
-   If a continuous-time signal with frequency content (bandwidth) $\omega_B$ is sampled at too low sampling rate ( \(\omega_s < 2\omega_B\) ), then the energy at higher frequencies is folded onto lower frequencies. 
 
+** Ejemplo del fenómeno de alias
    #+BEGIN_CENTER 
     \includegraphics[width=0.6\linewidth]{../../figures/aliasing-example.png}
    #+END_CENTER
-   A high-frequency sinusoid ( \(\omega_1 = 1800\pi \) rad/s ) masquerading as a lower frequency sinusoid ( \( 200 \pi \) rad/s ) due to aliasing when sampled with \(h=10^{-3}\) s.
+   Una sinusoide de alta frecuencia ( \(\omega_1 = 1800\pi \) rad/s ) tiene un alias de frecuencia  \( 200 \pi \) rad/s cuando se la muestrea con un periodo de muestreo de \(h=10^{-3}\) s.
 
-   *Draw the spectrum (lines) of the two sinusoids. Mark the Nyquist frequency and verify that the alias frequency is obtained by folding about the Nyquist frequency.*
+   *Dibuja el espectro de las dos sinusoides. Marca la frecuencia de muestreo y la de Nyquist, y verifica que la frecuencia de alias se produce plegando la frecuencia \(\omega_1\) por la frecuencia de Nyquist*
 
 *** Notes							   :noexport:
     - The sampling frequency is 1000Hz = 2000\pi rad/s, and the Nyquist frequency is 1000\pi rad/s.
@@ -870,25 +898,25 @@ can be used.
           = | ( 800\pi ) - 1000\pi | = 200\pi
        \omega_N - (\omega - \omega_N) = 1000\pi - 800\pi = 200\pi rad/s.
 
-** Group exercise: Alias frequency
+** Ejercicio en grupo: Fenómeno de alias
 
 *** Text
     :PROPERTIES:
     :BEAMER_col: 0.4
     :END:
-    A \(f_1=60\)Hz noise signal is sampled at \(f_s=90\)Hz.
+    Una sinusoide \(f_1=60\)Hz esta muestreado con la frecuencia \(f_s=90\)Hz.
  
-    1. Determine the alias frequency using the expression
+    1. Determine la frecuencia de alias usando la expresión
        \[ f_a = \left| \big( (f_1 + f_N) \, \text{mod}\, f_s\big) - f_N\right|\]
-    2. Verify in the plot that your calculation is correct
-    3. Draw the spectrum lines of the two sinusoids. Mark the Nyquist frequency and verify that the alias frequency is obtained by folding about the Nyquist frequency
+    2. Verifica en la gráfica que su calculación sea correcta.
+    3. Dibuaja el espectro de las dos sinusoides. Marca la frecuencia de Nyquist $f_N$, y verifica que la frecuencia de alias se produce plegando la frecuencia $f_1$ por la frecuencia de Nyquist.
 
 *** Graphics
     :PROPERTIES:
     :BEAMER_col: 0.6
     :END:
 
-\includegraphics[width=0.99\linewidth]{../../figures/aliasing-example-60Hz}
+\includegraphics[width=0.89\linewidth]{../../figures/aliasing-example-60Hz}
 
 
 
