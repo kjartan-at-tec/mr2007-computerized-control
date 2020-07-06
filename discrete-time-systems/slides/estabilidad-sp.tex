@@ -1,4 +1,4 @@
-% Created 2020-07-06 lun 12:25
+% Created 2020-07-06 lun 12:34
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,8 +35,8 @@
 \maketitle
 
 \section{Intro}
-\label{sec:orgf3e95ba}
-\begin{frame}[label={sec:orgb450b0e}]{Repetición: Controlador discreto para el brazo del disco duro}
+\label{sec:orgcc8a22a}
+\begin{frame}[label={sec:org02967ac}]{Repetición: Controlador discreto para el brazo del disco duro}
 Usando \(J=1\) y  \(h=1\).
 \begin{center}
 \begin{tikzpicture}
@@ -71,13 +71,13 @@ Ecuación característica:
 \[ \alpha^3 - 2\alpha^2 + (1+K)\alpha - 0.8K = 0\]
 \end{frame}
 
-\begin{frame}[label={sec:org746971b}]{Repetición: Controlador discreto para el brazo del disco duro}
+\begin{frame}[label={sec:org41f2b6c}]{Repetición: Controlador discreto para el brazo del disco duro}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{rlocus-disk-arm.discrete}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org7782544}]{Algebra en diagramas de bloque}
+\begin{frame}[label={sec:orgceba539}]{Algebra en diagramas de bloque}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -110,7 +110,7 @@ Usando \[U(z) = U_1(z) - U_2(z) = F_f(z)\Theta_{ref}(z) - F_b(z)\Theta(z), \quad
 \[ \Theta(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} \Theta_{ref}(z). \]
 \end{frame}
 
-\begin{frame}[label={sec:orgdcbdaeb}]{Algebra en diagramas de bloque - pasos en detalle}
+\begin{frame}[label={sec:orgd9f732f}]{Algebra en diagramas de bloque - pasos en detalle}
 Usando \[U(z) = U_1(z) - U_2(z) = F_f(z)\Theta_{ref}(z) - F_b(z)\Theta(z), \quad \text{y}\]
 \[ \Theta(z) = H(z)U(z), \quad \text{obtenemos} \]
 \[ \Theta(z) = H(z)U(z) = H(z)\left(F_f(z)\Theta_{ref}(z) - F_b(z)\Theta(z)\right)\]
@@ -120,7 +120,7 @@ Mueve todos los terminos con \(\Theta\) al lado izquierdo:
 \[ \Theta(z) = \frac{H(z)F_f(z)}{1 + H(z)F_b(z)}\Theta_{ref}(z)\]
 \end{frame}
 
-\begin{frame}[label={sec:org65ecc81}]{Estabilidad del sistem an lazo cerrado}
+\begin{frame}[label={sec:org50f2953}]{Estabilidad del sistem an lazo cerrado}
 \[ \Theta(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} \Theta_{ref}(z). \]
 
 \begin{tcolorbox}
@@ -130,7 +130,7 @@ están en el interior del circulo unitario  del plano $z$.
 \end{tcolorbox}
 \end{frame}
 
-\begin{frame}[label={sec:orge1bce41}]{Ejercicio}
+\begin{frame}[label={sec:org6ba5318}]{Ejercicio}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -165,10 +165,22 @@ están en el interior del circulo unitario  del plano $z$.
 \alert{Obtener la función de transferencia del lazo cerrado}
 \end{frame}
 
-\section{Estabilidad para el control del brazo del disko duro}
-\label{sec:orgd3d7932}
+\begin{frame}[label={sec:orgfa55875}]{Solución}
+\[ U(z) = F_f(z)\Theta_{ref}(z) + F_e(z)E(z) = F_f(z)\Theta_{ref}(z) + F_e(z)\big(\Theta_{ref}(z) - \Theta(z)\big), \]
+\[ \Theta(z) = H(z)U(z)\]
+Entonces
+   \begin{align*}
+   \Theta(z) &= H(z)U(z) = H(z)\left(F_f(z)\Theta_{ref}(z) + F_e(z)\big(\Theta_{ref}(z) - \Theta(z)\big)\right)\\
+ &= H(z)F_f(z)\Theta_{ref}(z) + H(z)F_e(z)\Theta_{ref}(z) - H(z)F_e(z)\Theta(z)\\
+\big(1 + H(z)F_e(z)\big) \Theta(z) &= H(z)\big(F_f(z) + F_e(z)\big)\Theta_{ref}(z)\\
+\Theta(z) &= \frac{H(z)\big(F_f(z) + F_e(z)\big)}{1 + H(z)F_e(z)}\Theta_{ref}(z)
+\end{align*}
+\end{frame}
 
-\begin{frame}[label={sec:orgdc82a5f}]{Estabilidad para el control del brazo del disko duro}
+\section{Estabilidad para el control del brazo del disko duro}
+\label{sec:org9898629}
+
+\begin{frame}[label={sec:org7eaa8f2}]{Estabilidad para el control del brazo del disko duro}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -206,7 +218,7 @@ están en el interior del circulo unitario  del plano $z$.
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd5a1660}]{Estabilidad para el control del brazo del disko duro}
+\begin{frame}[label={sec:org6884b60}]{Estabilidad para el control del brazo del disko duro}
 \alert{Actividad en grupo} Completar el diagrama de lugares de los raíces abajo
 \[(z-1)^2z + \frac{K}{2}(z+1)(z-0.8) = 0\]
 \begin{center}

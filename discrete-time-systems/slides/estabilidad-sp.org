@@ -153,7 +153,7 @@
 
    *Obtener la función de transferencia del lazo cerrado*
 
-** Solución                                                        :noexport:
+** Solución
    \[ U(z) = F_f(z)\Theta_{ref}(z) + F_e(z)E(z) = F_f(z)\Theta_{ref}(z) + F_e(z)\big(\Theta_{ref}(z) - \Theta(z)\big), \]
    \[ \Theta(z) = H(z)U(z)\]
    Entonces
