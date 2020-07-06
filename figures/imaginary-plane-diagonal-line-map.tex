@@ -25,11 +25,11 @@
    %y axis line style={yshift=-4.75cm},
    %ytick style={yshift=-4.75cm}
 ]
-%\addplot+[domain=0:1, no markers, black, samples=800] (360*x,1); %
+\addplot[thick, red, domain=0:1, no markers, samples=300] (180*x, exp(-3.14*x); %
 \draw[->, thick] (axis cs: 270, 1.6) -- (axis cs: 90, 1.6) node [right] {$\mathrm{Im}$};
 \draw[->, thick] (axis cs: 180, 1.6) -- (axis cs: 0, 1.6) node [below] {$\mathrm{Re}$};
 
-\draw[-,  thick, red] (axis cs: 260, 2) -- (axis cs: 100, 2);
+%\draw[-,  thick, red] (axis cs: 135, 0) -- (axis cs: 135, 2);
 
 %\node at (axis cs: 200, 0.3) {$-a$};
 

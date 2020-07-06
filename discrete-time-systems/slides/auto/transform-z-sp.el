@@ -31,16 +31,14 @@
     "amssymb"
     "capt-of"
     "hyperref"
-    "khpreamble")
+    "khpreamble"
+    "tcolorbox")
    (TeX-add-symbols
     "shift"
     "diff")
    (LaTeX-add-labels
-    "sec:orge149df4"
-    "sec:org89d92a9"
-    "sec:orgceca1c8"
-    "sec:org14970b5"
-    "sec:orgb8e6c6a"
-    "sec:orgc55076c"))
+    "sec:orgaa52c3a"
+    "sec:orgff71a59"
+    "sec:org81d1523"))
  :latex)
 

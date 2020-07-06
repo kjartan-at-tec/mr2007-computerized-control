@@ -1,4 +1,4 @@
-% Created 2020-07-01 mié 08:13
+% Created 2020-07-02 jue 10:37
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,8 +34,8 @@
 \maketitle
 
 \section{Intro: Discrete-time signals and systems}
-\label{sec:orgfd81190}
-\begin{frame}[label={sec:orgef7f664}]{Position control of a diskdrive arm}
+\label{sec:org0601f47}
+\begin{frame}[label={sec:orga3fc324}]{Position control of a diskdrive arm}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
@@ -63,7 +63,7 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgdfbfff8}]{Two approaches to designing a  discrete-time controller}
+\begin{frame}[label={sec:orgd6c9da9}]{Two approaches to designing a  discrete-time controller}
 \begin{enumerate}
 \item Do design the controller in the continuous-time domain (methods from control engineering class). Then discretize the continuous-time controller.
 \includegraphics[width=0.7\linewidth]{../../figures/block1} \(F_d(z) \approx F(s)\)
@@ -90,7 +90,7 @@
 \end{frame}
 
 
-\begin{frame}[label={sec:org2b78030}]{Difference equations}
+\begin{frame}[label={sec:orgdfb76e8}]{Difference equations}
 We saw two difference equations in the introductory lecture
 
 \begin{enumerate}
@@ -115,7 +115,7 @@ We saw two difference equations in the introductory lecture
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgfde4f26}]{Direct solution by iteration}
+\begin{frame}[label={sec:orgf0f2966}]{Direct solution by iteration}
 The difference equation can be used as a recipe to calculate the solution numerically
 
 \alert{Example} Calculate the response of the lead-compensator \(u_2(kh+h) - (1-ah)u_2(kh) = K\theta(kh+h) - K(1-bh)\theta(kh)\) with \(a=8\), \(b=1\), \(h=0.1\), \(K=1\)
@@ -146,7 +146,7 @@ to the signal below
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org106b5e1}]{Direct solution by iteration}
+\begin{frame}[label={sec:orgabc8dff}]{Direct solution by iteration}
 \begin{block}{Input}
 \begin{center}
   \begin{tikzpicture}
@@ -185,7 +185,7 @@ to the signal below
 \end{center}
 \end{block}
 \end{frame}
-\begin{frame}[label={sec:org6571ae1}]{Do on your own: Solution to the discrete double-integrator}
+\begin{frame}[label={sec:org6d480e0}]{Do on your own: Solution to the discrete double-integrator}
 \alert{Activity} Calculate the response of the double-integrator 
 \[ \theta(k+2) - 2\theta(k+1) + \theta(k) = \frac{h^2}{J} u(k)\]
 with \(h=1\), \(J=1\) 
@@ -211,7 +211,7 @@ to the signal below
 Sketch your solution as a graph on paper, photograph and send as PM on Remind.
 \end{frame}
 
-\begin{frame}[label={sec:orgfcb06cf}]{Do on your own: Solution to the discrete double-integrator}
+\begin{frame}[label={sec:org069f132}]{Do on your own: Solution to the discrete double-integrator}
 \alert{Solution}
 \footnotesize
 \[ \theta(k+2) =  2\theta(k+1) - \theta(k) + u(k)\]
@@ -243,7 +243,7 @@ and initial values zero: \( \theta(k) = 0, \; k \le 0 \)
    \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org278229e}]{A short intermezzo - the shift operator}
+\begin{frame}[label={sec:org20ba333}]{A short intermezzo - the shift operator}
 Recall the definition of the shift operator \(\shift\):
 \[ \shift f(k) = f(k+1), \quad \text{for double-infinite sequence $f(k)$} \]
 
@@ -253,7 +253,7 @@ can be written using the shift operator as
 \[ u_2(k) = \frac{\shift -0.9}{\shift - 0.2} \theta(k).\]
 \end{frame}
 
-\begin{frame}[label={sec:orgc3ab534}]{Simple discrete-time controller for the disk drive arm}
+\begin{frame}[label={sec:orgfa278e9}]{Simple discrete-time controller for the disk drive arm}
 \(J=1\) and \(h=1\) for simplicity.
 \begin{center}
 \begin{tikzpicture}
@@ -295,7 +295,7 @@ to get
 \[ \theta(k+2) - 2\theta(k+1) + \theta(k) = 0.2K\theta_{ref}(k) - K\big(\theta(k) -0.8\theta(k-1)\big) \]
 \end{frame}
 
-\begin{frame}[label={sec:org3e8ba58}]{Simple discrete-time controller for the disk drive arm, contd}
+\begin{frame}[label={sec:org8b2241d}]{Simple discrete-time controller for the disk drive arm, contd}
 \[ \theta(k+2) - 2\theta(k+1) + \theta(k) = 0.2K\theta_{ref}(k) - K\big(\theta(k) -0.8\theta(k-1)\big) \]
 \[ \theta(k+2)-2\theta(k+1) + (1+K)\theta(k) - 0.8K\theta(k-1) = 0.2K\theta_{ref}(k)\]
 
@@ -312,7 +312,7 @@ A non-trivial solution \(\alpha \neq 0\) requires that the paranthesis is zero:
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd35bd0a}]{Simple discrete-time controller for the disk drive arm, contd}
+\begin{frame}[label={sec:org2d13fd9}]{Simple discrete-time controller for the disk drive arm, contd}
 The characteristic equation 
    \[ \alpha^3 - 2\alpha^2 + (1+K)\alpha - 0.8K = 0\]
 
@@ -324,13 +324,13 @@ The solution will be stable if and only if
 \[ |\alpha_j| < 1, \quad j=1,2,3\]
 \end{frame}
 
-\begin{frame}[label={sec:org95e5c27}]{Simple discrete-time controller for the disk drive arm, contd}
+\begin{frame}[label={sec:org70c3d4e}]{Simple discrete-time controller for the disk drive arm, contd}
 Studying the characteristic equation using a root locus 
 \[ \alpha(\alpha -1)^2 + K(\alpha - 0.8) = 0\]
 \alert{Group activity} Complete the root locus and choose a set of reasonable poles for the closed-loop system!
 
 \begin{center}
-  \begin{tikzpicture}[scale=4]
+  \begin{tikzpicture}[scale=2.5]
     \draw[->] (-1.2, 0) -- (1.2,0);
     \draw[->] (0, -1.2) -- (0,1.2);
     \node[red, pin=45:{2 plant poles}] at (1,0) {\large $\times$};
@@ -344,21 +344,21 @@ Studying the characteristic equation using a root locus
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org5c63bde}]{Simple discrete-time controller for the disk drive arm, solution}
+\begin{frame}[label={sec:org4424cd9}]{Simple discrete-time controller for the disk drive arm, solution}
 \begin{center}
-\includegraphics[width=0.8\linewidth]{rlocus-disk-arm.discrete}
+\includegraphics[width=0.6\linewidth]{rlocus-disk-arm.discrete}
 \end{center}
 \end{frame}
 
 
 \section{Properties of discrete-time systems}
-\label{sec:org825f393}
+\label{sec:orgcbfc37f}
 
-\begin{frame}[label={sec:org1aa886f}]{Sampled systems are \alert{not} time invariant}
+\begin{frame}[label={sec:org6768baf}]{Sampled systems are \alert{not} time invariant}
 \includegraphics[height=0.6\linewidth]{../../figures/fig1-9.png}
 \end{frame}
 
-\begin{frame}[label={sec:org6c1e48c}]{The discrete-time causal linear shift-invariant system}
+\begin{frame}[label={sec:orgcd9d813}]{The discrete-time causal linear shift-invariant system}
 \begin{center}
 \begin{tikzpicture}[node distance=20mm, anchor=north]
 \node[coordinate] (input) {};
@@ -380,7 +380,7 @@ Studying the characteristic equation using a root locus
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org924df25}]{The discrete-time causal linear shift-invariant system}
+\begin{frame}[label={sec:org005acb9}]{The discrete-time causal linear shift-invariant system}
 \begin{block}{Impulse response}
 If input signal is a unit pulse
 
@@ -408,7 +408,7 @@ If input signal is a unit pulse
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgc5e7b8c}]{The output of a causal, linear discrete-time system is a weighted sum of previous input}
+\begin{frame}[label={sec:org95ac3ec}]{The output of a causal, linear discrete-time system is a weighted sum of previous input}
 \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
 The \alert{weighting sequence} \(g(k)\) is the \alert{impulse response} of the system.
 
@@ -436,7 +436,7 @@ What if the weighting sequence looks like this
 \[y(k) = \]
 \end{frame}
 
-\begin{frame}[label={sec:orge36b485}]{Linearity, shift invariance and the impulse response}
+\begin{frame}[label={sec:org712e0e5}]{Linearity, shift invariance and the impulse response}
 The input signal
 
 \begin{center}
@@ -464,7 +464,7 @@ Since the system's response to a pulse is given by \(g(k)\), the output signal i
 \[ y(k) = ?\]
 \end{frame}
 
-\begin{frame}[label={sec:org1f189e0}]{Linearity, shift invariance and the impulse response}
+\begin{frame}[label={sec:orgb36aade}]{Linearity, shift invariance and the impulse response}
 The input signal
 \begin{center}
 \begin{tikzpicture}
@@ -495,9 +495,9 @@ Since the system's response to a pulse is given by \(g(k)\), the output signal i
 
 
 \section{First order system and pulse response}
-\label{sec:orgd7f28b7}
+\label{sec:orgbd0f28a}
 
-\begin{frame}[label={sec:orgdbeb0d2}]{First order system}
+\begin{frame}[label={sec:org757d292}]{First order system}
 \begin{center}
 \begin{tikzpicture}[node distance=20mm, anchor=north]
 \node[coordinate] (input) {};
@@ -514,7 +514,7 @@ The system with pulse-transfer operator \(G(q)=\frac{q}{q-a}\) corresponds to th
 \end{frame}
 
 
-\begin{frame}[label={sec:org24eddd6}]{Impulse-response of a first order system}
+\begin{frame}[label={sec:orgc876e7b}]{Impulse-response of a first order system}
 \[ y(k+1) = ay(k) + u(k+1), \quad y(k)=0, \; k<0 \]
 \[ u(k) = \delta(k) = \begin{cases} 1, & k=1\\ 0, & \text{otherwise}\end{cases} \]
 
@@ -529,7 +529,7 @@ y(n) &= a^n
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org5f1dd72}]{Impulse response of a first order system}
+\begin{frame}[label={sec:org8444f85}]{Impulse response of a first order system}
 \[ y(k+1) = ay(k) + u(k+1) \]
 
 \alert{Activity} Pair the impulse response to each of the values of \(a\)
