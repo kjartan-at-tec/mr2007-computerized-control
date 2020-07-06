@@ -25,6 +25,41 @@
 
 * Intro
 ** Repetición: Controlador discreto para el brazo del disco duro
+   *Ejercicio de calentamiento*
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z)$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$H(z)$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(z)$};
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+  ¿Cuál de las funciones de transferencia abajo corresponde al discretización con ROC del integrador doble $G(s)=\frac{1}{s^2}$?
+  |                             1 |                             2 |                             3 |
+  | \(H(z)=\frac{h^2z}{2(z+1)^2}\)     | \(H(z)=\frac{h^2(z+1)}{2z^2}\) | \(H(z)=\frac{h^2(z+1)}{2(z-1)^2}\) |
+
+** Repetición: Controlador discreto para el brazo del disco duro
    Usando $J=1$ y  $h=1$.
    #+begin_export latex
   \begin{center}
