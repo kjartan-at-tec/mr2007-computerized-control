@@ -1,4 +1,4 @@
-% Created 2020-07-01 mié 12:04
+% Created 2020-07-02 jue 16:47
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -16,6 +16,7 @@
 \usepackage{hyperref}
 \usepackage{khpreamble}
 \usepackage{amssymb}
+\usepackage{tcolorbox}
 \DeclareMathOperator{\shift}{q}
 \DeclareMathOperator{\diff}{p}
 \usetheme{default}
@@ -34,163 +35,219 @@
 \maketitle
 
 \section{Intro}
-\label{sec:orge149df4}
-\section{Discrete-time system example}
-\label{sec:org89d92a9}
-
-\section{Zero-order hold, or step-invariant sampling preview}
-\label{sec:orgceca1c8}
-
-\begin{frame}[label={sec:org7e39616}]{El mundo según el controlador discreto}
+\label{sec:orgaa52c3a}
+\begin{frame}[label={sec:org8ede222}]{El mundo según el controlador discreto}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/fig1-1-schematic.png}
 \end{center}
 \end{frame}
+\begin{frame}[label={sec:orgf1b2e9c}]{Sistemas muestreados \alert{no} son invariantes en el tiempo continuo}
+\includegraphics[height=0.6\linewidth]{../../figures/fig1-9.png}
+\end{frame}
 
-\begin{frame}[label={sec:org59e53f9}]{Discretizacion invariante al paso (\emph{step-invariant} o \emph{zero-order-hold sampling})}
-El idea es muestrear la respuesta de paso del sistema continuo para obtener un modelo discreto que es \alert{exacto} (en los instantes de muestreo) para señales de entrada que son combinaciones de pasos (funciones constantes por partes)
+\begin{frame}[label={sec:orgce825ff}]{Sistemas LTI discretos}
+\begin{center}
+\begin{tikzpicture}[node distance=20mm, anchor=north]
+\node[coordinate] (input) {};
+\node[rectangle, draw, right of=input, inner sep=3mm] (lti) {g};
+\node[coordinate, right of=lti] (output) {};
+\draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+\draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+\end{tikzpicture}
+\end{center}
+\begin{block}{Caso general (no-causal)}
+\[ y(k) = g \ast u = \sum_{n=-\infty}^\infty g(n) u(k-n) \]
+\end{block}
+
+\begin{block}{Caso causal}
+\[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
+
+
+\(g(k)\) se llama la \alert{sequencia de ponderación}.
+\end{block}
+\end{frame}
+
+
+\begin{frame}[label={sec:orga401d6c}]{Sistemas LTI discretos}
+\begin{block}{Respuesta al impulso}
+Si la señal de entrada es un impulso unitario
 
 \begin{center}
-\includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
+\begin{tikzpicture}
+\begin{axis}[
+  width=14cm,
+  height=2.5cm,
+  xlabel={$k$},
+  ylabel={$u(k)$},
+  xmin=-2.5,
+  xmax=10.5,
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { (k==0)}; 
+
+\end{axis}
+\end{tikzpicture}
 \end{center}
 
-\[ u(t) = \begin{cases} 1, & t \ge 0\\0, & t<0 \end{cases} \]
+\vspace*{-5mm}
+
+
+\[ y(k) = \sum_{n=0}^\infty g(n) \delta(k-n) = g(k) \]
+\end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgc132753}]{Porqué discretizacion invariante al paso?}
-A piecewise constant (stair-case shaped) function can be written as a sum of delayed step-responses!
-\begin{LaTeX}
+
+\begin{frame}[label={sec:orgf471b95}]{La respuesta de un sistema LSI discreta causal es una suma de valores previod de la señal de entreda}
+\[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
+La sequencia de ponderación \(g(k)\) es también la respuesta al impulso del sistema. 
+
+\alert{Actividad} Cuál es la respuesta del sistema si la respuesta al impulse es como abajo
+
 \begin{center}
-  \begin{tikzpicture}
-    \small
-    \begin{axis}[
-      clip = false,
-      width=7cm,
-      height=2.5cm,
-      yshift=1.5cm,
-      xlabel={$t$},
-      ylabel={},
-      xmax=10.5,
-      ]
-      \addplot+[black, no marks] coordinates {(-1,0) (0,0) (0,1) (10,1) } node[pos=0.7,coordinate, pin=40:$u_H(t)$] {};
-    \end{axis}
-    \begin{axis}[
-      clip=false,
-      width=7cm,
-      height=2.5cm,
-      yshift=-1.5cm,
-      xlabel={$t$},
-      ylabel={},
-      xmax=10.5,
-      ]
-      \addplot+[black, no marks] coordinates {(-1,0) (1,0) (1,2) (10,2) } node[pos=0.7,coordinate, pin=40:$2u_H(t-1)$] {};;
-    \end{axis}
-    \begin{axis}[
-      clip=false,
-      width=7cm,
-      height=2.5cm,
-      xshift=7.5cm,
-      xlabel={$t$},
-      ylabel={},
-      xmax=10.5,
-      ]
-      \addplot+[black, no marks] coordinates {(-1,0) (0,0) (0,1) (1,1) (1,3) (10,3) }  node[pos=0.7,coordinate, pin=40:$u(t) + 2u_H(t-1)$] {};;
-    \end{axis}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+  width=14cm,
+  height=3.5cm,
+  xlabel={$k$},
+  ylabel={$g(k)$},
+  xmin=-0.5,
+  xmax=10.5,
+  ytick = {0, 1},
+]
 
-    \node at (2.2,0.2) {\huge  +};
-    \node at (6.5,0.2) {\huge  =};
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { (k==4)}; 
 
-  \end{tikzpicture}
+\end{axis}
+\end{tikzpicture}
 \end{center}
-\end{LaTeX}
+
+\[y(k) = \]
 \end{frame}
 
 
-\begin{frame}[label={sec:org7fe2f9c}]{Why is step-invariant sampling a good idea? (contd)}
-Due to the system being LTI (linear time-invariant), the output to a sum of delayed step functions, is the same sum of delayed step-responses.
+\begin{frame}[label={sec:orgaf7599e}]{Eigenfunciónes de sistemas LTI discretos}
+Si la señal de entrada al sistema es una función exponencial compleja
+\[ u(k) = z_1^k, \quad z_1 \in \mathbb{C}  \]
+la respuesta será también una función exponencial compleja de la misma forma
+\begin{align*}
+ y(k) &= \sum_{n=0}^\infty g(n) u(k-n) = \sum_{n=0}^\infty g(n) z_1^{k-n} = \sum_{n=0}^\infty g(n) z_1^{k}z_1^{-n}\\ &=z_1^k \sum_{n=0}^\infty g(n) z_1^{-n} = z_1^k G(z_1).  
+ \end{align*}
+\end{frame}
 
-\begin{LaTeX}
+\section{La transformada z}
+\label{sec:orgff71a59}
+\begin{frame}[label={sec:orge7fd2fc}]{La transformada de Laplace}
+\begin{block}{Definición (ecuación de análisis)}
+\[ F(s) = \laplace{f(t)} = \int_0^\infty f(t) \mathrm{e}^{-st} dt\]
+\end{block}
+\begin{block}{Transformada inversa (ecuación de síntesis)}
+\[ f(t) = \mathcal{L}^{-1}\{F(s)\} = \frac{1}{2\pi i} \int_{\gamma - i\infty}^{\gamma + i\infty} F(s)\mathrm{e}^{st} \, ds \]
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org4b158ad}]{La transformada z}
+\begin{block}{Definición (ecuación de análisis)}
+\[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
+\end{block}
+
+\begin{block}{Transformada inversa (ecuación de síntesis)}
+\[ f(kh) = \frac{1}{2\pi i} \oint_r F(z) z^{k-1} \, dz \]
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org6b855f6}]{La transformada de Laplace de una señal muestreada}
+\[f_s(t) = f(t)m(t) = f(t) \sum_{k=-\infty}^{\infty} \delta(t-kh) = \sum_{k=-\infty}^{\infty} f(t)\delta(t-kh) = \sum_{k=-\infty}^{\infty} f(kh) \delta(t-kh) \]
+
+\begin{align*}
+F_s(s) &= \laplace{f_s(t)} = \int_0^\infty \left(\sum_{k=-\infty}^{\infty} f(kh) \delta(t-kh)\right)\mathrm{e}^{-st}\, dt \\
+&= \sum_{k=0}^{\infty} \int_0^\infty  f(kh) \delta(t-kh) \mathrm{e}^{-st}\, dt = \sum_{k=0}^{\infty} f(kh) \mathrm{e}^{-skh}\\
+&= \sum_{k=0}^{\infty} f(kh) \left(\mathrm{e}^{-sh}\right)^k
+\end{align*}
+\end{frame}
+
+\begin{frame}[label={sec:org858df9a}]{La transformada de Laplace de una señal muestreada}
+Nota:
+\begin{align*}
+F_s(s) &=  \sum_{k=0}^{\infty} f(kh) \left(\mathrm{e}^{-sh}\right)^k\quad \text{transformada de Laplace}\\
+F(z) &= \sum_{k=0}^{\infty} f(kh) z^{-k} \quad \text{transformada z}
+\end{align*}
+
+\begin{tcolorbox}
+La transformada z de una señal muestreada corresponde a su transformada de Laplace bajo la relación 
+\[ z = \mathrm{e}^{sh}\]
+entre el dominio $s$ de la transformada de Laplace y el dominio $z$ de la tranformada z.
+\end{tcolorbox}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgd76119b}]{La transformada más importante}
+\[f(kh) = \alpha^{kh}, \quad \alpha \in \mathbb{C}\]
+
+\begin{align*}
+   F(z) &= \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k}
+   =  \sum_{k=0}^{\infty} \alpha^{kh}z^{-k} =  \sum_{k=0}^{\infty} \left(\alpha^{h}\right)^kz^{-k}\\
+   &=  \sum_{k=0}^{\infty} \left(\frac{\alpha^{h}}{z}\right)^{k}
+   =  \frac{1}{1 - \frac{\alpha^h}{z}} = \frac{z}{z-\alpha^{h}}, \quad |\frac{\alpha^h}{z}| < 1
+\end{align*}
+
+\begin{tcolorbox}
+\[ \alpha^{kh} \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad \frac{z}{z-\alpha^h} \]
+\end{tcolorbox}
+\end{frame}
+
+
+\begin{frame}[label={sec:org5100db5}]{Otras parejas}
+\alert{Actividad (manda por Remind)} Usa la definición de la transformada z
+\[ F(z) = \ztrf{f(kh)} = \sum_0^\infty f(kh)z^{-k} \] o el resultado
+\[ \alpha^{kh} \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad \frac{z}{z-\alpha^h} \]
+para calcular las siguientes transformadas de señales derechas (son zero para argumentos negativos)
+
 \begin{center}
-  \begin{tikzpicture}[node distance=20mm, block/.style={rectangle, draw, minimum width=15mm, }]
-
-    \node[coordinate] (input) {};
-    \node[block, right of=input, node distance=22mm] (lti) {LTI};
-    \node[coordinate, right of=lti, node distance=22mm] (output) {};
-
-    \draw[->] (input) -- node[above, near start] {$u_H(t)$} (lti);
-    \draw[->] (lti) -- node[above, near end] {$y_H(t)$} (output);
-  \end{tikzpicture}
+\begin{tabular}{ll}
+\(f(kh)\) & \(F(z)\)\\
+\hline
+a) \(f(kh)=\beta\) & \\
+b) \(f(kh)=(-1)^k\) & \\
+c) \(f(kh) = \mathrm{e}^{i\omega_1 kh}\) & \\
+d) \(f(kh) =  \delta(k-3)\) & \\
+e) \(f(kh) = \cos(\omega_1 kh)\) & \\
+\end{tabular}
 \end{center}
-\end{LaTeX}
-Hence, \(u(t) = \sum_{i} \alpha_i u_H(t-\tau_i)\) has the response \(y(t)=\). 
 \end{frame}
 
-\begin{frame}[label={sec:org0bda2ea}]{Why is step-invariant sampling a good idea? (contd)}
-Due to the system being LTI (linear time-invariant), the output to a sum of delayed step functions, is the same sum of delayed step-responses.
+\begin{frame}[label={sec:orgc257b4e}]{Otras parejas - solución}
+\[ F(z) = \ztrf{f(kh)} = \sum_0^\infty f(kh)z^{-k} \] o el resultado
+\[ \alpha^{kh} \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad \frac{z}{z-\alpha^h} \]
 
-\begin{LaTeX}
 \begin{center}
-  \begin{tikzpicture}[node distance=20mm, block/.style={rectangle, draw, minimum width=15mm, }]
-
-    \node[coordinate] (input) {};
-    \node[block, right of=input, node distance=22mm] (lti) {LTI};
-    \node[coordinate, right of=lti, node distance=22mm] (output) {};
-
-    \draw[->] (input) -- node[above, near start] {$u_H(t)$} (lti);
-    \draw[->] (lti) -- node[above, near end] {$y_H(t)$} (output);
-  \end{tikzpicture}
+\begin{tabular}{lll}
+\(f(kh)\) & \(F(z)\) & Comentario\\
+\hline
+a) \(f(kh)=\beta\) & \(\beta \frac{z}{z-1}\) & \(f(kh) = \beta (1)^{kh}\)\\
+b) \(f(kh)=(-1)^k\) & \(\frac{z}{z+1}\) & \(\alpha^h = -1\)\\
+c) \(f(kh) = \mathrm{e}^{i\omega_1 kh}\) & \(\frac{z}{z - \mathrm{e}^{i\omega_1h}}\) & \\
+d) \(f(kh) =  \delta(k-3)\) & \(\sum_{k=0}^\infty \delta(k-3)z^{-k} = z^{-3}\) & \\
+e) \(f(kh) = \cos(\omega_1 kh)\) & \(\frac{z(z-\cos\omega_1h)}{z^2 - 2\cos(\omega_1h) z + 1}\) & \(\cos\omega_1h = \frac{1}{2}\mathrm{e}^{i\omega_1 h} + \frac{1}{2} \mathrm{e}^{-i\omega_1h}\)\\
+\end{tabular}
 \end{center}
-\end{LaTeX}
-Hence, \(u(t) = \sum_{i} \alpha_i u_H(t-\tau_i)\) has the response \(y(t) = \sum_i \alpha_i y_H(t-\tau_i)\). 
-
-\alert{If the sampling method is exact for step input signals, it will also be exact for piecwise-constant step input signals, and this is exactly what the ZOH-block produces!}
 \end{frame}
 
-\section{Zero-order hold sampling procedure}
-\label{sec:org14970b5}
-\begin{frame}[label={sec:org22b73b4}]{Impulse- step- and ramp-invariant sampling}
+
+
+\begin{frame}[label={sec:orgac424b4}]{Propiedades básicas de la transformada z}
 \begin{center}
-\includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
+\includegraphics[height=0.8\textheight]{../../figures/table2-2.png}
 \end{center}
-
-\begin{itemize}
-\item Impulse-invariant sampling: \(u(t) = \delta(t)\)
-\item Step-invariant sampling (zero order hold): \(u(t) = \begin{cases} 1, & t \ge 0\\0, & t<0 \end{cases}\)
-\item Ramp-invariant sampling: \(u(t) = \begin{cases} t, & t \ge 0\\0, & t<0 \end{cases}\)
-\end{itemize}
-\end{frame}
-
-\begin{frame}[label={sec:orgeeea6e6}]{Step-invariant sampling, or zero-order-hold sampling}
-Let the input to the continuous-time system be a step \(u(t)=\stepfcn,\) which has Laplace transform \(U(s)=\frac{1}{s}.\) In the Laplace-domain we get
-\[Y(s) = G(s)\frac{1}{s}\]
-\begin{enumerate}
-\item Obtain the time-response by inverse Laplace: \(y(t)=\laplaceinv{Y(s)}\)
-\item Sample the time-response to obtain the sequence \(y(kh)\) and apply  the z-transform to obtain \(Y(z) = \ztrf{y(kh)}\)
-\item Calculate the pulse-transfer function by dividing with the z-transform of the input signal \(U(z) = \frac{z}{z-1}.\) \[H(z) = \frac{Y(z)}{U(z)} = \frac{z-1}{z}Y(z) \]
-\end{enumerate}
-\end{frame}
-
-\section{Zero-order hold sampling example}
-\label{sec:orgb8e6c6a}
-\begin{frame}[label={sec:org3040f70}]{Example: First-order system}
-Let's apply step-invariant sampling to the system
-\[ G(s) = \frac{1}{s + a}. \]
-\end{frame}
-
-\begin{frame}[label={sec:orgf92c785}]{Do on your own: The double integrator}
-\[ G(s) = \frac{1}{s^2} \]
-\end{frame}
-
-\section{The solution to discrete-time systems}
-\label{sec:orgc55076c}
-\begin{frame}[label={sec:orgc9228fc}]{Another important property of the z-transform}
 \end{frame}
 
 
-\begin{frame}[label={sec:org982df2f}]{The z-transform and the solution to difference equations}
-Taking the z-transform of a difference equation 
+\section{Solución de sistemas discretos}
+\label{sec:org81d1523}
+\begin{frame}[label={sec:orga87c14c}]{Solución de sistemas discretos}
+Aplicando la transformada z a la ecuación en diferencias
 \[ \left( \shift^2 + a_1\shift + a_2) y_k = \left(b_0\shift^2 + b_1\shift + b_2 \right) u_k\]
-gives
+da
 \begin{equation*}
 \begin{split}
 z^{2}Y -z^2y(0) &- zy(1) + a_1zY - a_1zy(0) + a_2Y =\\
@@ -200,30 +257,29 @@ z^{2}Y -z^2y(0) &- zy(1) + a_1zY - a_1zy(0) + a_2Y =\\
 
 \begin{equation*}
 \begin{split}
- Y(z) &= \underbrace{ \frac{ \big( y(0)-b_0u(0)\big) z^2 + \big(y(1)+a_1y(0) - b_0u(1) -b_1u(0)\big) z}{z^2 + a_1z + a_2}}_{\text{transient response}}\\
- & \qquad + \underbrace{\underbrace{\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1z + a_2}}_{\text{pulse-transfer function}}U(z)}_{\text{response to input}}
+ Y(z) &= \underbrace{ \frac{ \big( y(0)-b_0u(0)\big) z^2 + \big(y(1)+a_1y(0) - b_0u(1) -b_1u(0)\big) z}{z^2 + a_1z + a_2}}_{\text{respuesta transiente}}\\
+ & \qquad + \underbrace{\underbrace{\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1z + a_2}}_{\text{función de transferencia}}U(z)}_{\text{respuesta a la señal de entrada}}
 \end{split}
 \end{equation*}
 \end{frame}
 
-\begin{frame}[label={sec:org308f283}]{The z-transform and the solution to difference equations}
-In general, the output of the discrete-time LTI 
+\begin{frame}[label={sec:org6792b28}]{Solución de sistemas discretos}
+In general, la respuesta de un LTI discreto 
 
 \[ \left( \shift^n + a_1 \shift^{n-1} + \cdots + a_n \right) y(k) = \left( b_0 \shift^m + b_1\shift^{m-1} + \cdots + b_m \right)  u(k) \]
 
-is
+es
 \[ Y(z) = \frac{\beta(z)}{A(z)} + \frac{B(z)}{A(z)} U(z) \]
 
-For systems that are intially at rest
+Cuando el sistema está inicialmente relajado: 
 
 \[ Y(z) = \frac{B(z)}{A(z)} U(z)  = G(z) U(z) \]
 \end{frame}
 
-\begin{frame}[label={sec:org829f215}]{Convolution in the time-domain is multiplication in the z-domain}
+\begin{frame}[label={sec:orgd467606}]{Convolución en dominio de tiempo es multiplicación en dominio de z}
 \[ \ztrf{g \ast u)} = \ztrf{g(kh)} \ztrf{u(kh)} = \left(\sum_{k=0}^{\infty} g(kh)z^{-k}\right) \left(\sum_{k=0}^{\infty} u(kh)z^{-k}\right)\]
 
 
-\begin{LaTeX}
 \begin{center}
 \begin{tikzpicture}[node distance=25mm]
 \node[rectangle, draw, minimum height=10mm, minimum width=14mm] (sys) {$G(z)$};
@@ -233,11 +289,110 @@ For systems that are intially at rest
 \draw[->] (sys) -- node [near end, above] {$y(kh)$} (output);
 \end{tikzpicture}
 \end{center}
-\end{LaTeX}
 \[ y(kh) = g(kh) \ast u(kh) \]
 \[ \ztrf{y(kh)} = \ztrf{g(kh) \ast u(kh)} \]
 \[ Y(z) = G(z) U(z). \]
 
-The z-transform plays the same role for discrete-time control  systems as the Laplace transform for continuous-time ontrol systems!
+\begin{tcolorbox}
+La transformada z juega el mismo papel para sistemas discretos, como juega la transformada de Laplace para sistemas continuosas!
+\end{tcolorbox}
+\end{frame}
+
+\begin{frame}[label={sec:orge20bb35}]{Ejemplo: Controlador discreto para el brazo del disco duro}
+Usando \(J=1\) y  \(h=1\).
+\begin{center}
+\begin{tikzpicture}
+\tikzset{node distance=2cm, 
+    block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+    sumnode/.style={circle, draw, inner sep=2pt}        
+}
+
+  \node[coordinate] (input) {};
+  \node[block, right of=input] (TR) {$0.2K$};
+  \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+  \node[block,right of=sum, node distance=30mm] (plant) {$\theta(k) = \frac{1}{(\shift-1)^2}u(k)$};
+  %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+  %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+  %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+  \node[coordinate, right of=plant, node distance=30mm] (output) {};
+  \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+  %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+  %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+  \node[block,below of=plant, node distance=20mm] (SR) {$K\frac{\shift - 0.8}{\shift}$};
+  \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+  \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+  \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+  \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+  \draw[->] (measure) |- (SR);
+  \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+\end{tikzpicture}
+\end{center}
+Ecuación en diferencias para el sistema de lazo cerrado (usando \(K=0.5\)):
+\[ \theta(k+2) - 2\theta(k+1) + \theta(k) = 0.1\theta_{ref}(k) - 0.5\big(\theta(k) -0.8\theta(k-1)\big) \]
+\[ \theta(k+3) -2\theta(k+2) + 1.5\theta(k+1) - 0.4\theta(k) = 0.1\theta_{ref}(k+1)\]
+\end{frame}
+
+\begin{frame}[label={sec:orga566d09}]{Ejemplo: Controlador discreto para el brazo del disco duro}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{rlocus-disk-arm.discrete}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org4f3e2bb}]{Ejemplo: Controlador discreto para el brazo del disco duro}
+Calcula el respuesta a un escalón unitario en \(\theta_{ref}(k)\)! Tenemos
+\[ \theta(k+3) -2\theta(k+2) + 1.5\theta(k+1) - 0.4\theta(k) = 0.1\theta_{ref}(k+1)\]
+Tomando la transformada z
+\[(z^3 - 2z^2 + 1.5z - 0.4) \Theta (z) = 0.1z \Theta_{ref}(z) = 0.1 \frac{z^2}{z-1}\]
+\[ \Theta(z) = 0.1 \frac{z^2}{(z-1)(z^3 - 2z^2 + 1.5z - 0.4)} \]
+\[ \theta(k) = \mathcal{Z}^{-1}\{\Theta(z)\} = \mathcal{Z}^{-1}\left\{0.1 \frac{z^2}{(z-1)(z^3 - 2z^2 + 1.5z - 0.4)}\right\}\]
+\end{frame}
+\begin{frame}[label={sec:org3268890}]{Ejemplo: Controlador discreto para el brazo del disco duro}
+Solución usando expansión de fracciones parciales:
+   \begin{align*}
+    \Theta(z) &= 0.1 \frac{z^2}{(z-1)(z^3 - 2z^2 + 1.5z - 0.4)}\\ &= 0.1\frac{z^2}{(z-1)(z-0.62)(z-0.69+0.41i)(z-0.69-0.41i)}\\
+    &= 0.1\frac{z^2}{(z-1)(z-0.62)(z^2 -1.38z + 0.64)}\\
+    &= \frac{A}{z-1} + \frac{B}{z-0.62} + \frac{Cz + D}{z^2 -1.38z + 0.64}
+\end{align*}
+
+\[A = \lim_{z\to 1} (z-1) \Theta(z) = 1.01, \quad etc.\]
+
+\[ \Theta(z) = \frac{1.01}{z-1} - \frac{0.60}{z-0.62} + \frac{0.03-0.41z}{z^2 - 1.38z + 0.64}\]
+\end{frame}
+\begin{frame}[label={sec:org416d719}]{Ejemplo: Controlador discreto para el brazo del disco duro}
+\[ \Theta(z) = \frac{1.01}{z-1} - \frac{0.60}{z-0.62} + \frac{0.03}{z^2 - 1.38z + 0.64} - \frac{0.41z}{z^2 - 1.38z + 0.64}\]
+Aplicando la transformada z inversa (ayuda de Wolfram) para cada uno de los terminos
+\[
+    \theta(k) &= 1.01u_s(k-1) - 0.60(0.62)^{k-1} - 0.05(0.8)^k\Big(\cos(0.53k) + 19.9\sin(0.53 k)\Big)
+    \]
+
+\begin{center}
+  \begin{tikzpicture}[scale=2]
+    \draw[->] (-1.2, 0) -- (1.2,0) node[below] {Re};
+    \draw[->] (0, -1.2) -- (0,1.2) node[left] {Im};
+    \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
+    \node[red, pin=0:{$|0.69+0.41i|=0.80$}] (pole1) at (0.69, 0.41) { \Large $\times$};
+    \node[red] (pole2) at (0.69, -0.41) { \Large $\times$};
+    \draw[domain=0:30, samples=10, ->] plot ({0.6*cos(\x)}, {0.6*sin(\x)});
+    \node[anchor=west] at (1.0, 0.15) {$\arg (0.69 + 0.41i) = 0.53$};
+    \draw[thin] (0,0) to (0.69, 0.41);
+    %\node[] at (0.69, -0.2) {$0.69$};
+    %\node[] at (0, 0.41) {$0.41 i$};
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org170387e}]{Ejercicio}
+La ecuación en diferencias para el compensador \emph{lead} \(F(s)=K\frac{s+b}{s+a}\) que vímos en la primera clase
+\begin{center}
+\begin{tikzpicture}
+\node[draw, inner sep=6pt] (block) {$K\frac{s+b}{s+a}$};
+\draw[->] (block) ++ (2,0) -- node[above, near start] {$\theta(t)$} (block);
+\draw[->] (block) -- node[above, near end] {$u_2(t)$}  ++(-2,0);
+\end{tikzpicture}
+\end{center}
+era (con los valores  \(a=8\), \(b=1\), \(h=0.1\), \(K=1\))
+\[ u_2(k+1) - 0.2u_2(k) = \theta(k+1) - 0.9\theta(k) \]
+
+\alert{Calcula la respuesta del sistema a una señal escalón unitario.} 
 \end{frame}
 \end{document}

@@ -1,4 +1,4 @@
-% Created 2020-07-01 mié 12:59
+% Created 2020-07-02 jue 08:13
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,17 +35,17 @@
 \maketitle
 
 \section{Intro}
-\label{sec:org8e530fe}
+\label{sec:org2fb97dc}
 
-\begin{frame}[label={sec:orge299b5c}]{Sistemas híbridas}
+\begin{frame}[label={sec:orgc9075c2}]{Sistemas híbridas}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig7-2.png}
 \end{center}
 \end{frame}
 
 \section{El teorema del muestro}
-\label{sec:org378c9f9}
-\begin{frame}[label={sec:org7d48858}]{Retos en control computarizado - fenómeno de alias}
+\label{sec:orge4338df}
+\begin{frame}[label={sec:orgb226ed7}]{Retos en control computarizado - fenómeno de alias}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 \begin{center}
@@ -62,14 +62,14 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org89dcea8}]{Efecto de alias en imágenes}
+\begin{frame}[label={sec:orgdd65142}]{Efecto de alias en imágenes}
 \begin{center}
 \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks.png}
 \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks_small.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgaff6463}]{El teorema del muestreo}
+\begin{frame}[label={sec:org6963b84}]{El teorema del muestreo}
 Shannon y Nyquist:
 
 Una señal continua cuya transformada de Fourier es cero fuera del intervalo \((-\omega_0, \omega_0)\)  puede ser reconstruido completamente usando valores (muestros) equidistantes de la señal, siempre cuando la frecuencia de muestreo sea por lo menos \(2\omega_0\). 
@@ -89,7 +89,7 @@ Una señal continua cuya transformada de Fourier es cero fuera del intervalo \((
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org0b6922d}]{Un modelo del muestreo}
+\begin{frame}[label={sec:orgcb4d390}]{Un modelo del muestreo}
 Una señal muestreada tiene una representación en tiempo continuo usando el modelo de modulación por un \alert{tren de impulsos}
 \begin{center}
 \(m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh)\)\hspace*{10mm}
@@ -104,7 +104,7 @@ Una señal muestreada tiene una representación en tiempo continuo usando el mod
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgd969fa8}]{Transformada de Fourier de la señal muestreada}
+\begin{frame}[label={sec:org8b19f69}]{Transformada de Fourier de la señal muestreada}
 La relación entre la transformada de la señal continua \(f(t)\) y la de su versión muestreada \(f_s(t)\):
 
 \[ F_s(\omega) = \frac{1}{h} \sum_n F(\omega + n\omega_s) \]
@@ -123,8 +123,8 @@ La relación entre la transformada de la señal continua \(f(t)\) y la de su ver
 \end{frame}
 
 \section{Exercises using line spectra}
-\label{sec:orgaee7b74}
-\begin{frame}[label={sec:orgce5dc57}]{Transformada de Fourier de un exponencial complejo}
+\label{sec:org3e82c3a}
+\begin{frame}[label={sec:org03738b6}]{Transformada de Fourier de un exponencial complejo}
 La función  \(x(t) = \mathrm{e}^{i\omega_1 t}\) 
 \begin{center}
   \begin{tikzpicture}[scale=2]
@@ -143,7 +143,7 @@ tiene la transformada de Fourier
 \[X(\omega) = \int_{-\infty}^{\infty} x(t) \mathrm{e}^{-i\omega t}dt = \int_{-\infty}^{\infty} \mathrm{e}^{i(\omega_1 - \omega) t}dt = \delta(\omega_1 - \omega)\] 
 \end{frame}
 
-\begin{frame}[label={sec:orgba005e1}]{Transformada de Fourier de una sinusoide}
+\begin{frame}[label={sec:org6fe2bdd}]{Transformada de Fourier de una sinusoide}
 Una sinusoide \(y(t) = \sin(\omega_1 t)\) tiene toda su energía concentrada en una sola frecuencia, \(\omega=\unit{\omega_1}{rad\per\second}\). 
 \begin{center}
 \begin{tikzpicture}
@@ -165,12 +165,12 @@ xticklabels={0, $T=\frac{2\pi}{\omega_1}$},
 \end{axis}
 \end{tikzpicture}
 \end{center}
-Dado de que \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{i \omega_1 t} \right)\]
+Dado de que \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{-i \omega_1 t} \right)\]
 la transformada de Fourier es
 \[ Y(\omega) = \frac{1}{2i} \left( \delta(\omega_1 - \omega) - \delta(\omega_1 + \omega) \right)\]
 \end{frame}
 
-\begin{frame}[label={sec:orgb0caca1}]{Ejercicio 1: La transformada de Fourier de una sinusoide}
+\begin{frame}[label={sec:orgedb794a}]{Ejercicio 1: La transformada de Fourier de una sinusoide}
 Considera la siguiente señal
 
 \begin{center}
@@ -250,7 +250,7 @@ scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
   \node[red] at (group c2r2.center) {\huge 4};
   \end{tikzpicture}
 \end{frame}
-\begin{frame}[label={sec:org94ae1b1}]{Ejercicio 2: Dos sinusoides}
+\begin{frame}[label={sec:org9c9ef9c}]{Ejercicio 2: Dos sinusoides}
 Considera una señal con la siguiente transformada de Fourier
 
 \pgfplotsset{
@@ -327,7 +327,7 @@ variable=t,
 \node[red] at (group c2r2.center) {\huge 4};
 \end{tikzpicture}
 \end{frame}
-\begin{frame}[label={sec:org390b12e}]{Ejercicio 3: Transformada de Fourier de una sinusoide muestreada}
+\begin{frame}[label={sec:orgc6b69ff}]{Ejercicio 3: Transformada de Fourier de una sinusoide muestreada}
 La figura siguiente enseña una sinusoide con periodo \(T\) y su versión muestreada con period de muestreo \(h=\frac{2}{3}T\).
 
 
@@ -384,7 +384,7 @@ Determine
 \item La frecuencia de Nyquist \(\omega_N\)
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:orgca48053}]{Ejercicio 4: Transformada de Fourier de una sinusoide muestreada}
+\begin{frame}[label={sec:orgf23df11}]{Ejercicio 4: Transformada de Fourier de una sinusoide muestreada}
 Considera la misma situación que en ejercicio 3 (periodo de muestreo \(h=\frac{2}{3}T\)).
 
 
@@ -474,7 +474,7 @@ scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
   \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
 
   \nextgroupplot[xtick={-\wws, -\ww,  0,  \ww, \wws}, 
-  xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$,  $$, $-\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
+  xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$,  $$, $\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
   \addplot[red, thick, dirac] coordinates {(-\ww, 1) (\ww, 1)};
   \addplot+[black, dotted, no marks] coordinates { (-\wwN, 0) (-\wwN, 2) };
   \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
@@ -499,13 +499,19 @@ scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
   \node[red] at (group c2r2.center) {\huge 4};
   \end{tikzpicture}
 \end{frame}
-\begin{frame}[label={sec:org4ac9587}]{Frecuencia de alias}
+\begin{frame}[label={sec:org67a071f}]{Frecuencia de alias}
 Para determinar la frecuencia de alias más bajo \(\omega_a<\omega_N\) de una sinusoide \(\omega_1\), se puede usar la expresión 
 \[ \omega_a = \left| \big( (\omega_1 + \omega_N) \, \text{mod}\, \omega_s\big) - \omega_N\right|\] 
+\begin{block}{La operación módulo}
+    Si
+    \[ a = nb + r, \quad n \in \mathbb{Z}\] 
+    \[ \frac{a}{b} = n \; \text{residuo} \; r\]    
+entonces
+    \[ a \, \text{mod} \, b = r \]
+\end{block}
 \end{frame}
 
-
-\begin{frame}[label={sec:org4debca6}]{Ejemplo del fenómeno de alias}
+\begin{frame}[label={sec:orga9a082d}]{Ejemplo del fenómeno de alias}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/aliasing-example.png}
 \end{center}
@@ -514,7 +520,7 @@ Una sinusoide de alta frecuencia ( \(\omega_1 = 1800\pi\) rad/s ) tiene un alias
 \alert{Dibuja el espectro de las dos sinusoides. Marca la frecuencia de muestreo y la de Nyquist, y verifica que la frecuencia de alias se produce plegando la frecuencia \(\omega_1\) por la frecuencia de Nyquist}
 \end{frame}
 
-\begin{frame}[label={sec:org94ee74f}]{Ejercicio en grupo: Fenómeno de alias}
+\begin{frame}[label={sec:org74bef20}]{Ejercicio en grupo: Fenómeno de alias}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Una sinusoide \(f_1=60\)Hz esta muestreado con la frecuencia \(f_s=90\)Hz.

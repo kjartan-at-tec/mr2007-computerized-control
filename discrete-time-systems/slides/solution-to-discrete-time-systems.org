@@ -351,7 +351,7 @@ Performance critera:
 
 ** Simple discrete-time controller for the disk drive arm, solution
    #+begin_center
-   \includegraphics[width=0.8\linewidth]{rlocus-disk-arm.discrete}
+   \includegraphics[width=0.6\linewidth]{rlocus-disk-arm.discrete}
    #+end_center 
 
 
@@ -739,61 +739,4 @@ Performance critera:
 
 
    \end{tikzpicture}
-
-* z transform and geometric sequence				   :noexport:
-
-
-** Exercise: The z-transform of a sampled complex sinusoid
-   Consider the discrete-time complex sinusoid
-   \[ x(kh) = \mexp{i\omega h k} = \big(\mexp{i\omega h} \big)^k \]
-   Find the z-transform!
-
-** Exercise: The z-transform of a sampled complex sinusoid, facit
-   We had 
-   \[ \ztrf{\big(\lambda^h \big)^k} = \frac{z}{z-\lambda^h} \]
-   so
-   \[ \ztrf{\big(\mexp{i\omega h} \big)^k} = \frac{z}{z-\mexp{i\omega h}}. \]
-
-   Note the pole in \[\lambda^h = \mexp{i\omega h} \].
-
-** Exercise: The z-transform of the ramp signal
-** The z-transform of a sampled sinusoid			   :noexport:
-   Consider the sampled sinusoid
-   \[ f(kh) = \sin \omega kh = \impart{\mexp{i\omega kh}}\]
-   Since taking the imaginary part is a linear operation, we get the z-transform
-   \[ F(z) = \impart{\frac{z}{z-\mexp{i\omega h}}} = 
-
-** Exercise: The z-transform of a sampled sinusoid		   :noexport:
-   Consider the sampling of the sinusoid \( f(t) = \sin\omega t \) with sampling period $h$ 
-   \[ f(kh) = \sin \omega kh \]
-   Using Euler's identity we have
-   \[ \sin \omega kh = \impart{\mexp{i\omega kh}} = \frac{1}{i2} \big(\mexp{i\omega h}\big)^k - \frac{1}{i2}\big(\mexp{-i\omega h}\big)^k. \]
-   Find the z-transform!
-
-** Exercise: The z-transform of a sampled sinusoid, facit	   :noexport:
-   Using the z-transform of a geometric sequnce, we get
-   \begin{align*}
-   \ztrf{\sin\omega kh} &= \frac{1}{i2}\ztrf{\big(\mexp{i\omega h}\big)^k} - \frac{1}{i2} \ztrf{\big(\mexp{-i\omega h}\big)^k}\\
-   &= \frac{1}{i2}\frac{z}{z-\mexp{i\omega h}} - \frac{1}{i2} \frac{z}{z-\mexp{-i\omega h}}\\
-   &= \frac{1}{i2} \frac{z\big(z-\mexp{-i\omega h}\big) - z\big(z-\mexp{i\omega h}\big)}{\big(z-\mexp{i\omega h}\big)\big( z - \mexp{-i\omega h} \big) }\\
-   &= \frac{1}{i2} \frac{z^2 - z\mexp{-i\omegah} - z^2 + z\mexp{i\omega h}}{z^2 -z\mexp{-i\omega h} - z\mexp{i\omega h} + 1}\\
-   &= \frac{z\sin\omega h}{z^2 - 2\cos\omega h z  + 1}
-   \end{align*}
-
-
-** Z-transform of a forward shifted sequence
-   Consider the shifted sequence \( \shift f(kh)  = f(kh+h) \)
-   The z-transform becomes
-   \begin{align*}
-   \ztrf{\shift f(kh)} &= \ztransform{f(kh+h)}\\
-   &= \sum_{k=0}^{\infty} f(kh+h)z z^{-(k+1)}, \quad \text{set } l=k+1\\
-   &= z \sum_{l=1}^{\infty} f(lh) z^{-l} = z \sum_{l=0}^{\infty} f(lh) z^{-l} - zf(0)\\
-   &= zF(z) - zf(0).
-   \end{align*}
-
-
-** Pole-mapping exercise
-
-   [[file:pole-mapping-exc.org][Separate paper]]
-
 

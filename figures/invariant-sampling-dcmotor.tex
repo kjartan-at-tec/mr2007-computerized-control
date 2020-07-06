@@ -12,10 +12,11 @@
 
 \node[coordinate] (input) {};
 \node[block, right of=input, node distance=22mm] (zoh) {ZOH};
-\node[block, right of=zoh, node distance=24mm] (G) {$G(s)$};
-\node[circle, fill, inner sep=1pt, right of=G, node distance=18mm] (sampleyin) {}; 
+\node[block, right of=zoh, node distance=28mm] (G) {$G_1(s) = \frac{1}{s(s+1)}$};
+\node[block, right of=G, node distance=24mm] (delay) {$\mathrm{e}^{-s\tau}$};
+\node[circle, fill, inner sep=1pt, right of=delay, node distance=18mm] (sampleyin) {}; 
 \node[coordinate, right of=sampleyin, node distance=8mm] (sampleyout) {}; 
-\node[block, right of=sampleyout, node distance=28mm] (ztrfY) {$\mathcal{Z}\{\cdot \}$}; 
+\node[block, right of=sampleyout, node distance=20mm] (ztrfY) {$\mathcal{Z}\{\cdot \}$}; 
 \node[coordinate, below of=ztrfY, node distance=8mm] (ztrfmid) {};
 \node[block, below of=ztrfmid, node distance=12mm] (ztrfU) {$\mathcal{Z}\{\cdot \}$}; 
 \node[coordinate, right of=ztrfmid, node distance=36mm] (Hztmp) {};
@@ -23,14 +24,15 @@
 
 \draw[->] (input) -- node[coordinate] (measureu) {} node[above,near start] {$u(kh)$} (zoh);
 \draw[->] (zoh) --  node[above] {$u(t)$} (G);
-\draw[->] (G) -- node[above] {$y(t)$} (sampleyin);
+\draw[->] (G) --  node[above] {$$} (delay);
+\draw[->] (delay) -- node[above] {$y(t)$} (sampleyin);
 \draw (sampleyin) -- ++(7mm,4mm);
 \draw[->] (sampleyout) -- node[above] {$y(kh)$} (ztrfY);
 \draw[->] (measureu) |- (ztrfU);
 \draw[->] (ztrfU) -- node[above] {$U(z)$} node [above, pos=0.9] {$\div$} (ztrfU -| Hz.west);
 \draw[->] (ztrfY) -- node[above] {$Y(z)$} node [above, pos=0.9] {$\times$} (ztrfY -| Hz.west);
 
-\draw[red!80!black] (zoh.west) ++(-4mm,-12mm) rectangle ++(65mm,20mm);
+\draw[red!80!black] (zoh.west) ++(-4mm,-12mm) rectangle ++(91mm,20mm);
 \node[red!80!black, below of=G, node distance=8mm] {\bf $H(z)$};
 \end{tikzpicture}
 \end{document}

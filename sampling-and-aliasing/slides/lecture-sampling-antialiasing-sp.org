@@ -499,7 +499,7 @@ Por ejemplo calculando su TRANSFORMADA DE FOURIER.
      \end{tikzpicture}
      \end{center}
    #+end_export
-   Dado de que \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{i \omega_1 t} \right)\]
+   Dado de que \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{-i \omega_1 t} \right)\]
    la transformada de Fourier es
    \[ Y(\omega) = \frac{1}{2i} \left( \delta(\omega_1 - \omega) - \delta(\omega_1 + \omega) \right)\]
 
@@ -835,7 +835,7 @@ Por ejemplo calculando su TRANSFORMADA DE FOURIER.
        \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
 
        \nextgroupplot[xtick={-\wws, -\ww,  0,  \ww, \wws}, 
-       xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$,  $$, $-\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
+       xticklabels={$-\frac{3\pi}{T}$, $-\frac{2\pi}{T}$,  $$, $\frac{2\pi}{T}$, $\frac{3\pi}{T}$},] 
        \addplot[red, thick, dirac] coordinates {(-\ww, 1) (\ww, 1)};
        \addplot+[black, dotted, no marks] coordinates { (-\wwN, 0) (-\wwN, 2) };
        \addplot+[black, dotted, no marks] coordinates { (\wwN, 0) (\wwN, 2) };
@@ -879,8 +879,13 @@ Por ejemplo calculando su TRANSFORMADA DE FOURIER.
 ** Frecuencia de alias
    Para determinar la frecuencia de alias más bajo \(\omega_a<\omega_N\) de una sinusoide \(\omega_1\), se puede usar la expresión 
 \[ \omega_a = \left| \big( (\omega_1 + \omega_N) \, \text{mod}\, \omega_s\big) - \omega_N\right|\] 
-
-
+*** La operación módulo
+    Si
+    \[ a = nb + r, \quad n \in \mathbb{Z}\] 
+    \[ \frac{a}{b} = n \; \text{residuo} \; r\]    
+entonces
+    \[ a \, \text{mod} \, b = r \]
+    
 ** Ejemplo del fenómeno de alias
    #+BEGIN_CENTER 
     \includegraphics[width=0.6\linewidth]{../../figures/aliasing-example.png}
