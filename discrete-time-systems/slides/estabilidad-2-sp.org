@@ -68,7 +68,7 @@
 
 
 
-** Estabilidad para el control del brazo del disko duro            :noexport:
+** Estabilidad para el control del brazo del disco duro            :noexport:
    *Actividad en grupo* Completar el diagrama de lugares de los raíces abajo
    \[(z-1)^2z + \frac{K}{2}(z+1)(z-0.8) = 0\]
    #+begin_export latex
@@ -244,7 +244,7 @@ Si la gananzia del lazo abierto (\textit{loop gain}) $G_o(s)$ no tiene polos en 
      \end{tikzpicture}
    \end{center}
        #+end_export
-\[ \arg G_{ROC}(i\omega_c) \approx \arg \mathrm{e}^{i\omega_c \frac{h}{2}} = \omega_c \frac{h}{2} \approx 0.09 \text{rad}\; - \; 0.26\text{rad} \]
+\[ \arg G_{ROC}(i\omega_c) \approx \arg \mathrm{e}^{-i\omega_c \frac{h}{2}} = -\omega_c \frac{h}{2} \approx -0.09 \text{rad}\; - \; -0.26\text{rad} \]
 
 *Actividad* Usa la /regla de oro/ arriba para calcular un tiempo de muestreo si \(\omega_c = \unit{20}{\rad\per\second}\) y \(\Delta\varphi = \unit{0.2}{\rad}\).
 
@@ -253,7 +253,7 @@ Si la gananzia del lazo abierto (\textit{loop gain}) $G_o(s)$ no tiene polos en 
 * Jury's criterion
 
 ** El criterion de Jury
-** Estabilidad para el control del brazo del disko duro
+** Estabilidad para el control del brazo del disco duro
    #+begin_export latex
   \begin{center}
   \begin{tikzpicture}
@@ -333,7 +333,7 @@ Tenemos el polinomio característico
    3. \( |a_0^k| > |a_k^k| \)
 
 
-** Ejemplo - control del brazo del disko duro
+** Ejemplo - control del brazo del disco duro
 Polinomio característico \[ A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
 #+begin_center
 \includegraphics[width=0.5\linewidth]{../../figures/diskdrive-lead-discrete-rlocus.png}
@@ -401,9 +401,9 @@ Polinomio característico \[A(z) = z^2 + a_1z + a_2\]
 
 | 1                                        | \(a_1\)       | \(a_2\) |
 | \(a_2\)                                  | \(a_1\)       |       1 |
-| \(1 - a_2^2\)                            | \(a_1(1-a_2\) |       0 |
+| \(1 - a_2^2\)                            | \(a_1(1-a_2)\) |       0 |
 | \(a_1(1-a_2\)                            | \(1 - a_2^2\) |       0 |
-| \(1-a_2^2 - \frac{a_1^2(1-a_2)}{1+a_2}\)  | 0             |         |
+| \(1-a_2^2 - \frac{a_1^2(1-a_2)}{1+a_2}\) | 0             |         |
 
 Los raíces van a estar adentro del circulo unitario si
 \begin{align*}
