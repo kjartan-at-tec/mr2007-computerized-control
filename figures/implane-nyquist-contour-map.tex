@@ -28,28 +28,24 @@
 \draw[->, thick] (axis cs: 270, 3.6) -- (axis cs: 90, 3.6) node [left] {\small $\mathrm{Im}$};
 \draw[->, thick] (axis cs: 180, 3.6) -- (axis cs: 0, 3.6) node [below] {\small $\mathrm{Re}$};
 
-\addplot+[->,thick,domain=0.057:0.19, no markers, red, samples=800] (360*x,1); %
-\addplot+[->,thick,domain=0.19:0.49, no markers, red, samples=800] (360*x,1); %
-\addplot+[->,thick,domain=0.49:0.69, no markers, red, samples=800] (360*x,1); %
-\addplot+[->,thick,domain=0.69:0.95, no markers, red, samples=800] (360*x,1); %
-\draw[->, thin] (axis cs: 0, 0) -- (axis cs: 120, 1) node [left] {\tiny $r=1$};
+\def\largeradius{4.5}
+\def\smallradius{0.3}
+\addplot+[->,thick,domain=\largeradius:2, no markers, red, samples=8] (-90, x); %
+\addplot+[->,thick,domain=2:\smallradius, no markers, red, samples=8] (-90, x); %
+\addplot+[->,thick,domain=0:1, no markers, red, samples=200] (-90+180*x, \smallradius); %
+\addplot+[->,thick,domain=\smallradius:2, no markers, red, samples=8] (90,x); %
+\addplot+[->,thick,domain=2:\largeradius, no markers, red, samples=8] (90,x); %
 
-\draw[<-, thick, red] (axis cs: 3.6, 1.2) -- (axis cs: 1.2, 3);
-\draw[<-, thick, red] (axis cs: -1.2, 3) -- (axis cs: -3.6, 1.2);
+%\draw[->, thin] (axis cs: 0, 0) -- (axis cs: 120, 1) node [left] {\tiny $r=1$};
 
-\draw[-, thick, red] (axis cs: 3.6, 1.22) arc [radius=2mm, start angle=-3.6, end angle=90];
-\draw[-, thick, red] (axis cs: -19, 1) arc [radius=2mm, start angle=-90, end angle=1];
+\addplot+[->,solid, thick,domain=0.003:0.19, no markers, red, samples=800] (90-180*x,\largeradius); %
+\addplot+[->,solid,thick,domain=0.19:0.39, no markers, red, samples=800] (90-180*x,\largeradius); %
+\addplot+[->,solid,thick,domain=0.39:0.69, no markers, red, samples=800] (90-180*x,\largeradius); %
+\addplot+[->,solid,thick,domain=0.69:0.997, no markers, red, samples=800] (90-180*x,\largeradius); %
 
+\draw[->, thin] (axis cs: 0, 0) -- (axis cs: -30, \largeradius) node [left] {\tiny $R=\infty$};
 
-
-\addplot+[->,thick,domain=0.003:0.19, no markers, red, samples=800] (-360*x,3); %
-\addplot+[->,solid,thick,domain=0.19:0.39, no markers, red, samples=800] (-360*x,3); %
-\addplot+[->,solid,thick,domain=0.39:0.69, no markers, red, samples=800] (-360*x,3); %
-\addplot+[->,solid,thick,domain=0.69:0.997, no markers, red, samples=800] (-360*x,3); %
-
-\draw[->, thin] (axis cs: 0, 0) -- (axis cs: -30, 3) node [left] {\tiny $R=\infty$};
-
-\node[coordinate, pin=45:{$\gamma$}] at (axis cs: 50, 3) {}; 
+\node[coordinate, pin=45:{$\gamma$}] at (axis cs: 50, \largeradius) {}; 
 
 
 
@@ -91,26 +87,21 @@
 
 \pgfmathsetmacro{\startangle}{ -90*sign(-\minomega) -2*atan(-\minomega/1) }
 \pgfmathsetmacro{\endangle}{ -90*sign(\minomega) -2*atan(\minomega/1) }
-
+ 
 \addplot+[->,thin, red, no markers, dashed, domain=\startangle:45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 
-\addplot+[->,thin, red, no markers, dashed, domain=45:0, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+\addplot+[->,thin, red, no markers, dashed, domain=45:-45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 
-\addplot+[->,thin, red, no markers, dashed, domain=0:0.6, samples=40] (0, (1-x)*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-\addplot+[->,thin, red, no markers, dashed, domain=0.6:1, samples=40] (0, (1-x)*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-
-\addplot+[->,thin, red, no markers, dashed, domain=0:0.6, samples=40] (0, x*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-\addplot+[->,thin, red, no markers, dashed, domain=0.6:1, samples=40] (0, x*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-
-
-\addplot+[->,thin, red, no markers, dashed, domain=0:-45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 \addplot+[->,thin, red, no markers, dashed, domain=-45:\endangle, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 
 
 \def\pinomega{-0.27}
 \pgfmathsetmacro{\pinangle}{ -90*sign(\pinomega) -2*atan(\pinomega) }
 \pgfmathsetmacro{\pindist}{ 1/(abs(\pinomega)*(\pinomega*\pinomega + 1))} 
-\node[coordinate, pin=135:{$H_o(\gamma)$}] at (axis cs: \pinangle +2, \pindist) {}; 
+\node[coordinate, pin=135:{$G_o(\gamma)$}] at (axis cs: \pinangle +2, \pindist) {}; 
+
+\node[inner sep=0pt, pin=-135:{$-1$}, red] at (axis cs: -180, 3) {\large $\times$}; 
+
 
 \end{polaraxis}
 

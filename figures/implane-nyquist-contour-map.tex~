@@ -94,16 +94,8 @@
 
 \addplot+[->,thin, red, no markers, dashed, domain=\startangle:45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 
-\addplot+[->,thin, red, no markers, dashed, domain=45:0, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
+\addplot+[->,thin, red, no markers, dashed, domain=45:-45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 
-\addplot+[->,thin, red, no markers, dashed, domain=0:0.6, samples=40] (0, (1-x)*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-\addplot+[->,thin, red, no markers, dashed, domain=0.6:1, samples=40] (0, (1-x)*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-
-\addplot+[->,thin, red, no markers, dashed, domain=0:0.6, samples=40] (0, x*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-\addplot+[->,thin, red, no markers, dashed, domain=0.6:1, samples=40] (0, x*1/(abs(-\minomega)*(\minomega*\minomega+1))); %
-
-
-\addplot+[->,thin, red, no markers, dashed, domain=0:-45, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 \addplot+[->,thin, red, no markers, dashed, domain=-45:\endangle, samples=400] (x, 1/(abs(-\minomega)*(\minomega*\minomega+1))); %
 
 
