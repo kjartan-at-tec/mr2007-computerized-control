@@ -1,0 +1,29 @@
+#+OPTIONS: toc:nil num:nil title:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper] 
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{subfigure}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+#+LaTex_HEADER: \addtolength{\oddsidemargin}{-4mm}
+#+LaTex_HEADER: \addtolength{\evensidemargin}{-4mm}
+#+LaTex_HEADER: \addtolength{\textheight}{33mm}
+
+# #+title: LTI and geometric sequences exercise 
+# #+title: Root locus, Bode- and Nyquist plots, relative stability
+#+title: 
+#+date: 
+
+
+* Bode- and Nyquist plots, relative stability
+  Kjartan Halvorsen, September 2019
+
+Sketch the Nyquist plot corresponding to the Bode plot! Then mark the phase margin and amplitude margins!
+#+BEGIN_CENTER 
+ \includegraphics[width=1.15\linewidth]{../../figures/bode-nyquist-exc-1}
+#+END_CENTER
+
+#+BEGIN_CENTER 
+ \includegraphics[width=1.15\linewidth]{../../figures/bode-nyquist-exc-2}
+#+END_CENTER
+
+
