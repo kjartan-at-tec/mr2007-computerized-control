@@ -1,4 +1,4 @@
-% Created 2020-07-08 mié 12:49
+% Created 2020-07-08 mié 15:04
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,8 +35,8 @@
 
 
 \section{Intro}
-\label{sec:orge0e4c3c}
-\begin{frame}[label={sec:orgde90e12}]{Retroalimentación Tarea 1}
+\label{sec:org82b864f}
+\begin{frame}[label={sec:orgac69422}]{Retroalimentación Tarea 1}
 \begin{itemize}
 \item En general \alert{muy buen trabajo} de todos
 \item Unos \alert{reportes excelentes}
@@ -45,7 +45,7 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org551de8e}]{Retroalimentación Tarea 1 - efecto de alias}
+\begin{frame}[label={sec:org24064f8}]{Retroalimentación Tarea 1 - efecto de alias}
  La señal original es un sinusoide de 3Hz \(u(t) = \cos(6\pi t)\),  que tiene la transformada de Fourier 
 \[ F(\omega) = \frac{1}{2}\delta(\omega + 6\pi) + \frac{1}{2}\delta(\omega - 6\pi).\]
 Se muestrea la señal con  una frecuencia de muestreo de 8Hz, o \(\omega_s = \unit{16\pi}{\rad\per\second}\), que da una frecuencia de Nyquist de \(\omega_N = \frac{1}{2} \omega_s = \unit{8\pi}{\rad\per\second}\). La señal muestreada tiene la transformada de Fourier
@@ -55,7 +55,7 @@ Se muestrea la señal con  una frecuencia de muestreo de 8Hz, o \(\omega_s = \un
 \end{align*} 
 \end{frame}
 
-\begin{frame}[label={sec:orgf727bf5}]{Retroalimentación Tarea 1 - efecto de alias}
+\begin{frame}[label={sec:org07e5687}]{Retroalimentación Tarea 1 - efecto de alias}
 \begin{align*}
  F_s(\omega) &= \frac{1}{2h}\Big( \cdots + \delta(\omega -16\pi + 6\pi) + \delta(\omega -16\pi{} - 6\pi)\\& \qquad + \delta(\omega + 6\pi) + \delta(\omega - 6\pi)\\ & \qquad + \delta(\omega +16\pi{} + 6\pi) + \delta(\omega +16\pi{} - 6\pi) + \cdots \Big)
 \end{align*} 
@@ -69,9 +69,9 @@ Se muestrea la señal con  una frecuencia de muestreo de 8Hz, o \(\omega_s = \un
   \end{tikzpicture}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:orgf88c854}]{Transformada de Fourier - solución}
+\begin{frame}[label={sec:org0cb5eb8}]{Transformada de Fourier - solución}
 \end{frame}
-\begin{frame}[label={sec:orge92865c}]{Transformada de Fourier - solución}
+\begin{frame}[label={sec:org90285a6}]{Transformada de Fourier - solución}
 \begin{align*}
  F_s(\omega) &= \frac{1}{2h}\Big( \cdots + \delta(\omega -16\pi + 6\pi) + \delta(\omega -16\pi{} - 6\pi)\\& \qquad + \delta(\omega + 6\pi) + \delta(\omega - 6\pi)\\ & \qquad + \delta(\omega +16\pi{} + 6\pi) + \delta(\omega +16\pi{} - 6\pi) + \cdots \Big)
 \end{align*} 
@@ -91,7 +91,7 @@ Se muestrea la señal con  una frecuencia de muestreo de 8Hz, o \(\omega_s = \un
 \end{frame}
 
 
-\begin{frame}[label={sec:orgbc26f1f}]{Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas}
+\begin{frame}[label={sec:org6e7b8ae}]{Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas}
 Reconstrucción de Shannon:
 \[ f(t) = \sum_{k=-\infty}^\infty f(kh) \frac{\sin\big(\omega_N(t-kh)\big)}{\omega_N(t-kh)}\]
 
@@ -101,7 +101,7 @@ Reconstrucción de Shannon:
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgfab2401}]{Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas}
+\begin{frame}[label={sec:orgbab4008}]{Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas}
 Reconstrucción con ROC:
 \[ f(t) = f(kh), \quad kh \ge t < kh+h\]
 \begin{center}
@@ -115,7 +115,7 @@ Reconstrucción con ROC:
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org5349838}]{Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas}
+\begin{frame}[label={sec:org995c251}]{Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=3pt}]
 
@@ -144,10 +144,10 @@ Reconstrucción con ROC:
 
 
 \section{Discretization}
-\label{sec:org422aac7}
-\begin{frame}[label={sec:orgefb03e0}]{Discretización de un controlador continuo}
+\label{sec:org7cbd88e}
+\begin{frame}[label={sec:orgc41671e}]{Discretización de un controlador continuo}
 \end{frame}
-\begin{frame}[label={sec:org6a8891a}]{Discretización de un controlador continuo}
+\begin{frame}[label={sec:org986cc44}]{Discretización de un controlador continuo}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
 \end{center}
@@ -158,7 +158,7 @@ Reconstrucción con ROC:
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org8ef6db4}]{Position control of a diskdrive arm}
+\begin{frame}[label={sec:org74ae902}]{Position control of a diskdrive arm}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
@@ -186,7 +186,7 @@ Reconstrucción con ROC:
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgeafeebf}]{Discretización de un controlador continuo}
+\begin{frame}[label={sec:orgef85c5d}]{Discretización de un controlador continuo}
 
 \begin{center}
 \begin{tikzpicture}
@@ -218,7 +218,7 @@ Reconstrucción con ROC:
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org6b53e10}]{Simple discretization}
+\begin{frame}[label={sec:org8b85168}]{Simple discretization}
 \begin{center}
 \begin{tikzpicture}
 \pgfmathsetmacro\tone{2}
@@ -246,7 +246,7 @@ a u_2(kh) + \frac{1}{h} \big(u_2(kh+h) - u_2(kh)\big) &= Kby(kh) + \frac{K}{h}\b
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org83c230a}]{Discretización con el método de Euler}
+\begin{frame}[label={sec:org85a5589}]{Discretización con el método de Euler}
 \[ u_2(kh+h) = (1-ah)u_2(kh) + Ky(kh+h) - K(1-bh)y(kh) \]
 
 \alert{Actividad} Es un sistema de primer orden. ¿Cuál es su polo? Marka en el eje real abajo los valores del producto \(ah\) que da un sistema discreto estable.
@@ -260,10 +260,10 @@ a u_2(kh) + \frac{1}{h} \big(u_2(kh+h) - u_2(kh)\big) &= Kby(kh) + \frac{K}{h}\b
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org2634602}]{Discretización con el método de Euler - solución}
+\begin{frame}[label={sec:org97d9970}]{Discretización con el método de Euler - solución}
 \end{frame}
 
-\begin{frame}[label={sec:orga8384d6}]{Discretización con el método de Euler - solución}
+\begin{frame}[label={sec:orgcc76a53}]{Discretización con el método de Euler - solución}
 \[ u_2(kh+h) = (1-ah)u_2(kh) + Ky(kh+h) - K(1-bh)y(kh) \]
 \[ u_2(kh) = K \frac{\shift - (1-bh)}{\shift - (1-ah)} y(kh)\]
 El polo está en \(1-ah\), y para estabilidad debe tener un magnitúd menos de 1. Es decir 
@@ -282,7 +282,7 @@ El polo está en \(1-ah\), y para estabilidad debe tener un magnitúd menos de 1
 \end{frame}
 
 
-\begin{frame}[label={sec:org0eb00f5}]{Métodos de discretización}
+\begin{frame}[label={sec:org111fcfa}]{Métodos de discretización}
 Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 
 \begin{enumerate}
@@ -295,7 +295,7 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org3345a0e}]{Métodos de discretización}
+\begin{frame}[label={sec:orga382c70}]{Métodos de discretización}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item El método de Tustin (transformada bilineal). Substituir
@@ -306,21 +306,21 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org57598b5}]{Deformación del eje de frecuencias con el método de Tustin}
+\begin{frame}[label={sec:org30bbbaa}]{Deformación del eje de frecuencias con el método de Tustin}
 \begin{center}
  \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}\\
 {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
 \end{center}
 El eje imaginario del plano \(s\), infintamente largo, se mapea al circulo unitario del plano \(z\), que es finito.
 \end{frame}
-\begin{frame}[label={sec:orge22b8d3}]{Mapeo de la región estable del plano \(s\)}
+\begin{frame}[label={sec:orgb569462}]{Mapeo de la región estable del plano \(s\)}
 \begin{center}
  \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
 {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org87ef9f3}]{Ejercicio}
+\begin{frame}[label={sec:org14729bd}]{Ejercicio}
 \alert{En pares} Divida entre ustedes los dos ejercicios abajo. Despues de 5 minutos explica su procedimiento y resultado a su compañer@.
 
 Determine la approximación del compensador lead \(F(s) = \frac{s+b}{s+a}\), y el polo de la approximación.
@@ -331,13 +331,27 @@ Determine la approximación del compensador lead \(F(s) = \frac{s+b}{s+a}\), y e
 \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:orge0775c3}]{Forward difference exercise}
+
+\begin{frame}[label={sec:orge0c1017}]{Solución}
+\alert{1}
+
+\[F_d(z) = \frac{ \frac{z-1}{zh} + b}{\frac{z-1}{zh} + a}
+             = \frac{ z-1 + zhb}{z-1+zha} = \frac{(1+bh)z - 1}{(1+ah)z - 1}\]
+      Polo en \(z= \frac{1}{1+ah} < 1\) para \(a\), \(h\) positivos.
+
+\alert{2}
+\begin{align*} F_d(z) &= \frac{ \frac{2}{h}\frac{z-1}{z+1} + b}{\frac{2}{h}\frac{z-1}{z+1} + a}
+            = \frac{\frac{2}{h}(z-1) + b(z+1)}{\frac{2}{h}(z-1) + a(z+1)}\\
+            &= \frac{(\frac{2}{h}+b)z - (\frac{2}{h}-b)}{(\frac{2}{h}+a)z - (\frac{2}{h}-a)} \end{align*}
+Polo en \[z = \frac{\frac{2}{h}-a}{\frac{2}{h}+a}  = \frac{2-ah}{2+ah}\]. 
+\end{frame}
+\begin{frame}[label={sec:orgaa75b0d}]{Forward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgc9ecb93}]{Backward difference exercise}
+\begin{frame}[label={sec:org5f25c45}]{Backward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
 \end{center}
