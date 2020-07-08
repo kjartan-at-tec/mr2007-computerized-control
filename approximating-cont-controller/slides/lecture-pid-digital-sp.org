@@ -79,6 +79,34 @@ F(z) = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
      = \frac{\omega_n^2(z+1)^2}{g^2(z^2 -2z + 1) + \omega_n^2(z^2 + 2z + 1)}
      = \frac{\omega_n^2(z+1)^2}{(g^2+\omega_n^2)z^2 + 2(\omega_n^2 -g^2)z + (g^2 + \omega_n^2)}
 
+** Forward difference exercise
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
+   #+END_CENTER
+
+*** Solution							   :noexport:
+Simply insert z = 1 + sh = 1 + i\pi/4. 
+
+Or more general. Let s=-\lambda + i\mu
+z = 1-\lambda h + i \mu h
+Re{z} = 1-\lambda h
+Im{z} = \mu h
+** Backward difference exercise
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
+   #+END_CENTER
+
+*** Solution							   :noexport:
+    - Note that
+      s = \frac{z-1}{zh} solved for z gives
+      zhs = z-1
+      z-zhs = 1
+      z = \frac{1}{1-sh}
+    - Simply insert z = \frac{1}{1 - sh} = \frac{1}{1 - i\pi/4}
+      Then do 
+      | z | = \frac{1}{ | 1 -i\pi/4 | } = \frac{1}{\sqrt{1 +  \pi^2/16}} |
+
+
 * PID
 ** PID tipo ISA
 ISA - International Society of Automation
@@ -126,3 +154,72 @@ Con filtro pasobajo para el parte derivativo
  \end{tikzpicture}
 \end{center}
 #+end_export
+
+** PID con accción derivada sobre la variable de proceso
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+       \node[coordinate] (input) {};
+       \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+       \node[block, right of=sum, node distance=20mm] (pi)  {$F_{PI}(s)$};
+       \node[block, below of=pi, node distance=12mm] (dd)  {$F_{D}(s)$};
+       \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
+       \node[coordinate, below of=sum, node distance=22mm] (yy) {};
+       \node[coordinate, right of=sum2, node distance=20mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
+       \draw[->] (sum) -- node[above] {$e(t)$} (pi);
+       \draw[->] (sum2) -- node[above, near end] {$u(t)$} (output);
+       \draw[->] (yy) -- node[right, pos=0.2] {$y(t)$} node[pos=0.9, left] {$-$} (sum);
+       \draw[->] (pi) -- node[above, near end] {} (sum2);
+       \draw[->] (dd) -| node[left, pos=0.9] {$-$} (sum2);
+       \draw[->] (yy) |- (dd);
+       
+     \end{tikzpicture}
+   \end{center}
+
+   #+end_export
+
+\[ U(s) = \underbrace{K\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
+
+* Discretización del PID
+** Discretización común del PID
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+       \node[coordinate] (input) {};
+       \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+       \node[block, right of=sum, node distance=27mm] (pi)  {$K\frac{1}{T_is}$};
+       \node[block, below of=pi, node distance=12mm] (dd)  {$K\frac{T_d s}{\frac{T_d}{N} s + 1}$};
+       \node[block, above of=pi, node distance=12mm] (pp)  {$K$};
+       \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
+       \node[coordinate, below of=sum, node distance=22mm] (yy) {};
+       \node[coordinate, right of=sum2, node distance=20mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
+       \draw[->] (sum) -- node[above, pos=0.2] {$e(t)$} node[coordinate, pos=0.6] (copy) {} (pi);
+       \draw[->] (sum2) -- node[above, near end] {$u(t)$} (output);
+       \draw[->] (yy) -- node[right, pos=0.2] {$y(t)$} node[pos=0.9, left] {$-$} (sum);
+       \draw[->] (pi) -- node[above, ] {$u_I(t)$} (sum2);
+       \draw[->] (dd) -| node[left, pos=0.9] {$-$} node[above, pos=0.3] {$u_D(t)$} (sum2);
+       \draw[->] (yy) |- (dd);
+       \draw[->] (pp) -| node[above, pos=0.3] {$u_P(t)$} (sum2);
+       \draw[->] (copy) |- (pp);
+
+       
+     \end{tikzpicture}
+   \end{center}
+
+   #+end_export
+
+\[ U(s) = U_P(s) + U_I(s) - U_D(s) = KE(s) + K\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
+
+*Actividad* Usa /Euler hacia adelante/ para discretizar el parte integral y /Euler hacia atrás/ para discretizar el parte derivado.
+
+* Sintonización de PID
+** Sintonización de un PID
+
+   *El idéa* En forma experimental obtener dos valores que capturan la dinámica del proceso. Usar una tabla predefinida para obtener las ganancias del PID dado estos dos valores.
+

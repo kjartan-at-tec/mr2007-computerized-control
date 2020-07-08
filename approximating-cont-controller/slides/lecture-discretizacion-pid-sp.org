@@ -328,21 +328,18 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
    2. Tustin
       \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
 
-*** Solution							   :noexport:
-   1. F_d(z) = \frac{ \frac{z-1}{h} + b}{\frac{z-1}{h} + a}
-             = \frac{z-1+bh}{z-1+ah}
-      Pole in z = 1-ah, stable as long as |z| < 1  => z<1 OK -z < 1 => -1+ah < 1 => h < 2/a
-   2. F_d(z) = \frac{ \frac{z-1}{zh} + b}{\frac{z-1}{zh} + a}
-             = \frac{ z-1 + zhb}{z-1+zha} = \frac{(1+bh)z - 1}{(1+ah)z - 1}
-      Pole in z= 1/(1+ah).  |z| < 1 for all a,h
-   3. F_d(z) = \frac{ g\frac{z-1}{z+1} + b}{g\frac{z-1}{z+1} + a}
-             = \frac{g(z-1) + b(z+1)}{g(z-1) + a(z+1)}
-             = \frac{(g+b)z - (g-b)}{(g+a)z - (g-a)}
-      Pole in z = \frac{g-a}{g+a}. Since g,a > 0 if g=2/h >> a  => z \approx 1, g=2/h << a => -1 
-                = \frac{2-ah}{2+ah}
-     Note that z_f/z_b = (1-ah)/(1/(1+ah)) = (1-ah)(1+ah) = 1 - (ah)^2 approx 1 if ah << 1
+** Solución
+*1*
 
-     z_b / z_T  = \frac{2+ah}{(2-ah)(1+ah)} = \frac{2+ah}{2 + ah - (ah)^2} \approx 1 if (ah) << 1
+\[F_d(z) = \frac{ \frac{z-1}{zh} + b}{\frac{z-1}{zh} + a}
+             = \frac{ z-1 + zhb}{z-1+zha} = \frac{(1+bh)z - 1}{(1+ah)z - 1}\]
+      Polo en \(z= \frac{1}{1+ah} < 1\) para \(a\), \(h\) positivos.
+
+*2*
+ \begin{align*} F_d(z) &= \frac{ \frac{2}{h}\frac{z-1}{z+1} + b}{\frac{2}{h}\frac{z-1}{z+1} + a}
+             = \frac{\frac{2}{h}(z-1) + b(z+1)}{\frac{2}{h}(z-1) + a(z+1)}\\
+             &= \frac{(\frac{2}{h}+b)z - (\frac{2}{h}-b)}{(\frac{2}{h}+a)z - (\frac{2}{h}-a)} \end{align*}
+      Polo en \[z = \frac{\frac{2}{h}-a}{\frac{2}{h}+a}  = \frac{2-ah}{2+ah}\]. 
 ** Forward difference exercise
    #+BEGIN_CENTER 
     \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}

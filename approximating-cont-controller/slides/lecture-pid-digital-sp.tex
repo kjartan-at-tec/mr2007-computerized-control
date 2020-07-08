@@ -1,4 +1,4 @@
-% Created 2020-07-08 mié 11:52
+% Created 2020-07-08 mié 15:16
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,8 +35,8 @@
 
 
 \section{Discretization - repetición}
-\label{sec:orgebce0ad}
-\begin{frame}[label={sec:orgb28288d}]{Discretización de un controlador continuo}
+\label{sec:org2b2ce81}
+\begin{frame}[label={sec:orgf345eda}]{Discretización de un controlador continuo}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
 \end{center}
@@ -47,7 +47,7 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org0efb46c}]{Métodos de discretización}
+\begin{frame}[label={sec:org82fb2cd}]{Métodos de discretización}
 Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 
 \begin{enumerate}
@@ -60,7 +60,7 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgff9ce2f}]{Métodos de discretización}
+\begin{frame}[label={sec:org2292565}]{Métodos de discretización}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item El método de Tustin (transformada bilineal). Substituir
@@ -71,16 +71,28 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org8c29b43}]{Mapeo de la región estable del plano \(s\)}
+\begin{frame}[label={sec:org7fba3d3}]{Mapeo de la región estable del plano \(s\)}
 \begin{center}
  \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
 {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
 \end{center}
 \end{frame}
 
+\begin{frame}[label={sec:org25e0bd6}]{Forward difference exercise}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
+\end{center}
+\end{frame}
+\begin{frame}[label={sec:org7826ce9}]{Backward difference exercise}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
+\end{center}
+\end{frame}
+
+
 \section{PID}
-\label{sec:orgb269cd2}
-\begin{frame}[label={sec:org974df95}]{PID tipo ISA}
+\label{sec:orgaa0cd57}
+\begin{frame}[label={sec:orgfb68a74}]{PID tipo ISA}
 ISA - International Society of Automation
 
 \[ F(s) = K\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
@@ -90,7 +102,7 @@ Con filtro pasobajo para el parte derivativo
 \[ F(s) = K\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 \end{frame}
 
-\begin{frame}[label={sec:org8a73c62}]{PID tipo ISA - ejercicio}
+\begin{frame}[label={sec:orgcd570f8}]{PID tipo ISA - parte derivativo}
 \[ F(s) = K\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
 \alert{Actividad en pares} Dibuja el diagrama de Bode (solo la magntitúd)  del parte derivativo \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
@@ -100,7 +112,7 @@ Con filtro pasobajo para el parte derivativo
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org2540245}]{PID tipo ISA - solución}
+\begin{frame}[label={sec:org0caf9bf}]{PID tipo ISA - parte derivativo, solución}
 \[ F(s) = K\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
 \begin{center}
@@ -124,5 +136,70 @@ Con filtro pasobajo para el parte derivativo
 
  \end{tikzpicture}
 \end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org408fa95}]{PID con accción derivada sobre la variable de proceso}
+\begin{center}
+  \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+    \node[block, right of=sum, node distance=20mm] (pi)  {$F_{PI}(s)$};
+    \node[block, below of=pi, node distance=12mm] (dd)  {$F_{D}(s)$};
+    \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
+    \node[coordinate, below of=sum, node distance=22mm] (yy) {};
+    \node[coordinate, right of=sum2, node distance=20mm] (output) {};
+
+    \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
+    \draw[->] (sum) -- node[above] {$e(t)$} (pi);
+    \draw[->] (sum2) -- node[above, near end] {$u(t)$} (output);
+    \draw[->] (yy) -- node[right, pos=0.2] {$y(t)$} node[pos=0.9, left] {$-$} (sum);
+    \draw[->] (pi) -- node[above, near end] {} (sum2);
+    \draw[->] (dd) -| node[left, pos=0.9] {$-$} (sum2);
+    \draw[->] (yy) |- (dd);
+
+  \end{tikzpicture}
+\end{center}
+
+\[ U(s) = \underbrace{K\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
+\end{frame}
+
+\section{Discretización del PID}
+\label{sec:orgb7da7c5}
+\begin{frame}[label={sec:org3a88941}]{Discretización común del PID}
+\begin{center}
+  \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+    \node[block, right of=sum, node distance=27mm] (pi)  {$K\frac{1}{T_is}$};
+    \node[block, below of=pi, node distance=12mm] (dd)  {$K\frac{T_d s}{\frac{T_d}{N} s + 1}$};
+    \node[block, above of=pi, node distance=12mm] (pp)  {$K$};
+    \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
+    \node[coordinate, below of=sum, node distance=22mm] (yy) {};
+    \node[coordinate, right of=sum2, node distance=20mm] (output) {};
+
+    \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
+    \draw[->] (sum) -- node[above, pos=0.2] {$e(t)$} node[coordinate, pos=0.6] (copy) {} (pi);
+    \draw[->] (sum2) -- node[above, near end] {$u(t)$} (output);
+    \draw[->] (yy) -- node[right, pos=0.2] {$y(t)$} node[pos=0.9, left] {$-$} (sum);
+    \draw[->] (pi) -- node[above, ] {$u_I(t)$} (sum2);
+    \draw[->] (dd) -| node[left, pos=0.9] {$-$} node[above, pos=0.3] {$u_D(t)$} (sum2);
+    \draw[->] (yy) |- (dd);
+    \draw[->] (pp) -| node[above, pos=0.3] {$u_P(t)$} (sum2);
+    \draw[->] (copy) |- (pp);
+
+
+  \end{tikzpicture}
+\end{center}
+
+\[ U(s) = U_P(s) + U_I(s) - U_D(s) = KE(s) + K\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
+\end{frame}
+
+
+\section{Sintonización de PID}
+\label{sec:org396ddcc}
+\begin{frame}[label={sec:org722cfca}]{Sintonización de un PID}
+\alert{El idéa} 
 \end{frame}
 \end{document}
