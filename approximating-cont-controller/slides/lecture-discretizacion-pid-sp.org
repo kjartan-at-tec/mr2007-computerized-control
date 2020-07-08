@@ -1,0 +1,390 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Control Computarizado - Discretización de controladores continuosos
+#+date: 2020-07-08
+
+
+* What do I want the students to understand?			   :noexport:
+  - Euler
+  - Tustin's
+  - PID tuning
+
+* Which activities will the students do?			   :noexport:
+  1. Concept questions:
+     Pair continuous and discrete poles, discretized with pole-zero mapping
+  2. 
+
+* Intro
+** Retroalimentación Tarea 1
+   
+   - En general *muy buen trabajo* de todos 
+   - Unos *reportes excelentes*
+   - A mejorar: Incluir *referencia a fuente* de cada gráfica
+   - Se quedan unos conceptos erróneos
+
+** Retroalimentación Tarea 1 - efecto de alias
+   La señal original es un sinusoide de 3Hz \(u(t) = \cos(6\pi t)\),  que tiene la transformada de Fourier 
+  \[ F(\omega) = \frac{1}{2}\delta(\omega + 6\pi) + \frac{1}{2}\delta(\omega - 6\pi).\]
+  Se muestrea la señal con  una frecuencia de muestreo de 8Hz, o \(\omega_s = \unit{16\pi}{\rad\per\second}\), que da una frecuencia de Nyquist de \(\omega_N = \frac{1}{2} \omega_s = \unit{8\pi}{\rad\per\second}\). La señal muestreada tiene la transformada de Fourier
+  \begin{align*}
+   F_s(\omega) &= \frac{1}{h} \sum_{n=-\infty}^\infty F(\omega + n\omega_s) = \frac{1}{h} \left( \cdots + F(\omega - \omega_s) + F(\omega) + F(\omega + \omega_s) + \cdots \right)\\
+&= \frac{1}{2h}\Big( \cdots + \big(\delta(\omega -\omega_s + 6\pi) + \delta(\omega -\omega_s - 6\pi)\big)\\& \qquad + \big(\delta(\omega + 6\pi) + \delta(\omega - 6\pi)\big)\\ & \qquad + \big(\delta(\omega +\omega_s + 6\pi) + \delta(\omega +\omega_s - 6\pi)\big) + \cdots \Big)
+\end{align*} 
+
+** Retroalimentación Tarea 1 - efecto de alias
+  \begin{align*}
+   F_s(\omega) &= \frac{1}{2h}\Big( \cdots + \delta(\omega -16\pi + 6\pi) + \delta(\omega -16\pi{} - 6\pi)\\& \qquad + \delta(\omega + 6\pi) + \delta(\omega - 6\pi)\\ & \qquad + \delta(\omega +16\pi{} + 6\pi) + \delta(\omega +16\pi{} - 6\pi) + \cdots \Big)
+  \end{align*} 
+  *Actividad* Dibuja la transformada de Fourier (espectro) de la señal muestreada!
+  #+begin_export latex
+  \begin{center}
+    \begin{tikzpicture}[scale=0.3]
+    \draw[->] (-23,0) -- (23,0) node[below] {$\omega$};
+      \draw[->] (0,-0.2) -- (0,6) node[left] {$|F_s(\omega)|$};
+      \foreach \w/\l in {-12/$-12\pi$, -6/$-6\pi$, 0/0, 6/$6\pi$, 12/$12\pi$}
+	   \draw (\w, 0) -- (\w, -0.2) node[below] {\l};
+    \end{tikzpicture}
+  \end{center}
+  #+end_export
+** Transformada de Fourier - solución
+** Transformada de Fourier - solución
+  \begin{align*}
+   F_s(\omega) &= \frac{1}{2h}\Big( \cdots + \delta(\omega -16\pi + 6\pi) + \delta(\omega -16\pi{} - 6\pi)\\& \qquad + \delta(\omega + 6\pi) + \delta(\omega - 6\pi)\\ & \qquad + \delta(\omega +16\pi{} + 6\pi) + \delta(\omega +16\pi{} - 6\pi) + \cdots \Big)
+  \end{align*} 
+
+  #+begin_export latex
+  \begin{center}
+    \begin{tikzpicture}[scale=0.3]
+    \draw[->] (-23,0) -- (23,0) node[below] {};
+      \draw[->] (0,-0.2) -- (0,6) node[left] {$|F_s(\omega)|$};
+      %\foreach \w/\l in {-12/$-12\pi$, -6/$-6\pi$, 0/0, 6/$6\pi$, 12/$12\pi$}
+	%   \draw (\w, 0) -- (\w, -0.2) node[below] {\l};
+      \foreach \w/\l in {-22/$-22\pi$, -10/$-10\pi$, -6/$-6\pi$,  6/$6\pi$, 10/$10\pi$, 22/$22\pi$}
+	   \draw[red!80!black, ->] (\w, 0) -- (\w, 3) node[pos=0, below] {\l};
+      \draw[dashed] (-8, 0) -- (-8,4) node[pos=1, above] {\small $-\omega_N$};
+      \draw[dashed] (8, 0) -- (8,4) node[pos=1, above] {\small $\omega_N$};
+    \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+
+** Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas
+   Reconstrucción de Shannon:
+   \[ f(t) = \sum_{k=-\infty}^\infty f(kh) \frac{\sin\big(\omega_N(t-kh)\big)}{\omega_N(t-kh)}\]
+
+   - Reconstrucción perfecto de la señal original
+   - *No es causal*
+
+** Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas
+   Reconstrucción con ROC:
+   \[ f(t) = f(kh), \quad kh \ge t < kh+h\]
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.6\linewidth]{../../figures/fig7-4.png}\\
+   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+   \end{center}
+  #+end_export
+
+   - *es causal*
+   - no es perfecto
+
+** Retroalimentación Tarea 1 - Reconstrucción de señales muestreadas
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=3pt}]
+    
+       \node[coordinate] (input) {};
+       \node[block, right of=input, node distance=20mm] (zoh)  {ZOH};
+       \node[block, right of=zoh, node distance=26mm] (lp)  {LP};
+       \node[coordinate, right of=lp, node distance=20mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.3] {$u(kh)$} (zoh);
+       \draw[->] (zoh) -- node[above] {$u(t)$} (lp);
+       \draw[->] (lp) -- node[above, near end] {$u_f(t)$} (output);
+
+       \draw[thick, red] (3.4,-1) to (5.6, 1);
+       \draw[thick, red] (3.4,1) to (5.6, -1);
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+   - Normalmente evitamos un filtro pasobajo en la salida del DAC, porque contribuye un cambio de fase negativo en la gananzia del lazo abierto.
+
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.4\linewidth]{../../figures/fig3-3.png}
+   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+   \end{center}
+  #+end_export
+
+
+* Discretization
+** Discretización de un controlador continuo
+** Discretización de un controlador continuo
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
+#+END_CENTER
+
+   - Dado un controlador obtenido de un diseño en tiempo continuo
+   - Es necesario discretizarlo para implementar en una computadora
+
+
+*** Notes							   :noexport:
+   When we first encountered the problem of obtaining a discrete model from a continous model, in the case of finding a discrete pulse-tranfer function to describe our continuous-time dynamic plant model, we used zero-order-hold sampling. Why is this not such a good idea for approximating the controller $F(s)$?
+
+** Position control of a diskdrive arm
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+\includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
+
+#+begin_export latex
+\tiny "Laptop-hard-drive-exposed" by Evan-Amos - Own work. Licensed under CC BY-SA 3.0 via Commons
+#+end_export
+*** Equations
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+    
+    \[ J\ddot{\theta}(t) = u(t) + v(t) \]
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=10mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+	\node[coordinate] (input) {};
+	\node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+	\node[block, right of=sum, node distance=18mm] (plant)  {$\frac{1}{Js^2}$};
+	\node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+	\node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+	\draw[->] (input) -- node[above, pos=0.3] {$u(t)$} (sum);
+	\draw[->] (sum) -- node[above] {} (plant);
+	\draw[->] (plant) -- node[above, near end] {$\theta(t)$} (output);
+	\draw[->] (disturbance) -- node[right, pos=0.2] {$v(t)$} (sum);
+      \end{tikzpicture}
+    \end{center}
+
+    #+end_export
+
+
+*** Notes							   :noexport:
+Performance critera:
+- Speed
+- Accuracy
+- Stability
+- Overshoot
+- Input signal magnitude
+
+** Discretización de un controlador continuo
+   #+begin_export latex
+
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=24mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$K\frac{b}{a}$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$\frac{1}{Js^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(s) = K\frac{s+b}{s+a}$};
+
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(t)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(t)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(t)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(t)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(t)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+   #+end_export
+
+** Simple discretization
+   #+begin_export latex
+   \begin{center}
+   \begin{tikzpicture}
+   \pgfmathsetmacro\tone{2}
+   \pgfmathsetmacro\ttwo{4}
+   \pgfmathsetmacro\xone{0.1*\tone*sin(10*\tone)}
+   \pgfmathsetmacro\xtwo{0.1*\ttwo*sin(10*\ttwo)}
+   \pgfmathsetmacro\xdot{(\xtwo-\xone)/(\ttwo-\tone)}
+   
+   \begin{axis}[width=7cm, height=5cm, xtick={\tone, \ttwo}, xticklabels={$t_1$, $t_1+h$},
+   ytick={\xone, \xtwo}, yticklabels={$x(t_1)$, $x(t_1+h)$}]
+   \addplot+[no marks, thick, variable=\t, domain = 0:8, samples=100] {0.1*t*sin(10*t)} node[coordinate, pos=0.8, pin=90:{$x(t)$}] {};
+   \addplot+[ycomb,] coordinates  {(\tone, \xone) (\ttwo, \xtwo)};
+   \addplot+[this, no marks, variable=\t, domain = -1:3, samples=10] ({\tone + t}, {\xone + \xdot*t});
+   \end{axis}
+
+   \node at (8,3) {\( \dot{x}(t) \approx \frac{\Delta x}{\Delta t} = \frac{x(t + h) - x(t)}{h} \)};
+   \node at (8,2) {Euler's method}
+   \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+   Approximating the controller, assuming equidistant sampling  $t = kh$:
+   \begin{align*}
+   a u_2 + \dot{u}_2 &= Kby + K\dot{y}\\
+   a u_2(kh) + \frac{1}{h} \big(u_2(kh+h) - u_2(kh)\big) &= Kby(kh) + \frac{K}{h}\big(y(kh+h) - y(kh)\big)
+   \end{align*}
+
+** Discretización con el método de Euler
+
+   \[ u_2(kh+h) = (1-ah)u_2(kh) + Ky(kh+h) - K(1-bh)y(kh) \]
+
+   *Actividad* Es un sistema de primer orden. ¿Cuál es su polo? Marka en el eje real abajo los valores del producto \(ah\) que da un sistema discreto estable.
+
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}
+       \draw[->] (-4,0) -- (8,0) node[below] {$ah$};
+       \draw (0,-0.1) to (0, 0.1) node[pos=0, below] {0};
+       \draw[white] (0,1) to (0,2);
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+** Discretización con el método de Euler - solución
+
+** Discretización con el método de Euler - solución
+   \[ u_2(kh+h) = (1-ah)u_2(kh) + Ky(kh+h) - K(1-bh)y(kh) \]
+   \[ u_2(kh) = K \frac{\shift - (1-bh)}{\shift - (1-ah)} y(kh)\]
+   El polo está en \(1-ah\), y para estabilidad debe tener un magnitúd menos de 1. Es decir 
+   \[ -1 < (1-ah) < 1\]
+   \[ -2 < -ah < 0 \]
+   \[ 0 < ah < 2\]
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}
+       \draw[->] (-4,0) -- (8,0) node[below] {$ah$};
+       \draw (0,-0.1) to (0, 0.1) node[pos=0, below] {0};
+       \draw (4,0.1) to (4, -0.1) node[below] {2};
+       \draw[white] (0,1) to (0,2);
+       \draw[ultra thick, red] (0,0) to (4,0);
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+
+** Métodos de discretización
+Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
+   
+   1. Euler (diferencia hacia adelante) \(\diff \approx \frac{\shift -1}{h}\). Substituir
+      \[ s = \frac{z-1}{h} \] en $F(s)$ para obtener
+      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
+   2. Euler hacia atras \(\diff \approx \frac{1 - \shift^{-1}}{h} = \frac{\shift -1}{h\shift}\). Substituir
+      \[ s = \frac{z-1}{zh} \] en $F(s)$ para obtener
+      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
+
+** Métodos de discretización
+
+   3. [@3] El método de Tustin (transformada bilineal). Substituir
+      \[ s = \frac{2}{h}\frac{z-1}{z+1} \] en $F(s)$ para obtener
+      \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
+   4. Discretización invariante a la rampa. Similar a discretización con ROC. La transformada z de una rampa es  $\frac{zh}{(z-1)^2}$ y su transformada de Laplace $1/s^2$. La discretización es dado por
+      \[ F_d(z) = \frac{(z-1)^2}{zh} \ztrf{\laplaceinv{\frac{F(s)}{s^2}}}. \]   
+
+** Deformación del eje de frecuencias con el método de Tustin
+   #+begin_export latex
+   \begin{center}
+    \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}\\
+   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+   \end{center}
+  #+end_export
+   El eje imaginario del plano $s$, infintamente largo, se mapea al circulo unitario del plano $z$, que es finito.
+** Mapeo de la región estable del plano \(s\)
+   #+begin_export latex
+   \begin{center}
+    \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
+   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+   \end{center}
+  #+end_export
+
+** Ejercicio
+   *En pares* Divida entre ustedes los dos ejercicios abajo. Despues de 5 minutos explica su procedimiento y resultado a su compañer@.
+
+   Determine la approximación del compensador lead $F(s) = \frac{s+b}{s+a}$, y el polo de la approximación.
+   1. Euler hacia atras
+      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
+   2. Tustin
+      \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
+
+*** Solution							   :noexport:
+   1. F_d(z) = \frac{ \frac{z-1}{h} + b}{\frac{z-1}{h} + a}
+             = \frac{z-1+bh}{z-1+ah}
+      Pole in z = 1-ah, stable as long as |z| < 1  => z<1 OK -z < 1 => -1+ah < 1 => h < 2/a
+   2. F_d(z) = \frac{ \frac{z-1}{zh} + b}{\frac{z-1}{zh} + a}
+             = \frac{ z-1 + zhb}{z-1+zha} = \frac{(1+bh)z - 1}{(1+ah)z - 1}
+      Pole in z= 1/(1+ah).  |z| < 1 for all a,h
+   3. F_d(z) = \frac{ g\frac{z-1}{z+1} + b}{g\frac{z-1}{z+1} + a}
+             = \frac{g(z-1) + b(z+1)}{g(z-1) + a(z+1)}
+             = \frac{(g+b)z - (g-b)}{(g+a)z - (g-a)}
+      Pole in z = \frac{g-a}{g+a}. Since g,a > 0 if g=2/h >> a  => z \approx 1, g=2/h << a => -1 
+                = \frac{2-ah}{2+ah}
+     Note that z_f/z_b = (1-ah)/(1/(1+ah)) = (1-ah)(1+ah) = 1 - (ah)^2 approx 1 if ah << 1
+
+     z_b / z_T  = \frac{2+ah}{(2-ah)(1+ah)} = \frac{2+ah}{2 + ah - (ah)^2} \approx 1 if (ah) << 1
+** Forward difference exercise
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
+   #+END_CENTER
+
+*** Solution							   :noexport:
+Simply insert z = 1 + sh = 1 + i\pi/4. 
+
+Or more general. Let s=-\lambda + i\mu
+z = 1-\lambda h + i \mu h
+Re{z} = 1-\lambda h
+Im{z} = \mu h
+
+** Backward difference exercise
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
+   #+END_CENTER
+
+*** Solution							   :noexport:
+    - Note that
+      s = \frac{z-1}{zh} solved for z gives
+      zhs = z-1
+      z-zhs = 1
+      z = \frac{1}{1-sh}
+    - Simply insert z = \frac{1}{1 - sh} = \frac{1}{1 - i\pi/4}
+      Then do 
+      | z | = \frac{1}{ | 1 -i\pi/4 | } = \frac{1}{\sqrt{1 +  \pi^2/16}} |
+
+** Tustin's approximation, harmonic oscillator			   :noexport:
+
+   Write the approximation as
+         \[ F_d(z) = F(s')|_{s'= g\frac{z-1}{z+1}}, \quad g > 0 \]
+   Clearly for the standard Tustin's approximation we have  \(g = \frac{2}{h}\).
+
+   Apply the approximation to the system
+   \[ F(s) = \frac{\omega_n^2}{s^2 + \omega_n^2} = \frac{\omega_n^2}{(s + i\omega_n)(s -i\omega_n)} \]
+
+   *Determine the poles. What is the angle (argument) of the discrete-time poles?*
+*** Notes							   :noexport:
+[[file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's%20approximation%20of%20harmonic%20oscillator.ipynb][file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's approximation of harmonic oscillator.ipynb]]    
+    
+F(z) = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
+     = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
+     = \frac{\omega_n^2(z+1)^2}{g^2(z^2 -2z + 1) + \omega_n^2(z^2 + 2z + 1)}
+     = \frac{\omega_n^2(z+1)^2}{(g^2+\omega_n^2)z^2 + 2(\omega_n^2 -g^2)z + (g^2 + \omega_n^2)}
