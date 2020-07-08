@@ -10,8 +10,8 @@
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
-#+title: Computerized Control - Discretizing continuous-time controllers
-#+date: 2019-11-21
+#+title: Control Computarizado - Discretización de controladores continuos
+#+date: 2020-07-08
 
 
 * What do I want the students to understand?			   :noexport:
@@ -25,19 +25,8 @@
 
 * Intro
 
-** Repetition						     :slide:noexport:
-# From the videos and previous lecture
-
-
-** Goal of today's lecture 					      :slide:
-   - Understand discrete approximations of continuous-time controllers
-
-** Result from quizz
-   - Frequency warping and prewarping
-   - How to choose approximation method
-
 * Discretization
-** Discretizing a controller
+** Discretizar a controller
    - Have a controller \(F(s)\) obtained from a design in continuous time. 
    - Discretize in order to implement on a computer
 
@@ -49,6 +38,7 @@
    When we first encountered the problem of obtaining a discrete model from a continous model, in the case of finding a discrete pulse-tranfer function to describe our continuous-time dynamic plant model, we used zero-order-hold sampling. Why is this not such a good idea for approximating the controller $F(s)$?
 
 ** Discretization methods
+   
    1. Forward difference. Substitute 
       \[ s = \frac{z-1}{h} \] in $F(s)$ to get
       \[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
