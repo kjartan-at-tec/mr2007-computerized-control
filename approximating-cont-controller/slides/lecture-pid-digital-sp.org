@@ -113,21 +113,21 @@ ISA - International Society of Automation
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
 
-Con filtro pasobajo para el parte derivativo
+Con filtro pasobajo para la parte derivativo
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
-** PID tipo ISA - parte derivativo
+** PID tipo ISA - parte derivativa
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
-*Actividad en pares* Dibuja el diagrama de Bode (solo la magnitúd)  del parte derivativo \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
+*Actividad en pares* Dibuja el diagrama de Bode (solo la magnitúd)  de la parte derivativa \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
 \begin{align*}
  \text{$\omega$ small:} \quad & F_d(i\omega) \approx T_d i\omega \\
  \text{$\omega$ large:} \quad & F_d(i\omega) \approx \frac{T_d i \omega }{\frac{T_d}{N} i\omega} = N
 \end{align*}
 
-** PID tipo ISA - parte derivativo, solución
+** PID tipo ISA - parte derivativa, solución
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
@@ -219,9 +219,9 @@ Con filtro pasobajo para el parte derivativo
 *Actividad* 1) Usa /Euler hacia adelante/ para discretizar el parte integral y /Euler hacia atrás/ para discretizar el parte derivado. 2) Aplica la transformada z inversa para llegar a una ecuación de diferencias para el controlador.
 
 ** Discretización común del PID - Solución
-*** El parte proporcional
+*** La parte proporcional
     Facilísimo: \(u_P(kh) = K_c e(kh)\)
-*** El parte integral
+*** La parte integral
     Substituye \(s = \frac{z-1}{h}\) en la funcion de transferencia \(F_I(s) = K_c \frac{1}{T_i s}\)
     \[ F_{I,d}(z) = K_c\frac{1}{T_i \frac{z-1}{h}} = K_c \frac{\frac{h}{T_i}}{z-1}\]
     \[U_I(z) = K_c \frac{\frac{h}{T_i}}{z-1} E(z), \qquad \text{}\]
@@ -229,7 +229,7 @@ Con filtro pasobajo para el parte derivativo
     \[ u_I(kh+h) - u_I(kh) = K_c \frac{h}{T_i} e(kh) \qquad \Leftrightarrow \qquad u_I(kh+h) = u_I(kh) + K_c\frac{h}{T_i} e(kh)\]
 
 ** Discretización común del PID - Solución
-*** El parte derivativo
+*** La parte derivativa 
     Substituye \(s = \frac{z-1}{zh}\) en la funcion de transferencia \(F_D(s) = K_c \frac{T_d s}{\frac{T_d}{N} s + 1}\)
     \[ F_{D,d}(z) = K_c\frac{T_d \frac{z-1}{zh}}{\frac{T_d}{N}\cdot\frac{z-1}{zh}+1} 
          = K_c \frac{T_d(z-1)}{\frac{T_d}{N}(z-1) + zh} 
@@ -389,7 +389,7 @@ Con filtro pasobajo para el parte derivativo
    #+end_export
 
 ** Método de Smith & Corripio - solución
-** Método de Smith & Corripio - solución
+** Método de Smith & Corripio - solución                           :noexport:
    #+begin_export latex
    \def\uampl{0.5}
    \def\ttdelay{0.3}
@@ -480,7 +480,7 @@ Con filtro pasobajo para el parte derivativo
    \[ \text{\textcolor{olive}{Model:}} \qquad  \textcolor{olive}{G(s) = \ggain \frac{\mathrm{e}^{-\tdelay s}}{\Tcnst s + 1}} \]
 
 ** Método de Smith & Corripio - Tabla de Ziegler-Nichols
-   Dado modelo 
+   Dado el modelo 
    \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} \]
    Eliga sus parametros PID según la tabla de Ziegler-Nichols (1943)
    #+begin_export latex

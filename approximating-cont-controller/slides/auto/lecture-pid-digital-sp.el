@@ -37,16 +37,16 @@
     "diff"
     "Td"
     "NN"
+    "Tcnst"
+    "tdelay"
     "uampl"
     "ttdelay"
     "TTcnst"
-    "ggain"
-    "tdelay"
-    "Tcnst")
+    "ggain")
    (LaTeX-add-labels
-    "sec:org39380f2"
-    "sec:org5a7a827"
-    "sec:org950e38a"
-    "sec:org935e007"))
+    "sec:orge8b2768"
+    "sec:orgb8042ca"
+    "sec:orgc5ba4c2"
+    "sec:org09fad4a"))
  :latex)
 
