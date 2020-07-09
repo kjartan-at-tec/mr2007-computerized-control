@@ -1,4 +1,4 @@
-% Created 2020-07-08 mié 15:16
+% Created 2020-07-09 jue 11:55
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,8 +35,8 @@
 
 
 \section{Discretization - repetición}
-\label{sec:org2b2ce81}
-\begin{frame}[label={sec:orgf345eda}]{Discretización de un controlador continuo}
+\label{sec:org39380f2}
+\begin{frame}[label={sec:org86d23da}]{Discretización de un controlador continuo}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
 \end{center}
@@ -47,7 +47,7 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org82fb2cd}]{Métodos de discretización}
+\begin{frame}[label={sec:org3ca2082}]{Métodos de discretización}
 Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 
 \begin{enumerate}
@@ -60,7 +60,7 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org2292565}]{Métodos de discretización}
+\begin{frame}[label={sec:orga78cff2}]{Métodos de discretización}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item El método de Tustin (transformada bilineal). Substituir
@@ -71,19 +71,19 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org7fba3d3}]{Mapeo de la región estable del plano \(s\)}
+\begin{frame}[label={sec:org28bff53}]{Mapeo de la región estable del plano \(s\)}
 \begin{center}
  \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
 {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org25e0bd6}]{Forward difference exercise}
+\begin{frame}[label={sec:org9bb57fa}]{Forward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:org7826ce9}]{Backward difference exercise}
+\begin{frame}[label={sec:orgaf8c1b0}]{Backward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
 \end{center}
@@ -91,29 +91,29 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 
 
 \section{PID}
-\label{sec:orgaa0cd57}
-\begin{frame}[label={sec:orgfb68a74}]{PID tipo ISA}
+\label{sec:org5a7a827}
+\begin{frame}[label={sec:orgb2215e6}]{PID tipo ISA}
 ISA - International Society of Automation
 
-\[ F(s) = K\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
 
 Con filtro pasobajo para el parte derivativo
 
-\[ F(s) = K\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 \end{frame}
 
-\begin{frame}[label={sec:orgcd570f8}]{PID tipo ISA - parte derivativo}
-\[ F(s) = K\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
+\begin{frame}[label={sec:orga06296a}]{PID tipo ISA - parte derivativo}
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
-\alert{Actividad en pares} Dibuja el diagrama de Bode (solo la magntitúd)  del parte derivativo \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
+\alert{Actividad en pares} Dibuja el diagrama de Bode (solo la magnitúd)  del parte derivativo \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
 \begin{align*}
  \text{$\omega$ small:} \quad & F_d(i\omega) \approx T_d i\omega \\
  \text{$\omega$ large:} \quad & F_d(i\omega) \approx \frac{T_d i \omega }{\frac{T_d}{N} i\omega} = N
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org0caf9bf}]{PID tipo ISA - parte derivativo, solución}
-\[ F(s) = K\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
+\begin{frame}[label={sec:org978e098}]{PID tipo ISA - parte derivativo, solución}
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
 \begin{center}
   \def\Td{1}
@@ -138,7 +138,7 @@ Con filtro pasobajo para el parte derivativo
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org408fa95}]{PID con accción derivada sobre la variable de proceso}
+\begin{frame}[label={sec:orgf3b475b}]{PID con accción derivada sobre la variable de proceso}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -161,20 +161,20 @@ Con filtro pasobajo para el parte derivativo
   \end{tikzpicture}
 \end{center}
 
-\[ U(s) = \underbrace{K\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
+\[ U(s) = \underbrace{K_c\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
 \end{frame}
 
 \section{Discretización del PID}
-\label{sec:orgb7da7c5}
-\begin{frame}[label={sec:org3a88941}]{Discretización común del PID}
+\label{sec:org950e38a}
+\begin{frame}[label={sec:org5c3258e}]{Discretización común del PID}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
     \node[coordinate] (input) {};
     \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
-    \node[block, right of=sum, node distance=27mm] (pi)  {$K\frac{1}{T_is}$};
-    \node[block, below of=pi, node distance=12mm] (dd)  {$K\frac{T_d s}{\frac{T_d}{N} s + 1}$};
-    \node[block, above of=pi, node distance=12mm] (pp)  {$K$};
+    \node[block, right of=sum, node distance=27mm] (pi)  {$K_c\frac{1}{T_is}$};
+    \node[block, below of=pi, node distance=12mm] (dd)  {$K_c\frac{T_d s}{\frac{T_d}{N} s + 1}$};
+    \node[block, above of=pi, node distance=12mm] (pp)  {$K_c$};
     \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
     \node[coordinate, below of=sum, node distance=22mm] (yy) {};
     \node[coordinate, right of=sum2, node distance=20mm] (output) {};
@@ -193,13 +193,286 @@ Con filtro pasobajo para el parte derivativo
   \end{tikzpicture}
 \end{center}
 
-\[ U(s) = U_P(s) + U_I(s) - U_D(s) = KE(s) + K\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
+\[ U(s) = U_P(s) + U_I(s) - U_D(s) = K_cE(s) + K_c\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
+
+\alert{Actividad} 1) Usa \emph{Euler hacia adelante} para discretizar el parte integral y \emph{Euler hacia atrás} para discretizar el parte derivado. 2) Aplica la transformada z inversa para llegar a una ecuación de diferencias para el controlador.
+\end{frame}
+
+\begin{frame}[label={sec:org95130b5}]{Discretización común del PID - Solución}
+\begin{block}{El parte proporcional}
+Facilísimo: \(u_P(kh) = K_c e(kh)\)
+\end{block}
+\begin{block}{El parte integral}
+Substituye \(s = \frac{z-1}{h}\) en la funcion de transferencia \(F_I(s) = K_c \frac{1}{T_i s}\)
+\[ F_{I,d}(z) = K_c\frac{1}{T_i \frac{z-1}{h}} = K_c \frac{\frac{h}{T_i}}{z-1}\]
+\[U_I(z) = K_c \frac{\frac{h}{T_i}}{z-1} E(z), \qquad \text{}\]
+\[U_I(z)(z-1) = K_c \frac{h}{T_i} E(z), \qquad \text{Aplica transformada z inversa}\]
+\[ u_I(kh+h) - u_I(kh) = K_c \frac{h}{T_i} e(kh) \qquad \Leftrightarrow \qquad u_I(kh+h) = u_I(kh) + K_c\frac{h}{T_i} e(kh)\]
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org35f72c2}]{Discretización común del PID - Solución}
+\begin{block}{El parte derivativo}
+Substituye \(s = \frac{z-1}{zh}\) en la funcion de transferencia \(F_D(s) = K_c \frac{T_d s}{\frac{T_d}{N} s + 1}\)
+\[ F_{D,d}(z) = K_c\frac{T_d \frac{z-1}{zh}}{\frac{T_d}{N}\cdot\frac{z-1}{zh}+1} 
+         = K_c \frac{T_d(z-1)}{\frac{T_d}{N}(z-1) + zh} 
+= K_c \frac{T_d(z-1)}{(\frac{T_d}{N}+h)z -\frac{T_d}{N}} \]
+\[ U_D(z) = K_c \frac{T_d(z-1)}{(\frac{T_d}{N}+h)z -\frac{T_d}{N}} Y(z)\]
+\[ \Big((\frac{T_d}{N}+h)z -\frac{T_d}{N}\Big) U_D(z) = K_cT_d(z-1) Y(z), \qquad \text{aplica transformada z inversa} \]
+\[ (\frac{T_d}{N}+h)u_D(kh+h) -\frac{T_d}{N}u_D(kh) = K_cT_d\big(y(kh+h) - y(kh)\big)\]
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:org34749bc}]{El algoritmo del PID discreto completo}
+\begin{align*}
+&\text{Dado:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
+& \text{\textcolor{green!60!black}{Toma de muestreos:}} \; r(kh), \; y(kh)\\
+&e(kh) = r(kh) - y(kh)\\
+&u_P(kh) = K_ce(kh)\\
+&u_D(kh) = \frac{\frac{T_d}{N}}{\frac{T_d}{N} + h}u_D(kh-h) + K_c\frac{T_d}{\frac{T_d}{N} + h}\big(y(kh) - y(kh-h)\big)\\
+&u(kh) = u_P(kh) + u_I(kh-h) + u_D(kh), \qquad \text{\textcolor{red}{Send to DAC}}\\
+&u_I(kh) = u_I(kh-h) + K_c \frac{h}{T_i} e(kh)
+\end{align*}
+
+\begin{center}
+  \begin{tikzpicture}
+    \draw[->] (0,0) -- (10,0) node[below] {$t$};
+    \draw (2,0) -- (2,-0.2) node[below] {$kh-h$};
+    \draw (4,0) -- (4,-0.2) node[below] {$kh$};
+    \draw (6,0) -- (6,-0.2) node[below] {$kh+h$};
+    \draw[green!60!black, dashed] (4,0) -- (4, 1) node[above] {Tomando muestreos};
+    \draw[red, dashed] (4.2,0) -- (4.2, -0.9) node[below] {Calculaciones listas};
+    \draw[blue, ultra thick] (4,0) -- (4.2,0) node[coordinate, pin=45:{Retraso de computación}] {};
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\section{Sintonización de PID}
+\label{sec:org935e007}
+\begin{frame}[label={sec:orgaefa60b}]{Sintonización de un PID}
+\alert{El idéa} En forma experimental obtener unos pocos valores que capturan la dinámica del proceso. Usar una tabla predefinida para obtener las ganancias del PID dado estos valores.
+
+Hay varios métodos. Ver el libro de texto y referencias incluidas.
+\end{frame}
+
+\begin{frame}[label={sec:orge6db74e}]{Sintonización de un PID - método de Smith \& Corripio}
+Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retraso \(\tau\)
+\[  \quad Y(s) = \frac{K_c\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K_c\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
+\def\Tcnst{3}
+\def\tdelay{0.6}
+\def\ggain{2}
+\def\uampl{0.8}
+\pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+\pgfmathsetmacro{\yone}{0.283*\yfinal}
+\pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+\pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+\pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+    width=14cm,
+    height=5cm,
+    grid = both,
+    xtick = {0, \tdelay, \tone, \two},
+    xticklabels = {0, $\tau$, $\tau+\frac{T}{3}$, $\tau + T$},
+    ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+    yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+    xmin = -0.2,
+    %minor y tick num=9,
+    %minor x tick num=9,
+    %every major grid/.style={red, opacity=0.5},
+    xlabel = {$t$},
+    ]
+      \addplot [thick, green!50!black, no marks, domain=0:10, samples=100] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+      \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+
+\[ y_f = \lim_{t\to\infty} y(t) = u_f K \quad \Rightarrow \quad K = \frac{y_f}{u_f}. \]
+\end{frame}
+
+\begin{frame}[label={sec:org7d7b902}]{Método de Smith \& Corripio - ejemplo}
+\[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
+\def\Tcnst{2.1}
+\def\tdelay{1}
+\def\ggain{2}
+\def\uampl{0.8}
+\pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+\pgfmathsetmacro{\yone}{0.283*\yfinal}
+\pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+\pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+\pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+    width=12cm,
+    height=4cm,
+    grid = both,
+    %xtick = {0, \tdelay, \tone, \two},
+    %xticklabels = {0, $\tau$, $\tau+\frac{T}{3}$, $\tau + T$},
+    %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+    %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+    xmin = -0.2,
+    minor y tick num=9,
+    minor x tick num=9,
+    every major grid/.style={red, opacity=0.5},
+    %xlabel = {$t$},
+    clip = false,
+    ]
+      \addplot [thick, green!50!black, smooth, no marks, domain=0:10, samples=16] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+      \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: \tone, -0.45) node[below] {$t_1 = \tone = \tau + \frac{T}{3}$}; 
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: -1,\yone) node[left, anchor=east] {$0.283y_f = \yone$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \tau + T$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -1, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+      \draw[thick, green!70!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -1, \yfinal, -0.9) node[left, anchor=east] {$y_f = \yfinal$}; 
+      \draw[blue!70!black, dashed] (axis cs: 0, \uampl) -- (axis cs: -1, \uampl, -0.9) node[left, anchor=east] {$u_f = \uampl$}; 
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+\[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = \tdelay \\ T = \Tcnst \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
+\end{frame}
+
+\begin{frame}[label={sec:org7c57aa3}]{Método de Smith \& Corripio - ejercicio}
+\alert{Actividad} En grupos de dos: Comparte pantalla con esta diapositiva. Marca \(y_f\), \(0.632y_f\), \(0.283y_f\), \(u_f\), \(t_1\) y \(t_2\). Determina los parametros del modelo de primer orden con retraso.
+
+\def\uampl{0.5}
+\def\ttdelay{0.3}
+\def\TTcnst{1.6}
+\def\ggain{3}
+
+\pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+\pgfmathsetmacro{\yone}{0.283*\yfinal}
+\pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+\pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+\pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+    width=13cm,
+    height=6cm,
+    grid = both,
+    minor y tick num=9,
+    minor x tick num=9,
+    every major grid/.style={red, opacity=0.5},
+    xlabel = {$t$},
+    xmin = -1,
+    ]
+      \addplot [thick, green!50!black, no marks, domain=0:10, smooth, samples=16] {\uampl*\ggain*(x>\ttdelay)*(1 - (1+(x-\ttdelay)/\TTcnst)*exp(-(x-\ttdelay)/\TTcnst))} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+      \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org1c8ced3}]{Método de Smith \& Corripio - solución}
+\end{frame}
+\begin{frame}[label={sec:orgd1b31bc}]{Método de Smith \& Corripio - solución}
+\def\uampl{0.5}
+\def\ttdelay{0.3}
+\def\TTcnst{1.6}
+\def\ggain{3}
+\def\tdelay{1.125} % Resulting from method
+\def\Tcnst{2.625} % Resulting from method
+
+\pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+\pgfmathsetmacro{\yone}{0.283*\yfinal}
+\pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+\pgfmathsetmacro{\tone}{2}
+\pgfmathsetmacro{\two}{3.75}
+
+
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+    width=12cm,
+    height=5cm,
+    grid = both,
+    minor y tick num=9,
+    minor x tick num=9,
+    every major grid/.style={red, opacity=0.5},
+    xlabel = {$t$},
+    xmin = -1,
+    clip=false,
+    ]
+      \addplot [thick, green!50!black, no marks, domain=0:10, smooth, samples=16] {\uampl*\ggain*(x>\ttdelay)*(1 - (1+(x-\ttdelay)/\TTcnst)*exp(-(x-\ttdelay)/\TTcnst))} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+      \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: \tone, -0.45) node[below] {$t_1 = \tone = \tau + \frac{T}{3}$}; 
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: -2,\yone) node[left, anchor=east] {$0.283y_f = \yone$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \tau + T$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -2, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+      \draw[thick, green!60!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -2, \yfinal) node[left, anchor=east] {$y_f = \yfinal$}; 
+      \draw[blue!70!black, dashed] (axis cs: 10, \uampl) -- (axis cs: 10.2, \uampl, -0.9) node[above] {$u_f = \uampl$}; 
+
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+\[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = 1.125 \\ T = 2.625 \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
+\end{frame}
+\begin{frame}[label={sec:org5d33a76}]{Método de Smith \& Corripio - Tabla de Ziegler-Nichols}
+Dado modelo 
+\[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} \]
+Eliga sus parametros PID según la tabla de Ziegler-Nichols (1943)
+   \begin{center}
+   \setlength{\tabcolsep}{20pt}
+   \renewcommand{\arraystretch}{1.5}
+   \begin{tabular}{llll}
+   Controlador & \(K_c\) & \(T_i\) & \(T_d\)\\
+  \hline\hline
+  P & \(\frac{T}{\tau K}\) &  & \\
+  PI & \(\frac{0.9T}{\tau K}\) & \(\frac{\tau}{0.3}\) & \\
+  PID & \(\frac{1.2T}{\tau K}\) & \(2\tau\) & \(\frac{\tau}{2}\)\\
+  \hline
+\end{tabular}
+\end{center}
+
+Funciona bien cuando \[0.1 < \frac{\tau}{T} < 0.6.\]
 \end{frame}
 
 
-\section{Sintonización de PID}
-\label{sec:org396ddcc}
-\begin{frame}[label={sec:org722cfca}]{Sintonización de un PID}
-\alert{El idéa} 
+\begin{frame}[label={sec:org169be4a}]{Tabla de  Ziegler-Nichols - ejemplo}
+\[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} = 2 \frac{\mathrm{e}^{-s}}{s2.1 + 1} \]
+   \begin{center}
+   \setlength{\tabcolsep}{20pt}
+   \renewcommand{\arraystretch}{1.5}
+   \begin{tabular}{llll}
+   Controlador & \(K_c\) & \(T_i\) & \(T_d\)\\
+  \hline\hline
+  P & \(\frac{T}{\tau K} = \frac{2.1}{1 \cdot 2} = 1.05\) &  & \\
+  PI & \(\frac{0.9T}{\tau K} = \frac{0.9\cdot 2.1}{2}= 0.945\) & \(\frac{\tau}{0.3} = \frac{1}{3} \) & \\
+  PID & \(\frac{1.2T}{\tau K} = 1.26 \) & \(2\tau=2\) & \(\frac{\tau}{2}=\frac{1}{2}\)\\
+  \hline
+\end{tabular}
+\end{center}
+Regla de control (PID completo, \(N=10\)):
+\[ U(s) = K_c\left( 1 + \frac{1}{T_i s} \right) E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s)
+           =  1.26\left( 1 + \frac{1}{2 s} \right) E(s) - \frac{0.5s}{\frac{0.5}{10} s + 1}Y(s)\]
+\end{frame}
+
+
+\begin{frame}[label={sec:org6646720}]{Tabla de  Ziegler-Nichols - ejercicio}
+Determina los parametros del PID para el modelo del ejercicio anterior \(\tau = 1.125\), \(T = 2.625\).
+
+\[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} =  \qquad\qquad\qquad\qquad\qquad\qquad \]
+   \begin{center}
+   \setlength{\tabcolsep}{20pt}
+   \renewcommand{\arraystretch}{1.5}
+   \begin{tabular}{llll}
+   Controlador & \(K_c\) & \(T_i\) & \(T_d\)\\
+  \hline\hline
+  P & \(\frac{T}{\tau K} = \) &  & \\
+  PI & \(\frac{0.9T}{\tau K} = \) & \(\frac{\tau}{0.3} = \) & \\
+  PID & \(\frac{1.2T}{\tau K} = \) & \(2\tau\) & \(\frac{\tau}{2}=\)\\
+  \hline
+\end{tabular}
+\end{center}
+Regla de control (PID completo, \(N=?\)):
+\[ U(s) = K_c\left( 1 + \frac{1}{T_i s} \right) E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s)
+           =  \qquad\qquad\qquad\qquad\qquad\qquad\quad\quad\]
 \end{frame}
 \end{document}
