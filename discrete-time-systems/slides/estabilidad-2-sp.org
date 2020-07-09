@@ -432,7 +432,7 @@ a_2 &> -1 - a_1
 
 Los raíces del polinomio \(A(z) = z^2 + a_1z + a_2\) están adentro del circulo unitario si
 \begin{align*}
-a_1 &< 1\\
+a_2 &< 1\\
 a_2 &> -1+a_1\\
 a_2 &> -1 - a_1
 \end{align*}
