@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 % Created 2020-07-09 jue 11:55
+=======
+% Created 2020-07-10 vie 16:51
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,8 +39,13 @@
 
 
 \section{Discretization - repetición}
+<<<<<<< HEAD
 \label{sec:org39380f2}
 \begin{frame}[label={sec:org86d23da}]{Discretización de un controlador continuo}
+=======
+\label{sec:orge119e86}
+\begin{frame}[label={sec:org63bf691}]{Discretización de un controlador continuo}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
 \end{center}
@@ -47,7 +56,11 @@
 \end{itemize}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org3ca2082}]{Métodos de discretización}
+=======
+\begin{frame}[label={sec:org35fc99d}]{Métodos de discretización}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 
 \begin{enumerate}
@@ -60,7 +73,11 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:orga78cff2}]{Métodos de discretización}
+=======
+\begin{frame}[label={sec:orgfcd5de8}]{Métodos de discretización}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item El método de Tustin (transformada bilineal). Substituir
@@ -71,19 +88,31 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 \end{enumerate}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org28bff53}]{Mapeo de la región estable del plano \(s\)}
+=======
+\begin{frame}[label={sec:orge51887e}]{Mapeo de la región estable del plano \(s\)}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{center}
  \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
 {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
 \end{center}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org9bb57fa}]{Forward difference exercise}
+=======
+\begin{frame}[label={sec:org64c7bb5}]{Forward difference exercise}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
 \end{center}
 \end{frame}
+<<<<<<< HEAD
 \begin{frame}[label={sec:orgaf8c1b0}]{Backward difference exercise}
+=======
+\begin{frame}[label={sec:orga8b6234}]{Backward difference exercise}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
 \end{center}
@@ -91,28 +120,48 @@ Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
 
 
 \section{PID}
+<<<<<<< HEAD
 \label{sec:org5a7a827}
 \begin{frame}[label={sec:orgb2215e6}]{PID tipo ISA}
+=======
+\label{sec:orgbe0adf6}
+\begin{frame}[label={sec:org1bc6757}]{PID tipo ISA}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 ISA - International Society of Automation
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
 
+<<<<<<< HEAD
 Con filtro pasobajo para el parte derivativo
+=======
+Con filtro pasobajo para la parte derivativo
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:orga06296a}]{PID tipo ISA - parte derivativo}
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
 \alert{Actividad en pares} Dibuja el diagrama de Bode (solo la magnitúd)  del parte derivativo \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
+=======
+\begin{frame}[label={sec:orga3e8392}]{PID tipo ISA - parte derivativa}
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
+
+\alert{Actividad en pares} Dibuja el diagrama de Bode (solo la magnitúd)  de la parte derivativa \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{align*}
  \text{$\omega$ small:} \quad & F_d(i\omega) \approx T_d i\omega \\
  \text{$\omega$ large:} \quad & F_d(i\omega) \approx \frac{T_d i \omega }{\frac{T_d}{N} i\omega} = N
 \end{align*}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org978e098}]{PID tipo ISA - parte derivativo, solución}
+=======
+\begin{frame}[label={sec:org7d172e5}]{PID tipo ISA - parte derivativa, solución}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
 \begin{center}
@@ -138,7 +187,11 @@ Con filtro pasobajo para el parte derivativo
 \end{center}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:orgf3b475b}]{PID con accción derivada sobre la variable de proceso}
+=======
+\begin{frame}[label={sec:orgd101444}]{PID con accción derivada sobre la variable de proceso}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -165,8 +218,13 @@ Con filtro pasobajo para el parte derivativo
 \end{frame}
 
 \section{Discretización del PID}
+<<<<<<< HEAD
 \label{sec:org950e38a}
 \begin{frame}[label={sec:org5c3258e}]{Discretización común del PID}
+=======
+\label{sec:orgf21e7fa}
+\begin{frame}[label={sec:org190dd76}]{Discretización común del PID}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -198,11 +256,19 @@ Con filtro pasobajo para el parte derivativo
 \alert{Actividad} 1) Usa \emph{Euler hacia adelante} para discretizar el parte integral y \emph{Euler hacia atrás} para discretizar el parte derivado. 2) Aplica la transformada z inversa para llegar a una ecuación de diferencias para el controlador.
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org95130b5}]{Discretización común del PID - Solución}
 \begin{block}{El parte proporcional}
 Facilísimo: \(u_P(kh) = K_c e(kh)\)
 \end{block}
 \begin{block}{El parte integral}
+=======
+\begin{frame}[label={sec:org90ab64f}]{Discretización común del PID - Solución}
+\begin{block}{La parte proporcional}
+Facilísimo: \(u_P(kh) = K_c e(kh)\)
+\end{block}
+\begin{block}{La parte integral}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 Substituye \(s = \frac{z-1}{h}\) en la funcion de transferencia \(F_I(s) = K_c \frac{1}{T_i s}\)
 \[ F_{I,d}(z) = K_c\frac{1}{T_i \frac{z-1}{h}} = K_c \frac{\frac{h}{T_i}}{z-1}\]
 \[U_I(z) = K_c \frac{\frac{h}{T_i}}{z-1} E(z), \qquad \text{}\]
@@ -211,8 +277,13 @@ Substituye \(s = \frac{z-1}{h}\) en la funcion de transferencia \(F_I(s) = K_c \
 \end{block}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org35f72c2}]{Discretización común del PID - Solución}
 \begin{block}{El parte derivativo}
+=======
+\begin{frame}[label={sec:orgccbe19a}]{Discretización común del PID - Solución}
+\begin{block}{La parte derivativa}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 Substituye \(s = \frac{z-1}{zh}\) en la funcion de transferencia \(F_D(s) = K_c \frac{T_d s}{\frac{T_d}{N} s + 1}\)
 \[ F_{D,d}(z) = K_c\frac{T_d \frac{z-1}{zh}}{\frac{T_d}{N}\cdot\frac{z-1}{zh}+1} 
          = K_c \frac{T_d(z-1)}{\frac{T_d}{N}(z-1) + zh} 
@@ -223,7 +294,11 @@ Substituye \(s = \frac{z-1}{zh}\) en la funcion de transferencia \(F_D(s) = K_c 
 \end{block}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org34749bc}]{El algoritmo del PID discreto completo}
+=======
+\begin{frame}[label={sec:org50663e5}]{El algoritmo del PID discreto completo}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \begin{align*}
 &\text{Dado:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
 & \text{\textcolor{green!60!black}{Toma de muestreos:}} \; r(kh), \; y(kh)\\
@@ -248,14 +323,23 @@ Substituye \(s = \frac{z-1}{zh}\) en la funcion de transferencia \(F_D(s) = K_c 
 \end{frame}
 
 \section{Sintonización de PID}
+<<<<<<< HEAD
 \label{sec:org935e007}
 \begin{frame}[label={sec:orgaefa60b}]{Sintonización de un PID}
+=======
+\label{sec:org5065305}
+\begin{frame}[label={sec:org20f7329}]{Sintonización de un PID}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \alert{El idéa} En forma experimental obtener unos pocos valores que capturan la dinámica del proceso. Usar una tabla predefinida para obtener las ganancias del PID dado estos valores.
 
 Hay varios métodos. Ver el libro de texto y referencias incluidas.
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:orge6db74e}]{Sintonización de un PID - método de Smith \& Corripio}
+=======
+\begin{frame}[label={sec:org2be96d5}]{Sintonización de un PID - método de Smith \& Corripio}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retraso \(\tau\)
 \[  \quad Y(s) = \frac{K_c\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K_c\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
 \def\Tcnst{3}
@@ -293,7 +377,11 @@ Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retr
 \[ y_f = \lim_{t\to\infty} y(t) = u_f K \quad \Rightarrow \quad K = \frac{y_f}{u_f}. \]
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org7d7b902}]{Método de Smith \& Corripio - ejemplo}
+=======
+\begin{frame}[label={sec:org0f77e26}]{Método de Smith \& Corripio - ejemplo}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
 \def\Tcnst{2.1}
 \def\tdelay{1}
@@ -336,7 +424,11 @@ Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retr
 \[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = \tdelay \\ T = \Tcnst \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org7c57aa3}]{Método de Smith \& Corripio - ejercicio}
+=======
+\begin{frame}[label={sec:org958c750}]{Método de Smith \& Corripio - ejercicio}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \alert{Actividad} En grupos de dos: Comparte pantalla con esta diapositiva. Marca \(y_f\), \(0.632y_f\), \(0.283y_f\), \(u_f\), \(t_1\) y \(t_2\). Determina los parametros del modelo de primer orden con retraso.
 
 \def\uampl{0.5}
@@ -370,6 +462,7 @@ Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retr
 \end{center}
 \end{frame}
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org1c8ced3}]{Método de Smith \& Corripio - solución}
 \end{frame}
 \begin{frame}[label={sec:orgd1b31bc}]{Método de Smith \& Corripio - solución}
@@ -416,6 +509,12 @@ Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retr
 \end{frame}
 \begin{frame}[label={sec:org5d33a76}]{Método de Smith \& Corripio - Tabla de Ziegler-Nichols}
 Dado modelo 
+=======
+\begin{frame}[label={sec:org9a22f1d}]{Método de Smith \& Corripio - solución}
+\end{frame}
+\begin{frame}[label={sec:org5f70299}]{Método de Smith \& Corripio - Tabla de Ziegler-Nichols}
+Dado el modelo 
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} \]
 Eliga sus parametros PID según la tabla de Ziegler-Nichols (1943)
    \begin{center}
@@ -435,7 +534,11 @@ Funciona bien cuando \[0.1 < \frac{\tau}{T} < 0.6.\]
 \end{frame}
 
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org169be4a}]{Tabla de  Ziegler-Nichols - ejemplo}
+=======
+\begin{frame}[label={sec:orgd1988de}]{Tabla de  Ziegler-Nichols - ejemplo}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} = 2 \frac{\mathrm{e}^{-s}}{s2.1 + 1} \]
    \begin{center}
    \setlength{\tabcolsep}{20pt}
@@ -455,7 +558,11 @@ Regla de control (PID completo, \(N=10\)):
 \end{frame}
 
 
+<<<<<<< HEAD
 \begin{frame}[label={sec:org6646720}]{Tabla de  Ziegler-Nichols - ejercicio}
+=======
+\begin{frame}[label={sec:org9ccb9cf}]{Tabla de  Ziegler-Nichols - ejercicio}
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
 Determina los parametros del PID para el modelo del ejercicio anterior \(\tau = 1.125\), \(T = 2.625\).
 
 \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} =  \qquad\qquad\qquad\qquad\qquad\qquad \]

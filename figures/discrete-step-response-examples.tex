@@ -1,0 +1,70 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+%\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+
+\def\aa{0.6}
+\begin{tikzpicture}
+  \begin{axis} [
+    width=14cm,
+    height=3.5cm,
+    xlabel={$k$},
+    ylabel={$y(k)$},
+    ytick = {0,1},
+    xmin=-2.5,
+    xmax=10.5,
+    ]
+    \addplot+[ycomb, domain=-2:10, samples=13,variable=k] { (k>=0)*(pow(\aa, k)) }; 
+    \node[red!60!black] at (axis cs: -1.5, 0.5) {\huge \bf 1};
+  \end{axis}
+
+  \begin{axis} [
+    yshift = -4cm,
+    width=14cm,
+    height=3.5cm,
+    xlabel={$k$},
+    ylabel={$y(k)$},
+    ytick = {0,1},
+    xmin=-2.5,
+    xmax=10.5,
+    ]
+    \addplot+[ycomb, domain=-2:10, samples=13,variable=k] { (k>=2)*(1- pow(\aa, k-2)) }; 
+    \node[red!60!black] at (axis cs: -1.5, 0.5) {\huge \bf 2};
+  \end{axis}
+
+    \begin{axis} [
+    yshift = -8cm,
+    width=14cm,
+    height=3.5cm,
+    xlabel={$k$},
+    ylabel={$y(k)$},
+    ytick = {0,1},
+    xmin=-2.5,
+    xmax=10.5,
+    ]
+    \addplot+[ycomb, domain=-2:10, samples=13,variable=k] { (k>=0)*(1 - pow(\aa, k)) - (k>=4)*(1 - pow(\aa, (k-4)))}; 
+    \node[red!60!black] at (axis cs: -1.5, 0.5) {\huge \bf 3};
+  \end{axis}
+
+  \begin{axis} [
+    yshift = -12cm,
+    width=14cm,
+    height=3.5cm,
+    xlabel={$k$},
+    ylabel={$y(k)$},
+    ytick = {0,1},
+    xmin=-2.5,
+    xmax=10.5,
+    ]
+    \addplot+[ycomb, domain=-2:10, samples=13,variable=k] { (k>=0)*(1- pow(\aa, k)) }; 
+    \node[red!60!black] at (axis cs: -1.5, 0.5) {\huge \bf 4};
+  \end{axis}
+
+\end{tikzpicture}
+\end{document}

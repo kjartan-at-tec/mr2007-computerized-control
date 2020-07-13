@@ -26,7 +26,11 @@
   \node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
   \node[block,left of=sumnoise, node distance=15mm] (delay) {$z^{-d}$};
 
+<<<<<<< HEAD
   \draw[->] (input) -- node[above] {$y_{ref}$} (TR);
+=======
+  \draw[->] (input) -- node[above] {$u_c$} (TR);
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
   \draw[->] (TR) -- node[above] {} (sum);
   \draw[->] (sum) -- node[above] {$u$} (plant);
   \draw[->] (plant) -- (sumdist);

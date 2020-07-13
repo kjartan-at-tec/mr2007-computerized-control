@@ -9,9 +9,10 @@
 #+LaTex_HEADER: \usepackage{amssymb}
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
 
-#+title: Control Computarizado - PID digital
-#+date: 2020-07-09
+#+title: Control Computarizado - Sintonización de PID
+#+date: 2020-07-13
 
 
 * What do I want the students to understand?			   :noexport:
@@ -22,155 +23,97 @@
 * Which activities will the students do?			   :noexport:
 
 
-* Discretization - repetición
-** Discretización de un controlador continuo
-#+BEGIN_CENTER 
- \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
-#+END_CENTER
+* Retroalimentación - Primer examen parcial
 
-   - Dado un controlador obtenido de un diseño en tiempo continuo
-   - Es necesario discretizarlo para implementar en una computadora
+** Retroalimentación - Primer examen parcial
+*** Varias respuestas muy buenas
+*** A mejorar
+    - Profesor: Dar instrucciones más claras
+    - Estudiantes: Leer bien las instrucciones
 
+**  Retroalimentación - Primer examen parcial
 
-*** Notes							   :noexport:
-   When we first encountered the problem of obtaining a discrete model from a continous model, in the case of finding a discrete pulse-tranfer function to describe our continuous-time dynamic plant model, we used zero-order-hold sampling. Why is this not such a good idea for approximating the controller $F(s)$?
+   \[ \mathrm{e}^x = -1 \]
+   \[ x = \ln (-1) = ? \]
 
-** Métodos de discretización
-Introduciendo el operador diferencial:  \(\diff f(t) = \frac{d}{dt} f\)
-   
-   1. Euler (diferencia hacia adelante) \(\diff \approx \frac{\shift -1}{h}\). Substituir
-      \[ s = \frac{z-1}{h} \] en $F(s)$ para obtener
-      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
-   2. Euler hacia atras \(\diff \approx \frac{1 - \shift^{-1}}{h} = \frac{\shift -1}{h\shift}\). Substituir
-      \[ s = \frac{z-1}{zh} \] en $F(s)$ para obtener
-      \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
+**  Retroalimentación - Primer examen parcial
 
-** Métodos de discretización
+   \[ \mathrm{e}^{i\pi} = -1 \]
+   \[ \ln (-1) = i\pi \]
 
-   3. [@3] El método de Tustin (transformada bilineal). Substituir
-      \[ s = \frac{2}{h}\frac{z-1}{z+1} \] en $F(s)$ para obtener
-      \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
-   4. Discretización invariante a la rampa. Similar a discretización con ROC. La transformada z de una rampa es  $\frac{zh}{(z-1)^2}$ y su transformada de Laplace $1/s^2$. La discretización es dado por
-      \[ F_d(z) = \frac{(z-1)^2}{zh} \ztrf{\laplaceinv{\frac{F(s)}{s^2}}}. \]   
-
-** Mapeo de la región estable del plano \(s\)
+**  Retroalimentación - Primer examen parcial
+   Respuesta al escalón de un motor DC
    #+begin_export latex
    \begin{center}
-    \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
-   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+       \node[coordinate] (input) {};
+       \node[block, right of=input, node distance=30mm] (plant)  {$\frac{1}{s+1}$};
+       \node[block, right of=plant, node distance=30mm] (int) {$\frac{1}{s}$};
+       \node[coordinate, right of=int, node distance=30mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.3] {\textcolor{blue}{$u(t)$}} (plant);
+       \draw[->] (plant) -- node[above,] {$\Omega(t)$} (int);
+       \draw[->] (int) -- node[above, near end] {\textcolor{orange}{$\phi(t)$}} (output);
+     \end{tikzpicture}
    \end{center}
-  #+end_export
+   Cuál es el respuesto al escalón correcto del sistema?
 
-** Tustin's approximation, harmonic oscillator			   :noexport:
+   \begin{center}
+     \begin{tikzpicture}
+   \begin{groupplot}[group style={group size=2 by 2, vertical sep=1.2cm, horizontal sep=1.3cm},
+	width=7cm,
+	height=2.5cm,
+	xlabel={$t$ [s]},
+	%ylabel={$y(t)$},
+	xmin=-1,
+	xmax=8,
+	%ytick = \empty,
+	%xtick = \empty,
+	domain=-1:10,
+	samples=400,
+	variable=t,
+	]
 
-   Write the approximation as
-         \[ F_d(z) = F(s')|_{s'= g\frac{z-1}{z+1}}, \quad g > 0 \]
-   Clearly for the standard Tustin's approximation we have  \(g = \frac{2}{h}\).
+	\nextgroupplot[]
+	\addplot[blue, no marks] coordinates {(-1,0) (0,0) (0,1) (10,1)};
+	\addplot[orange, thick,   no marks, smooth, ] { (t>0)*(-1 +exp(t) -t)*exp(-t) };
 
-   Apply the approximation to the system
-   \[ F(s) = \frac{\omega_n^2}{s^2 + \omega_n^2} = \frac{\omega_n^2}{(s + i\omega_n)(s -i\omega_n)} \]
+	\nextgroupplot[]
+	\addplot[blue, no marks] coordinates {(-1,0) (0,0) (0,1) (10,1)};
+	\addplot[orange, thick,   no marks, smooth, ] { (t>0)*(t + exp(-t) - 1) };
 
-   *Determine the poles. What is the angle (argument) of the discrete-time poles?*
-*** Notes							   :noexport:
-[[file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's%20approximation%20of%20harmonic%20oscillator.ipynb][file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's approximation of harmonic oscillator.ipynb]]    
-    
-F(z) = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
-     = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
-     = \frac{\omega_n^2(z+1)^2}{g^2(z^2 -2z + 1) + \omega_n^2(z^2 + 2z + 1)}
-     = \frac{\omega_n^2(z+1)^2}{(g^2+\omega_n^2)z^2 + 2(\omega_n^2 -g^2)z + (g^2 + \omega_n^2)}
+	\nextgroupplot[]
+	\addplot[blue, no marks] coordinates {(-1,0) (0,0) (0,1) (10,1)};
+	\addplot[orange, thick,   no marks, smooth, ] { (t>0)*(1 -exp(-t)) };
 
-** Forward difference exercise
-   #+BEGIN_CENTER 
-    \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
-   #+END_CENTER
+	\nextgroupplot[]
+	\addplot[blue, no marks] coordinates {(-1,0) (0,0) (0,1) (10,1)};
+	\addplot[orange, thick,   no marks, smooth, ] { (t>0)*(-1 +exp(t/4)) };
 
-*** Solution							   :noexport:
-Simply insert z = 1 + sh = 1 + i\pi/4. 
+      \end{groupplot}
 
-Or more general. Let s=-\lambda + i\mu
-z = 1-\lambda h + i \mu h
-Re{z} = 1-\lambda h
-Im{z} = \mu h
-** Backward difference exercise
-   #+BEGIN_CENTER 
-    \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
-   #+END_CENTER
+     \node[red] at (group c1r1.center) {\huge 1};
+     \node[red] at (group c2r1.center) {\huge 2};
+     \node[red] at (group c1r2.center) {\huge 3};
+     \node[red] at (group c2r2.center) {\huge 4};
+    \end{tikzpicture}
+   \end{center}
+   #+end_export
+**  Retroalimentación - Primer examen parcial
+   Problema 1
+   \[H_1(z) = \frac{0.035(z+0.88)}{(z-1)(z-0.67)}, \qquad h=0.2\]
+   Polos en 
+   \begin{align*}
+   z = 1  \quad &\Longrightleftarrow \quad s = \frac{\ln 1}{h} = 0 \\
+   z = 0.67  \quad &\Longrightleftarrow \quad s = \frac{\ln 0.67}{h} = -2.0 \\
+   \end{align*}
+   
+   El polo en \(z=1\) está ubicado justamente *sobre el circulo unitario* y no en el interior. El sistema *no es estable*.
 
-*** Solution							   :noexport:
-    - Note that
-      s = \frac{z-1}{zh} solved for z gives
-      zhs = z-1
-      z-zhs = 1
-      z = \frac{1}{1-sh}
-    - Simply insert z = \frac{1}{1 - sh} = \frac{1}{1 - i\pi/4}
-      Then do 
-      | z | = \frac{1}{ | 1 -i\pi/4 | } = \frac{1}{\sqrt{1 +  \pi^2/16}} |
+* PID - repetición
 
-
-* PID
-** PID tipo ISA
-ISA - International Society of Automation
-
-\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
-
-<<<<<<< HEAD
-Con filtro pasobajo para el parte derivativo
-
-\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
-
-** PID tipo ISA - parte derivativo
-
-\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
-
-*Actividad en pares* Dibuja el diagrama de Bode (solo la magnitúd)  del parte derivativo \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
-=======
-Con filtro pasobajo para la parte derivativo
-
-\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
-
-** PID tipo ISA - parte derivativa
-
-\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
-
-*Actividad en pares* Dibuja el diagrama de Bode (solo la magnitúd)  de la parte derivativa \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] usando las approximaciones de baja y alta frecuencia
->>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
-\begin{align*}
- \text{$\omega$ small:} \quad & F_d(i\omega) \approx T_d i\omega \\
- \text{$\omega$ large:} \quad & F_d(i\omega) \approx \frac{T_d i \omega }{\frac{T_d}{N} i\omega} = N
-\end{align*}
-
-<<<<<<< HEAD
-** PID tipo ISA - parte derivativo, solución
-=======
-** PID tipo ISA - parte derivativa, solución
->>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
-
-\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
-
-#+begin_export latex
-\begin{center}
-  \def\Td{1}
-  \def\NN{6}
-  \begin{tikzpicture}
-    \begin{loglogaxis}[
-    clip=false,
-    width=14cm,
-    height=5cm,
-    ylabel={$|F_d(i\omega)|$},
-    xlabel={$\omega$},
-    ytick={\NN},
-    yticklabels={$N$},
-    xtick = {0.01, 0.1, 1, 10, 100}, 
-    xticklabels={$\frac{0.01}{T_d}$, $\frac{0.1}{T_d}$, $\frac{1}{T_d}$, $\frac{10}{T_d}$, $\frac{100}{T_d}$},
-    ]
-      \addplot[red!80!black, no marks, domain=0.01:100, samples=20] {\Td*x/sqrt(1 + pow(\Td/\NN * x, 2))};
-      \draw[orange, dashed] (axis cs: \NN/\Td, \NN) -- (axis cs: \NN/\Td, 0.003) node[below] {$\frac{N}{Td}$};
-    \end{loglogaxis}
-
- \end{tikzpicture}
-\end{center}
-#+end_export
-
+** PID - repetición
 ** PID con accción derivada sobre la variable de proceso
    #+begin_export latex
    \begin{center}
@@ -199,96 +142,6 @@ Con filtro pasobajo para la parte derivativo
 
 \[ U(s) = \underbrace{K_c\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
 
-* Discretización del PID
-** Discretización común del PID
-   #+begin_export latex
-   \begin{center}
-     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-    
-       \node[coordinate] (input) {};
-       \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
-       \node[block, right of=sum, node distance=27mm] (pi)  {$K_c\frac{1}{T_is}$};
-       \node[block, below of=pi, node distance=12mm] (dd)  {$K_c\frac{T_d s}{\frac{T_d}{N} s + 1}$};
-       \node[block, above of=pi, node distance=12mm] (pp)  {$K_c$};
-       \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
-       \node[coordinate, below of=sum, node distance=22mm] (yy) {};
-       \node[coordinate, right of=sum2, node distance=20mm] (output) {};
-
-       \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
-       \draw[->] (sum) -- node[above, pos=0.2] {$e(t)$} node[coordinate, pos=0.6] (copy) {} (pi);
-       \draw[->] (sum2) -- node[above, near end] {$u(t)$} (output);
-       \draw[->] (yy) -- node[right, pos=0.2] {$y(t)$} node[pos=0.9, left] {$-$} (sum);
-       \draw[->] (pi) -- node[above, ] {$u_I(t)$} (sum2);
-       \draw[->] (dd) -| node[left, pos=0.9] {$-$} node[above, pos=0.3] {$u_D(t)$} (sum2);
-       \draw[->] (yy) |- (dd);
-       \draw[->] (pp) -| node[above, pos=0.3] {$u_P(t)$} (sum2);
-       \draw[->] (copy) |- (pp);
-
-       
-     \end{tikzpicture}
-   \end{center}
-
-   #+end_export
-
-\[ U(s) = U_P(s) + U_I(s) - U_D(s) = K_cE(s) + K_c\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
-
-*Actividad* 1) Usa /Euler hacia adelante/ para discretizar el parte integral y /Euler hacia atrás/ para discretizar el parte derivado. 2) Aplica la transformada z inversa para llegar a una ecuación de diferencias para el controlador.
-
-** Discretización común del PID - Solución
-<<<<<<< HEAD
-*** El parte proporcional
-    Facilísimo: \(u_P(kh) = K_c e(kh)\)
-*** El parte integral
-=======
-*** La parte proporcional
-    Facilísimo: \(u_P(kh) = K_c e(kh)\)
-*** La parte integral
->>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
-    Substituye \(s = \frac{z-1}{h}\) en la funcion de transferencia \(F_I(s) = K_c \frac{1}{T_i s}\)
-    \[ F_{I,d}(z) = K_c\frac{1}{T_i \frac{z-1}{h}} = K_c \frac{\frac{h}{T_i}}{z-1}\]
-    \[U_I(z) = K_c \frac{\frac{h}{T_i}}{z-1} E(z), \qquad \text{}\]
-    \[U_I(z)(z-1) = K_c \frac{h}{T_i} E(z), \qquad \text{Aplica transformada z inversa}\]
-    \[ u_I(kh+h) - u_I(kh) = K_c \frac{h}{T_i} e(kh) \qquad \Leftrightarrow \qquad u_I(kh+h) = u_I(kh) + K_c\frac{h}{T_i} e(kh)\]
-
-** Discretización común del PID - Solución
-<<<<<<< HEAD
-*** El parte derivativo
-=======
-*** La parte derivativa 
->>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
-    Substituye \(s = \frac{z-1}{zh}\) en la funcion de transferencia \(F_D(s) = K_c \frac{T_d s}{\frac{T_d}{N} s + 1}\)
-    \[ F_{D,d}(z) = K_c\frac{T_d \frac{z-1}{zh}}{\frac{T_d}{N}\cdot\frac{z-1}{zh}+1} 
-         = K_c \frac{T_d(z-1)}{\frac{T_d}{N}(z-1) + zh} 
-= K_c \frac{T_d(z-1)}{(\frac{T_d}{N}+h)z -\frac{T_d}{N}} \]
-\[ U_D(z) = K_c \frac{T_d(z-1)}{(\frac{T_d}{N}+h)z -\frac{T_d}{N}} Y(z)\]
-\[ \Big((\frac{T_d}{N}+h)z -\frac{T_d}{N}\Big) U_D(z) = K_cT_d(z-1) Y(z), \qquad \text{aplica transformada z inversa} \]
-\[ (\frac{T_d}{N}+h)u_D(kh+h) -\frac{T_d}{N}u_D(kh) = K_cT_d\big(y(kh+h) - y(kh)\big)\]
-
-** El algoritmo del PID discreto completo
-    \begin{align*}
-    &\text{Dado:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
-    & \text{\textcolor{green!60!black}{Toma de muestreos:}} \; r(kh), \; y(kh)\\
-    &e(kh) = r(kh) - y(kh)\\
-    &u_P(kh) = K_ce(kh)\\
-    &u_D(kh) = \frac{\frac{T_d}{N}}{\frac{T_d}{N} + h}u_D(kh-h) + K_c\frac{T_d}{\frac{T_d}{N} + h}\big(y(kh) - y(kh-h)\big)\\
-    &u(kh) = u_P(kh) + u_I(kh-h) + u_D(kh), \qquad \text{\textcolor{red}{Send to DAC}}\\
-    &u_I(kh) = u_I(kh-h) + K_c \frac{h}{T_i} e(kh)
-    \end{align*}
-
-    #+begin_export latex
-    \begin{center}
-      \begin{tikzpicture}
-	\draw[->] (0,0) -- (10,0) node[below] {$t$};
-	\draw (2,0) -- (2,-0.2) node[below] {$kh-h$};
-	\draw (4,0) -- (4,-0.2) node[below] {$kh$};
-	\draw (6,0) -- (6,-0.2) node[below] {$kh+h$};
-	\draw[green!60!black, dashed] (4,0) -- (4, 1) node[above] {Tomando muestreos};
-	\draw[red, dashed] (4.2,0) -- (4.2, -0.9) node[below] {Calculaciones listas};
-	\draw[blue, ultra thick] (4,0) -- (4.2,0) node[coordinate, pin=45:{Retraso de computación}] {};
-      \end{tikzpicture}
-    \end{center}
-    #+end_export
-
 * Sintonización de PID
 ** Sintonización de un PID
 
@@ -298,7 +151,7 @@ Con filtro pasobajo para la parte derivativo
 
 ** Sintonización de un PID - método de Smith & Corripio
    Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retraso \(\tau\)
-   \[  \quad Y(s) = \frac{K_c\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K_c\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
    #+begin_export latex
    \def\Tcnst{3}
    \def\tdelay{0.6}
@@ -415,11 +268,7 @@ Con filtro pasobajo para la parte derivativo
    #+end_export
 
 ** Método de Smith & Corripio - solución
-<<<<<<< HEAD
 ** Método de Smith & Corripio - solución
-=======
-** Método de Smith & Corripio - solución                           :noexport:
->>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
    #+begin_export latex
    \def\uampl{0.5}
    \def\ttdelay{0.3}
@@ -462,7 +311,7 @@ Con filtro pasobajo para la parte derivativo
    \end{center}
    #+end_export
    \[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = 1.125 \\ T = 2.625 \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
-** Método de Smith & Corripio - solución                           :noexport:
+** Método de Smith & Corripio - solución
    #+begin_export latex
    \def\uampl{0.5}
    \def\ttdelay{0.3}
@@ -510,13 +359,9 @@ Con filtro pasobajo para la parte derivativo
    \[ \text{\textcolor{olive}{Model:}} \qquad  \textcolor{olive}{G(s) = \ggain \frac{\mathrm{e}^{-\tdelay s}}{\Tcnst s + 1}} \]
 
 ** Método de Smith & Corripio - Tabla de Ziegler-Nichols
-<<<<<<< HEAD
-   Dado modelo 
-=======
    Dado el modelo 
->>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
    \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} \]
-   Eliga sus parametros PID según la tabla de Ziegler-Nichols (1943)
+   Elige los parametros PID según la tabla de Ziegler y Nichols (1943)
    #+begin_export latex
       \begin{center}
       \setlength{\tabcolsep}{20pt}
@@ -580,4 +425,133 @@ Con filtro pasobajo para la parte derivativo
            =  \qquad\qquad\qquad\qquad\qquad\qquad\quad\quad\]
 
 
+
+* Asignación de polos	   
+** Asignación de polos - Un ejemplo
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+    \node[block, right of=sum, node distance=32mm] (PI) {$F_{PI}(z) = K_c\frac{z -1 + \frac{h}{T_i}}{z-1}$};
+    \node[block,right of=PI, node distance=40mm] (plant) {$H(z) = \frac{b}{z-a}$};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$r(k)$} (sum);
+    \draw[->] (sum) -- node[above, ] {$e(k)$} (PI);
+    \draw[->] (PI) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) -- ++(0,-16mm) -| (sum) node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+  *Queremos un sistema de lazo cerrado criticalmente amortiguado con dos polos en \(z = \alpha, \quad 0 < \alpha < 1 \)*
+
+
+** Asignación de polos	   
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+    \node[block, right of=sum, node distance=32mm] (PI) {$F_{PI}(z) = K_c\frac{z -1 + \frac{h}{T_i}}{z-1}$};
+    \node[block,right of=PI, node distance=40mm] (plant) {$H(z) = \frac{b}{z-a}$};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$r(k)$} (sum);
+    \draw[->] (sum) -- node[above, ] {$e(k)$} (PI);
+    \draw[->] (PI) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) -- ++(0,-16mm) -| (sum) node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+  *Ecuación característica*
+  \begin{align*}
+  1 + H(z)F_{PI}(z) &= 0\\
+  (z-1)(z-a) + K_c b (z - 1 + h/T_i) &= 0
+  \end{align*}
+  *Polinomio característico*
+  \[ \underbrace{(z-1)(z-a) + K_c b (z - 1 + h/T_i)}_{\text{parametrizado}} = \underbrace{(z-\alpha)^2}_{\text{deseado}}\]
+
+  *¿Cómo podemos determinar los parametros del controlador, \(K_c\) y \(T_i\)?* 
+
+** Asignación de polos - Solución
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+    \node[block, right of=sum, node distance=32mm] (PI) {$F_{PI}(z) = K_c\frac{z -1 + \frac{h}{T_i}}{z-1}$};
+    \node[block,right of=PI, node distance=40mm] (plant) {$H(z) = \frac{b}{z-a}$};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$r(k)$} (sum);
+    \draw[->] (sum) -- node[above, ] {$e(k)$} (PI);
+    \draw[->] (PI) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) -- ++(0,-16mm) -| (sum) node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+  *Polinomio característico*
+  \[ \underbrace{z^2 - (1+a -K_cb)z + K_cb(h/T_i - 1) + a}_{\text{parametrizado}} = \underbrace{z^2 -2\alpha z + \alpha^2}_{\text{deseado}}\]
+
+  \begin{align*}
+  1 + a - K_c b &= 2\alpha \quad \Rightarrow \quad K_c = \frac{1+a-2\alpha}{b}\\
+  K_cb(h/T_i - 1) + a &= \alpha^2 \quad \Rightarrow \quad \frac{1}{T_i} = \frac{1}{h}\left(1 + \frac{\alpha^2-a}{K_c b}\right) = \frac{1}{h} \left( \frac{(\alpha-1)^2}{1 + a - 2\alpha}\right) 
+  \end{align*}
+  
+
+** Asignación de polos	   
+   
+   Ligas
+
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.%2Fapproximating-cont-controller%2Fnotebooks%2FPole-placement-PI-controller-example.ipynb][Solución en mybinder]]
+
+   [[https://github.com/kjartan-at-tec/mr2007-computerized-control/blob/master/approximating-cont-controller/notebooks/Pole-placement-PI-controller-example.ipynb][Solución en github]]
+   
+* Discretización - repetición                                      :noexport:
+** Deformación del eje de frecuencias con el método de Tustin
+   #+begin_export latex
+   \begin{center}
+    \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}\\
+   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+   \end{center}
+  #+end_export
+   El eje imaginario del plano $s$, infintamente largo, se mapea al circulo unitario del plano $z$, que es finito.
+** El método de Tustin para el oscilador armonico
+   \[ F_d(z) = F(s')|_{s'= c\frac{z-1}{z+1}}, \quad c > 0 \]
+   Normalmente tenemos  \(c = \frac{2}{h}\).
+
+   *Actividad*
+   Aplica el método de Tustin para el sistema
+   \[ F(s) = \frac{\omega_n^2}{s^2 + \omega_n^2} = \frac{\omega_n^2}{(s + i\omega_n)(s -i\omega_n)} \]
+
+   Determina los poles en tiempo discreto. ¿Cual es su angulo? ¿Cual sería con el mapeo \(z = \mathrm{e}^{sh}\)?
+
+*** Notes							   :noexport:
+[[file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's%20approximation%20of%20harmonic%20oscillator.ipynb][file:~/projects/control-computarizado/approximating-cont-controller/notebooks/Tustin's approximation of harmonic oscillator.ipynb]]    
+    
+F(z) = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
+     = \frac{\omega_n^2}{(g\frac{z-1}{z+1})^2 + \omega_n^2}
+     = \frac{\omega_n^2(z+1)^2}{g^2(z^2 -2z + 1) + \omega_n^2(z^2 + 2z + 1)}
+     = \frac{\omega_n^2(z+1)^2}{(g^2+\omega_n^2)z^2 + 2(\omega_n^2 -g^2)z + (g^2 + \omega_n^2)}
 

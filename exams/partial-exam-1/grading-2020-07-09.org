@@ -1,0 +1,38 @@
+* Problem 1
+** Correct answer
+   1. Poles in z=1 and z=0.67, integrator in series with first order response
+   2. Poles in z=0.67 and 1.49, unstable real pole
+   3. Complex-conjugated poles, stable, ok damping, 0.8exp(i20)
+   4. Complex-conjugated poles, stable, better damping, 0.7exp(i15)
+** Points off
+   | Failed to identify unstable pole       | -2 |
+   | Failed to identify integrator          | -1 |
+   | No markings on axes                    | -1 |
+   | No comments on properties              | -6 |
+   | Real pole as having oscillations       | -2 |
+   | No s-plane plots                       | -2 |
+   | No s-plane complex conjugated poles    | -2 |
+   | No discussion of damping of compl conj | -2 |
+   | Poles on wrong side in s-plane         | -1 |
+   | No ceros en z-plane                    | 0  |
+** Feedback
+   el sistema H1 tiene un polo en z=1 (s=0) que esta ubicado justamente en el circulo unitario y no en su interior. Corresponde a un integrador. No es estable.
+* Problem 2
+* Problem 4
+** Points off
+   | Motivation not precise or hard to follow | -2 |
+   | Reference to class, no details           | -3 |
+   |                                          |    |
+* Problem 6
+** Points off
+   | Motivation not complete        | -1 |
+   | Not showing use of inv z       | -2 |
+   | Impulse not step               | -1 |
+   | No multiplication with z/(z-1) | -1 |
+* Problem 7
+** Points off
+   | No showing of using def of z-transform | -3 |
+   | Reference to x in answer               | -1 |
+   | Mixing step z-trf                      | -2 |
+   |                                        |    |
+** Feedback
