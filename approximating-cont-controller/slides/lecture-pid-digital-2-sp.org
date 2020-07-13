@@ -151,7 +151,7 @@
 
 ** Sintonización de un PID - método de Smith & Corripio
    Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retraso \(\tau\)
-   \[  \quad Y(s) = \frac{K_c\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K_c\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
    #+begin_export latex
    \def\Tcnst{3}
    \def\tdelay{0.6}
@@ -268,7 +268,7 @@
    #+end_export
 
 ** Método de Smith & Corripio - solución
-** Método de Smith & Corripio - solución                           :noexport:
+** Método de Smith & Corripio - solución
    #+begin_export latex
    \def\uampl{0.5}
    \def\ttdelay{0.3}
@@ -311,7 +311,7 @@
    \end{center}
    #+end_export
    \[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = 1.125 \\ T = 2.625 \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
-** Método de Smith & Corripio - solución                           :noexport:
+** Método de Smith & Corripio - solución
    #+begin_export latex
    \def\uampl{0.5}
    \def\ttdelay{0.3}
@@ -361,7 +361,7 @@
 ** Método de Smith & Corripio - Tabla de Ziegler-Nichols
    Dado el modelo 
    \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} \]
-   Eliga sus parametros PID según la tabla de Ziegler-Nichols (1943)
+   Elige los parametros PID según la tabla de Ziegler y Nichols (1943)
    #+begin_export latex
       \begin{center}
       \setlength{\tabcolsep}{20pt}
@@ -427,7 +427,7 @@
 
 
 * Asignación de polos	   
-** Asignación de polos	   
+** Asignación de polos - Un ejemplo
    #+begin_export latex
   \begin{center}
   \begin{tikzpicture}
@@ -486,8 +486,9 @@
   *Polinomio característico*
   \[ \underbrace{(z-1)(z-a) + K_c b (z - 1 + h/T_i)}_{\text{parametrizado}} = \underbrace{(z-\alpha)^2}_{\text{deseado}}\]
 
+  *¿Cómo podemos determinar los parametros del controlador, \(K_c\) y \(T_i\)?* 
 
-** Asignación de polos	   
+** Asignación de polos - Solución
    #+begin_export latex
   \begin{center}
   \begin{tikzpicture}
@@ -523,6 +524,9 @@
    
    Ligas
 
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.%2Fapproximating-cont-controller%2Fnotebooks%2FPole-placement-PI-controller-example.ipynb][Solución en mybinder]]
+
+   [[https://github.com/kjartan-at-tec/mr2007-computerized-control/blob/master/approximating-cont-controller/notebooks/Pole-placement-PI-controller-example.ipynb][Solución en github]]
    
 * Discretización - repetición                                      :noexport:
 ** Deformación del eje de frecuencias con el método de Tustin

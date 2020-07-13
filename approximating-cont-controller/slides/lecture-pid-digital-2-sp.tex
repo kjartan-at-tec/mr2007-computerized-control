@@ -1,4 +1,4 @@
-% Created 2020-07-13 lun 10:14
+% Created 2020-07-13 lun 11:54
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -36,9 +36,9 @@
 
 
 \section{Retroalimentación - Primer examen parcial}
-\label{sec:orgb2f034a}
+\label{sec:orgf73edad}
 
-\begin{frame}[label={sec:orgd4fcc1d}]{Retroalimentación - Primer examen parcial}
+\begin{frame}[label={sec:org67a4c4e}]{Retroalimentación - Primer examen parcial}
 \begin{block}{Varias respuestas muy buenas}
 \end{block}
 \begin{block}{A mejorar}
@@ -49,17 +49,17 @@
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgb5f5ea1}]{Retroalimentación - Primer examen parcial}
+\begin{frame}[label={sec:orgbfbe734}]{Retroalimentación - Primer examen parcial}
 \[ \mathrm{e}^x = -1 \]
 \[ x = \ln (-1) = ? \]
 \end{frame}
 
-\begin{frame}[label={sec:orgac10b8d}]{Retroalimentación - Primer examen parcial}
+\begin{frame}[label={sec:orgb22cec3}]{Retroalimentación - Primer examen parcial}
 \[ \mathrm{e}^{i\pi} = -1 \]
 \[ \ln (-1) = i\pi \]
 \end{frame}
 
-\begin{frame}[label={sec:orgd8ab5d1}]{Retroalimentación - Primer examen parcial}
+\begin{frame}[label={sec:org6a1c5c3}]{Retroalimentación - Primer examen parcial}
 Respuesta al escalón de un motor DC
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
@@ -117,7 +117,7 @@ Cuál es el respuesto al escalón correcto del sistema?
  \end{tikzpicture}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:org330e3e6}]{Retroalimentación - Primer examen parcial}
+\begin{frame}[label={sec:org86f6955}]{Retroalimentación - Primer examen parcial}
 Problema 1
 \[H_1(z) = \frac{0.035(z+0.88)}{(z-1)(z-0.67)}, \qquad h=0.2\]
 Polos en 
@@ -130,11 +130,11 @@ El polo en \(z=1\) está ubicado justamente \alert{sobre el circulo unitario} y 
 \end{frame}
 
 \section{PID - repetición}
-\label{sec:org8410f98}
+\label{sec:org2c6e6a5}
 
-\begin{frame}[label={sec:org45e555b}]{PID - repetición}
+\begin{frame}[label={sec:org052778d}]{PID - repetición}
 \end{frame}
-\begin{frame}[label={sec:orgfd800a1}]{PID con accción derivada sobre la variable de proceso}
+\begin{frame}[label={sec:org60fd34b}]{PID con accción derivada sobre la variable de proceso}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -161,16 +161,16 @@ El polo en \(z=1\) está ubicado justamente \alert{sobre el circulo unitario} y 
 \end{frame}
 
 \section{Sintonización de PID}
-\label{sec:orgdc29a96}
-\begin{frame}[label={sec:org8a3fb95}]{Sintonización de un PID}
+\label{sec:org9641e83}
+\begin{frame}[label={sec:orgc0823db}]{Sintonización de un PID}
 \alert{El idéa} En forma experimental obtener unos pocos valores que capturan la dinámica del proceso. Usar una tabla predefinida para obtener las ganancias del PID dado estos valores.
 
 Hay varios métodos. Ver el libro de texto y referencias incluidas.
 \end{frame}
 
-\begin{frame}[label={sec:org51b3291}]{Sintonización de un PID - método de Smith \& Corripio}
+\begin{frame}[label={sec:org7a9d1cb}]{Sintonización de un PID - método de Smith \& Corripio}
 Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retraso \(\tau\)
-\[  \quad Y(s) = \frac{K_c\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K_c\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
+\[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
 \def\Tcnst{3}
 \def\tdelay{0.6}
 \def\ggain{2}
@@ -206,7 +206,7 @@ Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retr
 \[ y_f = \lim_{t\to\infty} y(t) = u_f K \quad \Rightarrow \quad K = \frac{y_f}{u_f}. \]
 \end{frame}
 
-\begin{frame}[label={sec:org8b2dff3}]{Método de Smith \& Corripio - ejemplo}
+\begin{frame}[label={sec:org2ccf1c0}]{Método de Smith \& Corripio - ejemplo}
 \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
 \def\Tcnst{2.1}
 \def\tdelay{1}
@@ -249,7 +249,7 @@ Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retr
 \[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = \tdelay \\ T = \Tcnst \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
 \end{frame}
 
-\begin{frame}[label={sec:orgdae0a8b}]{Método de Smith \& Corripio - ejercicio}
+\begin{frame}[label={sec:org003c39a}]{Método de Smith \& Corripio - ejercicio}
 \alert{Actividad} En grupos de dos: Comparte pantalla con esta diapositiva. Marca \(y_f\), \(0.632y_f\), \(0.283y_f\), \(u_f\), \(t_1\) y \(t_2\). Determina los parametros del modelo de primer orden con retraso.
 
 \def\uampl{0.5}
@@ -283,12 +283,100 @@ Asuminedo modelo de proceso de primer orden con constante de tiempo \(T\) y retr
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org96005ad}]{Método de Smith \& Corripio - solución}
+\begin{frame}[label={sec:orgf08bb50}]{Método de Smith \& Corripio - solución}
 \end{frame}
-\begin{frame}[label={sec:org2d3d798}]{Método de Smith \& Corripio - Tabla de Ziegler-Nichols}
+\begin{frame}[label={sec:org4f80fc6}]{Método de Smith \& Corripio - solución}
+\def\uampl{0.5}
+\def\ttdelay{0.3}
+\def\TTcnst{1.6}
+\def\ggain{3}
+\def\tdelay{1.125} % Resulting from method
+\def\Tcnst{2.625} % Resulting from method
+
+\pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+\pgfmathsetmacro{\yone}{0.283*\yfinal}
+\pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+\pgfmathsetmacro{\tone}{2}
+\pgfmathsetmacro{\two}{3.75}
+
+
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+    width=12cm,
+    height=5cm,
+    grid = both,
+    minor y tick num=9,
+    minor x tick num=9,
+    every major grid/.style={red, opacity=0.5},
+    xlabel = {$t$},
+    xmin = -1,
+    clip=false,
+    ]
+      \addplot [thick, green!50!black, no marks, domain=0:10, smooth, samples=16] {\uampl*\ggain*(x>\ttdelay)*(1 - (1+(x-\ttdelay)/\TTcnst)*exp(-(x-\ttdelay)/\TTcnst))} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+      \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: \tone, -0.45) node[below] {$t_1 = \tone = \tau + \frac{T}{3}$}; 
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: -2,\yone) node[left, anchor=east] {$0.283y_f = \yone$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \tau + T$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -2, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+      \draw[thick, green!60!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -2, \yfinal) node[left, anchor=east] {$y_f = \yfinal$}; 
+      \draw[blue!70!black, dashed] (axis cs: 10, \uampl) -- (axis cs: 10.2, \uampl, -0.9) node[above] {$u_f = \uampl$}; 
+
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+\[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = 1.125 \\ T = 2.625 \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
+\end{frame}
+\begin{frame}[label={sec:org9e8a1ec}]{Método de Smith \& Corripio - solución}
+\def\uampl{0.5}
+\def\ttdelay{0.3}
+\def\TTcnst{1.6}
+\def\ggain{3}
+\def\tdelay{1.125} % Resulting from method
+\def\Tcnst{2.625} % Resulting from method
+
+\pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+\pgfmathsetmacro{\yone}{0.283*\yfinal}
+\pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+\pgfmathsetmacro{\tone}{2}
+\pgfmathsetmacro{\two}{3.75}
+
+
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+    width=12cm,
+    height=5.5cm,
+    grid = both,
+    minor y tick num=9,
+    minor x tick num=9,
+    every major grid/.style={red, opacity=0.5},
+    xlabel = {$t$},
+    xmin = -1,
+    clip=false,
+    ]
+      \addplot [thick, green!50!black, no marks, domain=0:10, smooth, samples=16] {\uampl*\ggain*(x>\ttdelay)*(1 - (1+(x-\ttdelay)/\TTcnst)*exp(-(x-\ttdelay)/\TTcnst))} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+      \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+      \addplot [thick, olive!80!black, smooth, no marks, domain=0:10, samples=100] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.6, pin=-90:{model}] {};
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: \tone, -0.45) node[below] {$t_1 = \tone = \tau + \frac{T}{3}$}; 
+      \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: -2,\yone) node[left, anchor=east] {$0.283y_f = \yone$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \tau + T$}; 
+      \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -2, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+      \draw[thick, green!60!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -2, \yfinal) node[left, anchor=east] {$y_f = \yfinal$}; 
+      \draw[blue!70!black, dashed] (axis cs: 10, \uampl) -- (axis cs: 10.2, \uampl, -0.9) node[above] {$u_f = \uampl$}; 
+
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+
+
+\[ \text{\textcolor{olive}{Model:}} \qquad  \textcolor{olive}{G(s) = \ggain \frac{\mathrm{e}^{-\tdelay s}}{\Tcnst s + 1}} \]
+\end{frame}
+
+\begin{frame}[label={sec:org1b1027b}]{Método de Smith \& Corripio - Tabla de Ziegler-Nichols}
 Dado el modelo 
 \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} \]
-Eliga sus parametros PID según la tabla de Ziegler-Nichols (1943)
+Elige los parametros PID según la tabla de Ziegler y Nichols (1943)
    \begin{center}
    \setlength{\tabcolsep}{20pt}
    \renewcommand{\arraystretch}{1.5}
@@ -306,7 +394,7 @@ Funciona bien cuando \[0.1 < \frac{\tau}{T} < 0.6.\]
 \end{frame}
 
 
-\begin{frame}[label={sec:orge88f07e}]{Tabla de  Ziegler-Nichols - ejemplo}
+\begin{frame}[label={sec:orgd6f9fbf}]{Tabla de  Ziegler-Nichols - ejemplo}
 \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} = 2 \frac{\mathrm{e}^{-s}}{s2.1 + 1} \]
    \begin{center}
    \setlength{\tabcolsep}{20pt}
@@ -326,7 +414,7 @@ Regla de control (PID completo, \(N=10\)):
 \end{frame}
 
 
-\begin{frame}[label={sec:orgedbe0f8}]{Tabla de  Ziegler-Nichols - ejercicio}
+\begin{frame}[label={sec:orgbe56985}]{Tabla de  Ziegler-Nichols - ejercicio}
 Determina los parametros del PID para el modelo del ejercicio anterior \(\tau = 1.125\), \(T = 2.625\).
 
 \[ G(s) = K \frac{\mathrm{e}^{-s\tau}}{sT + 1} =  \qquad\qquad\qquad\qquad\qquad\qquad \]
@@ -350,8 +438,8 @@ Regla de control (PID completo, \(N=?\)):
 
 
 \section{Asignación de polos}
-\label{sec:org6fa3ebd}
-\begin{frame}[label={sec:org0139083}]{Asignación de polos}
+\label{sec:orgc203dd3}
+\begin{frame}[label={sec:org1b62dd5}]{Asignación de polos - Un ejemplo}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -377,7 +465,7 @@ Regla de control (PID completo, \(N=?\)):
 \end{frame}
 
 
-\begin{frame}[label={sec:org66872e2}]{Asignación de polos}
+\begin{frame}[label={sec:orgd5f97c7}]{Asignación de polos}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -406,10 +494,11 @@ Regla de control (PID completo, \(N=?\)):
 \end{align*}
 \alert{Polinomio característico}
 \[ \underbrace{(z-1)(z-a) + K_c b (z - 1 + h/T_i)}_{\text{parametrizado}} = \underbrace{(z-\alpha)^2}_{\text{deseado}}\]
+
+\alert{¿Cómo podemos determinar los parametros del controlador, \(K_c\) y \(T_i\)?} 
 \end{frame}
 
-
-\begin{frame}[label={sec:org619b0c2}]{Asignación de polos}
+\begin{frame}[label={sec:org0c7f24a}]{Asignación de polos - Solución}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -437,5 +526,14 @@ Regla de control (PID completo, \(N=?\)):
 1 + a - K_c b &= 2\alpha \quad \Rightarrow \quad K_c = \frac{1+a-2\alpha}{b}\\
 K_cb(h/T_i - 1) + a &= \alpha^2 \quad \Rightarrow \quad \frac{1}{T_i} = \frac{1}{h}\left(1 + \frac{\alpha^2-a}{K_c b}\right) = \frac{1}{h} \left( \frac{(\alpha-1)^2}{1 + a - 2\alpha}\right) 
 \end{align*}
+\end{frame}
+
+
+\begin{frame}[label={sec:org0d97078}]{Asignación de polos}
+Ligas
+
+\href{https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.\%2Fapproximating-cont-controller\%2Fnotebooks\%2FPole-placement-PI-controller-example.ipynb}{Solución en mybinder}
+
+\href{https://github.com/kjartan-at-tec/mr2007-computerized-control/blob/master/approximating-cont-controller/notebooks/Pole-placement-PI-controller-example.ipynb}{Solución en github}
 \end{frame}
 \end{document}

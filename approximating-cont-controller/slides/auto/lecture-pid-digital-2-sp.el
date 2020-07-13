@@ -35,16 +35,16 @@
    (TeX-add-symbols
     "shift"
     "diff"
-    "Tcnst"
-    "tdelay"
     "uampl"
     "ttdelay"
     "TTcnst"
-    "ggain")
+    "ggain"
+    "tdelay"
+    "Tcnst")
    (LaTeX-add-labels
-    "sec:orgb2f034a"
-    "sec:org8410f98"
-    "sec:orgdc29a96"
-    "sec:org6fa3ebd"))
+    "sec:orgf73edad"
+    "sec:org2c6e6a5"
+    "sec:org9641e83"
+    "sec:orgc203dd3"))
  :latex)
 
