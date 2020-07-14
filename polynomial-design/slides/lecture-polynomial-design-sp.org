@@ -10,7 +10,7 @@
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
-#+title: Control computarizado - Asignaciónde polos (RST posicional)
+#+title: Control computarizado - Asignación de polos (RST posicional)
 # #+date: 2018-08-29
 
 * What do I want the students to understand?			   :noexport:
@@ -198,7 +198,7 @@
    #+end_center
 
 ** Los polos del sistema en lazo cerrado
-   *Actividad* Dado especificaciones \( \zeta < 0.59\) y \( \zeta\omega_n > 4\), marca los regiones en el plano $s$ y en el plano $z$ que correspondienden a las especificaciones.
+   *Actividad* Dado especificaciones \( \zeta < 0.59\) y \( \zeta\omega_n > 4\), marca las regiones en el plano $s$ y en el plano $z$ que corresponden a las especificaciones.
 #+BEGIN_CENTER 
 *plano s* \hspace*{0.4\linewidth} *plano z*\\
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
@@ -213,7 +213,7 @@
 
 \begin{align*}
 Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z)}^{\text{sens compl}}N(z)\\
-     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
+     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{z^{-d}F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
 \end{align*}
 
 ** Controlador de dos grados de libertad
@@ -222,10 +222,10 @@ Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z
 #+END_CENTER
 
 \begin{align*}
-Y(z)     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \overbrace{\frac{1}{1 + F_b(z)z^{-d}H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}}^{T_s(z)}N(z)\\
+Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
 \end{align*}
  
-*Evidentemente* \( S_s(z) + T_s(z) = 1\)
+*Evidentemente* \( S_s(z) + T_s(z) = 1\) *Conclusion:* Hay que encontrar un equilibrio entre rechazo a perturbaciones y rechazo a ruido de medida.
 
 ** Sensibilidad y sensibilidad complementaria
 *Actividad* Marca en el plano complejo los puntos indicados en el diagrama de Bode para ambos sistemas \(S_s(z)\) y \(T_s(z)\). Verifica que la suma vectorial de los puntos es 1.
@@ -234,30 +234,121 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \overbrace{\frac{1}{
 #+end_center
 
 ** Sensibilidad y sensibilidad complementaria
-Punto 1: \(\omega=0.1\), \(T_s(0.1) = 10^{-0.149/20}\mathrm{e}^{-i6^o} = 0.98\mathrm{e}^{-i6^o}\), \(S_s(0.1) = 10^{-18/20}\mathrm{e}^{i70^o} = 0.12\mathrm{e}^{i70^o}\)
+    \pgfmathsetmacro{\Smag}{0.12}
+    \pgfmathsetmacro{\Sarg}{70}
+    \pgfmathsetmacro{\Sreal}{\Smag*cos(\Sarg)}
+    \pgfmathsetmacro{\Sim}{\Smag*sin(\Sarg)}
+    \pgfmathsetmacro{\Tmag}{0.98}
+    \pgfmathsetmacro{\Targ}{-6}
+    \pgfmathsetmacro{\Treal}{\Tmag*cos(\Targ)}
+    \pgfmathsetmacro{\Tim}{\Tmag*sin(\Targ)}
+*Punto 1:* \(\omega=0.1\), \(T_s(0.1) = 10^{-0.149/20}\mathrm{e}^{-i6^o} = 0.98\mathrm{e}^{-i6^o} = 0.97 - i0.1\), \(S_s(0.1) = 10^{-18/20}\mathrm{e}^{i70^o} = 0.12\mathrm{e}^{i70^o} = 0.04 + i0.11 \)
 #+begin_export latex
+\begin{center}
+  \begin{tikzpicture}[scale=1.6]
 
+    \draw[->] (-2, 0) -- (2, 0) node[below] {Re};
+    \draw[->] (0,-2) -- (0,2) node[left] {Im};
+    \node[circle, fill, orange, inner sep= 1pt] (Tone) at (\Treal, \Tim) {};
+    \draw[thin, ->, orange] (0,0) to (Tone);
+    \node[circle, fill, blue!80, inner sep= 1pt] (Sone) at (\Sreal, \Sim) {};
+    \draw[thin, ->, blue!80] (0,0) to (Sone);
+    \draw (1,0) -- (1,-0.05) node[below] {1};
+    \draw (-1,0) -- (-1,-0.05) node[below] {-1};
+    \draw (0,1) -- (-0.05,1) node[left] {i};
+    \draw (0,-1) -- (-0.05,-1) node[left] {-i};
+  \end{tikzpicture}
+\end{center}
+#+end_export
+
+** Sensibilidad y sensibilidad complementaria -  Solución
+** Sensibilidad y sensibilidad complementaria -  Solución
+    \pgfmathsetmacro{\Smag}{0.12}
+    \pgfmathsetmacro{\Sarg}{70}
+    \pgfmathsetmacro{\Tmag}{0.98}
+    \pgfmathsetmacro{\Targ}{-6}
+    \pgfmathsetmacro{\Treal}{\Tmag*cos(\Targ)}
+    \pgfmathsetmacro{\Tim}{\Tmag*sin(\Targ)}
+
+    \pgfmathsetmacro{\Smagtwo}{0.12}
+    \pgfmathsetmacro{\Sargtwo}{70}
+    \pgfmathsetmacro{\Srealtwo}{\Smagtwo*cos(\Sargtwo)}
+    \pgfmathsetmacro{\Simtwo}{\Smag*sin(\Sarg)}
+    \pgfmathsetmacro{\Tmagtwo}{0.98}
+    \pgfmathsetmacro{\Targtwo}{-6}
+
+#+begin_export latex
+\begin{center}
+  \begin{tikzpicture}[scale=1.6]
+
+    \draw[->] (-2, 0) -- (2, 0) node[below] {Re};
+    \draw[->] (0,-2) -- (0,2) node[left] {Im};
+    \draw (1,0) -- (1,-0.05) node[below] {1};
+    \draw (-1,0) -- (-1,-0.05) node[below] {-1};
+    \draw (0,1) -- (-0.05,1) node[left] {i};
+    \draw (0,-1) -- (-0.05,-1) node[left] {-i};
+ 
+
+    \foreach \Tmag/\Targ/\nn in {-0.149/-6/1, 3.44/-88/2, -19/-196/3} {
+       \pgfmathsetmacro{\Treal}{pow(10,\Tmag/20)*cos(\Targ)}
+       \pgfmathsetmacro{\Tim}{pow(10,\Tmag/20)*sin(\Targ)}
+       \node[circle, fill, orange, inner sep= 1pt] (Tone) at (\Treal, \Tim) {};
+           \draw[thin, ->, orange] (0,0) to (Tone) node[right] {\tiny \nn};
+	   }
+    \foreach \Smag/\Sarg/\nn in {-18/78/1, 4.9/57/2, 0.85/-1.67/3} {
+       \pgfmathsetmacro{\Sreal}{pow(10,\Smag/20)*cos(\Sarg)}
+       \pgfmathsetmacro{\Sim}{pow(10,\Smag/20)*sin(\Sarg)}
+       \node[circle, fill, blue!80, inner sep= 1pt] (Sone) at (\Sreal, \Sim) {};
+           \draw[thin, ->, blue!80] (0,0) to (Sone) node[right] {\tiny \nn};
+	   }
+
+    %\node[circle, fill, blue!80, inner sep= 1pt] (Sone) at (\Sreal, \Sim) {};
+    %\draw[thin, ->, blue!80] (0,0) to (Sone);
+  \end{tikzpicture}
+\end{center}
 #+end_export
 
 * Cancelación de polos del observador
 ** Controlador de dos grados de libertad
 #+BEGIN_CENTER 
- \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
+ \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 #+END_CENTER
 
 \begin{align*}
-Y(z) &= G_c(z)U_c(z) + S_s(z)V(z) - T_s(z)N(z)\\
-     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
-     &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^dA(z)R(z) + B(z)S(z)}V(z) - \frac{S(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}N(z)
+Y(z) &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^dA(z)R(z) + B(z)S(z)}V(z)\\ & \qquad\qquad\qquad - \frac{S(z)B(z)}{z^dA(z)R(z) + B(z)S(z)}N(z)
 \end{align*}
  
 
 
 
+** Controlador de dos grados de libertad
+\begin{align*}
+Y(z) &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^dA(z)R(z) + B(z)S(z)}V(z)\\ & \qquad\qquad\qquad - \frac{S(z)B(z)}{z^dA(z)R(z) + B(z)S(z)}N(z)\\
+     &= \frac{T(z)B(z)z^d}{A_c(z)A_o(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z), \quad \text{elige}\, T(z) = t_0A_o(z)\\
+     &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
+\end{align*}
+
+** Controlador de dos grados de libertad
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
+#+END_CENTER
+\begin{align*}
+Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
+\end{align*}
+
+** Controlador de dos grados de libertad
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
+#+END_CENTER
+\begin{align*}
+Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
+\end{align*}
+ *Conclusiones* 1) Hay una separación parcial entre seguimiento de la referencia y rechazo a perturbaciones. 2) Se puede usar los polos correspondientes a las raíces de \(A_o(z)\) para afinar el rechazo a perturbaciones contra rechazo a ruido de medida. 
+
    
 * RST
 
-** Procedimiento
+** Procedimiento - asignación de polos
    Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
    1. Determina la ecuación diofántica
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
@@ -265,10 +356,13 @@ Y(z) &= G_c(z)U_c(z) + S_s(z)V(z) - T_s(z)N(z)\\
    2. Factoriza el polinomio caracteristico del lazo cerrado \(A_{cl}(z) = A_c(z)A_o(z)\), donde \(n_{A_o} = n_R\). 
    3. Determina polinomios \(R(z)\) y \(S(z)\) que satisfican
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
-   4. Eliga
+
+** Procedimiento
+   Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
+   4. [@4] Elige
       \[T(z) = t_0 A_o(z),\] donde \(t_0 = \frac{A_c(1)}{B(1)}\).
 
-   Nos da el ley de control 
+   Resulta la ley de control 
    \[ R(q) u(k) = T(q)u_c(k) - S(q)y(k). \]
    y la respuesta en lazo cerrado a la señal de referencia
    \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
@@ -276,12 +370,12 @@ Y(z) &= G_c(z)U_c(z) + S_s(z)V(z) - T_s(z)N(z)\\
 ** Determinando el orden del controlador
    Tenemos la ecuación diafóntica
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
-   y el controlador de retroalimentación
+   y el controlador
    \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
    *¿Cómo decidir el orden del controlador?* Nota
    - el controlador tiene $n+n+1 = 2\deg R + 1$ parámetros desconocidos
    - el lado izquierdo de \((*)\) tiene el grado $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
-   - la ecuación diofántica nos un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
+   - la ecuación diofántica da un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
 
      *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
      
@@ -333,10 +427,25 @@ Y(z) &= G_c(z)U_c(z) + S_s(z)V(z) - T_s(z)N(z)\\
      \[ z^3 + (r_1-1)z^2 - r_1z + s_0z + s_1 = z^3 -1.8z^2 + 0.81z\]
      Obtenemos las ecuaciones 
      \begin{align*}
-     z^2 &: \quad r_1-1 = -1.8\\
+     \begin{cases} z^2 &: \quad r_1-1 = -1.8\\
      z^1 &: \quad -r_1 + s_0 = 0.81\\
      z^0 &: \quad s_1 = 0
+     \end{cases}
+     \quad \Rightarrow \quad 
+     \begin{cases} r_1 &= -0.8\\ s_0 &= 0.01\\ s_1 &=0 \end{cases}
      \end{align*}
+     \[F_b(z) = \frac{0.01z}{z - 0.8}\]
+
+** Ejemplo - Control de nivel de una presa
+  4. [@4] Tenemos \(A_o(z) = z\), entonces 
+     \[T(z) = t_0A_o(z) = t_0z\]
+     \[G_c(z) = \frac{T(z)B(z)}{A_o(z)A_c(z)} = \frac{t_0 B(z)}{A_c(z)}, \quad \text{queremos}\, G_c(1)=1\]
+     \[ t_0 = \frac{A_c(1)}{B(1)} = \frac{(1-0.9)^2}{1} = 0.01\]
+
+  *Ley de conctrol*
+  \[R(\shift) u(kh) = T(\shift)u_c(kh) - S(\shift)y(kh)\]
+  \[ (\shift - 0.8)u(kh) = 0.01\shift u_c(kh) - 0.01\shift y(kh)\]
+  \[ u(kh+h) = 0.8u(kh) + 0.01 u_c(kh+h) - 0.01y(kh+h)\]
 
 *** Notes							   :noexport:
     - x is change in level of water in the dam from some operating point Volume = Volume_0 + x
@@ -379,7 +488,7 @@ Y(z) &= G_c(z)U_c(z) + S_s(z)V(z) - T_s(z)N(z)\\
       Try 
       
 
-* Ejercicios
+* Ejercicios                                                       :noexport:
 ** Determinando el orden del controlador
    Tenemos la ecuación diafóntica
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
@@ -457,7 +566,7 @@ para que se puede determinar todos los parametros usando la ecuación diofántic
    | 1. |            2. |
    | 3. | 4. \( \le 3\) |
    
-** Donde poner los polos del lazo cerrado?
+** Donde poner los polos del lazo cerrado?                         :noexport:
 #+BEGIN_CENTER 
 \begin{tabular}{cc}
  \includegraphics[width=0.41\linewidth]{../../figures/sgrid-crop}

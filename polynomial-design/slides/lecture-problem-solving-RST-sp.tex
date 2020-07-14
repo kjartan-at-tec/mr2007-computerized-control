@@ -1,0 +1,79 @@
+% Created 2020-07-14 mar 10:56
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{khpreamble}
+\usepackage{amssymb}
+\DeclareMathOperator{\shift}{q}
+\DeclareMathOperator{\diff}{p}
+\usetheme{default}
+\author{Kjartan Halvorsen}
+\date{\today}
+\title{Control computarizado - Asignación de polos}
+\hypersetup{
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Control computarizado - Asignación de polos},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.3.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Intro}
+\label{sec:org70d5d08}
+
+
+\section{2-dof controller}
+\label{sec:org70b8192}
+
+\begin{frame}[label={sec:orga124e5e}]{Two-degree-of-freedom controller}
+\begin{center}
+\includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit-no-delay}
+\end{center}
+\end{frame}
+
+\section{Problem 5.3}
+\label{sec:orga34f588}
+\begin{frame}[label={sec:org4d6f90f}]{Åström \& Wittenmark problem 5.3}
+Consider the system given by the pulse-transfer function
+\[ H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \]
+Use polynomial design (RST) to determine a controller such that the closed-loop system from command input to output has the characteristic polynomial
+\[ A_c(z) = z^2 - 1.5z + 0.7. \]
+Let the observer polynomial have as low order as possible, and place all observer poles in the origin (deadbeat observer). Consider three cases
+\begin{description}
+\item[{(a)}] Positional control with cancellation of the process zero
+\item[{(b)}] Positional control with no cancellation of the zero
+\item[{(c)}] Incremental controller with  no cancellation of the zero
+\end{description}
+\end{frame}
+
+\begin{frame}[label={sec:org368a5ad}]{Why cancel the process zero?}
+Bode plots of closed-loop systems (from reference signal to output) with and without cancellation of the process zero:
+
+\begin{center}
+\includegraphics[width=0.6\linewidth]{../../figures/aw5_3_bode}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org91db4f3}]{Preliminary exercise}
+Which of the closed-loop responses below  corresponds to (I) Positional control with zero cancellation (II), Positional control without zero cancellation, (III) Incremental control without zero cancellation.
+\begin{center}
+\includegraphics[width=0.45\linewidth]{../../figures/aw5_3_refstep}
+\includegraphics[width=0.45\linewidth]{../../figures/aw5_3_diststep}
+\end{center}
+\end{frame}
+\end{document}
