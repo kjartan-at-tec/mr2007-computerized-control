@@ -1,0 +1,32 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+
+\begin{document}
+\def\TT{1}
+\pgfmathsetmacro{\ww}{1/\TT}
+\pgfmathsetmacro{\hh}{0.4/\ww}
+\pgfmathsetmacro{\zz}{0.5}
+\pgfmathsetmacro{\realpart}{-\ww*\zz}
+\pgfmathsetmacro{\impart}{\ww*sqrt(1-pow(\zz,2))}
+\pgfmathsetmacro{\phshift}{-acos(\zz)}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    width=14cm,
+    height=4cm,
+    xlabel={$t$},
+    ylabel={$y(kh)$},
+    xmin={-2.5*\hh},
+    xmax={20*\hh},
+    ytick=\empty,
+    xtick=\empty,
+    ]
+    \addplot+[black, ycomb, domain=-2*\hh:20*\hh, samples=23, variable=x] {(x>0)*((1 - exp(\realpart*x) / sqrt(1-\zz * \zz) * sin(deg(\impart*x) + acos(\zz)))};
+  \end{axis} 
+\end{tikzpicture}
+\end{document}
+             

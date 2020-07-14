@@ -511,9 +511,10 @@
   \end{tikzpicture}
   \end{center}
   #+end_export
-  *Polinomio característico*
+  Polinomio característico
   \[ \underbrace{z^2 - (1+a -K_cb)z + K_cb(h/T_i - 1) + a}_{\text{parametrizado}} = \underbrace{z^2 -2\alpha z + \alpha^2}_{\text{deseado}}\]
 
+  *Los dos polinomios caracteristicos son iguales solamente si cada uno de los coefficientes correspondientes son iguales. Eso nos da dos ecuaciones en los variables desconocidos:*
   \begin{align*}
   1 + a - K_c b &= 2\alpha \quad \Rightarrow \quad K_c = \frac{1+a-2\alpha}{b}\\
   K_cb(h/T_i - 1) + a &= \alpha^2 \quad \Rightarrow \quad \frac{1}{T_i} = \frac{1}{h}\left(1 + \frac{\alpha^2-a}{K_c b}\right) = \frac{1}{h} \left( \frac{(\alpha-1)^2}{1 + a - 2\alpha}\right) 
@@ -522,7 +523,7 @@
 
 ** Asignación de polos	   
    
-   Ligas
+   *Ligas*
 
    [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.%2Fapproximating-cont-controller%2Fnotebooks%2FPole-placement-PI-controller-example.ipynb][Solución en mybinder]]
 

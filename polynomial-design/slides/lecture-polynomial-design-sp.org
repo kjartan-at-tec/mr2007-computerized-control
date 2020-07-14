@@ -25,12 +25,235 @@
 ** Objetivo                                                           :slide:
    - Entender diseño de un controlador por asignación de polos
 
-* 2-dof controller
+* Tiempo de muestreo
+** Tiempo de muestreo
+   *Un tiempo de muestreo, \(h\), adecuado depende de la velocidad del proceso a controlar y/o la velocidad deseada del sistema en lazo cerrado*  
+*** Reglas de oro (Åström & Wittenmark)
+    1. Para sistemas con respuesta al escalón *sin* sobrepaso: *4 a 10* muestreos en un tiempo de subida. \[ \frac{t_r}{h} \approx 4 \; \text{a} \; 10 \]
+       #+begin_export latex
+	     \begin{center}
+	     \def\TT{1}
+	     \pgfmathsetmacro{\hh}{\TT/6}
+	       \begin{tikzpicture}
+		 \begin{axis}[
+		   width=14cm,
+		   height=4cm,
+		   xlabel={$t$},
+		   ylabel={$y(kh)$},
+		   xmin={-2.5*\hh},
+		   xmax={20*\hh},
+		   ytick=\empty,
+		   ]
+         
+		   \addplot+[black, ycomb, domain=-2:20, samples=23,variable=k] ( {k*\hh}, {(k*\hh>=0)*(1 - exp(-k*\hh/\TT) }); 
+         
+		 \end{axis}
+	       \end{tikzpicture}
+	     \end{center}
 
+  
+       #+end_export
+
+
+** Tiempo de muestreo
+   *Un tiempo de muestreo, \(h\), adecuado depende de la velocidad del proceso a controlar y/o la velocidad deseada del sistema en lazo cerrado*  
+*** Reglas de oro (Åström & Wittenmark)
+    2. [@2] Para sistemas con respuesta tipo segunda orden subamortiguada \( G(s) = \frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}:\) 
+       \[ \omega_n h \approx 0.2 \; \text{to} \; 0.6 \qquad \text{Example with}\; h = \frac{0.4}{\omega_n}:\]
+
+       #+begin_export latex
+       \begin{center}
+       \includegraphics[width=12cm]{second-order-response-example}
+       \end{center}
+
+  
+       #+end_export
+
+* Asignación de polos - Repetición
+** Diseño por asignación de polos
+** Asignación de polos - Un ejemplo
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+    \node[block, right of=sum, node distance=32mm] (PI) {$F_{PI}(z) = K_c\frac{z -1 + \frac{h}{T_i}}{z-1}$};
+    \node[block,right of=PI, node distance=40mm] (plant) {$H(z) = \frac{b}{z-a}$};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$r(k)$} (sum);
+    \draw[->] (sum) -- node[above, ] {$e(k)$} (PI);
+    \draw[->] (PI) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) -- ++(0,-16mm) -| (sum) node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+  *Queremos un sistema de lazo cerrado criticalmente amortiguado con dos polos en \(z = \alpha, \quad 0 < \alpha < 1 \)*
+
+
+** Asignación de polos	   
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+    \node[block, right of=sum, node distance=32mm] (PI) {$F_{PI}(z) = K_c\frac{z -1 + \frac{h}{T_i}}{z-1}$};
+    \node[block,right of=PI, node distance=40mm] (plant) {$H(z) = \frac{b}{z-a}$};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$r(k)$} (sum);
+    \draw[->] (sum) -- node[above, ] {$e(k)$} (PI);
+    \draw[->] (PI) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) -- ++(0,-16mm) -| (sum) node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+  *Ecuación característica*
+  \begin{align*}
+  1 + H(z)F_{PI}(z) &= 0\\
+  (z-1)(z-a) + K_c b (z - 1 + h/T_i) &= 0
+  \end{align*}
+  *Polinomio característico*
+  \[ \underbrace{(z-1)(z-a) + K_c b (z - 1 + h/T_i)}_{\text{parametrizado}} = \underbrace{(z-\alpha)^2}_{\text{deseado}}\]
+
+  *¿Cómo podemos determinar los parametros del controlador, \(K_c\) y \(T_i\)?* 
+
+** Asignación de polos - Solución
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+    \node[block, right of=sum, node distance=32mm] (PI) {$F_{PI}(z) = K_c\frac{z -1 + \frac{h}{T_i}}{z-1}$};
+    \node[block,right of=PI, node distance=40mm] (plant) {$H(z) = \frac{b}{z-a}$};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$r(k)$} (sum);
+    \draw[->] (sum) -- node[above, ] {$e(k)$} (PI);
+    \draw[->] (PI) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) -- ++(0,-16mm) -| (sum) node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+  Polinomio característico
+  \[ \underbrace{z^2 - (1+a -K_cb)z + K_cb(h/T_i - 1) + a}_{\text{parametrizado}} = \underbrace{z^2 -2\alpha z + \alpha^2}_{\text{deseado}}\]
+
+  *Los dos polinomios caracteristicos son iguales solamente si cada uno de los coefficientes correspondientes son iguales. Eso nos da dos ecuaciones en los variables desconocidos:*
+  \begin{align*}
+  1 + a - K_c b &= 2\alpha \quad \Rightarrow \quad K_c = \frac{1+a-2\alpha}{b}\\
+  K_cb(h/T_i - 1) + a &= \alpha^2 \quad \Rightarrow \quad \frac{1}{T_i} = \frac{1}{h}\left(1 + \frac{\alpha^2-a}{K_c b}\right) = \frac{1}{h} \left( \frac{(\alpha-1)^2}{1 + a - 2\alpha}\right) 
+  \end{align*}
+  
+
+** Asignación de polos	   
+   
+   *Ligas*
+
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.%2Fapproximating-cont-controller%2Fnotebooks%2FPole-placement-PI-controller-example.ipynb][Solución en mybinder]]
+
+   [[https://github.com/kjartan-at-tec/mr2007-computerized-control/blob/master/approximating-cont-controller/notebooks/Pole-placement-PI-controller-example.ipynb][Solución en github]]
+   
+
+
+* Conceptos claves
+** Tres conceptos claves
+   1. Dónde poner los polos del sistem en lazo cerrado
+   2. La función de /sensibilidad/ y la función de /sensibilidad complementaria/
+   3. Determinar el orden del controlador
+
+** Los polos del sistema en lazo cerrado
+   Polos complejos en el plano $s$:
+   #+begin_center
+   \includegraphics[width=0.45\linewidth]{../../figures/implane-second-order-poles}
+   #+end_center
+
+** Los polos del sistema en lazo cerrado
+   Dado especificaciónes de la velocidad y amortiguación del sistema en lazo cerrado
+   \[ t_s \approx \frac{4}{\zeta\omega_n} < 1 s \qquad \zeta \approx \frac{-\ln (\%OS/100)}{\sqrt{\pi^2 + \ln^2(\%OS/100)}}, \quad OS < 10\%  \]
+   resulta en 
+   \[ \zeta < 0.59,  \qquad \zeta\omega_n > 4\]
+
+   #+begin_center
+   \includegraphics[width=0.6\linewidth]{../../figures/step-response-specifications}
+   #+end_center
+
+** Los polos del sistema en lazo cerrado
+   *Actividad* Dado especificaciones \( \zeta < 0.59\) y \( \zeta\omega_n > 4\), marca los regiones en el plano $s$ y en el plano $z$ que correspondienden a las especificaciones.
+#+BEGIN_CENTER 
+*plano s* \hspace*{0.4\linewidth} *plano z*\\
+\includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
+\includegraphics[height=0.6\textheight]{../../figures/zgrid-crop}\\
+#+END_CENTER
+
+** Las funciones de sensibilidad y sensibilidad complementaria
 ** Controlador de dos grados de libertad
 #+BEGIN_CENTER 
  \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
 #+END_CENTER
+
+\begin{align*}
+Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z)}^{\text{sens compl}}N(z)\\
+     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
+\end{align*}
+
+** Controlador de dos grados de libertad
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
+#+END_CENTER
+
+\begin{align*}
+Y(z)     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \overbrace{\frac{1}{1 + F_b(z)z^{-d}H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}}^{T_s(z)}N(z)\\
+\end{align*}
+ 
+*Evidentemente* \( S_s(z) + T_s(z) = 1\)
+
+** Sensibilidad y sensibilidad complementaria
+*Actividad* Marca en el plano complejo los puntos indicados en el diagrama de Bode para ambos sistemas \(S_s(z)\) y \(T_s(z)\). Verifica que la suma vectorial de los puntos es 1.
+#+begin_center
+\includegraphics[width=0.7\linewidth]{../matlab/bode-sensitivity-exercise-crop}
+#+end_center
+
+** Sensibilidad y sensibilidad complementaria
+Punto 1: \(\omega=0.1\), \(T_s(0.1) = 10^{-0.149/20}\mathrm{e}^{-i6^o} = 0.98\mathrm{e}^{-i6^o}\), \(S_s(0.1) = 10^{-18/20}\mathrm{e}^{i70^o} = 0.12\mathrm{e}^{i70^o}\)
+#+begin_export latex
+
+#+end_export
+
+* Cancelación de polos del observador
+** Controlador de dos grados de libertad
+#+BEGIN_CENTER 
+ \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
+#+END_CENTER
+
+\begin{align*}
+Y(z) &= G_c(z)U_c(z) + S_s(z)V(z) - T_s(z)N(z)\\
+     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
+     &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^dA(z)R(z) + B(z)S(z)}V(z) - \frac{S(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}N(z)
+\end{align*}
+ 
+
+
+
    
 * RST
 
@@ -38,16 +261,19 @@
    Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
    1. Determina la ecuación diofántica
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
-   1. Determina polinomios \(R(z)\) y \(S(z)\) donde \(n_R \ge n_S\) que satisfican
+      y el orden adecuado del controlador, con \(\deg S = \deg R\).
+   2. Factoriza el polinomio caracteristico del lazo cerrado \(A_{cl}(z) = A_c(z)A_o(z)\), donde \(n_{A_o} = n_R\). 
+   3. Determina polinomios \(R(z)\) y \(S(z)\) que satisfican
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
-   2. Factoriza el polinomio caracteristico del lazo cerrado \(A_{cl}(z) = A_c(z)A_o(z)\), donde \(n_{A_o} \le n_R\). Eliga
+   4. Eliga
       \[T(z) = t_0 A_o(z),\] donde \(t_0 = \frac{A_c(1)}{B(1)}\).
 
    Nos da el ley de control 
    \[ R(q) u(k) = T(q)u_c(k) - S(q)y(k). \]
    y la respuesta en lazo cerrado a la señal de referencia
    \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
-** Determinación del orden del controlador
+
+** Determinando el orden del controlador
    Tenemos la ecuación diafóntica
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
    y el controlador de retroalimentación
@@ -57,69 +283,60 @@
    - el lado izquierdo de \((*)\) tiene el grado $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
    - la ecuación diofántica nos un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
 
-     *\(\Rightarrow\;\)Choose \(\deg R\) so that \(2\deg R + 1 = \deg A + \deg R + d\)*
+     *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
      
 
-** Determining the order of the controller - Exercise 1
-   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-   so that all parameters can be determined from the diophantine equation
-   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. \(n = 0\) | 2. \(n = 1\) |
-   | 3. \(n=2\)   | 4. \(n=3\)   |
-
-** Determining the order of the controller - Exercise 1
-   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-   so that all parameters can be determined from the diophantine equation
-   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. \(n = 0\) | 2.           |
-   | 3.           | 4.           |
-
-** Determining the order of the controller - Exercise 2
-   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-   so that all parameters can be determined from the diophantine equation
-   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. \(n = 1\) | 2. \(n = 2\) |
-   | 3. \(n=3\)   | 4. \(n=4\)   |
-
-** Determining the order of the controller - Exercise 2
-   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-   so that all parameters can be determined from the diophantine equation
-   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1.           | 2.           |
-   | 3. \(n=3\)   | 4.           |
-
-** Determining the order of the controller - Exercise 3
-   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\)    the appropriate degree of the controller is 3 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
-   What are the possible choices of the degree of the observer polynomial \(A_o(z)\) in
-   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. less than 2   | 2. less than 3             |
-   | 3. higher than 2 | 4. less than or equal to 3 |
-   
-** Determining the order of the controller - Exercise 3
-   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\)    the appropriate degree of the controller is 3
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
-   What are the possible choices of the degree of the observer polynomial \(A_o(z)\) in
-   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. |                         2. |
-   | 3. | 4. less than or equal to 3 |
-   
-** Where to place the closed-loop poles?
+* Ejemplo
+** Ejemplo - Control de nivel de una presa
 #+BEGIN_CENTER 
-\begin{tabular}{cc}
- \includegraphics[width=0.41\linewidth]{../../figures/sgrid-crop}
-& \includegraphics[width=0.43\linewidth]{../../figures/zgrid-crop}\\
-s-plane & z-plane
-\end{tabular}
+ \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
 #+END_CENTER
 
-** Example: RST control of power-plant dam			   :noexport:
+*Objetivo* Obtener un sistema en lazo cerrado con polos en \(z=0.9\).
+
+** Ejemplo - Control de nivel de una presa
 #+BEGIN_CENTER 
- \includegraphics[width=0.6\linewidth]{../../figures/kraftverk}
+ \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
 #+END_CENTER
 
-Plant dynamics: \( x(t) = x(t-1) -v(t) + u(t) \)
+*Dinámica del proceso*
+
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}
+	\node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
+	\node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
+	\node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
+	\node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
+    \end{tikzpicture}
+    \end{center}
+    #+end_export
+
+*Actividad* ¿Cuál es la funcion de transferencia correcta?
+
+|1: \(H(z) = \frac{z}{z-1}\) | 2: \(H(z)=\frac{1}{z-1} \) | 3: \(H(z)=\frac{1}{z(z-1)}\) |
+
+** Ejemplo - Control de nivel de una presa
+   Dado proceso \(H(z) = \frac{B(z)}{A(z)} = \frac{1}{z(z-1)}\) y polos deseados en \(z=0.9\).
+   
+  1. Ecuación diofántica \(A(z)R(z)z^d + B(z)S(z) = A_{cl}(z)\)
+     \[ z(z-1)R(z) + S(z) = A_{cl}(z)\]
+     El orden del controlador es 
+     \[\deg R = \deg A + d - 1 = 2-1 = 1, \quad \Rightarrow \quad F_b(z)=\frac{S(z)}{R(z)} = \frac{s_0z + s_1}{z + r_1}\]
+  2. Tenemos la ecuación diofántica
+     \[ z(z-1)(z+r_1) + s_0z + s_1 = A_{cl}(z)\]
+     El grado de \(A_{cl}(z)\) es 3. Eligimos \(A_o(z) = z\),  ( \(\deg A_o = \deg R\)) 
+     \[ A_{cl}(z) = A_o(z) A_c(z) = z(z-0.9)^2\]
+
+** Ejemplo - Control de nivel de una presa
+  3. [@3] De la ecuación diofántica \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
+     \[ z^3 + (r_1-1)z^2 - r_1z + s_0z + s_1 = z^3 -1.8z^2 + 0.81z\]
+     Obtenemos las ecuaciones 
+     \begin{align*}
+     z^2 &: \quad r_1-1 = -1.8\\
+     z^1 &: \quad -r_1 + s_0 = 0.81\\
+     z^0 &: \quad s_1 = 0
+     \end{align*}
 
 *** Notes							   :noexport:
     - x is change in level of water in the dam from some operating point Volume = Volume_0 + x
@@ -161,3 +378,91 @@ Plant dynamics: \( x(t) = x(t-1) -v(t) + u(t) \)
 
       Try 
       
+
+* Ejercicios
+** Determinando el orden del controlador
+   Tenemos la ecuación diafóntica
+      \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
+   y el controlador de retroalimentación
+   \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+   *¿Cómo decidir el orden del controlador?* Nota
+   - el controlador tiene $n+n+1 = 2\deg R + 1$ parámetros desconocidos
+   - el lado izquierdo de \((*)\) tiene el grado $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
+   - la ecuación diofántica nos un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
+
+     *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
+     
+** Determinando el orden del controlador - Ejercicio 1
+   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
+
+   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
+\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+para que se puede determinar todos los parametros usando la ecuación diofántica
+
+   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
+   | 1. \(n = 0\) | 2. \(n = 1\) |
+   | 3. \(n=2\)   | 4. \(n=3\)   |
+
+** Determinando el orden del controlador - Ejercicio 1, Solución
+   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
+
+   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
+\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+para que se puede determinar todos los parametros usando la ecuación diofántica
+
+   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
+   | 1. \(n = 0\) | 2. \(n = 1\) |
+   | 3. \(n=2\)   | 4. \(n=3\)   |
+
+** Determinando el orden del controlador - Ejercicio 2
+   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
+
+   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
+\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+para que se puede determinar todos los parametros usando la ecuación diofántica
+
+   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
+
+  | 1. \(n = 1\) | 2. \(n = 2\) |
+   | 3. \(n=3\)   | 4. \(n=4\)   |
+
+** Determinando el orden del controlador - Ejercicio 2, Solución
+   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
+
+   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
+\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+para que se puede determinar todos los parametros usando la ecuación diofántica
+
+   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
+
+  |         1. | 2. |
+  | 3. \(n=3\) | 4. |
+  |            |    |
+
+
+** Determinando el orden del controlador - Ejercicio 3
+   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)   el controlador aproprioado es 
+\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
+¿Cuáles son los grados permisibles del polinomio observador \(A_o(z)\) en
+   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
+
+   | 1. \(< 2\) | 2. \( < 3\)    |
+   | 3. \(> 2\) | 4. \( \le 3 \) |
+
+** Determining the order of the controller - Exercise 3
+   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\)    the appropriate degree of the controller is 3
+\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
+   What are the possible choices of the degree of the observer polynomial \(A_o(z)\) in
+   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
+   | 1. |            2. |
+   | 3. | 4. \( \le 3\) |
+   
+** Donde poner los polos del lazo cerrado?
+#+BEGIN_CENTER 
+\begin{tabular}{cc}
+ \includegraphics[width=0.41\linewidth]{../../figures/sgrid-crop}
+& \includegraphics[width=0.43\linewidth]{../../figures/zgrid-crop}\\
+s-plane & z-plane
+\end{tabular}
+#+END_CENTER
+
