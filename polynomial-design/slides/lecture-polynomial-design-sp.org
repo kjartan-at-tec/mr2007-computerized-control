@@ -56,18 +56,19 @@
 
 
 ** Tiempo de muestreo
-   *Un tiempo de muestreo, \(h\), adecuado depende de la velocidad del proceso a controlar y/o la velocidad deseada del sistema en lazo cerrado*  
 *** Reglas de oro (Åström & Wittenmark)
     2. [@2] Para sistemas con respuesta tipo segunda orden subamortiguada \( G(s) = \frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}:\) 
-       \[ \omega_n h \approx 0.2 \; \text{to} \; 0.6 \qquad \text{Example with}\; h = \frac{0.4}{\omega_n}:\]
+       \[ \omega_n h \approx 0.2 \; \text{to} \; 0.6 \qquad \text{Ejemplo con}\; h = \frac{0.4}{\omega_n}:\]
 
        #+begin_export latex
        \begin{center}
        \includegraphics[width=12cm]{second-order-response-example}
        \end{center}
-
-  
        #+end_export
+** Tiempo de muestreo
+*** Reglas de oro (Åström & Wittenmark)
+    3. [@3] Si conocemos la frecuencia de cross-over, podemos eligir el tiempo de muestreo para que el cambio de fase negativo causado por el muestreo y retención no sea entre 5 y 15 grados. El efecto de muestreo y retención es approximadamente un retraso de \(h/2\), \(\mathrm{e}^{-sh/2}\). Resulta la regla
+       \[ \arg \mathrm{e}^{-i\omega_c h/2} = -\omega_c h/2 \approx \frac{5\pi}{180} \; \text{a} \; \frac{15\pi}{180}\]
 
 * Asignación de polos - Repetición
 ** Diseño por asignación de polos
@@ -191,14 +192,14 @@
    Dado especificaciónes de la velocidad y amortiguación del sistema en lazo cerrado
    \[ t_s \approx \frac{4}{\zeta\omega_n} < 1 s \qquad \zeta \approx \frac{-\ln (\%OS/100)}{\sqrt{\pi^2 + \ln^2(\%OS/100)}}, \quad OS < 10\%  \]
    resulta en 
-   \[ \zeta < 0.59,  \qquad \zeta\omega_n > 4\]
+   \[ \zeta > 0.59,  \qquad \zeta\omega_n > 4\]
 
    #+begin_center
    \includegraphics[width=0.6\linewidth]{../../figures/step-response-specifications}
    #+end_center
 
 ** Los polos del sistema en lazo cerrado
-   *Actividad* Dado especificaciones \( \zeta < 0.59\) y \( \zeta\omega_n > 4\), marca las regiones en el plano $s$ y en el plano $z$ que corresponden a las especificaciones.
+   *Actividad* Dado especificaciones \( \zeta > 0.59\) y \( \zeta\omega_n > 4\), marca las regiones en el plano $s$ y en el plano $z$ que corresponden a las especificaciones.
 #+BEGIN_CENTER 
 *plano s* \hspace*{0.4\linewidth} *plano z*\\
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
