@@ -1,4 +1,4 @@
-% Created 2020-07-14 mar 12:03
+% Created 2020-07-14 mar 15:05
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,17 +34,17 @@
 \maketitle
 
 \section{Intro}
-\label{sec:orgc4185b7}
+\label{sec:orgb33e3eb}
 
-\begin{frame}[label={sec:org3805c86}]{Objetivo}
+\begin{frame}[label={sec:orgceaa17c}]{Objetivo}
 \begin{itemize}
 \item Entender diseño de un controlador por asignación de polos
 \end{itemize}
 \end{frame}
 
 \section{Tiempo de muestreo}
-\label{sec:orgbbe9c12}
-\begin{frame}[label={sec:orgd550073}]{Tiempo de muestreo}
+\label{sec:orgc7cc4f8}
+\begin{frame}[label={sec:org38816f2}]{Tiempo de muestreo}
 \alert{Un tiempo de muestreo, \(h\), adecuado depende de la velocidad del proceso a controlar y/o la velocidad deseada del sistema en lazo cerrado}  
 \begin{block}{Reglas de oro (Åström \& Wittenmark)}
 \begin{enumerate}
@@ -73,13 +73,12 @@
 \end{frame}
 
 
-\begin{frame}[label={sec:orgc29d609}]{Tiempo de muestreo}
-\alert{Un tiempo de muestreo, \(h\), adecuado depende de la velocidad del proceso a controlar y/o la velocidad deseada del sistema en lazo cerrado}  
+\begin{frame}[label={sec:orge105877}]{Tiempo de muestreo}
 \begin{block}{Reglas de oro (Åström \& Wittenmark)}
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item Para sistemas con respuesta tipo segunda orden subamortiguada \(G(s) = \frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}:\) 
-\[ \omega_n h \approx 0.2 \; \text{to} \; 0.6 \qquad \text{Example with}\; h = \frac{0.4}{\omega_n}:\]
+\[ \omega_n h \approx 0.2 \; \text{to} \; 0.6 \qquad \text{Ejemplo con}\; h = \frac{0.4}{\omega_n}:\]
 
 \begin{center}
 \includegraphics[width=12cm]{second-order-response-example}
@@ -87,12 +86,21 @@
 \end{enumerate}
 \end{block}
 \end{frame}
+\begin{frame}[label={sec:org97ad0de}]{Tiempo de muestreo}
+\begin{block}{Reglas de oro (Åström \& Wittenmark)}
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item Si conocemos la frecuencia de cross-over, podemos eligir el tiempo de muestreo para que el cambio de fase negativo causado por el muestreo y retención no sea entre 5 y 15 grados. El efecto de muestreo y retención es approximadamente un retraso de \(h/2\), \(\mathrm{e}^{-sh/2}\). Resulta la regla
+\[ \arg \mathrm{e}^{-i\omega_c h/2} = -\omega_c h/2 \approx \frac{5\pi}{180} \; \text{a} \; \frac{15\pi}{180}\]
+\end{enumerate}
+\end{block}
+\end{frame}
 
 \section{Asignación de polos - Repetición}
-\label{sec:org01eeed2}
-\begin{frame}[label={sec:orgaf9d8c3}]{Diseño por asignación de polos}
+\label{sec:org194246d}
+\begin{frame}[label={sec:org61ab7d8}]{Diseño por asignación de polos}
 \end{frame}
-\begin{frame}[label={sec:org723dd0f}]{Asignación de polos - Un ejemplo}
+\begin{frame}[label={sec:org29b1f1f}]{Asignación de polos - Un ejemplo}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -118,7 +126,7 @@
 \end{frame}
 
 
-\begin{frame}[label={sec:org6d69e7a}]{Asignación de polos}
+\begin{frame}[label={sec:orgf194d87}]{Asignación de polos}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -151,7 +159,7 @@
 \alert{¿Cómo podemos determinar los parametros del controlador, \(K_c\) y \(T_i\)?} 
 \end{frame}
 
-\begin{frame}[label={sec:org2b74e92}]{Asignación de polos - Solución}
+\begin{frame}[label={sec:org22c7846}]{Asignación de polos - Solución}
 \begin{center}
 \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -183,7 +191,7 @@ K_cb(h/T_i - 1) + a &= \alpha^2 \quad \Rightarrow \quad \frac{1}{T_i} = \frac{1}
 \end{frame}
 
 
-\begin{frame}[label={sec:org7bff1cd}]{Asignación de polos}
+\begin{frame}[label={sec:orga6f4e7b}]{Asignación de polos}
 \alert{Ligas}
 
 \href{https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.\%2Fapproximating-cont-controller\%2Fnotebooks\%2FPole-placement-PI-controller-example.ipynb}{Solución en mybinder}
@@ -194,8 +202,8 @@ K_cb(h/T_i - 1) + a &= \alpha^2 \quad \Rightarrow \quad \frac{1}{T_i} = \frac{1}
 
 
 \section{Conceptos claves}
-\label{sec:org919cfc8}
-\begin{frame}[label={sec:org11429d0}]{Tres conceptos claves}
+\label{sec:orgd785da9}
+\begin{frame}[label={sec:orgeca44aa}]{Tres conceptos claves}
 \begin{enumerate}
 \item Dónde poner los polos del sistem en lazo cerrado
 \item La función de \emph{sensibilidad} y la función de \emph{sensibilidad complementaria}
@@ -203,26 +211,26 @@ K_cb(h/T_i - 1) + a &= \alpha^2 \quad \Rightarrow \quad \frac{1}{T_i} = \frac{1}
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgc9815c0}]{Los polos del sistema en lazo cerrado}
+\begin{frame}[label={sec:org1856626}]{Los polos del sistema en lazo cerrado}
 Polos complejos en el plano \(s\):
 \begin{center}
 \includegraphics[width=0.45\linewidth]{../../figures/implane-second-order-poles}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org31420e8}]{Los polos del sistema en lazo cerrado}
+\begin{frame}[label={sec:org3815671}]{Los polos del sistema en lazo cerrado}
 Dado especificaciónes de la velocidad y amortiguación del sistema en lazo cerrado
 \[ t_s \approx \frac{4}{\zeta\omega_n} < 1 s \qquad \zeta \approx \frac{-\ln (\%OS/100)}{\sqrt{\pi^2 + \ln^2(\%OS/100)}}, \quad OS < 10\%  \]
 resulta en 
-\[ \zeta < 0.59,  \qquad \zeta\omega_n > 4\]
+\[ \zeta > 0.59,  \qquad \zeta\omega_n > 4\]
 
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/step-response-specifications}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org900c368}]{Los polos del sistema en lazo cerrado}
-\alert{Actividad} Dado especificaciones \(\zeta < 0.59\) y \(\zeta\omega_n > 4\), marca las regiones en el plano \(s\) y en el plano \(z\) que corresponden a las especificaciones.
+\begin{frame}[label={sec:org9d67f1d}]{Los polos del sistema en lazo cerrado}
+\alert{Actividad} Dado especificaciones \(\zeta > 0.59\) y \(\zeta\omega_n > 4\), marca las regiones en el plano \(s\) y en el plano \(z\) que corresponden a las especificaciones.
 \begin{center}
 \alert{plano s} \hspace*{0.4\linewidth} \alert{plano z}\\
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
@@ -230,9 +238,9 @@ resulta en
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org5776ee9}]{Las funciones de sensibilidad y sensibilidad complementaria}
+\begin{frame}[label={sec:orgbeb7484}]{Las funciones de sensibilidad y sensibilidad complementaria}
 \end{frame}
-\begin{frame}[label={sec:org435bc20}]{Controlador de dos grados de libertad}
+\begin{frame}[label={sec:orgd1adca1}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -243,7 +251,7 @@ Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org59ca520}]{Controlador de dos grados de libertad}
+\begin{frame}[label={sec:orgd39eab0}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -255,14 +263,14 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \alert{Evidentemente} \(S_s(z) + T_s(z) = 1\) \alert{Conclusion:} Hay que encontrar un equilibrio entre rechazo a perturbaciones y rechazo a ruido de medida.
 \end{frame}
 
-\begin{frame}[label={sec:org898b172}]{Sensibilidad y sensibilidad complementaria}
+\begin{frame}[label={sec:org5c57d5f}]{Sensibilidad y sensibilidad complementaria}
 \alert{Actividad} Marca en el plano complejo los puntos indicados en el diagrama de Bode para ambos sistemas \(S_s(z)\) y \(T_s(z)\). Verifica que la suma vectorial de los puntos es 1.
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../matlab/bode-sensitivity-exercise-crop}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org3fe051e}]{Sensibilidad y sensibilidad complementaria}
+\begin{frame}[label={sec:org2b09be9}]{Sensibilidad y sensibilidad complementaria}
 \pgfmathsetmacro{\Smag}{0.12}
 \pgfmathsetmacro{\Sarg}{70}
 \pgfmathsetmacro{\Sreal}{\Smag*cos(\Sarg)}
@@ -289,9 +297,9 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org39e5d99}]{Sensibilidad y sensibilidad complementaria -  Solución}
+\begin{frame}[label={sec:orgcb6a47a}]{Sensibilidad y sensibilidad complementaria -  Solución}
 \end{frame}
-\begin{frame}[label={sec:orgb4c7b73}]{Sensibilidad y sensibilidad complementaria -  Solución}
+\begin{frame}[label={sec:orgf5f0646}]{Sensibilidad y sensibilidad complementaria -  Solución}
 \pgfmathsetmacro{\Smag}{0.12}
 \pgfmathsetmacro{\Sarg}{70}
 \pgfmathsetmacro{\Tmag}{0.98}
@@ -337,8 +345,8 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \end{frame}
 
 \section{Cancelación de polos del observador}
-\label{sec:orgc7ba599}
-\begin{frame}[label={sec:org0dbc2b1}]{Controlador de dos grados de libertad}
+\label{sec:org2fe25ec}
+\begin{frame}[label={sec:orgb7ed41e}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -351,7 +359,7 @@ Y(z) &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^
 
 
 
-\begin{frame}[label={sec:org4aeb684}]{Controlador de dos grados de libertad}
+\begin{frame}[label={sec:orgaf2fb5e}]{Controlador de dos grados de libertad}
 \begin{align*}
 Y(z) &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^dA(z)R(z) + B(z)S(z)}V(z)\\ & \qquad\qquad\qquad - \frac{S(z)B(z)}{z^dA(z)R(z) + B(z)S(z)}N(z)\\
      &= \frac{T(z)B(z)z^d}{A_c(z)A_o(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z), \quad \text{elige}\, T(z) = t_0A_o(z)\\
@@ -359,7 +367,7 @@ Y(z) &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org064e1dd}]{Controlador de dos grados de libertad}
+\begin{frame}[label={sec:org72ddd7f}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -368,7 +376,7 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org81875b3}]{Controlador de dos grados de libertad}
+\begin{frame}[label={sec:org29d1711}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -380,9 +388,9 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 
 
 \section{RST}
-\label{sec:org0b1b18a}
+\label{sec:org427d3b8}
 
-\begin{frame}[label={sec:org73508b9}]{Procedimiento - asignación de polos}
+\begin{frame}[label={sec:orgcbf1ef7}]{Procedimiento - asignación de polos}
 Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
 \begin{enumerate}
 \item Determina la ecuación diofántica
@@ -394,7 +402,7 @@ y el orden adecuado del controlador, con \(\deg S = \deg R\).
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org49e5bf6}]{Procedimiento}
+\begin{frame}[label={sec:orgee46d18}]{Procedimiento}
 Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
 \begin{enumerate}
 \setcounter{enumi}{3}
@@ -408,7 +416,7 @@ y la respuesta en lazo cerrado a la señal de referencia
 \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
 \end{frame}
 
-\begin{frame}[label={sec:org026f697}]{Determinando el orden del controlador}
+\begin{frame}[label={sec:org6c36087}]{Determinando el orden del controlador}
 Tenemos la ecuación diafóntica
    \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
 y el controlador
@@ -425,8 +433,8 @@ y el controlador
 
 
 \section{Ejemplo}
-\label{sec:org361cd3e}
-\begin{frame}[label={sec:org1efb790}]{Ejemplo - Control de nivel de una presa}
+\label{sec:org7994b02}
+\begin{frame}[label={sec:org2b1ef95}]{Ejemplo - Control de nivel de una presa}
 \begin{center}
 \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
 \end{center}
@@ -434,7 +442,7 @@ y el controlador
 \alert{Objetivo} Obtener un sistema en lazo cerrado con polos en \(z=0.9\).
 \end{frame}
 
-\begin{frame}[label={sec:org5ae7701}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:org244005e}]{Ejemplo - Control de nivel de una presa}
 \begin{center}
 \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
 \end{center}
@@ -459,7 +467,7 @@ y el controlador
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org3a2edc4}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:orgb2f1ba3}]{Ejemplo - Control de nivel de una presa}
 Dado proceso \(H(z) = \frac{B(z)}{A(z)} = \frac{1}{z(z-1)}\) y polos deseados en \(z=0.9\).
 
 \begin{enumerate}
@@ -474,7 +482,7 @@ El grado de \(A_{cl}(z)\) es 3. Eligimos \(A_o(z) = z\),  ( \(\deg A_o = \deg R\
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgfc8bccb}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:orgec59c59}]{Ejemplo - Control de nivel de una presa}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item De la ecuación diofántica \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
@@ -492,7 +500,7 @@ z^0 &: \quad s_1 = 0
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org8abf5fe}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:org072c55a}]{Ejemplo - Control de nivel de una presa}
 \begin{enumerate}
 \setcounter{enumi}{3}
 \item Tenemos \(A_o(z) = z\), entonces 

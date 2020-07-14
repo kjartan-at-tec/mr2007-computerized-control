@@ -37,12 +37,12 @@
     "diff"
     "TT")
    (LaTeX-add-labels
-    "sec:orgc4185b7"
-    "sec:orgbbe9c12"
-    "sec:org01eeed2"
-    "sec:org919cfc8"
-    "sec:orgc7ba599"
-    "sec:org0b1b18a"
-    "sec:org361cd3e"))
+    "sec:orgb33e3eb"
+    "sec:orgc7cc4f8"
+    "sec:org194246d"
+    "sec:orgd785da9"
+    "sec:org2fe25ec"
+    "sec:org427d3b8"
+    "sec:org7994b02"))
  :latex)
 
