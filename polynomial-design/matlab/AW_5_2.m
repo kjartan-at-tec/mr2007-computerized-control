@@ -2,13 +2,13 @@
 close all
 clear all
 
-a = 0.9;
+a = 0.8;
 beta = 0.2;
 H = tf([beta], [1, -a], 1)
 
 [sol, t0] = RST_sym([beta], [1, -a], 1)
 
-alpha = 0.8;
+alpha = 0.2;
 p1_n = alpha;
 p2_n = alpha;
 po_n = 0;
@@ -32,3 +32,13 @@ Hd = feedback(1, H*Fb*delay)
 
 figure(1)
 step(Hc, Hd)
+
+Ss = Hd;
+Ts = feedback(H*Fb*delay, 1);
+minreal(Ss+Ts)
+figure(2)
+clf
+bode(Ss, Ts, {0.01, 5} )
+
+legend('S_s', 'T_s')
+

@@ -34,10 +34,16 @@
     "khpreamble")
    (TeX-add-symbols
     "shift"
-    "diff")
+    "diff"
+    "TT")
    (LaTeX-add-labels
-    "sec:org5a20044"
-    "sec:org6b1dd2c"
-    "sec:org4389793"))
+    "sec:org27fea70"
+    "sec:org928afef"
+    "sec:org196a72d"
+    "sec:org1724e03"
+    "sec:org904c8e4"
+    "sec:org84aa477"
+    "sec:org6aaff96"
+    "sec:org5199c99"))
  :latex)
 

@@ -1,11 +1,10 @@
 (TeX-add-style-hook
- "lecture-pid-digital-2-sp"
+ "RST-exercise"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-class-options
-                     '(("beamer" "presentation" "aspectratio=1610")))
+                     '(("scrartcl" "letterpaper" "fleqn")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("inputenc" "utf8") ("fontenc" "T1") ("ulem" "normalem")))
-   (add-to-list 'LaTeX-verbatim-environments-local "semiverbatim")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
@@ -16,8 +15,8 @@
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
-    "beamer"
-    "beamer10"
+    "scrartcl"
+    "scrartcl10"
     "inputenc"
     "fontenc"
     "graphicx"
@@ -31,20 +30,14 @@
     "amssymb"
     "capt-of"
     "hyperref"
-    "khpreamble")
-   (TeX-add-symbols
-    "shift"
-    "diff"
-    "uampl"
-    "ttdelay"
-    "TTcnst"
-    "ggain"
-    "tdelay"
-    "Tcnst")
+    "khpreamble"
+    "tabularx"
+    "geometry"
+    "pgfplots")
    (LaTeX-add-labels
-    "sec:orgf0a6500"
-    "sec:org95a80e9"
-    "sec:orgbff0dee"
-    "sec:orgbb95fb8"))
+    "sec:org6e78179"
+    "sec:orgb815efe"
+    "sec:org6948edd"
+    "sec:orgef90a48"))
  :latex)
 

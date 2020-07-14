@@ -60,6 +60,26 @@ Huc_b = F_ff_b * feedback(1, H*F_fb_b);
 % Closed-loop system from disturbance signal to output
 Hvc_b = feedback(1, H*F_fb_b);
 
+% Closed-loop  system from (negative) noise signal to output
+Hnc_b = feedback(H*F_fb_b, 1);
+
+figure(12)
+clf
+bode(Hvc_b, Hnc_b, {0.01, 5} )
+
+legend('S_s', 'T_s')
+
+% Mark some points
+ws = [0.1, 0.5, 2];
+for w = ws
+    Sw = evalfr(Hvc_b, w);
+    Tw = evalfr(Hnc_b, w);
+    subplot(2,1,1)
+    hold on
+    plot(w, abs(Sw), 'ro')
+end
+
+
 %% Controller (c), incremental control
 
 params = [1, 1, 0, 0
@@ -229,3 +249,6 @@ set(groot,'defaultAxesColorOrder',co_orig)
 % title('Step response of control signal, (c)')
 % h = findobj(gca,'Type','line')
 % set(h, 'linewidth', 2)
+
+
+%% Sensitivity
