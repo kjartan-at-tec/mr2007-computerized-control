@@ -351,7 +351,7 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 
 ** Procedimiento - asignación de polos
    Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
-   1. Determina la ecuación diofántica
+   1. Determina la ecuación diofantina
       \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
       y el orden adecuado del controlador, con \(\deg S = \deg R\).
    2. Factoriza el polinomio caracteristico del lazo cerrado \(A_{cl}(z) = A_c(z)A_o(z)\), donde \(n_{A_o} = n_R\). 
@@ -376,7 +376,7 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
    *¿Cómo decidir el orden del controlador?* Nota
    - el controlador tiene $n+n+1 = 2\deg R + 1$ parámetros desconocidos
    - el lado izquierdo de \((*)\) tiene el grado $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
-   - la ecuación diofántica da un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
+   - la ecuación diofantina da un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
 
      *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
      
@@ -414,17 +414,17 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 ** Ejemplo - Control de nivel de una presa
    Dado proceso \(H(z) = \frac{B(z)}{A(z)} = \frac{1}{z(z-1)}\) y polos deseados en \(z=0.9\).
    
-  1. Ecuación diofántica \(A(z)R(z)z^d + B(z)S(z) = A_{cl}(z)\)
+  1. ecuación diofantina \(A(z)R(z)z^d + B(z)S(z) = A_{cl}(z)\)
      \[ z(z-1)R(z) + S(z) = A_{cl}(z)\]
      El orden del controlador es 
      \[\deg R = \deg A + d - 1 = 2-1 = 1, \quad \Rightarrow \quad F_b(z)=\frac{S(z)}{R(z)} = \frac{s_0z + s_1}{z + r_1}\]
-  2. Tenemos la ecuación diofántica
+  2. Tenemos la ecuación diofantina
      \[ z(z-1)(z+r_1) + s_0z + s_1 = A_{cl}(z)\]
      El grado de \(A_{cl}(z)\) es 3. Eligimos \(A_o(z) = z\),  ( \(\deg A_o = \deg R\)) 
      \[ A_{cl}(z) = A_o(z) A_c(z) = z(z-0.9)^2\]
 
 ** Ejemplo - Control de nivel de una presa
-  3. [@3] De la ecuación diofántica \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
+  3. [@3] De la ecuación diofantina \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
      \[ z^3 + (r_1-1)z^2 - r_1z + s_0z + s_1 = z^3 -1.8z^2 + 0.81z\]
      Obtenemos las ecuaciones 
      \begin{align*}
@@ -498,7 +498,7 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
    *¿Cómo decidir el orden del controlador?* Nota
    - el controlador tiene $n+n+1 = 2\deg R + 1$ parámetros desconocidos
    - el lado izquierdo de \((*)\) tiene el grado $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
-   - la ecuación diofántica nos un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
+   - la ecuación diofantina nos un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
 
      *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
      
@@ -507,7 +507,7 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofántica
+para que se puede determinar todos los parametros usando la ecuación diofantina
 
    \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
    | 1. \(n = 0\) | 2. \(n = 1\) |
@@ -518,7 +518,7 @@ para que se puede determinar todos los parametros usando la ecuación diofántic
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofántica
+para que se puede determinar todos los parametros usando la ecuación diofantina
 
    \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
    | 1. \(n = 0\) | 2. \(n = 1\) |
@@ -529,7 +529,7 @@ para que se puede determinar todos los parametros usando la ecuación diofántic
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofántica
+para que se puede determinar todos los parametros usando la ecuación diofantina
 
    \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
 
@@ -541,7 +541,7 @@ para que se puede determinar todos los parametros usando la ecuación diofántic
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofántica
+para que se puede determinar todos los parametros usando la ecuación diofantina
 
    \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
 
