@@ -11,7 +11,7 @@
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
 #+title: Control computarizado - Asignación de polos (RST posicional)
-# #+date: 2018-08-29
+#+date: 2020-07-14
 
 * What do I want the students to understand?			   :noexport:
   - How to design a RST controller
@@ -67,8 +67,8 @@
        #+end_export
 ** Tiempo de muestreo
 *** Reglas de oro (Åström & Wittenmark)
-    3. [@3] Si conocemos la frecuencia de cross-over, podemos eligir el tiempo de muestreo para que el cambio de fase negativo causado por el muestreo y retención no sea entre 5 y 15 grados. El efecto de muestreo y retención es approximadamente un retraso de \(h/2\), \(\mathrm{e}^{-sh/2}\). Resulta la regla
-       \[ \arg \mathrm{e}^{-i\omega_c h/2} = -\omega_c h/2 \approx \frac{5\pi}{180} \; \text{a} \; \frac{15\pi}{180}\]
+    3. [@3] Si conocemos la frecuencia de cross-over, \(\omega_c\), deseada, podemos eligir un tiempo de muestreo basado en un análisis del cambio de fase negativo causado por el muestreo y retención. La regla dice que este cambio negativo sea entre -5 y -15 grados. El efecto de muestreo y retención es approximadamente un retraso de \(h/2\), \(\mathrm{e}^{-sh/2}\). Resulta la regla
+       \[ \arg \mathrm{e}^{-i\omega_c h/2} = -\omega_c h/2 \approx -\frac{5\pi}{180} \; \text{a} \; -\frac{15\pi}{180}\]
 
 * Asignación de polos - Repetición
 ** Diseño por asignación de polos
@@ -205,6 +205,11 @@
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
 \includegraphics[height=0.6\textheight]{../../figures/zgrid-crop}\\
 #+END_CENTER
+
+** 
+   #+begin_center
+   \includegraphics[height=0.9\textheight]{../../figures/screenshot-2020-07-14.png}
+   #+end_center
 
 ** Las funciones de sensibilidad y sensibilidad complementaria
 ** Controlador de dos grados de libertad
@@ -347,232 +352,3 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
  *Conclusiones* 1) Hay una separación parcial entre seguimiento de la referencia y rechazo a perturbaciones. 2) Se puede usar los polos correspondientes a las raíces de \(A_o(z)\) para afinar el rechazo a perturbaciones contra rechazo a ruido de medida. 
 
    
-* RST
-
-** Procedimiento - asignación de polos
-   Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
-   1. Determina la ecuación diofantina
-      \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
-      y el orden adecuado del controlador, con \(\deg S = \deg R\).
-   2. Factoriza el polinomio caracteristico del lazo cerrado \(A_{cl}(z) = A_c(z)A_o(z)\), donde \(n_{A_o} = n_R\). 
-   3. Determina polinomios \(R(z)\) y \(S(z)\) que satisfican
-      \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
-
-** Procedimiento
-   Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y specificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
-   4. [@4] Elige
-      \[T(z) = t_0 A_o(z),\] donde \(t_0 = \frac{A_c(1)}{B(1)}\).
-
-   Resulta la ley de control 
-   \[ R(q) u(k) = T(q)u_c(k) - S(q)y(k). \]
-   y la respuesta en lazo cerrado a la señal de referencia
-   \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
-
-** Determinando el orden del controlador
-   Tenemos la ecuación diafóntica
-      \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
-   y el controlador
-   \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-   *¿Cómo decidir el orden del controlador?* Nota
-   - el controlador tiene $n+n+1 = 2\deg R + 1$ parámetros desconocidos
-   - el lado izquierdo de \((*)\) tiene el grado $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
-   - la ecuación diofantina da un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
-
-     *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
-     
-
-* Ejemplo
-** Ejemplo - Control de nivel de una presa
-#+BEGIN_CENTER 
- \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
-#+END_CENTER
-
-*Objetivo* Obtener un sistema en lazo cerrado con polos en \(z=0.9\).
-
-** Ejemplo - Control de nivel de una presa
-#+BEGIN_CENTER 
- \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
-#+END_CENTER
-
-*Dinámica del proceso*
-
-    #+begin_export latex
-    \begin{center}
-      \begin{tikzpicture}
-	\node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
-	\node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
-	\node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
-	\node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
-    \end{tikzpicture}
-    \end{center}
-    #+end_export
-
-*Actividad* ¿Cuál es la funcion de transferencia correcta?
-
-|1: \(H(z) = \frac{z}{z-1}\) | 2: \(H(z)=\frac{1}{z-1} \) | 3: \(H(z)=\frac{1}{z(z-1)}\) |
-
-** Ejemplo - Control de nivel de una presa
-   Dado proceso \(H(z) = \frac{B(z)}{A(z)} = \frac{1}{z(z-1)}\) y polos deseados en \(z=0.9\).
-   
-  1. ecuación diofantina \(A(z)R(z)z^d + B(z)S(z) = A_{cl}(z)\)
-     \[ z(z-1)R(z) + S(z) = A_{cl}(z)\]
-     El orden del controlador es 
-     \[\deg R = \deg A + d - 1 = 2-1 = 1, \quad \Rightarrow \quad F_b(z)=\frac{S(z)}{R(z)} = \frac{s_0z + s_1}{z + r_1}\]
-  2. Tenemos la ecuación diofantina
-     \[ z(z-1)(z+r_1) + s_0z + s_1 = A_{cl}(z)\]
-     El grado de \(A_{cl}(z)\) es 3. Eligimos \(A_o(z) = z\),  ( \(\deg A_o = \deg R\)) 
-     \[ A_{cl}(z) = A_o(z) A_c(z) = z(z-0.9)^2\]
-
-** Ejemplo - Control de nivel de una presa
-  3. [@3] De la ecuación diofantina \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
-     \[ z^3 + (r_1-1)z^2 - r_1z + s_0z + s_1 = z^3 -1.8z^2 + 0.81z\]
-     Obtenemos las ecuaciones 
-     \begin{align*}
-     \begin{cases} z^2 &: \quad r_1-1 = -1.8\\
-     z^1 &: \quad -r_1 + s_0 = 0.81\\
-     z^0 &: \quad s_1 = 0
-     \end{cases}
-     \quad \Rightarrow \quad 
-     \begin{cases} r_1 &= -0.8\\ s_0 &= 0.01\\ s_1 &=0 \end{cases}
-     \end{align*}
-     \[F_b(z) = \frac{0.01z}{z - 0.8}\]
-
-** Ejemplo - Control de nivel de una presa
-  4. [@4] Tenemos \(A_o(z) = z\), entonces 
-     \[T(z) = t_0A_o(z) = t_0z\]
-     \[G_c(z) = \frac{T(z)B(z)}{A_o(z)A_c(z)} = \frac{t_0 B(z)}{A_c(z)}, \quad \text{queremos}\, G_c(1)=1\]
-     \[ t_0 = \frac{A_c(1)}{B(1)} = \frac{(1-0.9)^2}{1} = 0.01\]
-
-  *Ley de conctrol*
-  \[R(\shift) u(kh) = T(\shift)u_c(kh) - S(\shift)y(kh)\]
-  \[ (\shift - 0.8)u(kh) = 0.01\shift u_c(kh) - 0.01\shift y(kh)\]
-  \[ u(kh+h) = 0.8u(kh) + 0.01 u_c(kh+h) - 0.01y(kh+h)\]
-
-*** Notes							   :noexport:
-    - x is change in level of water in the dam from some operating point Volume = Volume_0 + x
-    - u is change in flow through dam gates from some operating point. 
-    - v is change in flow out. Either through increase in flow through power dam or decrease in river  
-      d/dt Vol =  d/dt (Vol_0 + x(t)) = flow in - flow out
-               = n_0 - v_0 - v(t) - u_0 + u(t), with n_0 - v_0 - u_0 = 0   
-      dx/dt = u - v. 
-
-    - Model  X = \frac{z}{z-1} (U-V) 
-
-    - H(z) = B(z)/A(z) = z/(z-1). 
-
-    - Diophantine eqn
-      AR + BS = Ac
-      (z-1)R + zS = Ac
-      With first-order controller S/R = (s0z + s1)/(z + r1)
-      (z-1)(z+r1) + z(s0z + s1) = (z-0.7)^2 , Ac = Acl = (z-0.7)^2 
-      or Ac = Acl Ao = (z-0.7)(z-a) 
-
-      (z-1)(z+r1) + s0z^2 + s1z = (z-0.7)(z-a)
-      z^2 - (1-r1)z -r1  + s0z^2 + s1z = z^2 - (0.7+a)z + 0.7*a.
-      z^2: 1 + s0 = 1   => s0=0
-      z^1: -(1-r1) + s1 = -(0.7+a)
-      z^0: -r1 = 0.7a
-
-      
-      r1s0s1 = [0, 1, 0; 1, 0, 1; -1, 0, 0]\[1; -0.7-a; 0.7*a] 
-
-
-      (-2+s0) = -0.7-a => s0 = 1.3-a
-      s1 = 0.7*a - 1
-
-      We have Gc = T/R B/A / (1 + S/R B/A) = TB / (AR + BS) = TB / (Ao Ac)
-      Let T = Ao*t_0
-      Gc = t_0 B / Ac, Want Gc(1) = 1 
-      t_0 = Ac(1) / B(1) = (1-0.7)/1 = 0.3.
-
-
-      Try 
-      
-
-* Ejercicios                                                       :noexport:
-** Determinando el orden del controlador
-   Tenemos la ecuación diafóntica
-      \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
-   y el controlador de retroalimentación
-   \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-   *¿Cómo decidir el orden del controlador?* Nota
-   - el controlador tiene $n+n+1 = 2\deg R + 1$ parámetros desconocidos
-   - el lado izquierdo de \((*)\) tiene el grado $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
-   - la ecuación diofantina nos un numero de ecuaciones (no-triviales) igual a su grado, al poner coeficientes de los dos lados iguales.
-
-     *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
-     
-** Determinando el orden del controlador - Ejercicio 1
-   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
-
-   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofantina
-
-   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. \(n = 0\) | 2. \(n = 1\) |
-   | 3. \(n=2\)   | 4. \(n=3\)   |
-
-** Determinando el orden del controlador - Ejercicio 1, Solución
-   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
-
-   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofantina
-
-   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. \(n = 0\) | 2. \(n = 1\) |
-   | 3. \(n=2\)   | 4. \(n=3\)   |
-
-** Determinando el orden del controlador - Ejercicio 2
-   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
-
-   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofantina
-
-   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
-
-  | 1. \(n = 1\) | 2. \(n = 2\) |
-   | 3. \(n=3\)   | 4. \(n=4\)   |
-
-** Determinando el orden del controlador - Ejercicio 2, Solución
-   Recuerda    *\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)*
-
-   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-para que se puede determinar todos los parametros usando la ecuación diofantina
-
-   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
-
-  |         1. | 2. |
-  | 3. \(n=3\) | 4. |
-  |            |    |
-
-
-** Determinando el orden del controlador - Ejercicio 3
-   Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)   el controlador aproprioado es 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
-¿Cuáles son los grados permisibles del polinomio observador \(A_o(z)\) en
-   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-
-   | 1. \(< 2\) | 2. \( < 3\)    |
-   | 3. \(> 2\) | 4. \( \le 3 \) |
-
-** Determining the order of the controller - Exercise 3
-   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\)    the appropriate degree of the controller is 3
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
-   What are the possible choices of the degree of the observer polynomial \(A_o(z)\) in
-   \[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-   | 1. |            2. |
-   | 3. | 4. \( \le 3\) |
-   
-** Donde poner los polos del lazo cerrado?                         :noexport:
-#+BEGIN_CENTER 
-\begin{tabular}{cc}
- \includegraphics[width=0.41\linewidth]{../../figures/sgrid-crop}
-& \includegraphics[width=0.43\linewidth]{../../figures/zgrid-crop}\\
-s-plane & z-plane
-\end{tabular}
-#+END_CENTER
-

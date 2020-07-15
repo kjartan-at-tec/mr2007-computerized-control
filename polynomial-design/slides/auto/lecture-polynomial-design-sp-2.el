@@ -1,18 +1,18 @@
 (TeX-add-style-hook
- "lecture-polynomial-design-sp"
+ "lecture-polynomial-design-sp-2"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-class-options
                      '(("beamer" "presentation" "aspectratio=169")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("inputenc" "utf8") ("fontenc" "T1") ("ulem" "normalem")))
    (add-to-list 'LaTeX-verbatim-environments-local "semiverbatim")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
@@ -34,13 +34,12 @@
     "khpreamble")
    (TeX-add-symbols
     "shift"
-    "diff"
-    "TT")
+    "diff")
    (LaTeX-add-labels
-    "sec:org51742be"
-    "sec:orgab39695"
-    "sec:orgb70cea3"
-    "sec:org773752f"
-    "sec:org6e95e45"))
+    "sec:orgba70d2b"
+    "sec:org08f309c"
+    "sec:orga0d15e5"
+    "sec:org14410bd"
+    "sec:org54cdbda"))
  :latex)
 
