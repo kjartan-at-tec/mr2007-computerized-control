@@ -12,5 +12,8 @@
 send-mail*.ipynb
 .gitsecret/keys/random_seed
 !*.secret
+<<<<<<< HEAD
+=======
 ./exams/partial-exam-2/MR2007-partial-2-fall19.pdf
 ./exams/partial-exam-2/MR2007-partial-2-fall19.tex
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
