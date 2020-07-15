@@ -23,32 +23,31 @@
 
 * Intro
 * 2-dof controller
-** Two-degree-of-freedom controller
+** Controlador de dos grados de libertad
 #+BEGIN_CENTER 
- \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit-no-delay}
+ \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 #+END_CENTER
-   
 * Problem 5.3
-**  Åström & Wittenmark problem 5.3
-    Consider the system given by the pulse-transfer function
+**  Åström & Wittenmark problema 5.3
+    Dado sistema
     \[ H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \]
-    Use polynomial design (RST) to determine a controller such that the closed-loop system from command input to output has the characteristic polynomial
+    Determina controlador de dos grados de libertad, dónde el polinomio caracteristica del sistema en lazo cerrado, desde la señal de referencia a la salida sea
     \[ A_c(z) = z^2 - 1.5z + 0.7. \]
-    Let the observer polynomial have as low order as possible, and place all observer poles in the origin (deadbeat observer). Consider three cases
-    - (a) :: Positional control with cancellation of the process zero
-    - (b) :: Positional control with no cancellation of the zero
-    - (c) :: Incremental controller with  no cancellation of the zero 
+    Pon los polos del observador en el origen (deadbeat observer). Considera tres casos
+    - (a) :: Control posicional *con* cancelación del cero del proceso
+    - (b) :: Control posicional *sin* cancelación del cero del proceso
+    - (c) :: Control *incremental* sin cancelación del cero del proceso
 
-** Why cancel the process zero?
-   Bode plots of closed-loop systems (from reference signal to output) with and without cancellation of the process zero:
+** ¿Por qué cancelar el cero?
+   Diagramas de Bode para los sistemas en lazo cerrado (seguimiento de referencia) con y sin cancelación del cero
 
    #+BEGIN_CENTER 
     \includegraphics[width=0.6\linewidth]{../../figures/aw5_3_bode}
    #+END_CENTER
 
-** Preliminary exercise
+** Ejercicio prelminario
 
-Which of the closed-loop responses below  corresponds to (I) Positional control with zero cancellation (II), Positional control without zero cancellation, (III) Incremental control without zero cancellation.
+   Cuál de las respuestas de sistema en lazo cerrado corresponde a (I) Control posicional *con* cancelación del cero del proceso,  (II) Control posicional *sin* cancelación del cero del, (III) Control *incremental* sin cancelación del cero del proceso
 #+BEGIN_CENTER 
  \includegraphics[width=0.45\linewidth]{../../figures/aw5_3_refstep}
  \includegraphics[width=0.45\linewidth]{../../figures/aw5_3_diststep}
@@ -57,6 +56,53 @@ Which of the closed-loop responses below  corresponds to (I) Positional control 
 *** Notes							   :noexport:
     Yellow line - Incremental controller, since disturbance is eliminated
     
+** Soluciones
+** Caso (a) Controlador posicional con cancelación del cero
+    1. Eligimos el controlador \[F_b(z) = \frac{S(z)}{R(z)} = \frac{S(z)}{(z+1)\bar{R}(z)}\]
+       para que haya cancelación del cero. Ecuación diofantina
+      \[A(z)(z+0.7)\bar{R}(z) + (z+0.7)S(z) = (z+0.7)A_c(z)A_o(z)\]
+      \[A(z)\bar{R}(z) + S(z) = A_c(z)A_o(z) \qquad (*)\]
+      Número de coeficientes desconocidos del controlador: \(2n_{\bar{R}} + 2\).
+      Número de ecuaciones de la ecuación diofantina: \( n_A + n_{\bar{R}} \).
+      *\(\Rightarrow\qquad \(n_{\bar{R}} = n_{\deg A} - 2 = 2-2 = 0\)*
+      \[ F_{b}(z) = \frac{s_0z + s_1}{z+0.7}\]
+** Caso (a) Controlador posicional con cancelación del cero
+    2. [@2] Factorización de \(A_{cl}(z) = A_c(z)A_o(z)\). Ecuación \((*)\) es de orden 2, igual  que \(A_c(z)\), entonces *\(A_o(z) = 1\)*.
+** Caso (a) Controlador posicional con cancelación del cero
+    3. [@3] Determina los polinomios \(R(z)\) y \(S(z)\). La ecuación diofantina
+       \[ (z^2 - 1.8z + 0.81) + s_0z + s_1 = z^2 - 1.5z + 0.7 \]
+       nos da el sistema de ecuaciones
+       \[ \begin{cases} z^1 :&  s_0 = -1.5+1.8= 0.3\\ z^0:& s_1 = 0.7-0.81=-0.11 \end{cases}\]
+       *\[F_b(z) = \frac{0.3z - 0.11}{z + 0.7}\]*
+** Caso (a) Controlador posicional con cancelación del cero
+    4. [@4] Determina  \[F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}\]
+       Función de transferencia del seguimiento a la referencia:
+       \[ G_c(z) = \frac{ \frac{T}{R}\frac{B}{A}}{1 + \frac{B}{A} \frac{S}{R}} = 
+                  = \frac{TB}{AR+BS} = \frac{t_0B}{BA_c} = \frac{t_0}{A_c(z)}\]
+       Para obtener ganancia stática unitaria:
+	 *\[ t_0 = A_c(1) = 0.2 \]*
+
+** Caso (b) Controlador posicional sin cancelación del cero
+    1. Controlador \[F_b(z) = \frac{S(z)}{R(z)}\]
+       nos da la ecuación diofantina
+       \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)\]
+       Número de coeficientes desconocidos del controlador: \(2n_{R} + 1\).
+       Número de ecuaciones de la ecuación diofantina: \( n_A + n_R \).
+       *\(\Rightarrow\qquad \(n_{R} = n_{\deg A} - 1 = 2-2 = 1\)*
+       \[ F_{b}(z) = \frac{s_0z + s_1}{z+r_1}\]
+** Caso (b) Controlador posicional sin cancelación del cero
+    2. [@2] Controlador \[F_b(z) = \frac{S(z)}{R(z)}\]
+
+	 R = z + r_1, S=s0z + s1
+	 (z^2 - 1.8z + 0.81)(z+r1) + (z+0.7)(s0z + s1) = (z^2 - 1.5z + 0.7)z
+	 z^3 -1.8z^2 + 0.81z + r1z^2 - 1.8r1z + 0.81r1 + s0z^2 + 0.7s0z + s1z + 0.7s1 
+	                                            = z^3 - 1.5z^2 + 0.7z
+       - System of eqns
+	 z^2: r1 + s0 = -1.5-1.8
+	 z^1: -1.8r1 + 0.7s0 + s1 = 0.7-0.81
+	 z^0: 0.81r1 + 0.7s1 = 0
+
+** Caso (c) Controlador incremental sin cancelación del cero
 
 ** Solution to problem 						   :noexport:
 
