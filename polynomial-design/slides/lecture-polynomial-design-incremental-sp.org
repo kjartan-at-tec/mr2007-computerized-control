@@ -22,14 +22,7 @@
   2. Set up equations in controller parameters
 
 * Intro
-
-** Goal of today's lecture				     :slide:noexport:
-   - Practice RST controller design
-   - Understand the role of observer poles
-
-
 * 2-dof controller
-
 ** Two-degree-of-freedom controller
 #+BEGIN_CENTER 
  \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit-no-delay}
