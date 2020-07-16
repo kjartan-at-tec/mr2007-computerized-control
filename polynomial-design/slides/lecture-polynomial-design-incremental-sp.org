@@ -45,7 +45,49 @@
     \includegraphics[width=0.6\linewidth]{../../figures/aw5_3_bode}
    #+END_CENTER
 
-** Ejercicio prelminario
+** Ejercicio preliminario 1
+    Dado sistema \( H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \) y polinomio caracteristico deseado \(A_c(z) = z^2 - 1.5z + 0.7\)
+
+    *Actividad* Marca los polos del proceso \(H(z)\), y los polos deseados del sistema en lazo cerrado, asumiendo $h=0.1$.
+
+#+BEGIN_CENTER 
+*plano s* \hspace*{0.4\linewidth} *plano z*\\
+\includegraphics[height=0.56\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
+\includegraphics[height=0.55\textheight]{../../figures/zgrid-crop}\\
+#+END_CENTER
+
+** Ejercicio preliminario 1 - Solución                             :noexport:
+    Dado sistema \( H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} = \frac{z+0.7}{(z-0.9)^2} \) y polinomio caracteristico deseado \(A_c(z) = z^2 - 1.5z + 0.7 = (z - 0.75 + i0.37)(z-0.75 - i 0.37)\).
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}
+	\begin{scope}[scale=2]
+	  \draw[->] (-1.2, 0) to (1.2, 0) node[below] {Re};
+	  \draw[->] (0,-1.2) to (0,1.20) node[left] {im} node[above, red] {plano z};
+	  \draw[domain=0:360, samples=361] plot ({cos(\x)}, {sin(\x)});
+	  \node[green!60!black, pin=40:{2 polos en 0.9}] at (0.9, 0) {\Large $\times$};
+	  \node[red!60!black] at (0.75, 0.37) {\Large $\times$};
+	  \node[coordinate, pin=90:{\footnotesize $0.75+0.37i = 0.84\mathrm{e}^{i0.45}$}] at (0.75, 0.37) {};
+
+	  \node[red!60!black] at (0.75, -0.37) {\Large $\times$};
+	  \node[coordinate, pin=-90:{\footnotesize $0.75-0.37i = 0.84\mathrm{e}^{-i0.45}$}] at (0.75, -0.37) {};
+	\end{scope}
+    
+	\begin{scope}[scale=0.6, xshift=-9cm]
+	  \draw[->] (-6, 0) to (2, 0) node[below] {Re};
+	  \draw[->] (0,-4) to (0,4) node[left] {im} node[above, red] {plano s};
+	  \node[green!60!black, pin=130:{2 polos en -1.05}] at (-1.05, 0) {\Large $\times$};
+	  \node[red!60!black] at (-1.79, 4.58) {\Large $\times$};
+	  \node[coordinate, pin=180:{\footnotesize $-1.79 + i4.58$}] at (-1.79, 4.58) {};
+	  \node[red!60!black] at (-1.79, -4.58) {\Large $\times$};
+	  \node[coordinate, pin=180:{\footnotesize $-1.79 - i4.58$}] at (-1.79, -4.58) {};
+	\end{scope}
+    
+      \end{tikzpicture}
+    \end{center}
+    #+end_export
+
+** Ejercicio preliminario 2
 
    Cuál de las respuestas de sistema en lazo cerrado corresponde a (I) Control posicional *con* cancelación del cero del proceso,  (II) Control posicional *sin* cancelación del cero del, (III) Control *incremental* sin cancelación del cero del proceso
 #+BEGIN_CENTER 
@@ -56,53 +98,134 @@
 *** Notes							   :noexport:
     Yellow line - Incremental controller, since disturbance is eliminated
     
-** Soluciones
+** Asignación de los polos
+
+* Caso (a)
 ** Caso (a) Controlador posicional con cancelación del cero
-    1. Eligimos el controlador \[F_b(z) = \frac{S(z)}{R(z)} = \frac{S(z)}{(z+1)\bar{R}(z)}\]
+    Dado sistema \( H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \) y polinomio caracteristico deseado
+    \( A_c(z) = z^2 - 1.5z + 0.7. \)
+
+    1. *Orden del controlador* Eligimos el controlador \[F_b(z) = \frac{S(z)}{R(z)} = \frac{S(z)}{(z+1)\bar{R}(z)}\]
        para que haya cancelación del cero. Ecuación diofantina
       \[A(z)(z+0.7)\bar{R}(z) + (z+0.7)S(z) = (z+0.7)A_c(z)A_o(z)\]
       \[A(z)\bar{R}(z) + S(z) = A_c(z)A_o(z) \qquad (*)\]
-      Número de coeficientes desconocidos del controlador: \(2n_{\bar{R}} + 2\).
+      Número de coeficientes desconocidos del controlador: \(n_{\bar{R}} + n_{\bar{R}} +  2\).
       Número de ecuaciones de la ecuación diofantina: \( n_A + n_{\bar{R}} \).
-      *\(\Rightarrow\qquad \(n_{\bar{R}} = n_{\deg A} - 2 = 2-2 = 0\)*
+      *\(\Rightarrow\qquad \(n_{\bar{R}} = n_{A} - 2 = 2-2 = 0\)*
       \[ F_{b}(z) = \frac{s_0z + s_1}{z+0.7}\]
 ** Caso (a) Controlador posicional con cancelación del cero
-    2. [@2] Factorización de \(A_{cl}(z) = A_c(z)A_o(z)\). Ecuación \((*)\) es de orden 2, igual  que \(A_c(z)\), entonces *\(A_o(z) = 1\)*.
+    2. [@2] *Polinomio del obervador* Factorización de \(A_{cl}(z) = A_c(z)A_o(z)\). Ecuación \((*)\) es de orden 2, igual  que \(A_c(z)\), entonces *\[A_o(z) = 1\]*.
+
 ** Caso (a) Controlador posicional con cancelación del cero
-    3. [@3] Determina los polinomios \(R(z)\) y \(S(z)\). La ecuación diofantina
+    3. [@3] *Solución de la ecuación diofantina* Determina los polinomios \(R(z)\) y \(S(z)\). La ecuación diofantina
        \[ (z^2 - 1.8z + 0.81) + s_0z + s_1 = z^2 - 1.5z + 0.7 \]
        nos da el sistema de ecuaciones
        \[ \begin{cases} z^1 :&  s_0 = -1.5+1.8= 0.3\\ z^0:& s_1 = 0.7-0.81=-0.11 \end{cases}\]
        *\[F_b(z) = \frac{0.3z - 0.11}{z + 0.7}\]*
 ** Caso (a) Controlador posicional con cancelación del cero
-    4. [@4] Determina  \[F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}\]
+    4. [@4] *El polinomio \(T(z)\)*  \[F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}\]
        Función de transferencia del seguimiento a la referencia:
        \[ G_c(z) = \frac{ \frac{T}{R}\frac{B}{A}}{1 + \frac{B}{A} \frac{S}{R}} = 
                   = \frac{TB}{AR+BS} = \frac{t_0B}{BA_c} = \frac{t_0}{A_c(z)}\]
        Para obtener ganancia stática unitaria:
 	 *\[ t_0 = A_c(1) = 0.2 \]*
 
+    Controlador completo
+
+    \begin{align*}
+    U(z) &= \frac{T(z)}{R(z}U_c(z) - \frac{S(z)}{R(z)}Y(z) = \frac{0.2}{z+0.7}U_c(z) - \frac{0.3z - 0.11}{z+0.7} Y(z)
+	 \end{align*}
+
+* Caso (b)                                                         :noexport:
 ** Caso (b) Controlador posicional sin cancelación del cero
-    1. Controlador \[F_b(z) = \frac{S(z)}{R(z)}\]
+    Dado sistema
+    \[ H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \]
+    y polinomio caracteristico deseado
+    \[ A_c(z) = z^2 - 1.5z + 0.7. \]
+
+    1. *Orden del controlador* Controlador \[F_b(z) = \frac{S(z)}{R(z)}\]
        nos da la ecuación diofantina
        \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)\]
        Número de coeficientes desconocidos del controlador: \(2n_{R} + 1\).
        Número de ecuaciones de la ecuación diofantina: \( n_A + n_R \).
-       *\(\Rightarrow\qquad \(n_{R} = n_{\deg A} - 1 = 2-2 = 1\)*
+       *\(\Rightarrow\qquad \(n_{R} = n_{A} - 1 = 2-2 = 1\)*
        \[ F_{b}(z) = \frac{s_0z + s_1}{z+r_1}\]
 ** Caso (b) Controlador posicional sin cancelación del cero
-    2. [@2] Controlador \[F_b(z) = \frac{S(z)}{R(z)}\]
+    2. [@2] *Polinomio del obervador* Factorización de \(A_{cl}(z) = A_c(z)A_o(z)\). La ecuación diofantina es de orden 3, y tenemos el polinomio caracteristico deseado \(A_c(z) = z^2 -1.5z + 0.7\). Entonces *\[A_o(z) = z\]*
 
-	 R = z + r_1, S=s0z + s1
-	 (z^2 - 1.8z + 0.81)(z+r1) + (z+0.7)(s0z + s1) = (z^2 - 1.5z + 0.7)z
-	 z^3 -1.8z^2 + 0.81z + r1z^2 - 1.8r1z + 0.81r1 + s0z^2 + 0.7s0z + s1z + 0.7s1 
-	                                            = z^3 - 1.5z^2 + 0.7z
-       - System of eqns
-	 z^2: r1 + s0 = -1.5-1.8
-	 z^1: -1.8r1 + 0.7s0 + s1 = 0.7-0.81
-	 z^0: 0.81r1 + 0.7s1 = 0
+** Caso (b) Controlador posicional sin cancelación del cero
+    3. [@3] *Solución de la ecuación diofantina* 
+       \[(z^2 - 1.8z + 0.81)(z-1)(z+r_1) + (z+0.7)(s_0z + s_1) = z(z^2 - 1.5z + 0.7)
+       \[z^3 -1.8z^2 + 0.81z + r1z^2 - 1.8r1z + 0.81r1 + s0z^2 + 0.7s0z + s1z + 0.7s1 
+	                                            = z^3 - 1.5z^2 + 0.7z\]
+	Poniendo coeficientes iguales da las ecuaciones
+	\[ \begin{cases} z^2: & r_1 + s_0 = -1.8-1.5\\
+              z^1: & -1.8 r_1 + 0.7s_0 + s_1 = -0.81 +0.7\\
+              z^0: & 0.81r_1 + 0.7s_1 = 0  \end{cases} \]
+
+	*\[ R(z) = z + 0.088, \qquad S(z) = 0.21z - 0.10\]*
+
+** Caso (b) Controlador posicional sin cancelación del cero
+    4. [@4] *El polinomio \(T(z)\)*  \[F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}, \qquad G_c(z) = \frac{t_0 B(z)}{A_c(z)}, \qquad G_(1) = 1 \quad\Rightarrow \]
+       *\[ t_0 = \frac{A_c(1)}{B(1)} = \frac{1 - 1.5 + 0.7}{1+0.7} = \frac{2}{17}\]*
+
+    Controlador completo
+
+    \begin{align*}
+    U(z) &= \frac{T(z)}{R(z}U_c(z) - \frac{S(z)}{R(z)}Y(z) \\
+         &= \frac{\frac{2}{17}z}{z+0.088}U_c(z) - \frac{0.21z - 0.10}{z+0.088} Y(z)
+	 \end{align*}
+
+
+* Caso (c)	 
+** Caso (c) Controlador incremental sin cancelación del cero
+    Dado sistema
+    \[ H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \]
+    y polinomio caracteristico deseado
+    \[ A_c(z) = z^2 - 1.5z + 0.7. \]
+
+    1. *Orden del controlador*  \(F_b(z) = \frac{S(z)}{(z-1)\bar{R}(z)}\), con \(n_S = n_{\bar{R}} + 1\) nos da la ecuación diofantina
+       \[ A(z)(z-1)\bar{R}(z) + B(z)S(z) = A_c(z)A_o(z)\]
+       Número de coeficientes desconocidos del controlador: \(n_{\bar{R}} + \n_{\bar{R}} + 2\).
+       Número de ecuaciones de la ecuación diofantina: \( n_A + n_\bar{R} + 1 \).
+       *\(\Rightarrow\qquad \(n_{\bar{R}} = n_{A} + 1- 2 = 1\)*
+       \[ F_{b}(z) = \frac{s_0z^2 + s_1z + s_2 }{(z-1)(z+r_1)}\]
+
 
 ** Caso (c) Controlador incremental sin cancelación del cero
+    2. [@2] *Polinomio del obervador* Factorización de \(A_{cl}(z) = A_c(z)A_o(z)\). La ecuación diofantina es de orden 4, y tenemos el polinomio caracteristico deseado \(A_c(z) = z^2 -1.5z + 0.7\). Entonces *\[A_o(z) = z^2\]*
+
+** Caso (c) Controlador incremental sin cancelación del cero
+    3. [@3] *Solución de la ecuación diofantina* 
+       \[(z^2 - 1.8z + 0.81)(z-1)(z+r_1) + (z+0.7)(s_0z^2 + s_1z + s_2) = z^2(z^2-1.5z+0.7) \]
+       - El lado izqierdo
+	 \[(z^2 - 1.8z + 0.81)(z^2 +(r_1-1)z - r_1) + s_0z^3 + s_1z^2 + s_2z + 0.7s_0z^2 + 0.7s_1z + 0.7s_2\] 
+         \[z^4 - 1.8z^3 + 0.81z^2 + (r_1-1)z^3 - 1.8(r_1-1)z^2 + 0.81(r_1-1)z - r_1z^2 + 1.8r_1z - 0.81r_1 \]
+	 \begin{multline*}
+	 z^4 + (r_1 + s_0 -2.8)z^3 + (-2.8r_1 + 0.7s_0 + s_1 +2.61)z^2 + (2.61 r_1 + 0.7s_1 + s_2 -0.81)z\\   + (-0.81r_1 + 0.7s_2)\end{multline*} 
+
+** Caso (c) Controlador incremental sin cancelación del cero
+    3. [@3] *Solución de la ecuación diofantina* 
+       \begin{multline*}
+	 z^4 + (r_1 + s_0 -2.8)z^3 + (-2.8r_1 + 0.7s_0 + s_1 +2.61)z^2 + (2.61 r_1 + 0.7s_1 + s_2 -0.81)z\\   + (-0.81r_1 + 0.7s_2) = z^4 -1.5z^3 + 0.7z^2\end{multline*} 
+	Coeficientes iguales da las ecuaciones
+	\[ \begin{cases} z^3: & r_1 + s_0 = 2.8 -1.5\\
+              z^2: & -2.8 r_1 + 0.7s_0 + s_1 = -2.61 +0.7\\
+              z^1: &  2.61r_1 + 0.7s_1 + s_2 = 0.81\\
+              z^0: & -0.81r_1 + 0.7s_2 = 0  \end{cases} \]
+
+	*\[ R(z) = (z-1)(z + 0.45), \qquad S(z) = 0.85z^2 - 1.25z + 0.52\]*
+
+** Caso (c) Controlador incremental sin cancelación del cero
+    4. [@4] *El polinomio \(T(z)\)*  \[F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}, \qquad G_c(z) = \frac{t_0 B(z)}{A_c(z)}, \qquad G_(1) = 1 \quad\Rightarrow \]
+       *\[ t_0 = \frac{A_c(1)}{B(1)} = \frac{1 - 1.5 + 0.7}{1+0.7} = \frac{2}{17}\]*
+
+    Controlador completo
+
+    \begin{align*}
+    U(z) &= \frac{T(z)}{R(z}U_c(z) - \frac{S(z)}{R(z)}Y(z) \\
+         &= \frac{\frac{2}{17}z^2}{(z-1)(z+0.45)}U_c(z) - \frac{0.85z^2 - 1.25z + 0.52}{(z-1)(z+0.45)} Y(z)
+	 \end{align*}
 
 ** Solution to problem 						   :noexport:
 
@@ -157,3 +280,7 @@
 	 z^0: -0.81r1 + 0.7s2 = 0
 
 	          
+** La importancia de los polos del observador
+
+[[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.%2Fpolynomal-design/notebooks/A-and-W-5.3.ipynb][Mybinder]]
+
