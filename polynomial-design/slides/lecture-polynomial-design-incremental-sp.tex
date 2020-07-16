@@ -1,4 +1,4 @@
-% Created 2020-07-16 jue 12:34
+% Created 2020-07-16 jue 13:26
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,17 +34,17 @@
 \maketitle
 
 \section{Intro}
-\label{sec:org1cc0c22}
+\label{sec:orgb4a86e5}
 \section{2-dof controller}
-\label{sec:orgf4ac286}
-\begin{frame}[label={sec:org412a271}]{Controlador de dos grados de libertad}
+\label{sec:org21976d4}
+\begin{frame}[label={sec:org4290b8b}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
 \end{frame}
 \section{Problem 5.3}
-\label{sec:orgb27fbc4}
-\begin{frame}[label={sec:org4179179}]{Åström \& Wittenmark problema 5.3}
+\label{sec:org572b93a}
+\begin{frame}[label={sec:org7fb08d9}]{Åström \& Wittenmark problema 5.3}
 Dado sistema
 \[ H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \]
 Determina controlador de dos grados de libertad, dónde el polinomio caracteristica del sistema en lazo cerrado, desde la señal de referencia a la salida sea
@@ -57,7 +57,7 @@ Pon los polos del observador en el origen (deadbeat observer). Considera tres ca
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:org0b34612}]{¿Por qué cancelar el cero?}
+\begin{frame}[label={sec:org6c9fe00}]{¿Por qué cancelar el cero?}
 Diagramas de Bode para los sistemas en lazo cerrado (seguimiento de referencia) con y sin cancelación del cero
 
 \begin{center}
@@ -65,7 +65,7 @@ Diagramas de Bode para los sistemas en lazo cerrado (seguimiento de referencia) 
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org181b177}]{Ejercicio preliminario 1}
+\begin{frame}[label={sec:orge808125}]{Ejercicio preliminario 1}
 Dado sistema \(H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81}\) y polinomio caracteristico deseado \(A_c(z) = z^2 - 1.5z + 0.7\)
 
 \alert{Actividad} Marca los polos del proceso \(H(z)\), y los polos deseados del sistema en lazo cerrado, asumiendo \(h=0.1\).
@@ -77,7 +77,37 @@ Dado sistema \(H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81}\) y polinomio caracteristic
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org55312af}]{Ejercicio preliminario 2}
+\begin{frame}[label={sec:org7ef679f}]{Ejercicio preliminario 1 - Solución}
+Dado sistema \(H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} = \frac{z+0.7}{(z-0.9)^2}\) y polinomio caracteristico deseado \(A_c(z) = z^2 - 1.5z + 0.7 = (z - 0.75 + i0.37)(z-0.75 - i 0.37)\).
+\begin{center}
+  \begin{tikzpicture}
+    \begin{scope}[scale=2]
+      \draw[->] (-1.2, 0) to (1.2, 0) node[below] {Re};
+      \draw[->] (0,-1.2) to (0,1.20) node[left] {im} node[above, red] {plano z};
+      \draw[domain=0:360, samples=361] plot ({cos(\x)}, {sin(\x)});
+      \node[green!60!black, pin=40:{2 polos en 0.9}] at (0.9, 0) {\Large $\times$};
+      \node[red!60!black] at (0.75, 0.37) {\Large $\times$};
+      \node[coordinate, pin=90:{\footnotesize $0.75+0.37i = 0.84\mathrm{e}^{i0.45}$}] at (0.75, 0.37) {};
+
+      \node[red!60!black] at (0.75, -0.37) {\Large $\times$};
+      \node[coordinate, pin=-90:{\footnotesize $0.75-0.37i = 0.84\mathrm{e}^{-i0.45}$}] at (0.75, -0.37) {};
+    \end{scope}
+
+    \begin{scope}[scale=0.6, xshift=-9cm]
+      \draw[->] (-6, 0) to (2, 0) node[below] {Re};
+      \draw[->] (0,-4) to (0,4) node[left] {im} node[above, red] {plano s};
+      \node[green!60!black, pin=130:{2 polos en -1.05}] at (-1.05, 0) {\Large $\times$};
+      \node[red!60!black] at (-1.79, 4.58) {\Large $\times$};
+      \node[coordinate, pin=180:{\footnotesize $-1.79 + i4.58$}] at (-1.79, 4.58) {};
+      \node[red!60!black] at (-1.79, -4.58) {\Large $\times$};
+      \node[coordinate, pin=180:{\footnotesize $-1.79 - i4.58$}] at (-1.79, -4.58) {};
+    \end{scope}
+
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org6ae4e2c}]{Ejercicio preliminario 2}
 Cuál de las respuestas de sistema en lazo cerrado corresponde a (I) Control posicional \alert{con} cancelación del cero del proceso,  (II) Control posicional \alert{sin} cancelación del cero del, (III) Control \alert{incremental} sin cancelación del cero del proceso
 \begin{center}
 \includegraphics[width=0.45\linewidth]{../../figures/aw5_3_refstep}
@@ -85,12 +115,12 @@ Cuál de las respuestas de sistema en lazo cerrado corresponde a (I) Control pos
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org0487dec}]{Asignación de los polos}
+\begin{frame}[label={sec:org1bc8b80}]{Asignación de los polos}
 \end{frame}
 
 \section{Caso (a)}
-\label{sec:org8092467}
-\begin{frame}[label={sec:org52ace62}]{Caso (a) Controlador posicional con cancelación del cero}
+\label{sec:orgc706865}
+\begin{frame}[label={sec:org3b73bab}]{Caso (a) Controlador posicional con cancelación del cero}
 Dado sistema \(H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81}\) y polinomio caracteristico deseado
 \(A_c(z) = z^2 - 1.5z + 0.7.\)
 
@@ -105,14 +135,14 @@ Número de ecuaciones de la ecuación diofantina: \(n_A + n_{\bar{R}}\).
 \[ F_{b}(z) = \frac{s_0z + s_1}{z+0.7}\]
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:org2de33f6}]{Caso (a) Controlador posicional con cancelación del cero}
+\begin{frame}[label={sec:org4bbb021}]{Caso (a) Controlador posicional con cancelación del cero}
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item \alert{Polinomio del obervador} Factorización de \(A_{cl}(z) = A_c(z)A_o(z)\). Ecuación \((*)\) es de orden 2, igual  que \(A_c(z)\), entonces \alert{\[A_o(z) = 1\]}.
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgbc08518}]{Caso (a) Controlador posicional con cancelación del cero}
+\begin{frame}[label={sec:org2f5ddde}]{Caso (a) Controlador posicional con cancelación del cero}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item \alert{Solución de la ecuación diofantina} Determina los polinomios \(R(z)\) y \(S(z)\). La ecuación diofantina
@@ -122,7 +152,7 @@ nos da el sistema de ecuaciones
 \alert{\[F_b(z) = \frac{0.3z - 0.11}{z + 0.7}\]}
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:orgf6b1d4a}]{Caso (a) Controlador posicional con cancelación del cero}
+\begin{frame}[label={sec:org7ab64d0}]{Caso (a) Controlador posicional con cancelación del cero}
 \begin{enumerate}
 \setcounter{enumi}{3}
 \item \alert{El polinomio \(T(z)\)}  \[F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}\]
@@ -141,8 +171,8 @@ U(z) &= \frac{T(z)}{R(z}U_c(z) - \frac{S(z)}{R(z)}Y(z) = \frac{0.2}{z+0.7}U_c(z)
 \end{frame}
 
 \section{Caso (c)}
-\label{sec:org2f865ea}
-\begin{frame}[label={sec:org59cc213}]{Caso (c) Controlador incremental sin cancelación del cero}
+\label{sec:org67f5d4d}
+\begin{frame}[label={sec:org8fd4c31}]{Caso (c) Controlador incremental sin cancelación del cero}
 Dado sistema
 \[ H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} \]
 y polinomio caracteristico deseado
@@ -159,14 +189,14 @@ Número de ecuaciones de la ecuación diofantina: \(n_A + n_\bar{R} + 1\).
 \end{frame}
 
 
-\begin{frame}[label={sec:org418e1c9}]{Caso (c) Controlador incremental sin cancelación del cero}
+\begin{frame}[label={sec:orga8f2838}]{Caso (c) Controlador incremental sin cancelación del cero}
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item \alert{Polinomio del obervador} Factorización de \(A_{cl}(z) = A_c(z)A_o(z)\). La ecuación diofantina es de orden 4, y tenemos el polinomio caracteristico deseado \(A_c(z) = z^2 -1.5z + 0.7\). Entonces \alert{\[A_o(z) = z^2\]}
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgcc0eb56}]{Caso (c) Controlador incremental sin cancelación del cero}
+\begin{frame}[label={sec:org031f03b}]{Caso (c) Controlador incremental sin cancelación del cero}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item \alert{Solución de la ecuación diofantina} 
@@ -181,7 +211,7 @@ z^4 + (r_1 + s_0 -2.8)z^3 + (-2.8r_1 + 0.7s_0 + s_1 +2.61)z^2 + (2.61 r_1 + 0.7s
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgbc9400b}]{Caso (c) Controlador incremental sin cancelación del cero}
+\begin{frame}[label={sec:org3a84065}]{Caso (c) Controlador incremental sin cancelación del cero}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item \alert{Solución de la ecuación diofantina} 
@@ -197,7 +227,7 @@ Coeficientes iguales da las ecuaciones
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org3e085e2}]{Caso (c) Controlador incremental sin cancelación del cero}
+\begin{frame}[label={sec:org332aab3}]{Caso (c) Controlador incremental sin cancelación del cero}
 \begin{enumerate}
 \setcounter{enumi}{3}
 \item \alert{El polinomio \(T(z)\)}  \[F_f(z) = \frac{T(z)}{R(z)} = \frac{t_0 A_o(z)}{B(z)}, \qquad G_c(z) = \frac{t_0 B(z)}{A_c(z)}, \qquad G_(1) = 1 \quad\Rightarrow \]
@@ -212,7 +242,7 @@ U(z) &= \frac{T(z)}{R(z}U_c(z) - \frac{S(z)}{R(z)}Y(z) \\
      \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org0df5cac}]{La importancia de los polos del observador}
+\begin{frame}[label={sec:orgda48ef9}]{La importancia de los polos del observador}
 \href{https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.\%2Fpolynomal-design/notebooks/A-and-W-5.3.ipynb}{Mybinder}
 \end{frame}
 \end{document}

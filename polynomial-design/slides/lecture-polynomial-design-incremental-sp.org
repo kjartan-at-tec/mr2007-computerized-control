@@ -56,7 +56,7 @@
 \includegraphics[height=0.55\textheight]{../../figures/zgrid-crop}\\
 #+END_CENTER
 
-** Ejercicio preliminario 1 - Solución                             :noexport:
+** Ejercicio preliminario 1 - Solución
     Dado sistema \( H(z) = \frac{z+0.7}{z^2 -1.8z + 0.81} = \frac{z+0.7}{(z-0.9)^2} \) y polinomio caracteristico deseado \(A_c(z) = z^2 - 1.5z + 0.7 = (z - 0.75 + i0.37)(z-0.75 - i 0.37)\).
     #+begin_export latex
     \begin{center}
@@ -282,5 +282,5 @@
 	          
 ** La importancia de los polos del observador
 
-[[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.%2Fpolynomal-design/notebooks/A-and-W-5.3.ipynb][Mybinder]]
+[[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.%Fapproximating-cont-controller%Fnotebooks/%F-and-W-5.3.ipynb][Mybinder]]
 
