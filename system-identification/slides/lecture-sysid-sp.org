@@ -11,11 +11,11 @@
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
-#+title: Control computarizado - Mínimos cuadrados
+#+title: Control computarizado - Identificación de sistemas
 # #+date: 2018-10-03
 
 * What do I want the students to understand?			   :noexport:
-  - Least squares
+  - Least squares parameter estimation
 
 * Which activities will the students do?			   :noexport:
   1. Determine order of the controller
@@ -64,11 +64,6 @@
    \end{center}
 
    #+end_export
-
-** Ajustando un modelo
-   #+begin_center
-   \includegraphics[height=0.8\textheight]{lsq-example-no-reg}
-   #+end_center
 
 ** Ajustando un modelo - regresión lineal
 
@@ -213,21 +208,21 @@
 
 * AR-model
 
-** Ejemplo - Modelo autorregresivo (AR)
-** Modelo autorregresivo (AR)
-Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo
+** Ejemplo - Modelo autoregresivo (AR)
+** Modelo autoregresivo (AR)
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \[ y(k+1) = -ay(k) + e(k+1),\]
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 *Objetivo* Estimar el parametro \(a\).
 
 1. Forma el predictor de un paso adelante \[\hat{y}_{k+1} = -ay_k=-y_ka = \varphi_{k+1} \theta,\] y el error de predicción \[\epsilon_k = y_k - \hat{y}_k = y_k - \varphi_k \theta\]
 
 
-** Modelo autorregresivo (AR)
-Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo
+** Modelo autoregresivo (AR)
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \( y(k+1) = -ay(k) + e(k+1),\)
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 *Objetivo* Estimar el parametro \(a\).
 
@@ -240,10 +235,10 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 
 
 
-** Modelo autorregresivo (AR)
-Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo
+** Modelo autoregresivo (AR)
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \( y(k+1) = -ay(k) + e(k+1),\)
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 *Objetivo* Estimar el parametro \(a\).
 
@@ -256,12 +251,12 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 
 ** Computación de la solución de mínimos cuadrados
    Dado error de predicción en forma vectoral para sistema de orden $n$
-   \( \epsilon = y - \Phi\theta\). Forma las *ecuaciones normales*
+   \( \epsilon = y - \Phi\theta\). Forma el sistema de ecuaciones
    \begin{align*}
    \Phi \theta &= y\\
    \begin{bmatrix}\varphi_{n+1}^T\\\varphi_{n+2}^T\\\varphi_{n+3}^T\\\varphi_{n+4}^T\\\vdots\\\varphi_{N}^T\end{bmatrix} \begin{bmatrix}\theta_1\\\theta_2\\\vdots\\\theta_m\end{bmatrix} &= \begin{bmatrix}y_{n+1}\\y_{n+2}\\y{n+3}\\y_{n+4}\\\vdots\\ y_{N}\end{bmatrix}
    \end{align*}
-   Resuelva las ecuaciones normales usando métodos numericamente robustos de algebra lineal, por ejemplo   factorización L-U. En matlab se escribe
+   Resuelva las ecuaciones usando métodos numericamente robustos de algebra lineal, por ejemplo   factorización L-U. En matlab se escribe
    #+begin_src octave
 	theta_LS = Phi \ y
    #+end_src
@@ -272,13 +267,139 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 
 
 
-   
+** Model AR de orden \(n\)   
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
+\begin{align*} 
+A(z)Y(z) = z^nE(z) \quad &\Leftrightarrow \quad A(\shift)y(k) = \shift^{n-1} e(k)\\
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) &= \shift^n e(k)\\
+(\shift + a_1 + a_2\shift{-1} + \cdots + a_n\shift^{-n+1})y(k) &= \shift^{n-1}e(k)\\
+y(k+1) + a_1y(k)  + a_2y(k-1) + \cdots + a_ny(k-n+1) &= e(k+1)\\
+y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) &+ e(k+1)
+\end{align*}
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
-** Modelo autorregresivo (AR) - Ejercicio
-Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo de segunda orden
-\[ y(k+2) = a_1y(k+1) + a_2y(k) + e(k+2),\]
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+*Objetivo* Estimar los parametro \(a_1, a_2, \ldots, \a_n\).
 
-*Actividad* Forma las ecuaciones normales \[ \Phi \theta = y\] siguiendo los mismos pasos como en el ejemplo de primer orden.
 
+** Model AR de orden \(n\)   
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
+\(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
+
+1. Forma el predictor de un paso adelante 
+   \[\hat{y}_{k+1} = -a_1y_k-a_2y_{k-1} - \ldots - a_n y_{k-n+1}a = \underbrace{\begin{bmatrix} -y_{k} & -y_{k-1} & \cdots & -y_{k-n+1}\end{bmatrix}}_{\varphi_{k+1}^T}\underbrace{\begin{bmatrix}a_1\\a_2\\\vdots\\a_n\end{bmatrix}}_{\theta}\]
+   y el error de predicción \[\epsilon_k = y_k - \hat{y}_k = y_k - \varphi_k^T \theta\]
+
+** Model AR de orden \(n\)   
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
+\(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
+
+2. [@2] Reune todas las observaciónes \(y_k\) y predicciones \(\hat{y}_k\) en forma vectoral
+   \begin{align*}
+   \epsilon &= \begin{bmatrix} \epsilon_{n+1}\\\epsilon_{n+2}\\\vdots\\\epsilon_N\end{bmatrix} =  \begin{bmatrix} y_{n+1}\\ y_{n+2}\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \hat{y}_{n+1}\\ \hat{y}_{n+2}\\\vdots\\\hat{y}_N \end{bmatrix}
+    =  \begin{bmatrix} y_{n+1}\\ y_{n+2}\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \varphi_{n+1}^T\theta\\ \varphi_{n+2}^T\theta\\\vdots\\\varphi_N^T\theta \end{bmatrix}\\
+   &= y - \underbrace{\begin{bmatrix}\varphi_{n+1}^T\\\varphi_{n+2}^T\\\vdots\\\varphi_N^T\end{bmatrix}}_{\Phi}\theta = y - \Phi\theta 
+   \end{align*}
+
+** Model AR de orden \(n\)   
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
+\(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
+3. [@3] Obtiene el estimado de mínimos cuadrados, que es
+   \begin{align*}
+    \theta_{LS} &= (\Phi^T\Phi)^{-1}\Phi^T y
+    \end{align*}
+   formando y resolviendo el sistema de ecuaciones
+   \begin{align*}
+   \Phi \theta &= y\\
+   \begin{bmatrix}\varphi_{n+1}^T\\\varphi_{n+2}^T\\\varphi_{n+3}^T\\\varphi_{n+4}^T\\\vdots\\\varphi_{N}^T\end{bmatrix} \begin{bmatrix}a_1\\a_2\\\vdots\\a_n\end{bmatrix} &= \begin{bmatrix}y_{n+1}\\y_{n+2}\\y_{n+3}\\y_{n+4}\\\vdots\\ y_{N}\end{bmatrix}
+   \end{align*}
+
+
+** Modelo autoregresivo (AR) - Ejercicio
+Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo de segunda orden
+\[ y(k+2) + a_1y(k+1) + a_2y(k) = e(k+2),\]
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
+
+*Actividad* Forma las ecuaciones \[ \Phi \theta = y\]
+
+
+* ARX-model
+
+** Model AutoRegresivo con variables eXógenas (ARX)  
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
+\[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
+
+*Actividad* Llena los bloques
+
+#+begin_export latex
+\begin{center}
+  \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, minimum height=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+    \node[coordinate] (input) {};
+    \node[block, right of=input, node distance=20mm] (plant)  {};
+    \node[sumnode, right of=plant, node distance=24mm] (sum) {\tiny $\Sigma$};
+    \node[block, above of=sum, node distance=20mm] (dist)  {};
+
+    \node[coordinate, above of=dist, node distance=12mm] (disturbance) {};
+    \node[coordinate, right of=sum, node distance=20mm] (output) {};
+
+    \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[above] {} (sum);
+    \draw[->] (sum) -- node[above, near end] {$y(k)$} (output);
+    \draw[->] (disturbance) -- node[right, pos=0.2] {$e(k)$} (dist);
+    \draw[->] (dist) -- node[above] {} (sum);
+
+  \end{tikzpicture}
+\end{center}
+
+#+end_export
+
+
+** Model AutoRegresivo con variables eXógenas (ARX) - solución
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
+\[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
+
+*Actividad* Llena los bloques
+
+#+begin_export latex
+\begin{center}
+  \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, minimum height=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+    \node[coordinate] (input) {};
+    \node[block, right of=input, node distance=20mm] (plant)  {$\frac{B(z)}{A(z)}$};
+    \node[sumnode, right of=plant, node distance=24mm] (sum) {\tiny $\Sigma$};
+    \node[block, above of=sum, node distance=20mm] (dist)  {$\frac{z^n}{A(z)}$};
+
+    \node[coordinate, above of=dist, node distance=12mm] (disturbance) {};
+    \node[coordinate, right of=sum, node distance=20mm] (output) {};
+
+    \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[above] {} (sum);
+    \draw[->] (sum) -- node[above, near end] {$y(k)$} (output);
+    \draw[->] (disturbance) -- node[right, pos=0.2] {$e(k)$} (dist);
+    \draw[->] (dist) -- node[above] {} (sum);
+
+  \end{tikzpicture}
+\end{center}
+
+#+end_export
+
+
+
+** Model ARX de orden \(n\)   
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
+\begin{align*} 
+A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad &\Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n-1} e(k)\\
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) &= (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k) +  \shift^n e(k)\\
+(\shift + a_1 + a_2\shift^{-1} + \cdots + a_n\shift^{-n+1})y(k) &= (b_0\shift^{m-d-n+1} + b_1\shift^{m-d-n} + \cdots + b_m\shift^{-d-n+1})u(k) +  \shift e(k)\\
+y(k+1) =  -a_1y(k) - \cdots - a_ny(k-n+1) + b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1) &=   e(k+1)
+\end{align*}
+
+*Objetivo* Estimar los parametro \(a_1, a_2, \ldots, \a_n, b_0, b_1, \ldots, b_m\).
+
+
+** Ejemplo y tarea
+
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.system-identification%2Fnotebooks%2FParameter%20estimation%20with%20least%20squares%20-%20Homework.ipynb][Mybinder]]
 
