@@ -21,6 +21,75 @@
   1. Determine order of the controller
   2. Set up equations in controller parameters
 
+* Retroalimentación, Tarea 2 - PID discretos
+
+**  Retroalimentación -  Tarea 2 
+   - Más variedad en nivel del trabajo esta vez
+   - Bastante retador
+   - Gráficas con referencia a fuente
+   
+** Discretización 
+*** text 
+   :PROPERTIES:
+    :BEAMER_col: 0.65
+    :END:
+   *Actividad* Aplica el método de Tustin
+   \[ z = \mathrm{e}^{sh} = \frac{\mathrm{e}^{sh/2}}{\mathrm{e}^{-sh/2}} \approx \frac{ 1 + \frac{sh}{2}}{1 - \frac{sh}{2}}\]
+   \[ s = \frac{2}{h} \cdot \frac{z-1}{z+1}\]
+   para discretizar el controlador PD ideal
+   \[F_{PD}(s) = K\big(1 + sT_d\big).\]
+   Marca (aproximadamente) el cero y el polo en el plano z 
+*** Graphics 
+   :PROPERTIES:
+    :BEAMER_col: 0.35
+    :END:
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[scale=1.6]
+       \draw[->] (-1.5, 0) -- (1.5, 0) node[below] {Re};
+       \draw[->] (0,-1.50) -- (0,1.5) node[left] {Im};
+
+       \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
+       \node at (1,-0.2) {1};
+
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+
+
+
+** Ganancia del PD ideal
+*** text 
+   :PROPERTIES:
+    :BEAMER_col: 0.65
+    :END:
+   En tiempo discreto el diagrama de Bode de una función de transferencia nos da los valores de esta función evaluada por puntos en el semicirculo arriba del circulo unitario en el plano z. Es decir
+   \[F_{PD}(\mathrm{e}^{i\omega h}), \quad 0 \le \omega h \le \pi \]
+   *Actividad* Que pasa con la ganancia del PD discretizado con el método de Tustin \[|F_{PD}(z)| = \left | \frac{z(1 + \frac{2T_d}{h}) - (\frac{2T_d}{h}-1)}{z + 1} \right|\]
+   cuando \(\omega = \omega_N = \frac{\pi}{h}\)?
+*** Graphics 
+   :PROPERTIES:
+    :BEAMER_col: 0.35
+    :END:
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[scale=1.4]
+       \draw[->] (-1.5, 0) -- (1.5, 0) node[below] {Re};
+       \draw[->] (0,-1.50) -- (0,1.5) node[left] {Im};
+
+       \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
+       \node at (1,-0.2) {1};
+
+       \draw[domain=0:180, samples=181, red, thick] plot ({cos(\x)}, {sin(\x)});
+
+       \node[coordinate, pin=60:{$\omega = \frac{\pi}{2h}$}] at (0,1);
+       \node[coordinate, pin=150:{$\omega = \frac{\pi}{h}$}] at (-1,0);
+
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
 * Intro
 ** Identificación de sistemas
 
@@ -270,9 +339,9 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 ** Model AR de orden \(n\)   
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \begin{align*} 
-A(z)Y(z) = z^nE(z) \quad &\Leftrightarrow \quad A(\shift)y(k) = \shift^{n-1} e(k)\\
+A(z)Y(z) = z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) &= \shift^{n-1} e(k)\\
 (\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) &= \shift^n e(k)\\
-(\shift + a_1 + a_2\shift{-1} + \cdots + a_n\shift^{-n+1})y(k) &= \shift^{n-1}e(k)\\
+(\shift + a_1 + a_2\shift{-1} + \cdots + a_n\shift^{-n+1})y(k) &= \shift e(k)\\
 y(k+1) + a_1y(k)  + a_2y(k-1) + \cdots + a_ny(k-n+1) &= e(k+1)\\
 y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) &+ e(k+1)
 \end{align*}
@@ -355,7 +424,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 #+end_export
 
 
-** Model AutoRegresivo con variables eXógenas (ARX) - solución
+** Model AutoRegresivo con variables eXógenas (ARX) - solución     :noexport:
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
@@ -387,6 +456,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 
 
+* Esta parte el miercoles                                          :noexport:
 ** Model ARX de orden \(n\)   
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
 \begin{align*} 

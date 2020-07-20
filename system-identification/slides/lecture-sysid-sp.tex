@@ -1,4 +1,4 @@
-% Created 2020-07-20 lun 08:01
+% Created 2020-07-20 lun 12:34
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,12 +34,79 @@
 
 \maketitle
 
-\section{Intro}
-\label{sec:org4df3f35}
-\begin{frame}[label={sec:orga72d84e}]{Identificación de sistemas}
+\section{Retroalimentación, Tarea 2 - PID discretos}
+\label{sec:org9170d1d}
+
+\begin{frame}[label={sec:org340d883}]{Retroalimentación -  Tarea 2}
+\begin{itemize}
+\item Más variedad en nivel del trabajo esta vez
+\item Bastante retador
+\item Gráficas con referencia a fuente
+\end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgf47233b}]{Un proceso complejo}
+\begin{frame}[label={sec:org18f94a3}]{Discretización}
+\begin{columns}
+\begin{column}{0.65\columnwidth}
+\alert{Actividad} Aplica el método de Tustin
+\[ z = \mathrm{e}^{sh} = \frac{\mathrm{e}^{sh/2}}{\mathrm{e}^{-sh/2}} \approx \frac{ 1 + \frac{sh}{2}}{1 - \frac{sh}{2}}\]
+\[ s = \frac{2}{h} \cdot \frac{z-1}{z+1}\]
+para discretizar el controlador PD ideal
+\[F_{PD}(s) = K\big(1 + sT_d\big).\]
+Marca (aproximadamente) el cero y el polo en el plano z 
+\end{column}
+\begin{column}{0.35\columnwidth}
+\begin{center}
+  \begin{tikzpicture}[scale=1.6]
+    \draw[->] (-1.5, 0) -- (1.5, 0) node[below] {Re};
+    \draw[->] (0,-1.50) -- (0,1.5) node[left] {Im};
+
+    \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
+    \node at (1,-0.2) {1};
+
+  \end{tikzpicture}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+\begin{frame}[label={sec:orgb490c71}]{Ganancia del PD ideal}
+\begin{columns}
+\begin{column}{0.65\columnwidth}
+En tiempo discreto el diagrama de Bode de una función de transferencia nos da los valores de esta función evaluada por puntos en el semicirculo arriba del circulo unitario en el plano z. Es decir
+\[F_{PD}(\mathrm{e}^{i\omega h}), \quad 0 \le \omega h \le \pi \]
+\alert{Actividad} Que pasa con la ganancia del PD discretizado con el método de Tustin \[|F_{PD}(z)| = \left | \frac{z(1 + \frac{2T_d}{h}) - (\frac{2T_d}{h}-1)}{z + 1} \right|\]
+cuando \(\omega = \omega_N = \frac{\pi}{h}\)?
+\end{column}
+\begin{column}{0.35\columnwidth}
+\begin{center}
+  \begin{tikzpicture}[scale=1.4]
+    \draw[->] (-1.5, 0) -- (1.5, 0) node[below] {Re};
+    \draw[->] (0,-1.50) -- (0,1.5) node[left] {Im};
+
+    \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
+    \node at (1,-0.2) {1};
+
+    \draw[domain=0:180, samples=181, red, thick] plot ({cos(\x)}, {sin(\x)});
+
+    \node[coordinate, pin=60:{$\omega = \frac{\pi}{2h}$}] at (0,1);
+    \node[coordinate, pin=150:{$\omega = \frac{\pi}{h}$}] at (-1,0);
+
+  \end{tikzpicture}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{Intro}
+\label{sec:org46be661}
+\begin{frame}[label={sec:org0a68327}]{Identificación de sistemas}
+\end{frame}
+
+\begin{frame}[label={sec:orga68fad4}]{Un proceso complejo}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 From Wikipedia "Cyclonic separation"
@@ -52,7 +119,7 @@ From Wikipedia "Cyclonic separation"
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgcf6341d}]{Identificación de sistemas}
+\begin{frame}[label={sec:orga83c13d}]{Identificación de sistemas}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, inner sep=10pt}, sumnode/.style={circle, draw, inner sep=2pt},]
 
@@ -76,7 +143,7 @@ From Wikipedia "Cyclonic separation"
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgfb1aafe}]{Ajustando un modelo - regresión lineal}
+\begin{frame}[label={sec:org16fe05a}]{Ajustando un modelo - regresión lineal}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \alert{Objetivo} Dado observaciones \[\mathcal{D} = \{ (x_1,y_1), (x_2, y_2), \ldots, (x_N, y_N)\}\] y 
@@ -93,7 +160,7 @@ El término de ruido, o error, \(e\), incluye errores de modelación y perturbac
 \end{frame}
 
 
-\begin{frame}[label={sec:orgf59c2ea}]{Ajustando un modelo - regresión lineal}
+\begin{frame}[label={sec:org784f37f}]{Ajustando un modelo - regresión lineal}
 Dado observaciones \(\mathcal{D} = \{ (x_1,y_1), (x_2, y_2), \ldots, (x_N, y_N)\}\) y 
 modelo \(\mathcal{M}: \; y = ax + b  + e\). 
 
@@ -117,7 +184,7 @@ Buscamos parametros \(\theta^T = \begin{bmatrix} a & b \end{bmatrix}\) que minim
 \end{frame}
 
 
-\begin{frame}[label={sec:org0fc401d}]{Ajustando un modelo - regresión lineal}
+\begin{frame}[label={sec:org117654a}]{Ajustando un modelo - regresión lineal}
 Dado observaciones \(\mathcal{D} = \{ (x_1,y_1), (x_2, y_2), \ldots, (x_N, y_N)\}\) y 
 modelo \(\mathcal{M}: \; y = ax + b  + e\). 
 
@@ -143,7 +210,7 @@ La función de pérdida más común es \alert{mínimos cuadrados}
 
 
 
-\begin{frame}[label={sec:orgf2fbb7b}]{El problema con mínimos cuadrados}
+\begin{frame}[label={sec:orgc6e7f56}]{El problema con mínimos cuadrados}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{align*}
@@ -169,7 +236,7 @@ La función de pérdida más común es \alert{mínimos cuadrados}
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orga450966}]{Más robusta: La función de pérdida de Huber}
+\begin{frame}[label={sec:orgffafbca}]{Más robusta: La función de pérdida de Huber}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 También conocido como \alert{regresión robusta}
@@ -200,14 +267,14 @@ También conocido como \alert{regresión robusta}
 \end{frame}
 
 \section{AR-model}
-\label{sec:org196edb3}
+\label{sec:orga00114e}
 
-\begin{frame}[label={sec:orgef91a65}]{Ejemplo - Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:org3a7ba52}]{Ejemplo - Modelo autoregresivo (AR)}
 \end{frame}
-\begin{frame}[label={sec:org2aec516}]{Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:orga436dbc}]{Modelo autoregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \[ y(k+1) = -ay(k) + e(k+1),\]
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 \alert{Objetivo} Estimar el parametro \(a\).
 
@@ -217,10 +284,10 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:orgc04acfd}]{Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:orga296681}]{Modelo autoregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -ay(k) + e(k+1),\)
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 \alert{Objetivo} Estimar el parametro \(a\).
 
@@ -237,10 +304,10 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 
 
 
-\begin{frame}[label={sec:org971fc5e}]{Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:orga16749f}]{Modelo autoregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -ay(k) + e(k+1),\)
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 \alert{Objetivo} Estimar el parametro \(a\).
 
@@ -255,7 +322,7 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:org17c3a52},fragile]{Computación de la solución de mínimos cuadrados}
+\begin{frame}[label={sec:org7516c15},fragile]{Computación de la solución de mínimos cuadrados}
  Dado error de predicción en forma vectoral para sistema de orden \(n\)
 \(\epsilon = y - \Phi\theta\). Forma el sistema de ecuaciones
 \begin{align*}
@@ -268,28 +335,28 @@ theta_LS = Phi \ y
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[label={sec:org775f1a1}]{Ejemplo numerico}
+\begin{frame}[label={sec:orge77fb68}]{Ejemplo numerico}
 \href{https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.\%2Fsystem-identification\%2Fnotebooks\%2FAR-example.ipynb}{Mybinder}
 \end{frame}
 
 
 
-\begin{frame}[label={sec:org84d3cb8}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:org0fd8c5c}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \begin{align*} 
-A(z)Y(z) = z^nE(z) \quad &\Leftrightarrow \quad A(\shift)y(k) = \shift^{n-1} e(k)\\
+A(z)Y(z) = z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) &= \shift^{n-1} e(k)\\
 (\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) &= \shift^n e(k)\\
-(\shift + a_1 + a_2\shift{-1} + \cdots + a_n\shift^{-n+1})y(k) &= \shift^{n-1}e(k)\\
+(\shift + a_1 + a_2\shift{-1} + \cdots + a_n\shift^{-n+1})y(k) &= \shift e(k)\\
 y(k+1) + a_1y(k)  + a_2y(k-1) + \cdots + a_ny(k-n+1) &= e(k+1)\\
 y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) &+ e(k+1)
 \end{align*}
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 \alert{Objetivo} Estimar los parametro \(a_1, a_2, \ldots, \a_n\).
 \end{frame}
 
 
-\begin{frame}[label={sec:org1746a19}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:org30596ce}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
 
@@ -300,7 +367,7 @@ y el error de predicción \[\epsilon_k = y_k - \hat{y}_k = y_k - \varphi_k^T \th
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org48ad0ad}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:org9107234}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
 
@@ -315,7 +382,7 @@ Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo a
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgb755f58}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:org8ece0af}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
 \begin{enumerate}
@@ -333,22 +400,22 @@ formando y resolviendo el sistema de ecuaciones
 \end{frame}
 
 
-\begin{frame}[label={sec:orge099d3c}]{Modelo autoregresivo (AR) - Ejercicio}
+\begin{frame}[label={sec:org52b3538}]{Modelo autoregresivo (AR) - Ejercicio}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo de segunda orden
 \[ y(k+2) + a_1y(k+1) + a_2y(k) = e(k+2),\]
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 \alert{Actividad} Forma las ecuaciones \[ \Phi \theta = y\]
 \end{frame}
 
 
 \section{ARX-model}
-\label{sec:org0ba2996}
+\label{sec:orgf051171}
 
-\begin{frame}[label={sec:orgab28ac4}]{Model AutoRegresivo con variables eXógenas (ARX)}
+\begin{frame}[label={sec:orgde27b90}]{Model AutoRegresivo con variables eXógenas (ARX)}
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
-dónde \(e(k)\) es una sequencia discreto de ruido blanco.
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 \alert{Actividad} Llena los bloques
 
