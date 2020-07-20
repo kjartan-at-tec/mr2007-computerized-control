@@ -33,12 +33,14 @@
    :PROPERTIES:
     :BEAMER_col: 0.65
     :END:
-   *Actividad* Aplica el método de Tustin
+   Aplicando el método de Tustin
    \[ z = \mathrm{e}^{sh} = \frac{\mathrm{e}^{sh/2}}{\mathrm{e}^{-sh/2}} \approx \frac{ 1 + \frac{sh}{2}}{1 - \frac{sh}{2}}\]
    \[ s = \frac{2}{h} \cdot \frac{z-1}{z+1}\]
    para discretizar el controlador PD ideal
-   \[F_{PD}(s) = K\big(1 + sT_d\big).\]
-   Marca (aproximadamente) el cero y el polo en el plano z 
+   \[F_{PD}(s) = K\big(1 + sT_d\big)\]
+   da
+   \[ F_{PD}(z) = \frac{z(1 + \frac{2T_d}{h}) - (\frac{2T_d}{h}-1)}{z + 1}\]
+   *Actividad* Marca (aproximadamente) el cero y el polo en el plano z 
 *** Graphics 
    :PROPERTIES:
     :BEAMER_col: 0.35
@@ -424,7 +426,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 #+end_export
 
 
-** Model AutoRegresivo con variables eXógenas (ARX) - solución     :noexport:
+** Model AutoRegresivo con variables eXógenas (ARX) - solución
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.

@@ -37,9 +37,9 @@
     "shift"
     "diff")
    (LaTeX-add-labels
-    "sec:org9170d1d"
-    "sec:org46be661"
-    "sec:orga00114e"
-    "sec:orgf051171"))
+    "sec:org5ac4a57"
+    "sec:orgba751c4"
+    "sec:org84048f3"
+    "sec:org886af58"))
  :latex)
 
