@@ -1,0 +1,39 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+\def\uampl{1.0}
+
+\def\ttdelay{0.4}
+\def\TTcnst{2}
+\def\ggain{3}
+
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\ttdelay + \TTcnst/3}
+   \pgfmathsetmacro{\two}{\ttdelay + \TTcnst}
+
+ \begin{tikzpicture}
+       \begin{axis}[
+       width=13cm,
+       height=6cm,
+       grid = both,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       xlabel = {$t$},
+       xmin = -1,
+       ]
+	 \addplot [thick, green!50!black, no marks, domain=0:13, smooth, samples=16] {\uampl*\ggain*(x>\ttdelay)*(1 - (1+(x-\ttdelay)/\TTcnst)*exp(-(x-\ttdelay)/\TTcnst))} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:13, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (13,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+       \end{axis}
+     \end{tikzpicture}
+   \end{document}
+   
