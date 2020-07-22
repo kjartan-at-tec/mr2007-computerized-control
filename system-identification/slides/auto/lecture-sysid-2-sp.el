@@ -43,10 +43,11 @@
     "tdelay"
     "Tcnst")
    (LaTeX-add-labels
-    "sec:org6e9979c"
-    "sec:orgadf12a6"
-    "sec:org9f2ab57"
-    "sec:org09d61a4")
+    "sec:org77514cb"
+    "sec:org6e42a51"
+    "sec:org6a036c8"
+    "sec:orgd32a1f9"
+    "sec:orgb8acce3")
    (LaTeX-add-environments
     '("exercise" LaTeX-env-args ["argument"] 0)))
  :latex)

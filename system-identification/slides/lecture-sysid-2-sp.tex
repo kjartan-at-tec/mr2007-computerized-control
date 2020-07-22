@@ -1,4 +1,4 @@
-% Created 2020-07-22 mié 07:51
+% Created 2020-07-22 mié 10:40
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,9 +35,9 @@
 \maketitle
 
 \section{Retroalimentacion Examen parcial 2}
-\label{sec:org6e9979c}
+\label{sec:org77514cb}
 
-\begin{frame}[label={sec:orgd43548c}]{Retroalimentación Examen parcial 2}
+\begin{frame}[label={sec:org3ee4b09}]{Retroalimentación Examen parcial 2}
 \begin{itemize}
 \item La mayoridad dominan bien un gran parte de la materia
 \item Dos cosas a enforzar
@@ -48,13 +48,16 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org41d56fc}]{Retroalimentación Examen parcial 2 - funciones de transferencia}
+\begin{frame}[label={sec:orgbd3c51f}]{Retroalimentación Examen parcial 2 - funciones de transferencia}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/sensitivity-fcn-bode-example.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgb9b7e5c}]{Retroalimentación Examen parcial 2 - Ubicación de polos}
+\begin{frame}[label={sec:org389d856}]{Retroalimentación Examen parcial 2 - Ubicación de polos}
+Dado \(h=0.01\), y usando \(t_s \approx \frac{4}{\zeta\omega_n} < 0.01\)
+\[z = \mathrm{e}^{sh} = \mathrm{e}^{\text{Re}(s)h} \mathrm{e}^{i\text{Im}(s)h}\]
+\[|z| = |\mathrm{e}^{sh}| = |\mathrm{e}^{\text{Re}(s)h}| < \mathrm{e}^{-\zeta\omega_n h} = \mathrm{e}^{-40\cdot 0.01} = 0.67\]   
 \begin{center}
 \alert{plano s} \hspace*{0.4\linewidth} \alert{plano z}\\
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
@@ -64,8 +67,10 @@
 
 
 \section{Intro}
-\label{sec:orgadf12a6}
-\begin{frame}[label={sec:orgf0b7cac}]{Identificación de sistemas}
+\label{sec:org6e42a51}
+\begin{frame}[label={sec:orgace4d88}]{Identificación de sistemas}
+\end{frame}
+\begin{frame}[label={sec:org56108b1}]{Identificación de sistemas}
 \def\uampl{0.5}
 \def\ttdelay{0.3}
 \def\TTcnst{1.6}
@@ -109,18 +114,18 @@
 \end{frame}
 
 
-\begin{frame}[label={sec:org6f72886}]{Identificación de sistemas}
+\begin{frame}[label={sec:orge542e13}]{Identificación de sistemas}
 \begin{center}
 \includegraphics[]{sysid-graphic} 
 \end{center}
 \end{frame}
 
 \section{AR-model}
-\label{sec:org9f2ab57}
+\label{sec:org6a036c8}
 
-\begin{frame}[label={sec:org966fa0a}]{Ejemplo - Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:org6a7e686}]{Ejemplo - Modelo autoregresivo (AR)}
 \end{frame}
-\begin{frame}[label={sec:org16a6e59}]{Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:org3e73b75}]{Modelo autoregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \[ y(k+1) = -ay(k) + e(k+1),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
@@ -133,7 +138,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:org17e3192}]{Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:org831e949}]{Modelo autoregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -ay(k) + e(k+1),\)
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
@@ -153,7 +158,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 
 
-\begin{frame}[label={sec:orgfd8dab9}]{Modelo autoregresivo (AR)}
+\begin{frame}[label={sec:org6451f54}]{Modelo autoregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -ay(k) + e(k+1),\)
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
@@ -171,7 +176,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:org372080e},fragile]{Computación de la solución de mínimos cuadrados}
+\begin{frame}[label={sec:org04aa7cb},fragile]{Computación de la solución de mínimos cuadrados}
  Dado error de predicción en forma vectoral para sistema de orden \(n\)
 \(\epsilon = y - \Phi\theta\). Forma el sistema de ecuaciones
 \begin{align*}
@@ -184,13 +189,13 @@ theta_LS = Phi \ y
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[label={sec:orgb520063}]{Ejemplo numerico}
+\begin{frame}[label={sec:orgd135160}]{Ejemplo numerico}
 \href{https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.\%2Fsystem-identification\%2Fnotebooks\%2FAR-example.ipynb}{Mybinder}
 \end{frame}
 
 
 
-\begin{frame}[label={sec:orgc7f481f}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:orgd1882dd}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \begin{align*} 
 A(z)Y(z) = z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) &= \shift^{n-1} e(k)\\
@@ -205,7 +210,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:orga5044ec}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:org68a1fb7}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
 
@@ -216,7 +221,7 @@ y el error de predicción \[\epsilon_k = y_k - \hat{y}_k = y_k - \varphi_k^T \th
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgb5068b7}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:orgc1b932b}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
 
@@ -231,7 +236,7 @@ Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo a
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgbd3e7cc}]{Model AR de orden \(n\)}
+\begin{frame}[label={sec:org85dbae9}]{Model AR de orden \(n\)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo
 \(y(k+1) = -a_1y(k)  - a_2y(k-1) - \cdots - a_ny(k-n+1) + e(k+1)\).
 \begin{enumerate}
@@ -249,7 +254,7 @@ formando y resolviendo el sistema de ecuaciones
 \end{frame}
 
 
-\begin{frame}[label={sec:orgb07e4a5}]{Modelo autoregresivo (AR) - Ejercicio}
+\begin{frame}[label={sec:org8b127ba}]{Modelo autoregresivo (AR) - Ejercicio}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autoregresivo de segunda orden
 \[ y(k+2) + a_1y(k+1) + a_2y(k) = e(k+2),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
@@ -259,9 +264,9 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 
 \section{ARX-model}
-\label{sec:org09d61a4}
+\label{sec:orgd32a1f9}
 
-\begin{frame}[label={sec:org6ad6a8c}]{Model AutoRegresivo con variables eXógenas (ARX)}
+\begin{frame}[label={sec:org0f113e6}]{Model AutoRegresivo con variables eXógenas (ARX)}
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
@@ -290,13 +295,12 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:org459eeff}]{Model AutoRegresivo con variables eXógenas (ARX) - solución}
+\begin{frame}[label={sec:orgac6cf2d}]{Model AutoRegresivo con variables eXógenas (ARX) - solución}
+\end{frame}
+\begin{frame}[label={sec:org57dc41c}]{Model AutoRegresivo con variables eXógenas (ARX) - solución}
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
-
-\alert{Actividad} Llena los bloques
-
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, minimum height=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
     
@@ -316,5 +320,64 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
   \end{tikzpicture}
 \end{center}
+\end{frame}
+
+
+
+\section{Esta parte el miercoles}
+\label{sec:orgb8acce3}
+\begin{frame}[label={sec:org4bcdcf6}]{Model ARX de orden \(n\)}
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+\end{frame}
+
+\begin{frame}[label={sec:org51226c5}]{Model ARX de orden \(n\)}
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+\begin{multline*}
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) = (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k)\\ +  \shift^n e(k)
+\end{multline*}
+
+\alert{Objetivo} Estimar los parametro \(a_1, a_2, \ldots, \a_n, b_0, b_1, \ldots, b_m\).
+\end{frame}
+
+
+\begin{frame}[label={sec:orgd4b900d}]{Model ARX de orden \(n\)}
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+\begin{multline*}
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) = (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k)\\ +  \shift^n e(k)
+\end{multline*}
+\begin{multline*}
+(\shift + a_1 + a_2\shift^{-1} + \cdots + a_n\shift^{-n+1})y(k) = \\(b_0\shift^{m-n+1} + b_1\shift^{m-n} + \cdots + b_m\shift^{-n+1})\shift^{-d}u(k) +  \shift e(k)\\
+\end{multline*}
+\end{frame}
+
+\begin{frame}[label={sec:org564c31d}]{Model ARX de orden \(n\)}
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+\begin{multline*}
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) = (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k)\\ +  \shift^n e(k)
+\end{multline*}
+\begin{multline*}
+(\shift + a_1 + a_2\shift^{-1} + \cdots + a_n\shift^{-n+1})y(k) = \\(b_0\shift^{m-n+1} + b_1\shift^{m-n} + \cdots + b_m\shift^{-n+1})\shift^{-d}u(k) +  \shift e(k)\\
+\end{multline*}
+\begin{multline*}
+y(k+1) = -a_1y(k) - \cdots - a_ny(k-n+1) \\+ b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1)  +   e(k+1)
+\end{multline*}
+\end{frame}
+
+\begin{frame}[label={sec:org61f3817}]{Model ARX de orden \(n\)}
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
+
+\alert{Predictor}
+\begin{multline*}
+\hat{y}(k+1) = -a_1y(k) - \cdots - a_ny(k-n+1) \\+ b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1)  +   e(k+1)
+\end{multline*}
+
+
+\alert{Objetivo} Estimar los parametro \(a_1, a_2, \ldots, \a_n, b_0, b_1, \ldots, b_m\).
+\end{frame}
+
+\begin{frame}[label={sec:orgc8a22f0}]{Ejemplo y tarea}
+\href{https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.system-identification\%2Fnotebooks\%2FParameter\%20estimation\%20with\%20least\%20squares\%20-\%20Homework.ipynb}{Mybinder}
 \end{frame}
 \end{document}

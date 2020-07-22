@@ -36,6 +36,9 @@
    #+end_center
    
 ** Retroalimentación Examen parcial 2 - Ubicación de polos 
+  Dado \(h=0.01\), y usando \( t_s \approx \frac{4}{\zeta\omega_n} < 0.01\)
+  \[z = \mathrm{e}^{sh} = \mathrm{e}^{\text{Re}(s)h} \mathrm{e}^{i\text{Im}(s)h}\]
+  \[|z| = |\mathrm{e}^{sh}| = |\mathrm{e}^{\text{Re}(s)h}| < \mathrm{e}^{-\zeta\omega_n h} = \mathrm{e}^{-40\cdot 0.01} = 0.67\]   
 #+BEGIN_CENTER 
 *plano s* \hspace*{0.4\linewidth} *plano z*\\
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
@@ -44,6 +47,7 @@
 
 
 * Intro
+** Identificación de sistemas
 ** Identificación de sistemas
    #+begin_export latex
    \def\uampl{0.5}
@@ -245,12 +249,10 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 
 ** Model AutoRegresivo con variables eXógenas (ARX) - solución
+** Model AutoRegresivo con variables eXógenas (ARX) - solución
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
-
-*Actividad* Llena los bloques
-
 #+begin_export latex
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, minimum height=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
@@ -276,18 +278,52 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 
 
-* Esta parte el miercoles                                          :noexport:
+* Esta parte el miercoles
 ** Model ARX de orden \(n\)   
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
-\begin{align*} 
-A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad &\Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n-1} e(k)\\
-(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) &= (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k) +  \shift^n e(k)\\
-(\shift + a_1 + a_2\shift^{-1} + \cdots + a_n\shift^{-n+1})y(k) &= (b_0\shift^{m-d-n+1} + b_1\shift^{m-d-n} + \cdots + b_m\shift^{-d-n+1})u(k) +  \shift e(k)\\
-y(k+1) =  -a_1y(k) - \cdots - a_ny(k-n+1) + b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1) &=   e(k+1)
-\end{align*}
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+
+** Model ARX de orden \(n\)   
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+\begin{multline*}
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) = (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k)\\ +  \shift^n e(k)
+\end{multline*}
 
 *Objetivo* Estimar los parametro \(a_1, a_2, \ldots, \a_n, b_0, b_1, \ldots, b_m\).
 
+
+** Model ARX de orden \(n\)   
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+\begin{multline*}
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) = (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k)\\ +  \shift^n e(k)
+\end{multline*}
+\begin{multline*}
+(\shift + a_1 + a_2\shift^{-1} + \cdots + a_n\shift^{-n+1})y(k) = \\(b_0\shift^{m-n+1} + b_1\shift^{m-n} + \cdots + b_m\shift^{-n+1})\shift^{-d}u(k) +  \shift e(k)\\
+\end{multline*}
+
+** Model ARX de orden \(n\)   
+\[A(z)Y(z) = B(z)z^{-d}U(z) + z^nE(z) \quad \Leftrightarrow \quad A(\shift)y(k) = B(\shift)\shift^{-d}u(k) + \shift^{n} e(k)\]
+\begin{multline*}
+(\shift^n + a_1\shift^{n-1} + a_2\shift^{n-2} + \cdots + a_n)y(k) = (b_0\shift^{m-d} + b_1\shift^{m-d-1} + \cdots + b_m\shift^{-d})u(k)\\ +  \shift^n e(k)
+\end{multline*}
+\begin{multline*}
+(\shift + a_1 + a_2\shift^{-1} + \cdots + a_n\shift^{-n+1})y(k) = \\(b_0\shift^{m-n+1} + b_1\shift^{m-n} + \cdots + b_m\shift^{-n+1})\shift^{-d}u(k) +  \shift e(k)\\
+\end{multline*}
+\begin{multline*}
+y(k+1) = -a_1y(k) - \cdots - a_ny(k-n+1) \\+ b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1)  +   e(k+1)
+\end{multline*}
+
+** Model ARX de orden \(n\)   
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
+
+*Predictor*
+\begin{multline*}
+\hat{y}(k+1) = -a_1y(k) - \cdots - a_ny(k-n+1) \\+ b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1)  +   e(k+1)
+\end{multline*}
+
+
+*Objetivo* Estimar los parametro \(a_1, a_2, \ldots, \a_n, b_0, b_1, \ldots, b_m\).
 
 ** Ejemplo y tarea
 
