@@ -25,16 +25,59 @@
   
 ** Retroalimentación Examen parcial 2
 
+** Retroalimentación Examen parcial 2
    - La mayoridad dominan bien un gran parte de la materia
    - Dos cosas a enforzar
      1. Interpretación de funciones de transferencia (diagrama de Bode)
      2. Transformar especifiaciones en el tiempo a ubicación de los polos
-   
+
+*** Notas                                                          :noexport:
+    
+    Quizas vieron que hubo un cambio de su calificacion de ayer a esta mañana. La razón porque tuve que corregir unas calificaciones, es lo siguiente. Ayer, cuando pasaron los 90 minutos y el quiz en Canvas cerró, les llegó información de cuales de sus respuestas eran equivocados. A reiniciar el examen para concluirlo, unos cambiaron la respuesta. No lo ví hasta esta mañana. Entonces primero pensé en usar la respuesta original. Despueś pensé de sí vale unos puntos encontrar la respuesta correcta en el segundo intento.
+
+    Quiero que entienden bien que No lo veo como intento de fraude, porque me llegaron los dos intentos, y esto estaba claramente entendido ayer. La confusión era mi culpa por no quitar el limite del tiempo en el quiz. Traté de actuar justo en la situación que ocurrió. 
+
 ** Retroalimentación Examen parcial 2 - funciones de transferencia
    #+begin_center
-   \includegraphics[width=0.7\linewidth]{../../figures/sensitivity-fcn-bode-example.png}
+   \includegraphics[width=0.6\linewidth]{../../figures/2dof-block-explicit}\\
+   \includegraphics[width=0.6\linewidth]{../../figures/sensitivity-fcn-bode-example.png}
    #+end_center
    
+*** Notas                                                          :noexport:
+
+    Primero quiero preguntarles una cosa. Varios de ustedes hicieron comentarios de que esa sistema tiene compensacion pero otra no. Qué es lo que entienden con *compensación*?
+
+    Estas son funciones de transferencia del sistema de control en lazo cerrado. El sistem de control tiene tres señales de entrada, y estas funciones nos dice como ca a responder el sistema para las tre señales, respectivas. Más especifico, nos dice como responde el sistema a señales de diferentes frecuencias.
+
+    Primero Gc:
+    - Ganancia unitaria para bajas frecuencias. Es bueno, porque queremos que la salida sigue la referencia.
+    - Ancho de banda. La regiod del espectro donde la amplificación es mayor a -3dB = 0.71
+    - Tiene un pico de resonancia bastante baja. Solo vamos a ver un poco de sobrepaso en su respuesta al escalon
+
+    Ss
+    - Sensibilidad
+    - Buen rechazo para perturbaciones de bajo frecuencia
+    - Pertubaciones de alta frecuencia pasan sin rechazo
+    - Tiene un pico alrededor de 0.5 rad/s
+
+    Ts
+    - Sensibilidad complementaria
+    - bastante rechazo para perturbaciones de alto frecuencia
+    - Pertubaciones de baja frecuencia pasan sin rechazo
+    - Tiene un pico alrededor de 0.5 rad/s
+
+
+** Retroalimentación Examen parcial 2 - sensibilidad
+
+   #+begin_center
+   \includegraphics[width=0.6\linewidth]{../../figures/stein-serious-design.png}
+   #+end_center
+
+   #+begin_export latex
+   {\footnotesize Stein 2003 "Respect the unstable" IEEE Control Systems Magazine}
+   #+end_export
+
+
 ** Retroalimentación Examen parcial 2 - Ubicación de polos 
   Dado \(h=0.01\), y usando \( t_s \approx \frac{4}{\zeta\omega_n} < 0.01\)
   \[z = \mathrm{e}^{sh} = \mathrm{e}^{\text{Re}(s)h} \mathrm{e}^{i\text{Im}(s)h}\]
@@ -249,7 +292,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
 
 ** Model AutoRegresivo con variables eXógenas (ARX) - solución
-** Model AutoRegresivo con variables eXógenas (ARX) - solución
+** Model AutoRegresivo con variables eXógenas (ARX) - solución     :noexport:
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
 dónde \(e(k)\) es una sequencia discreta de ruido blanco.
@@ -327,5 +370,9 @@ Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y obs
 
 ** Ejemplo y tarea
 
-   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.system-identification%2Fnotebooks%2FParameter%20estimation%20with%20least%20squares%20-%20Homework.ipynb][Mybinder]]
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=system-identification%2Fnotebooks%2FParameter%20estimation%20with%20least%20squares.ipynb][Ejercicios]]
+
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=system-identification%2Fnotebooks%2FParameter%20estimation%20with%20least%20squares%20-%20Homework.ipynb][Tarea]]
+
+
 
