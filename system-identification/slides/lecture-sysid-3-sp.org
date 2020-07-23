@@ -63,7 +63,7 @@ dónde \(e(k)\) es una sequencia discreta de ruido blanco.
 
   \end{tikzpicture}
 \end{center}
-
+#+end_export
 ** Model ARX de orden \(n\)   
 Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
 
