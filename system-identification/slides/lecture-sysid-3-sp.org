@@ -1,0 +1,85 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{pgfplotstable}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Control computarizado - Identificación de sistemas
+# #+date: 2018-10-03
+
+* What do I want the students to understand?			   :noexport:
+  - Least squares parameter estimation
+
+* Which activities will the students do?			   :noexport:
+  1. Determine order of the controller
+  2. Set up equations in controller parameters
+
+* Retroalimentacion Tarea 3
+  
+** Retroalimentación Tarea 3 
+
+** Retroalimentación Tarea 3
+   - Dominan el diseño del controlador RST
+   - Retos en la implementacion y simulacion en simulink
+
+* Intro
+** Identificación de sistemas
+** Identificación de sistemas
+
+   #+begin_center
+   \includegraphics[]{sysid-graphic} 
+   #+end_center
+
+* ARX-model
+
+** Model AutoRegresivo con variables eXógenas (ARX) 
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), y el modelo ARX
+\[ A(\shift) y(k) = B(\shift)u(k) + e(k+n),\]
+dónde \(e(k)\) es una sequencia discreta de ruido blanco.
+#+begin_export latex
+\begin{center}
+  \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, minimum height=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+    \node[coordinate] (input) {};
+    \node[block, right of=input, node distance=20mm] (plant)  {$\frac{B(z)}{A(z)}$};
+    \node[sumnode, right of=plant, node distance=24mm] (sum) {\tiny $\Sigma$};
+    \node[block, above of=sum, node distance=20mm] (dist)  {$\frac{z^n}{A(z)}$};
+
+    \node[coordinate, above of=dist, node distance=12mm] (disturbance) {};
+    \node[coordinate, right of=sum, node distance=20mm] (output) {};
+
+    \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[above] {} (sum);
+    \draw[->] (sum) -- node[above, near end] {$y(k)$} (output);
+    \draw[->] (disturbance) -- node[right, pos=0.2] {$e(k)$} (dist);
+    \draw[->] (dist) -- node[above] {} (sum);
+
+  \end{tikzpicture}
+\end{center}
+
+** Model ARX de orden \(n\)   
+Dado señal discreta de entrada de un sistema \(u(k), \; k=1,2,\ldots, N\) y observaciones de la respuesta \(y(k), \; k=1,2,\ldots,N\), el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos
+
+*Predictor*
+\begin{multline*}
+\hat{y}(k+1) = -a_1y(k) - \cdots - a_ny(k-n+1) \\+ b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1)  +   e(k+1)
+\end{multline*}
+
+
+*Objetivo* Estimar los parametro \(a_1, a_2, \ldots, \a_n, b_0, b_1, \ldots, b_m\).
+
+** Ejemplo y tarea
+
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=system-identification%2Fnotebooks%2FParameter%20estimation%20with%20least%20squares.ipynb][Ejercicios]]
+
+   [[https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=system-identification%2Fnotebooks%2FParameter%20estimation%20with%20least%20squares%20-%20Homework.ipynb][Tarea]]
+
+
+

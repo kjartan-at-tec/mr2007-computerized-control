@@ -1,11 +1,11 @@
 %% System identification of the PMSM
 
+h = 0.01;
 % Create prbs sequence
 N = 1600;
 u_id = idinput(N, 'PRBS', [0 0.3]); % Requires the sysid toolbox
 t_id = (0:N-1)'*h;
 u_input = [t_id u_id];
-u_input_val = [t_id u_id_val];
  
 save pmsm_sysid_input.mat u_input
 

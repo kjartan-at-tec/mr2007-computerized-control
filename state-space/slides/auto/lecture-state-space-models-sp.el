@@ -38,16 +38,8 @@
     "ctrb"
     "obsv")
    (LaTeX-add-labels
-    "sec:org98e0d20"
-    "sec:org2434a51"
-    "sec:org030c453"
-    "sec:org171c6af"
-    "eq:ssmodel"
-    "eq:closedloop"
-    "eq:desiredpoles"
-    "eq:poles"
-    "eq:coeffs"
-    "eq:poleplace")
+    "sec:org508c1e6"
+    "sec:org9aef93b")
    (LaTeX-add-environments
     '("exercise" LaTeX-env-args ["argument"] 0)))
  :latex)
