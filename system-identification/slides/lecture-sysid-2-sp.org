@@ -54,16 +54,17 @@
     - Ancho de banda. La regiod del espectro donde la amplificación es mayor a -3dB = 0.71
     - Tiene un pico de resonancia bastante baja. Solo vamos a ver un poco de sobrepaso en su respuesta al escalon
 
-    Ss
-    - Sensibilidad
-    - Buen rechazo para perturbaciones de bajo frecuencia
-    - Pertubaciones de alta frecuencia pasan sin rechazo
-    - Tiene un pico alrededor de 0.5 rad/s
-
     Ts
     - Sensibilidad complementaria
     - bastante rechazo para perturbaciones de alto frecuencia
     - Pertubaciones de baja frecuencia pasan sin rechazo
+    - Tiene un pico alrededor de 0.5 rad/s
+    - Para bajas frecuencias tiene un comportamiento igual a Gc. 
+
+    Ss
+    - Sensibilidad
+    - Buen rechazo para perturbaciones de bajo frecuencia
+    - Amplifica pertubaciones de alta frecuencia (ganancia más que alta que una) 
     - Tiene un pico alrededor de 0.5 rad/s
 
 
@@ -76,6 +77,9 @@
    #+begin_export latex
    {\footnotesize Stein 2003 "Respect the unstable" IEEE Control Systems Magazine}
    #+end_export
+
+*** Notas                                                          :noexport:
+    Este gráfica es de un articulo que les comparti en Canva (pagina clases de Zoom). Enseña un principio *muy profundo* en el diseño de sistemas de control. Si quieres bajar la sensibilidad a perturbaciones de baja frecuencia vas a tener que acceptar sensibilidad más alto en frecuencias altas. La "masa" de sensibilidad no se quita! Se mueve a otras partes del espectro.
 
 
 ** Retroalimentación Examen parcial 2 - Ubicación de polos 

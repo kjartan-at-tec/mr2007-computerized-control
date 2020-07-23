@@ -13,3 +13,7 @@ send-mail*.ipynb
 .gitsecret/keys/random_seed
 !*.secret
 exams/partial-exam-2/MR2007-Partial2-Summer2020.ipynb
+polynomial-design/matlab/pmsm_2dof_control_sol.slx
+polynomial-design/matlab/pmsm_2dof_control_sol.slxc
+polynomial-design/matlab/pmsm_fall19.m
+polynomial-design/matlab/pmsm_summer20.m
