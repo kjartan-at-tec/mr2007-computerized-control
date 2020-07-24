@@ -37,9 +37,9 @@
     "shift"
     "diff")
    (LaTeX-add-labels
-    "sec:org14bb150"
-    "sec:org08be703"
-    "sec:orga698171")
+    "sec:orga2def70"
+    "sec:org7d88cfb"
+    "sec:org5573d50")
    (LaTeX-add-environments
     '("exercise" LaTeX-env-args ["argument"] 0)))
  :latex)

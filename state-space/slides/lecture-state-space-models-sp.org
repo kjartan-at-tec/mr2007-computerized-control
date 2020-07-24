@@ -7,12 +7,20 @@
 # #+BEAMER_THEME: Madrid
 #+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
      
+#+LaTex_HEADER: \usepackage{pifont}
+#+LaTex_HEADER: \newcommand{\cmark}{\textcolor{green!80!black}{\ding{51}}}
+
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{pgfplotstable}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
 #+LaTex_HEADER: \usepackage{khpreamble, euscript}
 #+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
 #+LaTex_HEADER: \newcommand*{\ctrb}{\EuScript{C}}
 #+LaTex_HEADER: \newcommand*{\obsv}{\EuScript{O}}
 
-#+title: Control computarizado - Modelos en espacio de estados
+#+title: Control computarizado - Modelos en espacio de estado
 
 * What do I want the students to understand?			   :noexport:
   - Understand state feedback design
@@ -22,24 +30,115 @@
   2. Write pseudo code to compute control signal
 
 
-* PMSM - Motor syncrono de Iman permanente
+* Promise                                                          :noexport:
+  
+  Después de esta sesion van a poder modelar un sistema dinamica en forma de un modelo de espacio de estado discreto.
 
+  Tambien van a ver el modelo que vamos a usar para la última tarea, que es de control discreto en espacio de estado. 
+
+* PMSM - Motor syncrono de Iman permanente, sysid
+
+  
 ** PMSM - Motor síncrono de imán permanente
    #+begin_center
    \includegraphics[width=0.9\linewidth]{../../figures/permanent-motor.jpg}
    #+end_center
+
+*** Notas                                                          :noexport:
+    En la tarea pasada trabajamos con un modelo de este sistema, un motor electrico síncrono con imán permanente. Es muy usado. Hay versiones con el imán permanente fijo en el rotor, o fijo en el estator.
+
 ** PMSM - Motor síncrono de imán permanente
    #+begin_center
-   \includegraphics[width=0.9\linewidth]{../../figures/pmsm_control_block_diag.png}
+   \includegraphics[width=0.8\linewidth]{../../figures/pmsm_control_block_diag.png}
    #+end_center
+   #+begin_export latex
+   {\footnotesize De Liu and Li  ``Speed control for PMSM servo system'', IEEE Transactions on Industrial Electronics, 2012.}
+   #+end_export
+*** Notas                                                          :noexport:
+    El modelo que usabamos para la simulación en simulink estaba en forma de tres ecuaciones diferenciales non-lineales. Vimos este diagrama de bloque que indica que hay un lazo de control interna con dos controladores PI que tratan de mantener la corriente id en cero y que tratan de seguir una corriente deseada iq^*. El lazo de control externo para control de la velocidad fue lo que diseñamos y implementamos nosotros en la tarea.
+
+    El diseño de controloador RST, dos grados de libertad, estaba basada en un modelo de primer orden del motor, y con un retraso para representar el filtro de anti-aliasing. Es un modelo muy simple de este sistema complejo. Pero el modelo era suficiente  para llegar a un control bueno.
+
+    Pero posiblemente se puede llegar a un mejor control usando un modelo algo mas exacto. Entonces ayer vimos un procedimiento de como obtener datos del model non-lineal en simulacion, y despues estimar modelos de diferentes ordenens.
+
+    En lo que sigue vamos a ver el resultado que obtuve para un model de dos polos y dos ceros, y con un retraso. 
+** Modelo identificado
+   Dos polos, dos ceros, un retraso
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=10mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+       \node[coordinate] (input) {};
+       \node[block, right of=input] (delay1)  {$\frac{1}{z}$};
+       \node[block, right of=delay1, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
+       \node[coordinate, right of=plant] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (delay1);
+       \draw[->] (delay1) -- node[above, pos=0.3] {} (plant);
+       \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
+
+       \begin{scope}[yshift=-1cm, xshift = 3cm]
+       \node {$\Updownarrow$};
+       \end{scope}
+       \begin{scope}[yshift=-3cm, xshift = 3cm]
+       \node {$\Updownarrow$};
+       \end{scope}
+
+       \node[coordinate, below of=input, node distance=2cm] (input2) {};
+       \node[block, right of=input2, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
+       \node[block, right of=plant] (delay2)  {$\frac{1}{z}$};
+       \node[coordinate, right of=delay2] (output) {};
+
+       \draw[->] (input2) -- node[above, pos=0.3] {$u(k)$} (plant);
+       \draw[->] (plant) -- node[above, pos=0.3] {} (delay2);
+       \draw[->] (delay2) -- node[above, near end] {$y(k)$} (output);
+
+       \node[coordinate, below of=input2, node distance=2cm] (input3) {};
+       \node[block, right of=input3, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z(z^2 + a_1 z + a_2})$};
+       \node[coordinate, right of=plant, node distance=30mm] (output) {};
+
+       \draw[->] (input3) -- node[above, pos=0.3] {$u(k)$} (plant);
+       \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
+
+
+
+     \end{tikzpicture}
+   \end{center}
+
+       #+end_export
+
+*** Notas                                                          :noexport:
+    La sistema del motor en si es de segunda orden, con dos ceros y dos polos. El retraso esta en la salida del motor, porque corresponde al filtro anti-aliasing. Pero si asumimos que no entra otras señales en este modelo, o que estas señales sean cero, podemos mover el retraso, y independiente de donde ponemos el retraso, llegar al modelo abajo. Este modelo la verdad es de tercer orden, porque tiene polynomia de grado tres en el denominador. 
+ 
+** Model ARX 
+Dado señales \(u(k), \; k=1,2,\ldots, N\) y \(y(k), \; k=1,2,\ldots,N\), el modelo ARX \(A(\shift)y(k) = B(\shift)u(k-d) + \shift^n e(k)\) con \(n\) polos, \(m\) ceros y retraso de \(d\) pasos.
+
+*Predictor*
+\begin{multline*}
+\hat{y}(k+1) = -a_1y(k) - \cdots - a_ny(k-n+1) \\+ b_0u(k+m-n-d+1) + \cdots + b_mu(k-n-d+1)
+\end{multline*}
+*Objetivo* Estimar los parametro \(a_1, a_2, \ldots, \a_n, b_0, b_1, \ldots, b_m\).
+
+*Modelo del PMSM* \(n=2\), \(m=2\), \(d=1\)
+\begin{multline*}
+\hat{y}(k+1) = -a_1y(k) - a_2y(k-1) + b_0u(k) + b_1u(k-1) + b_2u(k-2)d+1) 
+\end{multline*}
 
 ** Modelo identificado
+
+   \[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
+
+   #+begin_center
+   \includegraphics[width=0.6\linewidth]{../../figures/validation-result-2020-07-24.png}
+   #+end_center
+
+** De función de transferencia a modelo en espacio  de estados
    #+begin_export latex
    \begin{center}
      \begin{tikzpicture}[node distance=32mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
     
        \node[coordinate] (input) {};
-       \node[block, right of=input] (plant)  {$H(z) = \frac{b_0z + b_1}{z^2 + a_1 z + a_2}$};
+       \node[block, right of=input] (plant)  {$H(z) = \frac{b_0z^2 + b_1z + b_2}{z(z^2 + a_1 z + a_2)}$};
        \node[coordinate, right of=plant] (output) {};
 
        \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (plant);
@@ -68,7 +167,7 @@
 ** Formas canónicas
    Dado función de transferencia 
    \[ H(z) = \frac{b_1 z^2 + b_2 z + b_3}{z^3 + a_1z^2 + a_2z + a_3}.\] 
-   Encuentra una representación en espacio de estados.
+   Encuentra una representación en espacio de estado.
    \begin{align*}
     x(k+1) &= \Phi x(k) + \Gamma u(k) \\
     y(k) &= C x(k)
@@ -99,12 +198,31 @@
 
 ** Formas canónicas - ejercicio
    *Actividad* Encuentra las formas canónicas de control y de observador para la función de transferencia del motor
-   \[H(z) = \frac{23.3z - 6.9}{z^2 - 1.40z + 0.61}\]
+   \[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
 
+** Formas canónicas - solución
+** Formas canónicas - solución
+   \[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
+   Forma canónica de control
+   \begin{align*}
+    x(k+1) &= \begin{bmatrix} -a_1 & -a_2 & -a_3\\1 & 0 & 0\\0 & 1 & 0\end{bmatrix} x(k) + \begin{bmatrix}1\\0\\0\end{bmatrix} u(k) \\
+      &= \begin{bmatrix} 1.766 & -0.7655 & 0\\1 & 0 & 0\\0 &1 & 0\end{bmatrix} x(k) +  \begin{bmatrix}1\\0\\0\end{bmatrix} u(k) \\
+    y(k) &= \begin{bmatrix} b_1 & b_2 & b_3 \end{bmatrix} x(k)
+    = \begin{bmatrix} 6.91 & 16.48 & -17.87 \end{bmatrix} x(k)
+    \end{align*}
 
+   
+** Formas canónicas - solución
+   \[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
+   Forma canónica de observador
+   \begin{align*}
+    x(k+1) &= \begin{bmatrix} -a_1 & 1 & 0\\-a_2 & 0 & 1\\-a_3 & 0 & 0\end{bmatrix} x(k) + \begin{bmatrix}b_1\\b_2\\b_3\end{bmatrix} u(k) \\
+    &= \begin{bmatrix} 1.766 & 1 & 0\\-0.7665 & 0 & 1\\0 & 0 & 0\end{bmatrix} x(k) + \begin{bmatrix}6.91\\16.48\\-17.87\end{bmatrix} u(k) \\
+    y(k) &= \begin{bmatrix} 1 & 0 & 0 \end{bmatrix} x(k)
+    \end{align*}
 
 * Apollo moon lander
-** Modelación 
+** Modelación en espacio de estado 
 ** Ejemplo - El módulo lunar de Apollo
 
    #+begin_export latex
@@ -142,17 +260,40 @@
    Variables del estado: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). Con dinamica
    \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
 
-** Ejemplo - El módulo lunar de Apollo
-
+** Ejemplo - El módulo lunar de Apollo 
    Variables del estado: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). Con dinamica
    \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
 
-   *Actividad* Llena los matrices y vectores en el modelo de espacio de estados
+   *Actividad* Llena las matriz \(A\) y vector \(B\) en el modelo de espacio de estado
 
-   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \quad & \quad &\quad \\\quad & \quad& \quad\\ \quad& \quad &\quad \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \quad \\ \quad \\\quad  \end{bmatrix}}_{B} u \]
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{white}{0} & \textcolor{white}{0} &\textcolor{white}{0} \\\textcolor{white}{1} & \textcolor{white}{0}& \textcolor{white}{0}\\ \textcolor{white}{0}& \textcolor{white}{k_2} &\textcolor{white}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{white}{k_1} \\ \textcolor{white}{0} \\\textcolor{white}{0}  \end{bmatrix}}_{B} u \]
+
+** Ejemplo - El módulo lunar de Apollo - Solución
+
+** Ejemplo - El módulo lunar de Apollo - Solución
+   Variables del estado: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). Con dinamica
+   \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
+
+   *Actividad* Llena las matriz \(A\) y vector \(B\) en el modelo de espacio de estado
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} &\textcolor{red!60!black}{0} \\\textcolor{red!60!black}{1} & \textcolor{red!60!black}{0}& \textcolor{red!60!black}{0}\\ \textcolor{red!60!black}{0}& \textcolor{red!60!black}{k_2} &\textcolor{red!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{red!60!black}{k_1} \\ \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0}  \end{bmatrix}}_{B} u \]
 
 
 ** Modelación - ejercicio
+   *Actividad* Las siguientes diapositivas enseñan tres ejemplos de modelos en espacio de estado. A cada breakout room se asigna un modelo
+
+   | Modelo \ Breakout room |      1 |      2 |      3 |      4 |      5 |      6 |      7 |      8 |      9 |
+   |------------------------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
+   | A                      | \cmark | \cmark | \cmark |        |        |        |        |        |        |
+   | B                      |        |        |        | \cmark | \cmark | \cmark |        |        |        |
+   | C                      |        |        |        |        |        |        | \cmark | \cmark | \cmark |
+   |------------------------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
+
+   *Interpreta el modelo* ¿Cuales son los variables de estado, que significan y que unidad tienen? ¿Cuál es la señal de entrada y la señal de salida? ¿Qué unidad tienen esas señales? ¿De dónde  viene el modelo (leyes físicas, ecuaciones diferenciales)?
+ 
+   *Prepara un breve explicación* con ayuda a los recursos dados.
+ 
+** Modelación - Modelo *A*
 
 *** Graphics
     :PROPERTIES:
@@ -164,19 +305,67 @@
     :PROPERTIES:
     :BEAMER_col: 0.5
     :END:
-    Queremos controlar la posición vertical $X$ de una masa, aplicando una fuerza \(u\) en esta. En la posición relajada, \(X=0, \; \dot{X} =0 \), la fuerza en el resorte es igual a la fuerza de gravedad.  
-\[ m\ddot{X} = -kX - f\dot{X} + u\]
-   *Actividad* Encuentra una representación del sistema en espacio de estados. 
+    Movimiento vertical de una masa. En la posición relajada, \(X=0, \; \dot{X} =0 \), la fuerza en el resorte es igual a la fuerza de gravedad.  
 
    \begin{align*}
-   \dot{x} &= A x + Bu\\ y &= Cx 
+   \dot{x} &= \begin{bmatrix} 0 & 1\\-\frac{k}{m} & -\frac{f}{m}\end{bmatrix} x + \begin{bmatrix}0\\\frac{k}{m}\end{bmatrix}u\\ 
+   y &= \begin{bmatrix} 1 & 0\end{bmatrix} x 
    \end{align*}
 
+   [[https://lpsa.swarthmore.edu/Representations/SysRepSS.html#SS_MechT][Liga a recurso]]
 
-* Discretización                                                   :noexport:
+** Modelación - Modelo *B*
+
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+    \includegraphics[height=0.5\textheight]{../../figures/RLC-circuit}
+
+
+*** Text
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+    Tip: \(x_1(t) = i(t)\)
+
+   \begin{align*}
+   \dot{x} &= \begin{bmatrix} -\frac{R}{L} & -\frac{1}{L}\\\frac{1}{C} & 0\end{bmatrix} x + \begin{bmatrix}\frac{1}{L}\\0\end{bmatrix}u\\ 
+   y &= \begin{bmatrix} 0 & 1\end{bmatrix} x 
+   \end{align*}
+
+   [[https://lpsa.swarthmore.edu/Representations/SysRepSS.html#ExDirDerSSElec][Liga a recurso]]
+
+
+** Modelación - Modelo *C*
+
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+    \includegraphics[height=0.5\textheight]{../../figures/two-tank-mathworks.png}
+
+    #+begin_export latex
+    {\footnotesize From Mathworks}
+    #+end_export
+
+*** Text
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+
+   \begin{align*}
+   \dot{x} &= \begin{bmatrix} -\frac{a}{A} \sqrt{2gx_1}\\ \frac{a}{A}\sqrt{2gx_1} - \frac{a}{A}\sqrt{2gx_2}\end{bmatrix} + \begin{bmatrix}\frac{k}{A}\\0\end{bmatrix}u\\ 
+   y &= \begin{bmatrix} 0 & 1\end{bmatrix} x 
+   \end{align*}
+
+   [[https://www.mathworks.com/help/ident/examples/two-tank-system-c-mex-file-modeling-of-time-continuous-siso-system.html][Liga a recurso]]
+
+* Discretización
 
 ** Discretización
-   Solución general de un sistema lineal en espacio de estados 
+** Discretización
+   Solución general de un sistema lineal en espacio de estado 
    \begin{align*}
    x(t_k+\tau)& = \mathrm{e}^{A(\tau)} x(t_k) + \int_{0}^\tau \mathrm{e}^{As} B u\big((t_k+\tau)-s) ds
    \end{align*}

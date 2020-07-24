@@ -110,3 +110,46 @@ hold on
 plot(tk, ykpred, 'ro')
 title(sprintf('RMS= %f,  FIT= %f', [rms, fit]));
 
+% Model with two poles two zeros, one delay
+% y(k+1) = -a1*y(k) -a2*y(k-1)
+%           +b0*u(k) + b1*u(k-1) + b2 u(k-2) + e(k+1)
+NN = length(y);
+yy22 = y(4:end);
+Phi22 = cat(2, -y(3:NN-1), -y(2:NN-2), ...
+    u(3:NN-1), u(2:NN-2), u(1:NN-3));
+
+theta22 = Phi22 \ yy22
+a1 = theta22(1); a2 = theta22(2); b0 = theta22(3);
+b1 = theta22(4); b2 = theta22(5);
+% Pulse transfer fcn
+H2p2c1d = tf([b0,b1, b2], [1, a1, a2, 0],h) 
+[num, den] = tfdata(H2p2c1d);
+[z,p,k] = tf2zpk(num{1}, den{1})
+
+% Autocorrelation of prediction error for validation data
+yy22_val = y_val(4:end);
+Phi22_val = cat(2, -y_val(3:NN-1), -y_val(2:NN-2), ...
+    u_val(3:NN-1), u_val(2:NN-2), u_val(1:NN-3));
+
+eps22 = yy22_val - Phi22_val*theta22;
+acf22 = covf(eps22, 40);
+figure(8)
+clf
+subplot(211)
+title('Three poles, one zero')
+stem(acf22/acf22(1))
+
+k = 10; % Using 10-step ahead predictor for validation
+[ykpred, tk] = predictlti([b0, b1, b2], [1, a1, a2], ...
+    u_val, y_val, k, 1);
+resval = y_val(k+2:end) - ykpred(2:end);
+rms = sqrt(mean(resval.^2));
+fit = 100* (1 - norm(resval) / norm(y_val - mean(y_val)));
+figure(8)
+subplot(212)
+stairs(y_val, 'linewidth', 1)
+hold on
+plot(tk(2:end), ykpred(2:end), 'ro')
+title(sprintf('RMS= %f,  FIT= %f', [rms, fit]));
+
+

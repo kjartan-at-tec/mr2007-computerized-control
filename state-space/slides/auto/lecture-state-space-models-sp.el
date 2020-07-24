@@ -31,15 +31,21 @@
     "amssymb"
     "capt-of"
     "hyperref"
+    "pifont"
+    "pgfplotstable"
     "khpreamble"
     "euscript")
    (TeX-add-symbols
+    "cmark"
+    "shift"
+    "diff"
     "atantwo"
     "ctrb"
     "obsv")
    (LaTeX-add-labels
-    "sec:org508c1e6"
-    "sec:org9aef93b")
+    "sec:org75c5f79"
+    "sec:org516015a"
+    "sec:org26f2aef")
    (LaTeX-add-environments
     '("exercise" LaTeX-env-args ["argument"] 0)))
  :latex)
