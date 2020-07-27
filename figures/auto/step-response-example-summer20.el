@@ -17,6 +17,8 @@
     "uampl"
     "ttdelay"
     "TTcnst"
-    "ggain"))
+    "ggain")
+   (LaTeX-add-environments
+    '("exercise" LaTeX-env-args ["argument"] 0)))
  :latex)
 

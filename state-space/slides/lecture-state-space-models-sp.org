@@ -59,7 +59,7 @@
 
     El diseño de controloador RST, dos grados de libertad, estaba basada en un modelo de primer orden del motor, y con un retraso para representar el filtro de anti-aliasing. Es un modelo muy simple de este sistema complejo. Pero el modelo era suficiente  para llegar a un control bueno.
 
-    Pero posiblemente se puede llegar a un mejor control usando un modelo algo mas exacto. Entonces ayer vimos un procedimiento de como obtener datos del model non-lineal en simulacion, y despues estimar modelos de diferentes ordenens.
+    Pero posiblemente se puede llegar a un mejor control usando un modelo de orden más alto. Entonces ayer vimos un procedimiento de como obtener datos del model non-lineal en simulacion, y despues estimar modelos de diferentes ordenens.
 
     En lo que sigue vamos a ver el resultado que obtuve para un model de dos polos y dos ceros, y con un retraso. 
 ** Modelo identificado

@@ -15,7 +15,7 @@
 	 \node[coordinate, pin=180:{attitude thrusters}] at (-0.8, 0.4) {};
 	 \node[coordinate, pin=180:{main thruster}] at (-0.1, -1.2) {};
 	 \draw[ultra thick, red, ->] (1.1,1) arc (80:-80:0.3);
-	 \draw[ultra thick, red, ->] (0,-1.5) -- (0,-3);
+	 \draw[ultra thick, red, <-] (0,-1.5) -- (0,-3) node[right, pos=0.7] {$\frac{mg}{\cos\theta}$};
 	 \draw[ dashed, rotate=20] (0,0) -- (0,2.5);
 	 \draw[ dashed, ] (0,0) -- (0,2.5);
 	 \draw[->, rotate=20] (0,2) arc (90:70:2) node[above, pos=0.5] {$\theta$};
