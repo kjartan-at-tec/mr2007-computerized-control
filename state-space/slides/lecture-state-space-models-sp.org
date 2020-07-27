@@ -427,7 +427,7 @@ Dado señales \(u(k), \; k=1,2,\ldots, N\) y \(y(k), \; k=1,2,\ldots,N\), el mod
 
 ** Discretización - ejercicio
    *Actividad* Discretizar el sistema 
-   \[ \dot(x) = Ax + Bu = \begin{bmatrix} 0 & 1\\ 0 & 0 \end{bmatrix} x + \begin{bmatrix}0\\1\end{bmatrix}\]
+   \[ \dot{x} = Ax + Bu = \begin{bmatrix} 0 & 1\\ 0 & 0 \end{bmatrix} x + \begin{bmatrix}0\\1\end{bmatrix}\]
 
 
   

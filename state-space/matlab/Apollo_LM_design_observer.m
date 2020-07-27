@@ -43,3 +43,14 @@ L = L_a;
 % Find gain l0
 Phic = Phi - Gamma*L;
 l0 = 1/(C*inv((eye(3)-Phic))*Gamma)
+
+%% Observer design
+po = pd/2; % Midway to origin
+
+K_a = (acker(Phi', C', po))'
+K_p = (place(Phi', C', po))'
+K = K_a;
+
+
+
+

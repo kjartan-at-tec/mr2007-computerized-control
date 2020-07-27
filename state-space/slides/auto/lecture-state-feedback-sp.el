@@ -6,13 +6,13 @@
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("inputenc" "utf8") ("fontenc" "T1") ("ulem" "normalem")))
    (add-to-list 'LaTeX-verbatim-environments-local "semiverbatim")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
+   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
    (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
    (TeX-run-style-hooks
     "latex2e"
@@ -38,17 +38,16 @@
     "ctrb"
     "obsv")
    (LaTeX-add-labels
-    "sec:org52c5fc5"
-    "sec:org15b6b74"
-    "sec:org054d6ab"
-    "sec:orge54a196"
+    "sec:org2a8664b"
+    "sec:orgbce559a"
+    "sec:org42dd400"
+    "sec:org9f8129d"
+    "sec:org6dbb575"
     "eq:ssmodel"
     "eq:closedloop"
     "eq:desiredpoles"
     "eq:poles"
     "eq:coeffs"
-    "eq:poleplace")
-   (LaTeX-add-environments
-    '("exercise" LaTeX-env-args ["argument"] 0)))
+    "eq:poleplace"))
  :latex)
 

@@ -1,4 +1,4 @@
-% Created 2020-07-26 dom 17:56
+% Created 2020-07-27 lun 10:56
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,30 +34,28 @@
 \maketitle
 
 \section{Apollo moon lander}
-\label{sec:org52c5fc5}
-\begin{frame}[label={sec:org15091bf}]{Modelación en espacio de estado}
-\end{frame}
-\begin{frame}[label={sec:org21d661e}]{Ejemplo - El módulo lunar de Apollo}
+\label{sec:org2a8664b}
+\begin{frame}[label={sec:orgee76354}]{Ejemplo - El módulo lunar de Apollo}
 \begin{center}
 \includegraphics[width=\linewidth]{fig-apollo}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:orgf46085a}]{Ejemplo - El módulo lunar de Apollo}
-\begin{center}
-\includegraphics[width=0.8\linewidth]{fig-apollo}
-\end{center}
-\alert{Actividad} ¿Cuál es la función de transferencia del sistema?
-\[1: \; G(s) = \frac{k_1 k_2}{s^2}\qquad 2: \; G(s) = \frac{k_1 k_2}{s(s^2 + 1)} \qquad 3: \; G(s) = \frac{k_1 k_2}{s^3}\]
-\end{frame}
-
-\begin{frame}[label={sec:org6a0767b}]{Ejemplo - El módulo lunar de Apollo}
+\begin{frame}[label={sec:orgaf77d3e}]{Ejemplo - El módulo lunar de Apollo}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{fig-apollo}
 \end{center}
 \alert{Actividad} ¿Que sensores relevantes se puede usar para el control?
 \end{frame}
 
-\begin{frame}[label={sec:orgef2ffad}]{Ejemplo - El módulo lunar de Apollo}
+
+\begin{frame}[label={sec:orgf07bcc9}]{Ejemplo - El módulo lunar de Apollo}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/mit_LM_autopilot.png}
+\end{center}
+{\footnotesize ``Dynamics and control challenges during the Apollo project'' MIT OCW}
+\end{frame}
+
+\begin{frame}[label={sec:orgf3e0637}]{Ejemplo - El módulo lunar de Apollo}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{fig-apollo}
 \end{center}
@@ -66,32 +64,116 @@ Variables del estado: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \b
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
 \end{frame}
 
-\begin{frame}[label={sec:orga0c19d9}]{Ejemplo - El módulo lunar de Apollo}
+\begin{frame}[label={sec:org7d2985d}]{Ejemplo - El módulo lunar de Apollo}
 Variables del estado: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). Con dinamica
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
-
-\alert{Actividad} Llena las matriz \(A\) y vector \(B\) en el modelo de espacio de estado
-
-\[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{white}{0} & \textcolor{white}{0} &\textcolor{white}{0} \\\textcolor{white}{1} & \textcolor{white}{0}& \textcolor{white}{0}\\ \textcolor{white}{0}& \textcolor{white}{k_2} &\textcolor{white}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{white}{k_1} \\ \textcolor{white}{0} \\\textcolor{white}{0}  \end{bmatrix}}_{B} u \]
-\end{frame}
-
-\begin{frame}[label={sec:org4eaa326}]{Ejemplo - El módulo lunar de Apollo - Solución}
-\end{frame}
-
-\begin{frame}[label={sec:org14297db}]{Ejemplo - El módulo lunar de Apollo - Solución}
-Variables del estado: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). Con dinamica
-\[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
-
-\alert{Actividad} Llena las matriz \(A\) y vector \(B\) en el modelo de espacio de estado
 
 \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} &\textcolor{red!60!black}{0} \\\textcolor{red!60!black}{1} & \textcolor{red!60!black}{0}& \textcolor{red!60!black}{0}\\ \textcolor{red!60!black}{0}& \textcolor{red!60!black}{k_2} &\textcolor{red!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{red!60!black}{k_1} \\ \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0}  \end{bmatrix}}_{B} u \]
 \end{frame}
 
 
+\section{Matlab demo}
+\label{sec:orgbce559a}
+\begin{frame}[label={sec:orgb03c156}]{Matlab / Simulink}
+\end{frame}
+
+\section{Discretización}
+\label{sec:org42dd400}
+
+\begin{frame}[label={sec:org9977e67}]{Discretización}
+\end{frame}
+\begin{frame}[label={sec:orgc00def8}]{Discretización}
+Solución general de un sistema lineal en espacio de estado 
+\begin{align*}
+x(t_k+\tau)& = \mathrm{e}^{A(\tau)} x(t_k) + \int_{0}^\tau \mathrm{e}^{As} B u\big((t_k+\tau)-s) ds
+\end{align*}
+
+\begin{center}
+  \begin{tikzpicture}
+    \draw[->] (-3,0) -- (6,0) node[below] {$t$};
+    \draw (-2, 0.2) -- ( -2, 0) node[below] {$t_k=kh$};
+    \draw (1, 0.2) -- ( 1, 0) node[below] {$t_{k+1}=kh+h$};
+    \draw (4, 0.2) -- ( 4, 0) node[below] {$kh+2h$};
+    \draw[thick, orange!90!black] (-3,0.3) -- (-2, 0.3) -- (-2,1) -- (1, 1) -- (1,0.8) -- (4, 0.8) --(4, 0.5) --(5.5, 0.5) node[pos=0.1, coordinate, pin=30:{$u(t)$}] {} ; 
+    \draw[->] (-2, -0.7) -- (0, -0.7) node[below] {$\tau$};
+  \end{tikzpicture}
+\end{center}
+
+ \begin{align*}
+  x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
+   &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)
+\end{align*}
+\end{frame}
+
+\begin{frame}[label={sec:orgd443f9e}]{Discretización - La exponencial de una matriz}
+Matriz \(A\) cuadrada. Variable \(t\) escalar.
+\[ \mathrm{e}^{At} = 1 + At + \frac{t^2}{2!}A^2 + \frac{t^3}{3!} A^3 + \cdots\]
+Transformada de Laplace:
+\[ \laplace{\mathrm{e}^{At}} = (sI - A)^{-1}\]
+\end{frame}
+
+
+
+\begin{frame}[label={sec:orgdb624c7}]{Discretización - Apollo LM}
+ \begin{align*}
+  x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
+   &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)
+\end{align*}
+\[ A = \begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & k_2 & 0\end{bmatrix}, \quad A^2 = \begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & k_2 & 0\end{bmatrix}\begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & k_2 & 0\end{bmatrix}= \begin{bmatrix} 0 & 0 & 0\\0 & 0 & 0\\k_2 & 0  & 0\end{bmatrix}, \quad A^3 = 0\]
+Entonces,
+\begin{align*}
+ \Phi(h) &= \mathrm{e}^{Ah} = 1 + Ah + A^2 h^2/2  + \cdots \\
+ &= &
+ \end{align*}
+\end{frame}
+
+\begin{frame}[label={sec:org0ef5b24}]{Discretización - Apollo LM - Solución}
+ \begin{align*}
+  x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
+   &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)
+\end{align*}
+\[ A = \begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & k_2 & 0\end{bmatrix}, \quad A^2 = \begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & k_2 & 0\end{bmatrix}\begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & k_2 & 0\end{bmatrix}= \begin{bmatrix} 0 & 0 & 0\\0 & 0 & 0\\k_2 & 0  & 0\end{bmatrix}, \quad A^3 = 0\]
+Entonces,
+\begin{align*}
+ \Phi(h) &= \mathrm{e}^{Ah} = 1 + Ah + A^2 h^2/2  + \cdots \\
+ &= \begin{bmatrix} 1 & 0 & 0\\0 & 1 & 0\\0 & 0 & 1\end{bmatrix} + \begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & k_2 & 0\end{bmatrix}h + \begin{bmatrix} 0 & 0 & 0\\0 & 0 & 0\\k_2 & 0 & 0\end{bmatrix}\frac{h^ 2}{2}= \begin{bmatrix} 1 & 0 & 0\\h & 1 & 0\\\frac{h^2k_2}{2} & hk_2 & 1\end{bmatrix}
+ \end{align*}
+\end{frame}
+
+\begin{frame}[label={sec:orga953f08}]{Discretización - Apollo LM}
+ \begin{align*}
+  x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
+   &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)
+\end{align*}
+\[\mathrm{e}^{As}B &=  \begin{bmatrix} 1 & 0 & 0\\h & 1 & 0\\\frac{s^2k_2}{2} & sk_2 & 1\end{bmatrix} \begin{bmatrix} k_1\\0\\0 \end{bmatrix} = k_1 \begin{bmatrix} 1\\s\\\frac{k_2s^2}{2} \end{bmatrix}
+  \]
+\begin{align*}
+\Gamma (h) &= \int_0^h \mathrm{e}^{As}B ds =  
+\end{align*}
+\end{frame}
+
+\begin{frame}[label={sec:org1c38f3d}]{Discretización - Apollo LM - Solución}
+ \begin{align*}
+  x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
+   &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)\\
+   &= \begin{bmatrix} 1 & 0 & 0\\h & 1 & 0\\\frac{h^2k_2}{2} & hk_2 & 1\end{bmatrix} x(kh) + k_1 \begin{bmatrix} h\\ \frac{h^2}{2} \\ \frac{k_2 h^3}{6} \end{bmatrix} u(kh)
+\end{align*}
+\end{frame}
+
+
+
+
 
 \section{Estabilidad}
-\label{sec:org15b6b74}
-\begin{frame}[label={sec:org5887aeb}]{Estabilidad}
+\label{sec:org9f8129d}
+\begin{frame}[label={sec:org7a3325f}]{Estabilidad}
+\end{frame}
+\begin{frame}[label={sec:org3617e74}]{Eigenvalores y eigenvectores}
+\alert{Definición} Eigenvalores \(\lambda  \in \mathbb{R}\) y eigenvectores \(v \in \mathbb{R}^n\) de una matriz \(\Phi \in \mathbb{R}^{n\times{}n}\) son pares \((\lambda, v \neq 0 )\) que satisfican
+\[ \Phi v = \lambda v \]
+\end{frame}
+
+\begin{frame}[label={sec:org5e457e0}]{Estabilidad}
 El sistema
 \begin{equation*}
 x(k+1)=\Phi x(k), \ \ x(0)=x_0
@@ -99,59 +181,16 @@ x(k+1)=\Phi x(k), \ \ x(0)=x_0
 es \alert{estable} si  \(\underset{t\to\infty}{\lim}x(kh)=0, \quad \forall\;  x_0\in\Bbb{R}^n\).
 
 Un requisito necessario y suficiente para estabilidad, es que \alert{todos los eigenvalores (valores característicos) de \(\Phi\) están en el interior del círculo unitario.}
-\end{frame}
 
-\begin{frame}[label={sec:org13bf8b7}]{Eigenvalores y eigenvectores}
-\alert{Definición} Eigenvalores \(\lambda\) y eigenvectores \(v\) de una matriz \(\Phi\) son pares \((\lambda, v \neq 0)\) que satisfican
-\[ \Phi v = \lambda v \]
-\end{frame}
-
-\begin{frame}[label={sec:org06d542f}]{Eigenvalores y eigenvectores - ejercicio}
-\alert{Actividad} Verifica que el vector 
-\[ v = \begin{bmatrix}1\\0\end{bmatrix}\]
-es un eigenvector de 
-\[ \Phi = \begin{bmatrix} 2 & 0\\0 & \frac{1}{2} \end{bmatrix}. \]
-Cuál es el eigenvalor correspondiente?
-\end{frame}
-
-\section{Controlabilidad y observabilidad}
-\label{sec:org054d6ab}
-
-\begin{frame}[label={sec:org2903691}]{Controlabilidad}
-Controlabilidad es la respuesta a la pregunta \emph{Podemos llegar a cualquier punto en el espacio de estados con una secuencia \(u(k),\; k=0,1,2,\ldots,n-1\) bien eligida?}
-
-Considera
-\[ x(k+1) = \Phi x(k) + \Gamma u(k), \quad x(0)= x_0 \]
-con solución
-\begin{equation}
-\begin{split}
-x(n) &= \Phi^nx(0) + \Phi^{n-1}\Gamma u(0) + \cdots + \Gamma u(n-1)\\
-     &= \Phi^nx(0) + W_c U, 
-\end{split}
-\end{equation}
-dónde
-\begin{align*}
-W_c &= \bbm \Gamma & \Phi\Gamma & \cdots & \Phi^{n-1}\Gamma\ebm\\
-U &= \bbm u(n-1) & u(n-2) & \cdots & u(0) \ebm\transp
-\end{align*}
-\end{frame}
-
-\begin{frame}[label={sec:org51f6553}]{Controlabilidad}
-Para encontrar la secuencia de entrada \(u(k)\) que lleva el estado de \(x(0)=x_0\) a \(x(n) = x_d\) podemos despejar a \(U\) en la ecuación
-\[ x_d = \Phi^nx_0 + W_cU.\]
-
-\[ U = W_c\inv \left(x_d - \Phi^nx(0)\right) \]
-
-Esto require que la matriz \(W_x\) es \alert{invertible}:
-
-El sistem de espacio de estados arriba es controlable si y solo si la \emph{matriz de controlabilidad} \(W_c\)  tenga rango \(n\). 
-\[ \det W_c \neq 0.\]
+Los \alert{eigenvalores} de \(\Phi\) son los \alert{polos} del sistema.
 \end{frame}
 
 \section{State feedback}
-\label{sec:orge54a196}
-\begin{frame}[label={sec:org9e81d5e}]{State feedback}
-Have state space model
+\label{sec:org6dbb575}
+\begin{frame}[label={sec:org703c613}]{Control por retroalimentación de estados}
+\end{frame}
+\begin{frame}[label={sec:org6d754f6}]{Retroalimentación de estados}
+Dado
  \begin{equation}
  \begin{split}
   x(k+1) &= \Phi x(k) + \Gamma u(k)\\
@@ -159,35 +198,17 @@ Have state space model
  \end{split}
  \label{eq:ssmodel}
 \end{equation}
-and measurements (or estimates) of the state vector \(x(k)\). 
+y medidas (o valores estimados) del vector de estado \(x(k)\). 
 
-\alert{Linear state feedback} is the control law
+\alert{Reltroalimentación lineal de estados} es la ley de control
 \begin{equation*}
 \begin{split}
- u(k) &= f\big((x(k), u_c(k)\big) = -l_1x_1(k) - l_2x_2(k) - \cdots - l_n x_n(k) + mu_c(k)\\
-      &= -Lx(k) + mu_c(k), 
+ u(k) &= f\big((x(k), u_c(k)\big) = -l_1x_1(k) - l_2x_2(k) - \cdots - l_n x_n(k) + l_0u_c(k)\\
+      &= -Lx(k) + l_0u_c(k), 
 \end{split}
 \end{equation*}
-where \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
-
-Insert the control law into the state space model \eqref{eq:ssmodel} to get
-\end{frame}
-\begin{frame}[label={sec:org0b30ab5}]{State feedback}
-Have state space model
- \begin{equation}
- \begin{split}
-  x(k+1) &= \Phi x(k) + \Gamma u(k)\\
-  y(k) &= C x(k)
- \end{split}
- \label{eq:ssmodel}
-\end{equation}
-and measurements (or estimates) of the state vector \(x(k)\). 
-
-\alert{Linear state feedback} is the control law
-\[ u(k) = -l_1x_1(k)  -l_2x_2(k) - \cdots - l_n x_n(k) + mu_c(k)= -Lx(k) + mu_c(k), \]
-where \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
-
-Insert the control law into the state space model \eqref{eq:ssmodel} to get
+dónde \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
+Sustitoyende la ley de control en el modelo en espacio de estado \eqref{eq:ssmodel} da 
  \begin{equation}
  \begin{split}
   x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + m\Gamma u_c(k)\\
@@ -197,28 +218,28 @@ Insert the control law into the state space model \eqref{eq:ssmodel} to get
 \end{equation}
 \end{frame}
 
-\begin{frame}[label={sec:org41c6399}]{Pole placement by state feedback}
-Assume the desired performance of the control system is given as a set of desired closed loop poles \(p_1, p_2, \ldots, p_n\), corresponding to the desired characteristic polynomial
+\begin{frame}[label={sec:org14cc338}]{Asignación de polos por retroalimentación de estados}
+Dado ubicación deseada de los polos del lazo cerrado \(p_1, p_2, \ldots, p_n\), correspondiente al polinomio característico deseado
 \begin{equation}
 a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
 \label{eq:desiredpoles}
 \end{equation}
 
-With state feedback we get the the closed-loop system
+Retroalimentación de estados nos da el sistema 
  \begin{equation}
  \begin{split}
-  x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + m\Gamma u_c(k)\\
+  x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + l_0\Gamma u_c(k)\\
   y(k) &= C x(k)
  \end{split}
  \label{eq:closedloop}
 \end{equation}
-with characteristic equation
+con polinomio característico
 \begin{equation}
 \det\left(zI - (\Phi - \Gamma L)\right) = z^n + \beta_1(l_1,\ldots,l_n) z^{n-1} + \cdots \beta_n(l_1, \ldots, l_n).
 \label{eq:poles}
 \end{equation}
 
-Equate the coefficients in \eqref{eq:desiredpoles} and \eqref{eq:poles} to get the system of equations
+Equipara los coeficientes de \eqref{eq:desiredpoles} con los de \eqref{eq:poles} para obtener sistema de ecuaciones
 \begin{equation*}
 \begin{split}
 \beta_1(l_1, \ldots, l_n) &= \alpha_1\\
@@ -230,8 +251,8 @@ Equate the coefficients in \eqref{eq:desiredpoles} and \eqref{eq:poles} to get t
 \end{equation*}
 \end{frame}
 
-\begin{frame}[label={sec:org3d90ec5}]{Pole placement by state feedback, contd.}
-The system of equations
+\begin{frame}[label={sec:org32b68f3}]{Asignación de polos por retroalimentación de estados}
+El sistema de ecuaciones
 \begin{equation*}
 \begin{split}
 \beta_1(l_1, \ldots, l_n) &= \alpha_1\\
@@ -241,23 +262,78 @@ The system of equations
 \end{split}
 \label{eq:coeffs}
 \end{equation*}
-is always linear in the unknown controller parameters, so it can be written
+siempre es lineal en los parámetros del controlador, cuál nos da
 \begin{equation*}
-A L\transp = \alpha,
+M L\transp = \alpha,
 \end{equation*}
-Where \(\alpha\transp = \bbm \alpha_1 & \alpha_2 & \cdots & \alpha_n \ebm.\)
+dónde \(\alpha\transp = \bbm \alpha_1 & \alpha_2 & \cdots & \alpha_n \ebm.\)
 \end{frame}
 
-\begin{frame}[label={sec:orgbbecfc2}]{Pole placement and reacability}
-It can be shown that the controllability matrix \(W_c\) is a factor of the matrix \(A\)
-\[ A = \bar{A} W_c. \] Hence, in general the system of equations
+\begin{frame}[label={sec:org6129c37}]{Asignación de polos y controlabilidad}
+Se puede verificar que la matriz de controlabilidad 
+\[W_c = \bbm \Gamma & \Phi\Gamma & \cdots & \Phi^{n-1}\Gamma\ebm\]
+es un factór de la matriz \(M\)
+\[ M = \bar{M} W_c. \] Entonces, en general las ecuaciones
 \begin{equation}
-\bar{A}W_c L\transp = \alpha
+\bar{M}W_c L\transp = \alpha \qquad \Rightarrow \qquad L\transp = W_c^{-1}\bar{M}^{-1}\alpha
 \label{eq:poleplace}
 \end{equation}
-has a solution only if \(W_c\) is invertible, i.e. the system is \emph{reachable}.
+solo tienen una solución si \(W_c\) es invertible, es decir cuando el sistema es \emph{controlable}.
 
-Note that equation \eqref{eq:poleplace} can still have a solution for unreachable systems if \alert{\(\alpha\) is in the \emph{column space} of \(A\)}, i.e. \(\alpha\) can be written
-\[ \alpha = b_1 A_{:,1} + b_2A_{:,2} + \cdots + b_mA_{:,m}, \; m < n \]
+ Nota que las ecuaciones \eqref{eq:poleplace} pueden tener soluciónes (numero infinito) cuando el sistema no es controlable, si  \alert{\(\alpha\) está en el espacio de columnas de \(M\)}. Es decir, se puede escribir 
+\[ \alpha = b_1 M_{:,1} + b_2M_{:,2} + \cdots + b_M_{:,m}, \; m < n \]
+\end{frame}
+
+\begin{frame}[label={sec:orgc7adc48},fragile]{Asignación de polos por retroalimentación de estados}
+ Dado ubicación deseada de los polos del lazo cerrado \(p_1, p_2, \ldots, p_n\), correspondiente al polinomio característico deseado
+\begin{equation}
+a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
+\end{equation}
+y sistema de espacio de estado en lazo cerrado
+ \begin{equation}
+ \begin{split}
+  x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + l_0\Gamma u_c(k)\\
+  y(k) &= C x(k)
+ \end{split}
+\end{equation}
+
+Matlab (\emph{control systems toolbox}) tiene dos métodos para calcular las ganancias \(L\)
+
+\begin{enumerate}
+\item \alert{Método de Ackerman} 
+\begin{verbatim}
+L = acker(Phi, Gamma, pd)
+\end{verbatim}
+\item \alert{Método numericamente estable} 
+\begin{verbatim}
+L = place(Phi, Gamma, pd)
+\end{verbatim}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[label={sec:org6e2cc41}]{La ganancia \(l_0\) de la referencia}
+El sistema de espacio de estado en lazo cerrado
+\begin{equation*}
+\begin{split}
+ x(k+1) &= \underbrace{\left(\Phi -\Gamma L \right)}_{\Phi_c} x(k) + l_0\Gamma u_c(k)\\
+ y(k) &= C x(k)
+\end{split}
+\end{equation*}
+tiene la solución en estado estacionario (\(x(k+1)=x(k)\)) con referencia constante \(u_c(k) = u_{c,f}\)
+\[ y_f = l_0 C(I - \Phi_c)^{-1}\Gamma u_{c,f}.\]
+Queremos \(y_f =  u_{c,f}\),
+\[ \Rightarrow \qquad l_0 = \frac{1}{C(I-\Phi_c)^{-1}\Gamma}\]
+\end{frame}
+
+\begin{frame}[label={sec:orgb814396}]{Matlab}
+\end{frame}
+\begin{frame}[label={sec:orge2ee402}]{Actividad}
+En grupos: 
+\begin{enumerate}
+\item Visualiza la atitúd (angulo \(\theta\) en grados) del módulo lunar durante la simulación. Cuál es el angulo máximo?
+\item Determina las ganancias \(L = \bbm l_1 & l_2 & l_3 \ebm\) para control \emph{dead-beat}. Es decir con todos los polos del sistema en lazo cerrado en el origen.
+\item Simula el sistema en lazo cerrado con control dead-beat. Cuál es el angulo máximo del módulo lunar?
+\item Cambia el periodo de muestreo de \(h=1\)s a \(h=0.5\)s. Cuál es el angulo máximo ahora, usando control  dead-beat.
+\end{enumerate}
 \end{frame}
 \end{document}
