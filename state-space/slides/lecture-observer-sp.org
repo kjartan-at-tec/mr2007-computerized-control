@@ -50,11 +50,24 @@
 
    \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} &\textcolor{red!60!black}{0} \\\textcolor{red!60!black}{1} & \textcolor{red!60!black}{0}& \textcolor{red!60!black}{0}\\ \textcolor{red!60!black}{0}& \textcolor{red!60!black}{k_2} &\textcolor{red!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{red!60!black}{k_1} \\ \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0}  \end{bmatrix}}_{B} u \]
 
+** Discretización - Módulo lunar de Apollo 
+   \begin{align*}
+    x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
+     &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)\\
+     &= \begin{bmatrix} 1 & 0 & 0\\h & 1 & 0\\\frac{h^2k_2}{2} & hk_2 & 1\end{bmatrix} x(kh) + k_1 \begin{bmatrix} h\\ \frac{h^2}{2} \\ \frac{k_2 h^3}{6} \end{bmatrix} u(kh)
+  \end{align*}
 
-* Matlab demo
-** Matlab / Simulink
+
 * State feedback with observer
 ** Control por retroalimentación de estados reconstruidos
+
+** Control por retroalimentación de estados reconstruidos
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.9\linewidth]{fig-apollo}
+   \end{center}
+   #+end_export
+
 ** Retroalimentación de estados
    Dado
    \begin{equation}
@@ -66,7 +79,7 @@
   \end{equation}
   y medidas (o valores estimados) del vector de estado \(x(k)\). 
 
-  *Reltroalimentación lineal de estados* es la ley de control
+  *Retroalimentación lineal de estados* es la ley de control
   \begin{equation*}
   \begin{split}
    u(k) &= f\big((x(k), u_c(k)\big) = -l_1x_1(k) - l_2x_2(k) - \cdots - l_n x_n(k) + l_0u_c(k)\\
@@ -74,121 +87,87 @@
   \end{split}
   \end{equation*}
   dónde \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
-  Sustitoyende la ley de control en el modelo en espacio de estado \eqref{eq:ssmodel} da 
+  Sustituyende la ley de control en el modelo en espacio de estado \eqref{eq:ssmodel} da 
    \begin{equation}
    \begin{split}
-    x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + m\Gamma u_c(k)\\
+    x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + l_0\Gamma u_c(k)\\
     y(k) &= C x(k)
    \end{split}
    \label{eq:closedloop}
   \end{equation}
+
+
+
+** Diseño del observador
+   Dado modelo
+   \begin{equation*}
+   \begin{split}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:ssmodel}
+  \end{equation*}
+  y medidas de la senal de salida \(y(k)\). 
+
+  El observador sería 
+      \begin{equation*}
+      \begin{split}
+      \hat{x}(k+1) &= \underbrace{\Phi \hat{x}(k) + \Gamma u(k)}_{\text{simulación}} + \underbrace{K\big(y(k) - C\hat{x}(k)\big)}_{\text{corrección}} = \left(\Phi - KC\right)\hat{x}(k) +  \Gamma u(k) + Ky(k)
+      \end{split}
+      \end{equation*}
+  con polos dados por los eigenvalores de la matriz \(\Phi_o = \Phi - KC\)
+
+  *Regla de oro* Eliga los polos del observador (eigenvalores de \(\Phi-KC\)) por lo menos dos veces más rápidos que los polos (eigenvalores) de \(\Phi-\Gamma L\).
+
+** Diseño del observador
+  *Regla de oro* Eliga los polos del observador (eigenvalores de \(\Phi-KC\)) por lo menos dos veces más rápidos que los polos (eigenvalores) de \(\Phi-\Gamma L\).
+
+  En tiempo continua (el plano s) hacer un polo dos veces más rápido significa mover el polo a una distancia doble del origen. Entonces, dado el polo discreto $p_1$, el polo discreto en 
+  \[ p_2 = \text{exp}\left( 2 \frac{\ln p_1}{h} h\right) = \text{exp} \big( 2 \ln p_1 \big)\]
+  corresponde a una respuesta dos veces más rapida.
 
 ** Control por retroalimentación de estados reconstruidos
-** Asignación de polos por retroalimentación de estados
-   Dado ubicación deseada de los polos del lazo cerrado \(p_1, p_2, \ldots, p_n\), correspondiente al polinomio característico deseado
-   \begin{equation}
-   a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
-   \label{eq:desiredpoles}
-   \end{equation}
+   Se puede separar el problema del diseño del controlador en dos
+   1. Diseñar el vector de ganancias \(\textcolor{orange!80!black}{L}\) en la ley de control
+      \[ u(k) = -\textcolor{orange!80!black}{L} \hat{x}(k) + l_0 u_c(k)\]
+      para obtener buen seguimiento a referencia.
+   2. Diseñar el vector de ganancias \(\textcolor{red}{K}\) en el observador 
+      \begin{equation*}
+      \begin{split}
+      \hat{x}(k+1) &= \Phi \hat{x}(k) + \Gamma u(k) + \textcolor{red}{K} \big(y(k) - C\hat{x}(k)\big)
+      \end{split}
+      \end{equation*}
+      para obtener una balancia entre rechazo a perturbaciones y sensibilidad a ruido de medida.
 
-   Retroalimentación de estados nos da el sistema 
-   \begin{equation}
-   \begin{split}
-    x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + l_0\Gamma u_c(k)\\
-    y(k) &= C x(k)
-   \end{split}
-   \label{eq:closedloop}
-  \end{equation}
-  con polinomio característico
-   \begin{equation}
-   \det\left(zI - (\Phi - \Gamma L)\right) = z^n + \beta_1(l_1,\ldots,l_n) z^{n-1} + \cdots \beta_n(l_1, \ldots, l_n).
-   \label{eq:poles}
-   \end{equation}
-  
-   Equipara los coeficientes de \eqref{eq:desiredpoles} con los de \eqref{eq:poles} para obtener sistema de ecuaciones
-   \begin{equation*}
-   \begin{split}
-   \beta_1(l_1, \ldots, l_n) &= \alpha_1\\
-   \beta_2(l_1, \ldots, l_n) &= \alpha_2\\
-   &\vdots\\
-   \beta_n(l_1, \ldots, l_n) &= \alpha_n
-   \end{split}
-   \label{eq:coeffs}
-   \end{equation*}
+** Matlab/simulink
 
-** Asignación de polos por retroalimentación de estados
-   El sistema de ecuaciones
-   \begin{equation*}
-   \begin{split}
-   \beta_1(l_1, \ldots, l_n) &= \alpha_1\\
-   \beta_2(l_1, \ldots, l_n) &= \alpha_2\\
-   &\vdots\\
-   \beta_n(l_1, \ldots, l_n) &= \alpha_n
-   \end{split}
-   \label{eq:coeffs}
-   \end{equation*}
-   siempre es lineal en los parámetros del controlador, cuál nos da
-   \begin{equation*}
-   M L\transp = \alpha,
-   \end{equation*}
-   dónde \(\alpha\transp = \bbm \alpha_1 & \alpha_2 & \cdots & \alpha_n \ebm.\)
+** Calculo de la ganancia del observador
+   Una matriz $M$ y su transponada $M\transp$ tienen los mismos eigenvalores. Entonces,  el problema de determinar las ganancias $K$ para obtener eigenvalores deseados de
+   \[\Phi- KC\] es equivalente de determinar las ganancias $K$ en 
+   \[(\Phi-KC)\transp = \Phi\transp - C\transp K\transp.\]
+   Este último problema tiene la misma forma como el problem de determinar $L$ para obtener eigenvalores deseados de 
+   \[\Phi - \Gamma L\]
+   
+   Entonces, se puede usar el mismo método en matlab para calcular los dos vectores de ganancia, \(L\) y \(K\)
 
-** Asignación de polos y controlabilidad
-   Se puede verificar que la matriz de controlabilidad 
-   \[W_c = \bbm \Gamma & \Phi\Gamma & \cdots & \Phi^{n-1}\Gamma\ebm\]
-   es un factór de la matriz \(M\)
-   \[ M = \bar{M} W_c. \] Entonces, en general las ecuaciones
-   \begin{equation}
-   \bar{M}W_c L\transp = \alpha \qquad \Rightarrow \qquad L\transp = W_c^{-1}\bar{M}^{-1}\alpha
-   \label{eq:poleplace}
-   \end{equation}
-   solo tienen una solución si \(W_c\) es invertible, es decir cuando el sistema es /controlable/.
-
-   Nota que las ecuaciones \eqref{eq:poleplace} pueden tener soluciónes (numero infinito) cuando el sistema no es controlable, si  *\(\alpha\) está en el espacio de columnas de \(M\)*. Es decir, se puede escribir 
-  \[ \alpha = b_1 M_{:,1} + b_2M_{:,2} + \cdots + b_M_{:,m}, \; m < n \]
- 
-** Asignación de polos por retroalimentación de estados
-   Dado ubicación deseada de los polos del lazo cerrado \(p_1, p_2, \ldots, p_n\), correspondiente al polinomio característico deseado
-   \begin{equation}
-   a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
-   \end{equation}
-   y sistema de espacio de estado en lazo cerrado
-   \begin{equation}
-   \begin{split}
-    x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + l_0\Gamma u_c(k)\\
-    y(k) &= C x(k)
-   \end{split}
-  \end{equation}
-
-  Matlab (/control systems toolbox/) tiene dos métodos para calcular las ganancias $L$
-
+** Calculo de la ganancia del observador
+   
   1. *Método de Ackerman* 
      #+begin_src octave
-	L = acker(Phi, Gamma, pd)
+	K = (acker(Phi', C', po))'
      #+end_src
   1. *Método numericamente estable* 
      #+begin_src octave
-	L = place(Phi, Gamma, pd)
+	K = (place(Phi', C', pd))'
      #+end_src
 
-** La ganancia \(l_0\) de la referencia
 
-   El sistema de espacio de estado en lazo cerrado
-   \begin{equation*}
-   \begin{split}
-    x(k+1) &= \underbrace{\left(\Phi -\Gamma L \right)}_{\Phi_c} x(k) + l_0\Gamma u_c(k)\\
-    y(k) &= C x(k)
-   \end{split}
-   \end{equation*}
-   tiene la solución en estado estacionario (\(x(k+1)=x(k)\)) con referencia constante \(u_c(k) = u_{c,f}\)
-   \[ y_f = l_0 C(I - \Phi_c)^{-1}\Gamma u_{c,f}.\]
-   Queremos \(y_f =  u_{c,f}\),
-   \[ \Rightarrow \qquad l_0 = \frac{1}{C(I-\Phi_c)^{-1}\Gamma}\]
 
 ** Matlab   
 ** Actividad
    En grupos: 
-   1. Visualiza la atitúd (angulo \(\theta\) en grados) del módulo lunar durante la simulación. Cuál es el angulo máximo?
-   2. Determina las ganancias \(L = \bbm l_1 & l_2 & l_3 \ebm\) para control /dead-beat/. Es decir con todos los polos del sistema en lazo cerrado en el origen.
-   3. Simula el sistema en lazo cerrado con control dead-beat. Cuál es el angulo máximo del módulo lunar?
-   4. Cambia el periodo de muestreo de \(h=1\)s a \(h=0.5\)s. Cuál es el angulo máximo ahora, usando control  dead-beat.
+   1. Agrega simulación de una perturbancia constante a la salida del sistema (pero antes de la medición). Esa perturbación representa un error de modelación. Simula un escalón positivo unitario occurriendo en \(t=10\)s
+   2. Determina la desviación máxima en la velocidad en respuesto a la perturbancia.
+   3. Determina las ganancias \(K = \bbm k_1 & k_2 & k_3 \ebm\transp\) para un observador /dead-beat/. Es decir con todos los polos en el origen. Cómo cambia la desviación en la respuesta a la perturbancia?
+   4. Cambió la respuesta al escalón en la referencia al cambiar a un observador dead-beat? 
+

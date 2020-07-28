@@ -31,7 +31,8 @@ def predict_lti(b, a, y, u, k=1, d=0):
     # Adjust coefficient arrays in case of input delay 
     aa = np.concatenate( (a, np.zeros(d)), axis=None)
     bb = np.concatenate( (np.zeros(len(aa)-len(b)), b), axis=None)
-
+    assert len(aa) == len(bb)
+    
 
     n = len(aa) - 1 # System order
     N = len(u)      # Length of data
@@ -39,19 +40,31 @@ def predict_lti(b, a, y, u, k=1, d=0):
     print("Order n=%d" %n)
     print("Data points N=%d" %N)
     
-    yy = np.concatenate( (np.zeros(n), y), axis=None ) # Prepad with initial values
-    uu = np.concatenate( (np.zeros(n), u), axis=None )  # Prepad with initial values
+    #yy = np.concatenate( (np.zeros(n), y), axis=None ) # Prepad with initial values
+    #uu = np.concatenate( (np.zeros(n), u), axis=None )  # Prepad with initial values
 
-    tk = np.arange(k, N)
+    yy = y;
+    uu = u;
 
+    tk = np.arange(k+n-1, N)
+    #import pdb
+    #pdb.set_trace()
     ypredk = np.zeros(len(tk))
-    for i in range(N-k):
-        ysim = yy[i:i+n+k+1] # First n are initial values, last k will be overwritten 
-        usim = uu[i:i+n+k+1] 
-        for l in range(k):
-            ysim[n+l+1] = - np.dot(aa[1:], ysim[n+l:l:-1])
-            ysim[n+l+1] += np.dot(bb, usim[n+l+1:l:-1])
-        ypredk[i] = ysim[-1]
+    for i in range(N-k-n+1):
+        ysim = np.copy(yy[i:i+n+k]) # First n are initial values, last k will be overwritten 
+        usim = np.copy(uu[i:i+n+k]) 
+        #import pdb
+        #pdb.set_trace()
+    
+        ysim[n] = - np.dot(aa[1:], ysim[n-1::-1])
+        ysim[n] += np.dot(bb, usim[n::-1])
+        for l in range(1,k):
+            ysim[n+l] = - np.dot(aa[1:], ysim[n+l-1:l-1:-1])
+            ysim[n+l] += np.dot(bb, usim[n+l:l-1:-1])
+
+        #import pdb
+        #pdb.set_trace()
+        ypredk[i] = ysim[n+k-1]
 
     return (ypredk, tk)
 

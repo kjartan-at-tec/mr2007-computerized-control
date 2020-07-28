@@ -45,7 +45,7 @@ Phic = Phi - Gamma*L;
 l0 = 1/(C*inv((eye(3)-Phic))*Gamma)
 
 %% Observer design
-po = pd/2; % Midway to origin
+po = exp(2*log(pd)) % Observer poles twice as fast
 
 K_a = (acker(Phi', C', po))'
 K_p = (place(Phi', C', po))'

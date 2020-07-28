@@ -90,3 +90,21 @@ bode(Hd, Hhat1)
 
 figure(5)
 covfcn(resids1)
+
+figure(6)
+clf
+
+% Validate using k-step ahead predictor
+k = 10; % Using 10-step ahead predictor for validation
+[ykpred, tk] = predictlti([b0, b1], [1, a1, a2], ...
+    u_val, y_val, k, 0);
+resval = y_val(k+1:end) - ykpred;
+rms = sqrt(mean(resval.^2));
+fit = 100* (1 - norm(resval) / norm(y_val - mean(y_val)));
+figure(6)
+subplot(212)
+stairs(y_val, 'linewidth', 1)
+hold on
+plot(tk, ykpred, 'ro')
+title(sprintf('RMS= %f,  FIT= %f', [rms, fit]));
+
