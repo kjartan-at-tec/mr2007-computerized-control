@@ -1,4 +1,6 @@
 *~
+*autosave
+*.slxc
 *.aux
 *.log
 *#
@@ -17,3 +19,5 @@ polynomial-design/matlab/pmsm_2dof_control_sol.slx
 polynomial-design/matlab/pmsm_2dof_control_sol.slxc
 polynomial-design/matlab/pmsm_fall19.m
 polynomial-design/matlab/pmsm_summer20.m
+state-space/matlab/pmsm_observer_sol.slx
+state-space/matlab/pmsm_design_observer_sol.m

@@ -46,9 +46,10 @@ l0 = 1/(C*inv((eye(3)-Phic))*Gamma)
 
 %% Observer design
 po = exp(2*log(pd)) % Observer poles twice as fast
+po = zeros(1,3) % Dead-beat observer
 
 K_a = (acker(Phi', C', po))'
-K_p = (place(Phi', C', po))'
+%K_p = (place(Phi', C', po))'
 K = K_a;
 
 
