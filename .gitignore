@@ -22,3 +22,4 @@ polynomial-design/matlab/pmsm_summer20.m
 state-space/matlab/pmsm_observer_sol.slx
 state-space/matlab/pmsm_design_observer_sol.m
 exams/final-exam/Summer-2020.ipynb
+state-space/matlab/pmsm_observer_integrator_sol.slx

@@ -1,0 +1,145 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+
+#+title: Control computarizado - cierre
+
+
+* What do I want the students to understand?			   :noexport:
+  - Why the class is useful
+  - Some details about exam
+    - Observer poles play the same role in RST as in state space
+    - Choice of observer poles: The sensitivity function shares the same
+      poles as the closed-loop system. At some point of faster observer, limited yield
+  - Some details about hw 5
+    - State feedback does not give integral action.
+    - Can combine with integral control
+
+* Which activities will the students do?			   :noexport:
+  1. Discuss why a jagged input signal does not yield a jagged output
+  2. Discuss what a suitable choice of $h$ could be
+
+* Retroalimentación examen final
+
+
+** Retroalimentación examen final
+
+   - Comportamiento del sistema depende de la ubicación de polos en el plano z
+   - Polos del observador
+     - El *observador* y sus polos tiene el mismo significado en control polinomial (RST) como en espacio de estado
+     - La *función de sensibilidad* tiene los polos del observador *y* los polos de la respuesta al referencia \(\Rightarrow\) Se puede modificar con los polos del observador, pero dentro límites. 
+
+* Retroalimentacion Tarea 5
+
+** Retroalimentación Tarea 5
+
+   - Control por retroalimentación de estados (medidos o reconstruidos) *no da acción integral*.
+   - Se puede *complementar* el control por retroalimentación de estados con acción integral.
+
+* Cierre
+
+
+** Control en tiempo continuo
+#+BEGIN_CENTER
+\includegraphics[width=0.6\linewidth]{../../figures/block1}
+#+END_CENTER
+
+*** notes							   :noexport:
+
+
+** Control en la vida real
+#+BEGIN_CENTER
+\includegraphics[width=0.7\linewidth]{../../figures/comp-contr-sys.png}
+#+END_CENTER
+#+begin_export latex
+\footnotesize From Åström and Murray \emph{Feedback systems: An introduction for scientists and engineers}
+#+end_export
+
+
+*** notes							   :noexport:
+    - In real life things are a bit more complicated.
+    - The process to be controlled consists of actuators and sensors.
+    - There are disturbances and noise affecting the system
+    - Most importantly: almost all controllers are implemented on computers (desktop, embedded, microcontrollers, programmable logic controller (digital process controller)
+    - Computers work in discrete time and with digital values.
+      - Digital: Error due to finite precision of analog signal
+      - Time discretization, or sampling: More important.
+    - Sampling has profound effects on the system:
+      - Affects the performance of the control system (delay)
+      - Can introduce new (unwanted) frequencies in the system through what is called aliasing (high frequencies signal masquerade as low frequency).
+    - Gives new possibilities if we make use of the discrete nature of a computer-controlled system.
+
+** Dos maneras de obtener un controlador discreto 
+   1. Discretizar un controlador diseñado usando métodos de tiempo continuo
+     \includegraphics[width=0.7\linewidth]{../../figures/block1} \(F_d(z) \approx F(s)\)
+   2. Diseñar usando modelo discreto de la planta
+      #+begin_export latex
+	\begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+	  \node[coordinate,] (refinput) {};
+	  \node[block, right of=refinput] (controller)  {Controller};
+	  \node[block, right of=controller, node distance=30mm] (zoh)  {Hold};
+	  \node[block, right of=zoh, node distance=26mm] (plant)  {Process};
+	  \node[block, right of=plant, node distance=26mm] (sampler)  {Sampler};
+	  \node[coordinate, right of=sampler, node distance=20mm] (output) {};
+
+	  \draw[->] (refinput) -- node[above, near start] {$y_{ref}(k)$} (controller);
+	  \draw[->] (controller) -- node[above, pos=0.4] {$u(k)$} (zoh);
+	  \draw[->] (zoh) -- node[above] {$u(t)$} (plant);
+	  \draw[->] (plant) -- node[above] {$y(t)$} (sampler);
+	  \draw[->] (sampler) -- node[pos=0.8, coordinate] (measure) {} node[above, near end] {$y(k)$} (output);
+	  \draw[->] (measure) -- ++(0,-20mm) -| (controller);
+	  \draw[red] (42mm, -13mm) rectangle (114mm, 8mm);
+	  \node[red] at (100mm, -10mm) {Discrete model};
+	\end{tikzpicture}
+
+      #+end_export
+      
+
+
+*** Notes							   :noexport:
+    - Discrete signals - sequences of numbers, signal defined at specific time instants called the sampling instants.
+    - Derivative of signals. Here using the differential operator operating on differentiable functions. In discrete time work with the shifted sequences. Here shift operator operating on sequences shifting ahead one step.
+    - ODE difference eqs
+    
+** Tiempo discreto vs tiempo continuo
+| Continuous time                                                              | Discrete time                                                                                       |
+|------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| \includegraphics[width=0.4\linewidth]{../../figures/cont-fcn}                | \includegraphics[width=0.4\linewidth]{../../figures/discrete-fcn}                                   |
+| \(y(t)\)                                                                     | \(y(kh)\) or \(y(k)\)                                                                               |
+| \(\operatorname{p} y \triangleq \frac{d}{dt} y\)                             | \(\operatorname{q}y \triangleq y(kh+h)\)                                                            |
+| \( (\operatorname{p}+a) y = bu \;\Leftrightarrow\; \frac{d}{dt}y + ay = bu\) | \( (\operatorname{q} + \alpha) y = \beta u \; \Leftrightarrow \; y(k+1) + \alpha y(k) = \beta u(k)\) |
+| \(Y(s) \triangleq \laplace{y(t)}\)                                           | \(Y(z) \triangleq \ztrf{y(kh)}\)                                                                    |
+| \( Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\)                                     | \(Y(z) = H(z)U(z) = \frac{\beta}{z+\alpha}U(z)\)                                                    |
+| Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\)                       | Pole of the system: \( z+\alpha = 0 \; \Rightarrow \; z = -\alpha \)                                |
+| \includegraphics[width=0.22\linewidth]{../../figures/cont-stable}            | \includegraphics[width=0.22\linewidth]{../../figures/discrete-stable}                               |
+|------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+
+*** Notes							   :noexport:
+    - Discrete signals - sequences of numbers, signal defined at specific time instants called the sampling instants.
+    - Derivative of signals. Here using the differential operator operating on differentiable functions. In discrete time work with the shifted sequences. Here shift operator operating on sequences shifting ahead one step.
+    - ODE difference eqs
+
+** Objetivos del curso
+
+Al final del curso serás capaz de:
+
+1. *Analizar* sistemas de control computarizado de procesos y productos.
+2. *Diseñar* sistemas de control computarizado de procesos y productos.
+3. *Implementar* sistemas de control computarizado de procesos y productos.
+4. *Evaluar* sistemas de control computarizado de procesos y productos con un enfoque de aplicación práctica.
+
+** 
+
+   #+begin_export latex
+\Huge Tusen takk
+   #+end_export
