@@ -1,0 +1,52 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+%\usepackage{pythontex}
+\usepackage{pgfplots}
+%\pgfplotsset{compat=1.9}
+
+
+
+\begin{document}
+
+\def\TRF{tf([0.25],[1, -1.5, 0.5], 1)}
+
+
+\begin{tikzpicture}
+  \begin{loglogaxis} [
+      width=12cm,
+      height=5cm,
+      ylabel=$|G_o|$,
+      xticklabels=\empty,
+      grid=both,
+      minor y tick num=9,
+      xmax=10,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+  ]
+    \addplot 
+    shell[thick, black, no marks, prefix=pgfshell_, id=bm] {octave -q --eval  "format long; pkg load control; G=\TRF; [mag,phi,w]=bode(G); disp(cat(2,w',mag))"};
+  \end{loglogaxis}
+  \begin{semilogxaxis} [
+      xlabel=$\omega$,
+      ylabel=$\arg G_o$,
+      yshift = -3.5cm, 
+      width=12cm,
+      height=5cm,
+      grid=both,
+      ytick={0, -90, -180, -270, -360},
+      minor y tick num=8,
+      xmax=10,
+      every major grid/.style={red, opacity=0.5},
+      xtick={0.01, 0.1, 1, 10},
+      %xticklabels={$0.01\omega_N$, $0.1\omega_N$, $\omega_N$, $10\omega_N$},
+  ]
+    \addplot 
+    shell[thick,black, no marks, prefix=pgfshell_, id=bg] {octave -q --eval  "format long; pkg load control; G=\TRF ; [mag,phi,w]=bode(G); disp(cat(2,w',phi))"};
+  \end{semilogxaxis}
+\end{tikzpicture}
+
+\end{document}

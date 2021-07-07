@@ -1,0 +1,174 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+# #+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+     
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
+#+title: Frequency response
+#+date: 2021-06-29
+
+* What do I want the students to understand?			   :noexport:
+  - The Frequency response of LTI's
+  - Bode-diagram
+  - Connection between bode diagram and Nyquist plot
+
+* Which activities will the students do?			   :noexport:
+  1. Interpret Nyquist plots
+  2. Draw simple Nyquis plots
+  3. Draw simple Bode diagrams - Integrator, derivator, lead-filter, lag-filter
+
+
+* Bode diagram
+
+** Response of LTI systems to sinusoids
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[block, right of=refinput] (motor) {$G(s)$};
+     \node[coordinate, right of=motor, node distance=20mm] (output) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] (voltsignal) {$u$} (motor);
+     \draw[->] (motor) -- node[above, pos=0.5] (velsignal) {$y$} (output);
+     \end{tikzpicture}
+   \end{center}
+
+   Let $u(t) = \sin\omega_1 t$. Then, after transients have died out,
+   \[ y(t) = |G(i\omega_1)| \sin \big( \omega_1 t + \arg G(i\omega_1)\big). \]
+
+*** Proof						:noexport:whiteboard:
+    - complex exponential functions are eigen functions of LTIs:
+      - u(t) = e^st, s=\sigma + i\omega, 
+	u(t) = e^{(\sigma + i\omega) t} = e^{sigma t} e^{i\omega t}.
+	|u(t)| = |e^{sigma t}||e^{i\omega t}| = |e^{\sigma t}|
+	\arg u(t) = \arg e^{\sigma t} + \arg e^{i\omega t} = \omega t.
+
+	Exercise!
+
+	Signal u(t)=e^{st} been exciting the system since forever
+      y(t) = (g * u) (t) = \int_{-\inft}^\infty g(\tau) u(t-\tau) d\tau
+           = \int_0^\infty g(\tau) e^{s(t-\tau)}d\tau 
+           = e^{st} \int_0^\infty g(\tau)e^{-s\tau} d\tau
+           = e^{st} G(s)
+
+     In particular s=i\omega
+      
+
+
+    In steps
+    1. Complex sinusoids: \( x(t) = \mexp{i\omega t} = \cos (\omega t) + i\sin (\omega t) \) so 
+       \( \sin (\omega t) = \impart{ \mexp{i \omega t} \)
+    2. Phase shifted and amplified complex sinusoid: 
+       \( ax(t) = a \mexp{i\omega t} = r \mexp{i\theta} \mexp{i\omega t} 
+                = |a| \mexp{i \arg a} \mexp{i\omega t} = |a| \mexp{i(\omega t + \arg a} \) 
+    3. \( y(t) = \impart{ ax(t) } = |a|\sin (\omega t + \arg a). \)
+    4. Exercise: Given \( x(t) = \mexp{it} \). Draw \( y(t) = \impart{ ax(t) } \) for \( a = 2\mexp{-i\pi/2} \)
+    5. Now consider LTI \( G(s) = \laplace{g(t)} = \int_0^\infty g(\tau) \mexp(-s\tau} d\tau \),
+       where \(g(t)\) is the impulse response of the system.
+       Input signal 
+       \( u(t) = \sin (\omega t) = \impart{ \mexp{i\omega t} } \) since the beginning of times.
+       Hints
+       - Convolution : \( (g * f)(t) =  \eqdef \int_{-\infty}^{\infty} g(\tau) f(t-\tau) d\tau \)
+       - Causality:  \( g(t) = 0, t<0 \) No response before the impulse happens. 
+         The system cannot guess that an impulse will happen in the future.
+       - Linearity of the \( \impart{.} \) operator: 
+         \[ \int \impart{f(\tau)} d\tau = \impart{ \int f(\tau) d\tau } \]
+       - Laplace: \int_0^\infty f(\tau) \mexp(-i\omega \tau) d\tau = F(s)|_{s=i\omega}
+       \( Y(s) = G(s) U(s) \) or equivalently 
+       \[ y(t) = (g * u) (t) \eqdef \int_{-\infty}^{\infty} g(\tau) u(t-\tau) d\tau
+       =  \int_{-\infty}^{\infty} g(\tau) \impart { \mexp{i\omega (t-\tau)} } d\tau\]
+       Since system is causal => \( g(t) = 0, t<0 \)
+       \[ y(t) = \int_{0}^\infty g(\tau) \impart { \mexp{i\omega t} \mexp{-i\omega\tau} } d\tau
+       = \impart{ \right( \int_{0}^\infty g(\tau) \mexp[-i\omega\tau} } d\tau\left) \mexp{i\omega t} 
+       = \impart{ G(i\omega) \mexp{i\omega t} } 
+       = \impart{ |G(i\omega)| \mexp{i \arg G(i\omega)} \mexp{i\omega t} }
+       = |G(i\omega)| \sin ( \omega t + \arg G(i\omega) ) \]
+
+
+** The Bode diagram
+   
+   \[ y(t) = \underbrace{|G(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G(i\omega_1)}_{\text{phase shift}} \big) \]
+
+   The Bode diagram shows the magnitude and phase of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
+
+
+** Specifications on the frequency properties of the closed-loop system
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.899\linewidth]{../../figures/spec-bode-closed-loop-new}
+#+END_CENTER
+
+** Exercise: Reading the Bode diagram
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/alias-example-bode-GC}
+   #+END_CENTER
+   which of the below frequency responses *is not* compatible with the Bode diagram?
+
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/alias-example-bode-timeseries}
+   #+END_CENTER
+
+** From loop gain to closed-loop gain
+   #+begin_export latex
+   \begin{center}
+   \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (fb) {$F(s)$};
+    \node[block,right of=fb, node distance=30mm] (plant) {$G(s)$};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(t)$} (sum);
+    \draw[->] (sum) -- node[above] {$e(t)$} (fb);
+    \draw[->] (fb) -- node[above] {$u(t)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(t)$} (output);
+    \draw[->] (measure) -- ++(0, -18mm) -| (sum) node[left, pos=0.96] {$-$};
+    \draw[red] (3.8, -1) rectangle (9.4, 1.7);
+    \node[red] at (8, 1.4) {$G_o(s)$};
+    \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+\[ G_c(i\omega) = \frac{G(i\omega)F(i\omega)}{1 + G(i\omega)F(i\omega)} = \frac{G_o(i\omega)}{1 + G_o(i\omega)} \]
+\[ |G_c(i\omega)| = \frac{|G_o(i\omega)|}{|1 + G_o(i\omega)|} = \frac{|G_o(i\omega)|}{|G_o(i\omega) - (-1)|} \]
+
+*Keep the loop gain \(G_o(i\omega)\) away from -1!* 
+
+
+
+
+** How to achieve the frequency-domain specifications              :noexport:
+
+*** Problem statement
+    :PROPERTIES:
+    :BEAMER_col: 0.28
+    :END:
+
+    \[G_c(i\omega) = \frac{ G_o(i\omega)}{1 + G_o(i\omega)}\]
+
+ \includegraphics[width=1.1\linewidth]{../../figures/spec-bode-closed-loop-new}
+
+Which of the Bode plots to the right shows the correct loop gain \(G_o(i\omega)\)?
+
+*** Plots
+    :PROPERTIES:
+    :BEAMER_col: 0.72
+    :END:
+
+#+BEGIN_CENTER 
+ \includegraphics[width=1.02\linewidth]{../../figures/spec-bode-open-loop-new}
+#+END_CENTER
+    
+
+
+

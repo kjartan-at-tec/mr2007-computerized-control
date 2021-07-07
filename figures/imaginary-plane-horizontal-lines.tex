@@ -28,11 +28,11 @@
 \draw[->, thick] (axis cs: 270, 1.6) -- (axis cs: 90, 1.6) node [left] {$\mathrm{Im}$};
 \draw[->, thick] (axis cs: 180, 1.6) -- (axis cs: 0, 1.6) node [below] {$\mathrm{Re}$};
 
-\addplot+[data cs=cart, no markers, ultra thick, black, domain=-1:0, samples=20] (1.5*x, 1);
-\addplot+[data cs=cart, no markers, ultra thick, black, dashed, domain=0:1, samples=20] (1.5*x, 1);
+\addplot+[data cs=cart, no markers, ultra thick, red, domain=-1:0, samples=20] (1.5*x, 1);
+\addplot+[data cs=cart, no markers, ultra thick, red, domain=0:1, samples=20] (1.5*x, 1);
 
-\addplot+[data cs=cart, no markers, ultra thick, black, domain=-1:0, samples=20] (1.5*x, -1);
-\addplot+[data cs=cart, no markers, ultra thick, black, dashed, domain=0:1, samples=20] (1.5*x, -1);
+\addplot+[data cs=cart, no markers, ultra thick, red, domain=-1:0, samples=20] (1.5*x, -1);
+\addplot+[data cs=cart, no markers, ultra thick, red, domain=0:1, samples=20] (1.5*x, -1);
 
 %\draw[-, ultra thick] (cartesian cs: 0, 2) -- (cartesian cs: -2, 2);
 

@@ -1,0 +1,41 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\Go{3*tf([1], [1, 1, 0]);}
+
+\begin{tikzpicture}
+  \begin{loglogaxis} [
+      ylabel=$|G_c(i\omega)|$,
+      width=12cm,
+      height=7cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ytick={0.7, 1, 1.52},
+      yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      %yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      %xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeGc,] {julia -q --eval  "G0=\Go; Gc=feedback(G0, tf([1], [1]));  print_bode_mag(Gc, -2, 2);"};
+  \end{loglogaxis}
+  
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

@@ -1,4 +1,4 @@
-% Created 2020-07-01 mié 09:24
+% Created 2021-06-30 Wed 07:58
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -21,33 +21,33 @@
 \DeclareMathOperator{\diff}{p}
 \usetheme{default}
 \author{Kjartan Halvorsen}
-\date{2020-07-01}
-\title{Computerized Control - Sampling and aliasing}
+\date{2021-06-30}
+\title{Sampling and aliasing}
 \hypersetup{
  pdfauthor={Kjartan Halvorsen},
- pdftitle={Computerized Control - Sampling and aliasing},
+ pdftitle={Sampling and aliasing},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.3.6)}, 
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
  pdflang={English}}
 \begin{document}
 
 \maketitle
 
 \section{Intro}
-\label{sec:org9142291}
+\label{sec:org685c9c4}
 
-\begin{frame}[label={sec:orgcc8bfaa}]{Repetition}
+\begin{frame}[label={sec:orgcd3f3cb}]{Computer-controlled system}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig7-2.png}
 \end{center}
+{\footnotesize Source: Åström \& Wittenmark}
 \end{frame}
 
 
-
 \section{The sampling theorem}
-\label{sec:org9b5639a}
-\begin{frame}[label={sec:org4f6279d}]{Challenges with computerized control - aliasing}
+\label{sec:orgf503a06}
+\begin{frame}[label={sec:org881e394}]{Challenges with computerized control - aliasing}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 \begin{center}
@@ -64,14 +64,14 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org9e0728e}]{Spatial aliasing}
+\begin{frame}[label={sec:orgc438ec7}]{Spatial aliasing}
 \begin{center}
 \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks.png}
 \includegraphics[width=0.45\linewidth]{../../figures/Moire_pattern_of_bricks_small.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org8500b3a}]{The sampling theorem}
+\begin{frame}[label={sec:org77a96ac}]{The sampling theorem}
 Shannon and Nyquist:
 
 A continuous-time signal with Fourier transform that is zero outside the interval \((-\omega_0, \omega_0)\)  can be completely reconstructed from equidistant samples of the signal, as long as the sampling frequency is at least \(2\omega_0\). 
@@ -91,7 +91,7 @@ A continuous-time signal with Fourier transform that is zero outside the interva
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org84c56af}]{The impulse modulation model}
+\begin{frame}[label={sec:org1c94273}]{The impulse modulation model}
 The \alert{impulse train}, a.k.a the \alert{Dirac comb}:
 \begin{center}
 \(m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh)\)\hspace*{10mm}
@@ -106,7 +106,7 @@ The \alert{impulse train}, a.k.a the \alert{Dirac comb}:
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgf9fb3bb}]{Fourier transform of the sampled signal}
+\begin{frame}[label={sec:org5b6339a}]{Fourier transform of the sampled signal}
 The Fourier transform of \(f_s\) and the Fourier transform of \(f\) are related as
 \[ F_s(\omega) = \frac{1}{h} \sum_n F(\omega + n\omega_s). \]
 
@@ -118,8 +118,8 @@ Because the Fourier transform of the sampled signal equals the Fourier transform
 \end{frame}
 
 \section{Exercises using line spectra}
-\label{sec:org0bdc45a}
-\begin{frame}[label={sec:org785fe1d}]{Fourier transform of a complex exponential}
+\label{sec:org57afb82}
+\begin{frame}[label={sec:org45627d9}]{Fourier transform of a complex exponential}
 The function \(x(t) = \mathrm{e}^{i\omega_1 t}\) 
 \begin{center}
   \begin{tikzpicture}[scale=2]
@@ -138,7 +138,7 @@ has Fourier transform
 \[X(i\omega) = \int_{-\infty}^{\infty} x(t) \mathrm{e}^{-i\omega t}dt = \int_{-\infty}^{\infty} \mathrm{e}^{i(\omega_1 - \omega) t}dt = \delta(\omega_1 - \omega)\] 
 \end{frame}
 
-\begin{frame}[label={sec:org49a2309}]{Fourier transform of a sinusoid}
+\begin{frame}[label={sec:orgded89dc}]{Fourier transform of a sinusoid}
 A sinusoidal signal \(y(t) = \sin(\omega_1 t)\) has all its power concentrated at one single frequency, \(\omega=\unit{\omega_1}{rad\per\second}\). 
 \begin{center}
 \begin{tikzpicture}
@@ -160,12 +160,12 @@ xticklabels={0, $T=\frac{2\pi}{\omega_1}$},
 \end{axis}
 \end{tikzpicture}
 \end{center}
-Since \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{i \omega_1 t} \right)\]
+Since \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{-i \omega_1 t} \right)\]
 the Fourier transform of a sinusoid becomes
 \[ Y(i\omega) = \frac{1}{2i} \left( \delta(\omega_1 - \omega) - \delta(\omega_1 + \omega) \right)\]
 \end{frame}
 
-\begin{frame}[label={sec:org67047f6}]{Exercise 1: Fourier transform of a sinusoid}
+\begin{frame}[label={sec:org419e9da}]{Exercise 1: Fourier transform of a sinusoid}
 Consider the signal below
 
 
@@ -246,7 +246,7 @@ scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
   \node[red] at (group c2r2.center) {\huge 4};
   \end{tikzpicture}
 \end{frame}
-\begin{frame}[label={sec:org5834ae1}]{Exercise 2: Two sinusoids}
+\begin{frame}[label={sec:org3cbc6fb}]{Exercise 2: Two sinusoids}
 Consider a signal with Fourier transform  
 
 \pgfplotsset{
@@ -323,7 +323,7 @@ variable=t,
 \node[red] at (group c2r2.center) {\huge 4};
 \end{tikzpicture}
 \end{frame}
-\begin{frame}[label={sec:org32d3be6}]{Exercise 3: Fourier transform of a sampled sinusoid}
+\begin{frame}[label={sec:orgda14f17}]{Exercise 3: Fourier transform of a sampled sinusoid}
 Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
 
 
@@ -374,7 +374,7 @@ xticklabels={0, $h$, $T$, $2T$},
 
 What is the frequency of the sinusoid? What is the sampling frequency \(\omega_s\) and the Nyquist frequency \(\omega_N\)?
 \end{frame}
-\begin{frame}[label={sec:org43b90be}]{Exercise 3: Fourier transform of a sampled sinusoid}
+\begin{frame}[label={sec:org390eac2}]{Exercise 3: Fourier transform of a sampled sinusoid}
 Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
 
 
@@ -489,13 +489,13 @@ scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
   \node[red] at (group c2r2.center) {\huge 4};
   \end{tikzpicture}
 \end{frame}
-\begin{frame}[label={sec:org083a214}]{Alias frequency}
+\begin{frame}[label={sec:org676d5be}]{Alias frequency}
    To find the low frequency alias \(\omega_a<\omega_N\) of a high freqency sinusoid \(\omega_1\), The expression 
 \[ \omega_a = \left| \big( (\omega_1 + \omega_N) \, \text{mod}\, \omega_s\big) - \omega_N\right|\] 
 can be used.
 \end{frame}
 
-\begin{frame}[label={sec:org8b7468f}]{Aliasing example}
+\begin{frame}[label={sec:orgf12cdf1}]{Aliasing example}
 If a continuous-time signal with frequency content (bandwidth) \(\omega_B\) is sampled at too low sampling rate ( \(\omega_s < 2\omega_B\) ), then the energy at higher frequencies is folded onto lower frequencies. 
 
 \begin{center}
@@ -506,22 +506,49 @@ A high-frequency sinusoid ( \(\omega_1 = 1800\pi\) rad/s ) masquerading as a low
 \alert{Draw the spectrum (lines) of the two sinusoids. Mark the Nyquist frequency and verify that the alias frequency is obtained by folding about the Nyquist frequency.}
 \end{frame}
 
-\begin{frame}[label={sec:org6615976}]{Group exercise: Alias frequency}
+
+
+\section{antialiasing}
+\label{sec:org9130c47}
+
+\begin{frame}[label={sec:org95929b6}]{Noisy measurements}
 \begin{columns}
-\begin{column}{0.4\columnwidth}
-A \(f_1=60\)Hz noise signal is sampled at \(f_s=90\)Hz.
-
-\begin{enumerate}
-\item Determine the alias frequency using the expression
-\[ f_a = \left| \big( (f_1 + f_N) \, \text{mod}\, f_s\big) - f_N\right|\]
-\item Verify in the plot that your calculation is correct
-\item Draw the spectrum lines of the two sinusoids. Mark the Nyquist frequency and verify that the alias frequency is obtained by folding about the Nyquist frequency
-\end{enumerate}
-\end{column}
-
 \begin{column}{0.6\columnwidth}
+\begin{center}
+  \begin{tikzpicture}
+    \node {\includegraphics[width=0.99\linewidth]{../../figures/comp-contr-sys.png}};
+    \node[pin=145:{60Hz mains hum}] at (2.7,2.4) {};
+    \node[pin=-60:{90Hz sampling freq}] at (0.5,-1.4) {};
+  \end{tikzpicture}
+\end{center}
+\end{column}
+\begin{column}{0.4\columnwidth}
 \includegraphics[width=0.99\linewidth]{../../figures/aliasing-example-60Hz}
 \end{column}
 \end{columns}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgba81902}]{Antialiasing filter}
+The \alert{Bessel filter} is often used. From wikipedia:
+\begin{quote}
+In electronics and signal processing, a Bessel filter is a type of analog linear filter with a maximally flat group/phase delay (maximally linear phase response), which preserves the wave shape of filtered signals in the passband. Bessel filters are often used in audio systems.
+\end{quote}
+
+Why use a Bessel filter as antialiasing filter?
+\end{frame}
+
+
+\begin{frame}[label={sec:org0f7beb3}]{Antialiasing filter}
+The \alert{Bessel filter} is often used. From wikipedia:
+\begin{quote}
+In electronics and signal processing, a Bessel filter is a type of analog linear filter with a maximally flat group/phase delay (maximally linear phase response), which preserves the wave shape of filtered signals in the passband. Bessel filters are often used in audio crossover systems.
+\end{quote}
+
+Why use as antialiasing filter?
+\begin{itemize}
+\item Preserves wave shapes \(\Rightarrow\) very little distortion of signals in the passband
+\item Maximally linear phase response \(\Rightarrow\) \(\arg H \approx -T\omega\),  Can be modelled as a pure delay
+\end{itemize}
 \end{frame}
 \end{document}

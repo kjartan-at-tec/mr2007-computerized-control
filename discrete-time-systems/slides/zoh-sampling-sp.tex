@@ -1,4 +1,4 @@
-% Created 2020-07-03 vie 15:41
+% Created 2021-07-02 Fri 07:56
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -28,29 +28,29 @@
  pdftitle={Control Computarizado - Discretización del proceso continuo},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.3.6)}, 
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
  pdflang={English}}
 \begin{document}
 
 \maketitle
 
 \section{Intro}
-\label{sec:org73ca54b}
-\begin{frame}[label={sec:orgd4e92a6}]{El mundo según el controlador discreto}
+\label{sec:org2028aa8}
+\begin{frame}[label={sec:org1ddd1ef}]{El mundo según el controlador discreto}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig1-1-schematic.png}
 \end{center}
 {\footnotesize Åström \& Wittenmark \textit{Computer-controlled systems}}
 \end{frame}
-\begin{frame}[label={sec:orge64a893}]{Discretización del proceso}
+\begin{frame}[label={sec:org502b359}]{Discretización del proceso}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/fig2-4.png}
 \end{center}
 {\footnotesize Åström \& Wittenmark \textit{Computer-controlled systems}}
 \end{frame}
 \section{Zero-order hold, or step-invariant sampling preview}
-\label{sec:org598e7fb}
-\begin{frame}[label={sec:org6eedb7e}]{Discretización invariante al escalón (\emph{step-invariant} o \emph{zero-order-hold sampling})}
+\label{sec:org36d6c12}
+\begin{frame}[label={sec:orgd16ef30}]{Discretización invariante al escalón (\emph{step-invariant} o \emph{zero-order-hold sampling})}
 El idea es muestrear la respuesta del escalón del sistema continuo para obtener un modelo discreto que es \alert{exacto} (en los instantes de muestreo) para señales de entrada que son combinaciones de escalones (funciones constantes por partes)
 
 \begin{center}
@@ -60,7 +60,7 @@ El idea es muestrear la respuesta del escalón del sistema continuo para obtener
 \[ u(kh) = \begin{cases} 1, & k \ge 0\\0, & k<0 \end{cases} \]
 \end{frame}
 
-\begin{frame}[label={sec:org5527da7}]{Porqué discretización invariante al escalón?}
+\begin{frame}[label={sec:orgc026abd}]{Porqué discretización invariante al escalón?}
 Una función constante por partes, como produce el retenedor de orden cero, puede ser escrito como una suma de escalones retrasados:
 
 \begin{center}
@@ -110,7 +110,7 @@ Una función constante por partes, como produce el retenedor de orden cero, pued
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgfcd7088}]{Porqué discretización invariante al escalón?}
+\begin{frame}[label={sec:orgc61d170}]{Porqué discretización invariante al escalón?}
 Trabajamos con sistemas discretos LTI, entonces la respuesta de una suma de escalones retardados es la misma suma de respuestas de escalón retardados.
 
 \begin{center}
@@ -128,7 +128,7 @@ Si la respuesta de un escalón unitario del sistema es \(y_H(t)\), la señal de 
 \(u(t) = \sum_{i} \alpha_i u_H(t-\tau_i)\) va a dar la respuesta \[y(t)=?\]
 \end{frame}
 
-\begin{frame}[label={sec:org0f6aeb3}]{Porqué discretización invariante al escalón?}
+\begin{frame}[label={sec:orge09b4ad}]{Porqué discretización invariante al escalón?}
 Trabajamos con sistemas discretos LTI, entonces la respuesta de una suma de escalones retardados es la misma suma de respuestas de escalón retardados.
 
 \begin{center}
@@ -154,8 +154,8 @@ Si la respuesta de un escalón unitario del sistema es \(y_H(t)\), la señal de 
 
 
 \section{Procedimiento}
-\label{sec:org551cdb7}
-\begin{frame}[label={sec:org40383e7}]{Procedimiento de discretización invariante al escalón}
+\label{sec:orgf44ccd1}
+\begin{frame}[label={sec:orge1c1fba}]{Procedimiento de discretización invariante al escalón}
 \begin{center}
 \includegraphics[width=0.99\linewidth]{../../figures/invariant-sampling.pdf}
 \end{center}
@@ -166,7 +166,7 @@ Si la respuesta de un escalón unitario del sistema es \(y_H(t)\), la señal de 
 \end{tcolorbox}
 \end{frame}
 
-\begin{frame}[label={sec:org0ec1399}]{Ejemplo: Motor DC con retraso}
+\begin{frame}[label={sec:orgb732cc6}]{Ejemplo: Motor DC con retraso}
 \begin{center}
 \includegraphics[width=0.89\linewidth]{../../figures/invariant-sampling-dcmotor.pdf}
 \end{center}
@@ -179,7 +179,7 @@ Si la respuesta de un escalón unitario del sistema es \(y_H(t)\), la señal de 
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org6a28296}]{Ejemplo: Motor DC con retraso}
+\begin{frame}[label={sec:orgad0ccbc}]{Ejemplo: Motor DC con retraso}
 Asumiendo \(\tau = nh\)
 \[ \ztrf{f(kh-nh)} = z^{-n}\ztrf{f(kh)}.\]
 \begin{enumerate}
@@ -195,7 +195,7 @@ u_H(kh)\mathrm{e}^{-a(kh)} \quad &\overset{\mathcal{Z}}{\longleftrightarrow} \qu
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org1961aec}]{Ejemplo: Motor DC con retraso}
+\begin{frame}[label={sec:orgf264819}]{Ejemplo: Motor DC con retraso}
 \begin{enumerate}
 \setcounter{enumi}{3}
 \item \alert{Transformada z de la respuesta retresada}
@@ -209,7 +209,7 @@ H(z) &= \frac{Y(z)}{U(z)} = \frac{z-1}{z} z^{-n} \left(-\frac{z}{z-1} + \frac{zh
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org54625db}]{Ejemplo: Motor DC con retraso}
+\begin{frame}[label={sec:org6725fae}]{Ejemplo: Motor DC con retraso}
 \[ G(s) = \frac{\mathrm{e}^{-s(nh)}}{s(s+1)} \quad \longrightarrow \quad
    H(z) = \frac{ z\big( h-1+\mathrm{e}^{-h}\big) - \big(\mathrm{e}^{-h}(1+h) - 1\big)}{z^n(z-1)(z-\mathrm{e}^{-h})}\]
 \alert{Actividad} Determina el cero y los polos si \(n=1\) y \(h=0.2\). Marcalos (cero con  \tikz \draw (1ex,.7ex) circle (.8ex); y polos con \(\times\)) en los diagramas correspondientes.
@@ -232,7 +232,7 @@ H(z) &= \frac{Y(z)}{U(z)} = \frac{z-1}{z} z^{-n} \left(-\frac{z}{z-1} + \frac{zh
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orga0f2b6d}]{Ejercico: Sistema de primer orden}
+\begin{frame}[label={sec:org1d22f78}]{Ejercico: Sistema de primer orden}
 \alert{Actividad} Discretiza el sistema 
 \[ G(s) = \frac{1}{s + a} \]
 usando el método de discretización invariante al escalón.
@@ -245,7 +245,7 @@ usando el método de discretización invariante al escalón.
 \end{tcolorbox}
 \end{frame}
 
-\begin{frame}[label={sec:orgf2c9e99}]{Ejercico: Sistema de primer orden - solución}
+\begin{frame}[label={sec:orgb8043c9}]{Ejercico: Sistema de primer orden - solución}
 \begin{enumerate}
 \item Respuesta al escalón
 \[y(t) = \mathcal{L}^{-1}\{G(s)/s\} = \mathcal{L}^{-1}\left\{\frac{1}{a}\big(\frac{1}{s} - \frac{1}{s+a}\big)\right\} = \frac{1}{a}(1 - \mathrm{e}^{-at}).\]
@@ -262,8 +262,8 @@ usando el método de discretización invariante al escalón.
 \end{frame}
 
 \section{Mapeo del plano s al plano z}
-\label{sec:orgc493860}
-\begin{frame}[label={sec:org3f29dd1}]{La transformada de Laplace de una señal muestreada}
+\label{sec:orgc17207c}
+\begin{frame}[label={sec:org7d72952}]{La transformada de Laplace de una señal muestreada}
 Nota:
 \begin{align*}
 F_s(s) &=  \sum_{k=0}^{\infty} f(kh) \left(\mathrm{e}^{-sh}\right)^k\quad \text{transformada de Laplace}\\
@@ -279,7 +279,7 @@ entre el dominio $s$ de la transformada de Laplace y el dominio $z$ de la tranfo
 
 
 
-\begin{frame}[label={sec:orgcadcc63}]{Mapeo del plano \(s\) al plano \(z\)}
+\begin{frame}[label={sec:org3479c07}]{Mapeo del plano \(s\) al plano \(z\)}
 \begin{tcolorbox}
 \[ z = \mathrm{e}^{sh} \qquad \Leftrightarrow \qquad  s = \frac{1}{h} \ln z\]
 \end{tcolorbox}
@@ -288,7 +288,7 @@ entre el dominio $s$ de la transformada de Laplace y el dominio $z$ de la tranfo
 \[ z = \mathrm{e}^{sh} = \mathrm{e}^{(a + i\omega)h} = \mathrm{e}^{ah} \mathrm{e}^{i\omega h}, \quad |z| = |\mathrm{e}^{ah}|\, |\mathrm{e}^{i\omega h}| = |\mathrm{e}^{ah}| < 1, \; a < 0\]
 \end{frame}
 
-\begin{frame}[label={sec:org771a244}]{Ejercicio}
+\begin{frame}[label={sec:org7bbfdf4}]{Ejercicio}
 \alert{Actividad en pareja} Encuentra las correspondencias usando \(z = \mathrm{e}^{sh}\)
 
    \begin{center}
@@ -309,7 +309,7 @@ entre el dominio $s$ de la transformada de Laplace y el dominio $z$ de la tranfo
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org0a3b880}]{Ejercicio - solución}
+\begin{frame}[label={sec:orgbf3ef36}]{Ejercicio - solución}
    \begin{center}
    \begin{tikzpicture}[node distance=40mm]
    \node (spl) {Plano $s$};

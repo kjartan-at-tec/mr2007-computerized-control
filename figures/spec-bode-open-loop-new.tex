@@ -1,0 +1,217 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\Go{3*tf([1], [1, 1, 0]);}
+\def\Gb{3*tf([1,0], [1, 1, 0]);}
+\def\Gbb{0.1*tf([1], [1, 1, 0]);}
+\def\Gbbb{10*tf([1], [1, 2, 1]);}
+
+\def\pw{7cm}
+\def\ph{3cm}
+\def\phh{21mm}
+\def\phshift{7.8cm}
+\def\pvshift{-55mm}
+\begin{tikzpicture}
+
+  \begin{scope}
+    % --------------------------------------------------------------
+    % Wrong Bode 1 
+    % --------------------------------------------------------------
+
+    \begin{loglogaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG01M,] {julia -q --eval  "G0=\Gb;  print_bode_mag(G0, -2, 2);"};
+    \end{loglogaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG01P,] {julia -q --eval  "G0=\Gb;  print_bode_phase(G0, -2, 2);"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \begin{scope} [xshift=\phshift]
+    % --------------------------------------------------------------
+    % Correct Bode 1
+    % --------------------------------------------------------------
+    \begin{loglogaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG02M,] {julia -q --eval  "G0=\Go;  print_bode_mag(G0, -2, 2);"};
+    \end{loglogaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG02P,] {julia -q --eval  "G0=\Go;  print_bode_phase(G0, -2, 2);"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \begin{scope} [yshift=\pvshift]
+    % --------------------------------------------------------------
+    % Wrong Bode 3
+    % --------------------------------------------------------------
+    \begin{loglogaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03M,] {julia -q --eval  "G0=\Gbb;  print_bode_mag(G0, -2, 2);"};
+    \end{loglogaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03P,] {julia -q --eval  "G0=\Gbb;  print_bode_phase(G0, -2, 2);"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \begin{scope} [xshift=\phshift, yshift=\pvshift]
+    % --------------------------------------------------------------
+    % Wrong Bode 4
+    % --------------------------------------------------------------
+    \begin{loglogaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG04M,] {julia -q --eval  "G0=\Gbbb;  print_bode_mag(G0, -2, 2);"};
+    \end{loglogaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={1.25, 2},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG04P,] {julia -q --eval  "G0=\Gbbb;  print_bode_phase(G0, -2, 2);"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \node[blue!80] at (2,-1.5) {\Huge 1};
+  \node[blue!80] at (10,-1.5) {\Huge 2};
+
+  \node[blue!80] at (2,-7) {\Huge 3};
+  \node[blue!80] at (10,-7) {\Huge 4};
+
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

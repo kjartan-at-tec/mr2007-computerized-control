@@ -1,21 +1,19 @@
-% Created 2019-09-05 jue 19:02
+% Created 2021-07-06 Tue 08:01
+% Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{fixltx2e}
 \usepackage{graphicx}
+\usepackage{grffile}
 \usepackage{longtable}
-\usepackage{float}
 \usepackage{wrapfig}
 \usepackage{rotating}
 \usepackage[normalem]{ulem}
 \usepackage{amsmath}
 \usepackage{textcomp}
-\usepackage{marvosym}
-\usepackage{wasysym}
 \usepackage{amssymb}
+\usepackage{capt-of}
 \usepackage{hyperref}
-\tolerance=1000
 \usepackage{khpreamble}
 \usepackage{amssymb}
 \DeclareMathOperator{\shift}{q}
@@ -25,17 +23,19 @@
 \date{2019-09-05}
 \title{Computerized Control - analysis of discrete-time systems}
 \hypersetup{
-  pdfkeywords={},
-  pdfsubject={},
-  pdfcreator={Emacs 25.3.50.2 (Org mode 8.2.10)}}
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Computerized Control - analysis of discrete-time systems},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
+ pdflang={English}}
 \begin{document}
 
 \maketitle
 
-
 \section{Intro}
-\label{sec-1}
-\begin{frame}[label=sec-1-1]{Result from quizz}
+\label{sec:org06d2c71}
+\begin{frame}[label={sec:org53fc2d8}]{Result from quizz}
 \begin{itemize}
 \item Very good results!
 \item Nyquist plot + criterion
@@ -43,16 +43,16 @@
 \end{itemize}
 \end{frame}
 \section{Pole placement}
-\label{sec-2}
-\begin{frame}[label=sec-2-1]{Pole-placement and time-response}
+\label{sec:orgc540c2c}
+\begin{frame}[label={sec:org88d54f5}]{Pole-placement and time-response}
 Pair the pole-placement with the correct time-response (from HW1)
 \begin{columns}
-\begin{column}{0.4\textwidth}
+\begin{column}{0.4\columnwidth}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/pzmap-apollo}
 \end{center}
 \end{column}
-\begin{column}{0.6\textwidth}
+\begin{column}{0.6\columnwidth}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/step-response-apollo}
 \end{center}
@@ -60,14 +60,14 @@ Pair the pole-placement with the correct time-response (from HW1)
 \end{columns}
 \end{frame}
 
-\begin{frame}[label=sec-2-2]{Mapping of poles from continuous time to discrete time}
+\begin{frame}[label={sec:org75a559f}]{Mapping of poles from continuous time to discrete time}
 \begin{center}
 \begin{tabular}{ll}
 Continuous time & Discrete time\\
 \hline
 \(Y(s) \triangleq \laplace{y(t)}\) & \(Y(z) \triangleq \ztrf{y(kh)}\)\\
-\( Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\) & \(Y(z) = H(z)U(z) = \frac{\beta}{z+\alpha}U(z)\)\\
-Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\) & Pole of the system: \( z+\alpha = 0 \; \Rightarrow \; z = -\alpha \)\\
+\(Y(s) = G(s)U(s) = \frac{b}{s+a}U(s)\) & \(Y(z) = H(z)U(z) = \frac{\beta}{z+\alpha}U(z)\)\\
+Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\) & Pole of the system: \(z+\alpha = 0 \; \Rightarrow \; z = -\alpha\)\\
 \includegraphics[width=0.22\linewidth]{../../figures/cont-stable} & \includegraphics[width=0.22\linewidth]{../../figures/discrete-stable}\\
 \hline
 \end{tabular}
@@ -76,18 +76,19 @@ Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\) & Pole of the system: \( 
 The \alert{s-domain} of continuous-time systems is related to the \alert{z-domain} of discrete-time systems as  \[z = \mathrm{e}^{sh}\]
 \end{frame}
 
-\begin{frame}[label=sec-2-3]{Mapping of poles from continuous time to discrete time}
+\begin{frame}[label={sec:org4177f6b}]{Mapping of poles from continuous time to discrete time}
 Do excercise on paper!
 \end{frame}
 
 \section{Root locus}
-\label{sec-3}
+\label{sec:org1da210f}
 
 
-\begin{frame}[label=sec-3-1]{Root locus: A brief review}
+\begin{frame}[label={sec:org2d36761}]{Root locus: A brief review}
+\begin{LaTeX}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-    
+
     \node[coordinate] (input) {};
     \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
     \node[block, right of=sum, node distance=20mm] (plant)  {$H(z)=\frac{B(z)}{A(z)}$};
@@ -101,6 +102,7 @@ Do excercise on paper!
     \draw[->] (controller) -| (sum);
   \end{tikzpicture}
 \end{center}
+\end{LaTeX}
 
 \begin{itemize}
 \item The loop pulse-transfer function (loop gain) becomes \(L(z) = H(z)F(z) = K\frac{\overbrace{B(z)D(z)}^{Q(z)}}{\underbrace{A(z)C(z)}_{P(z)}} = K \frac{Q(z)}{P(z)}\).
@@ -111,7 +113,7 @@ Do excercise on paper!
 \end{frame}
 
 
-\begin{frame}[label=sec-3-2]{Root locus: Definition}
+\begin{frame}[label={sec:org0e0a1d3}]{Root locus: Definition}
 Let
 \[\begin{cases} P(z)&=z^n+a_1z^{n-1}+\dots+a_n = (z-p_1)(z-p_2)\cdots(z-p_n)\\ 
 Q(z)&=z^m+b_1 z^{m-1}+\dots+b_m=(s-q_1)(z-q_2)\cdots(z-q_m) \end{cases},\ \ \ n\ge m \]
@@ -121,10 +123,10 @@ The root locus shows how the \alert{solution} to the characteristic equation
 \label{eq:P(z)+KQ(z)=0}
 P(z)+K\cdot Q(z)=0,\ \ \ 0\le K<\infty
 \end{equation}
-depend on the parameter $K$. The root locus consists of the set of all points in the complex plane that are solutions to \eqref{eq:P(z)+KQ(z)=0} for some non-negative value of $K$.
+depend on the parameter \(K\). The root locus consists of the set of all points in the complex plane that are solutions to \eqref{eq:P(z)+KQ(z)=0} for some non-negative value of \(K\).
 \end{frame}
 
-\begin{frame}[label=sec-3-3]{Root locus: Characteristics}
+\begin{frame}[label={sec:org1e38a16}]{Root locus: Characteristics}
 \begin{description}
 \item[{Start points}] The \(n\) roots of \(P(z)\), marked by crosses
 \item[{End points}] The \(m\) roots of \(Q(z)\), marked  by circles
@@ -133,35 +135,36 @@ depend on the parameter $K$. The root locus consists of the set of all points in
 \end{description}
 \end{frame}
 
-\begin{frame}[label=sec-3-4]{Root locus: Direction of the asymptotes}
-The characteristic equation \(P(z)+K Q(z)=0\) can be written \(\frac{P(z)}{Q(z)} = -K\) and for large $z$ it can be approximated as 
+\begin{frame}[label={sec:org4d84931}]{Root locus: Direction of the asymptotes}
+The characteristic equation \(P(z)+K Q(z)=0\) can be written \(\frac{P(z)}{Q(z)} = -K\) and for large \(z\) it can be approximated as 
 \[ \frac{z^n}{z^m} = -K \quad \Leftrightarrow \quad z^{n-m} = -K.\]
 
 Taking the argument of both sides of the equation gives 
-\( (n-m)\arg z = \pi + k2\pi, \; k \in  \mathbb{Z} \)
+\((n-m)\arg z = \pi + k2\pi, \; k \in  \mathbb{Z}\)
 So, the \alert{directions} of the asymptotes are given by the expression
 \[ \theta_k = \arg z = \frac{(2k+1)\pi}{n-m}, \; k \in \mathbb{Z} \]
 \end{frame}
 
-\begin{frame}[label=sec-3-5]{Root locus: The asymptotes' intersection with the real axis}
+\begin{frame}[label={sec:orgd3d871c}]{Root locus: The asymptotes' intersection with the real axis}
 \[ z_{ip} = \frac{ \sum_{i=0}^n p_i - \sum_{i=0}^m q_i}{n-m}, \]
-where $\{p_i\}$ are the starting points (open-loop poles) and $\{q_i\}$ are the end points (open-loop zeros). 
+where \(\{p_i\}\) are the starting points (open-loop poles) and \(\{q_i\}\) are the end points (open-loop zeros). 
 \end{frame}
 
-\begin{frame}[label=sec-3-6]{Root locus exerise: Pair the pulse-trf fcn and root locus}
+\begin{frame}[label={sec:org7ea8274}]{Root locus exerise: Pair the pulse-trf fcn and root locus}
 \begin{columns}
-\begin{column}{0.35\textwidth}
-
- \small
+\begin{column}{0.35\columnwidth}
+\begin{LaTeX}
+\small
 \begin{align*}
   G_1(z) &= K\frac{(z+2.9)(z+0.2)}{(z-1)^2(z-0.3)}\\[3mm]
   G_2(z) &= K\frac{(z-0.5)(z+0.4)}{(z-1)(z-0.3)(z-0.1)}\\[3mm]
   G_3(z) &= K\frac{(z-0.5)(z+0.8)}{(z-1)^2(z-0.3)}\\[3mm]
   G_4(z) &= K \frac{z-0.6}{(z-1)(z-0.3)}
 \end{align*}
+\end{LaTeX}
 \end{column}
 
-\begin{column}{0.65\textwidth}
+\begin{column}{0.65\columnwidth}
 \begin{center}
 \includegraphics[width=1.04\linewidth]{../../matlab/rlocus_2x2-crop}
 \end{center}
@@ -170,7 +173,7 @@ where $\{p_i\}$ are the starting points (open-loop poles) and $\{q_i\}$ are the 
 \end{frame}
 
 
-\begin{frame}[label=sec-3-7]{Draw a root locus}
+\begin{frame}[label={sec:orgaba0adc}]{Draw a root locus}
 Level control in a hydro power plant dam
 
 \begin{center}
@@ -182,7 +185,7 @@ Level control in a hydro power plant dam
 Discrete-time model: \(y(k+1) - y(k) = \frac{h}{A} u(k) + \frac{h}{A}v(k)\), where \(y(k)\) is the deviation in water level from a standard level, \(u(k)\) is the (negative) deviation in flow through the dam ports and \(v(k)\) is a deviation in other flows (disturbance). 
 \end{frame}
 
-\begin{frame}[label=sec-3-8]{What happens if the poles are \alert{on the} unit circle?}
+\begin{frame}[label={sec:org0713314}]{What happens if the poles are \alert{on the} unit circle?}
 Say, in \(z = \mathrm{e}^{\pm i \omega_0}\)
 \begin{center}
 \includegraphics[width=0.3\linewidth]{../../figures/rlocusA.png}
@@ -191,7 +194,7 @@ Say, in \(z = \mathrm{e}^{\pm i \omega_0}\)
 \[H_c(z) = \frac{k z}{(z-\mathrm{e}^{i \omega_0})(z-\mathrm{e}^{-i \omega_0})} \overbrace{+ \cdots}^{\text{stable term}}\].
 \end{frame}
 
-\begin{frame}[label=sec-3-9]{What happens if the poles are \alert{on the} unit circle?}
+\begin{frame}[label={sec:orgb1ee06f}]{What happens if the poles are \alert{on the} unit circle?}
 Say, in \(z = \mathrm{e}^{\pm i \omega_0}\)
 \begin{center}
 \includegraphics[width=0.3\linewidth]{../../figures/rlocusA.png}
@@ -207,49 +210,54 @@ If \(\omega_0 = \frac{\pi}{6}\) and the sampling period is \unit{0.4}{\second}, 
 \end{frame}
 
 \section{Bode diagrams and Nyquist plots}
-\label{sec-4}
-\begin{frame}[label=sec-4-1]{Bode diagram and Nyquist plots}
+\label{sec:org25d4b12}
+\begin{frame}[label={sec:org291269e}]{Bode diagram and Nyquist plots}
 \end{frame}
 
-\begin{frame}[label=sec-4-2]{Sine in --- sine out}
+\begin{frame}[label={sec:orgfc87a48}]{Sine in --- sine out}
+\begin{LaTeX}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-    
+
     \node[coordinate] (input) {};
     \node[block, right of=sum, node distance=25mm] (plant)  {$H(z)$};
     \node[coordinate, right of=plant, node distance=40mm] (output) {};
-    
+
     \draw[->] (input) -- node[above, pos=0.3] {$u(kh) = \sin(\omega kh)$} (plant);
     \draw[->] (plant) -- node [above, pos=1.1] {$y(kh) = |H(\mathrm{e}^{i\omega h})|\sin(\omega kh + \arg H(\mathrm{e}^{i\omega h}))$} (output);
   \end{tikzpicture}
 \end{center}
+\end{LaTeX}
 \end{frame}
-\begin{frame}[label=sec-4-3]{Sine in --- sine out}
+\begin{frame}[label={sec:orgceaa23e}]{Sine in --- sine out}
+\begin{LaTeX}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-    
+
     \node[coordinate] (input) {};
     \node[block, right of=sum, node distance=25mm] (plant)  {$H(z)$};
     \node[coordinate, right of=plant, node distance=40mm] (output) {};
-    
+
     \draw[->] (input) -- node[above, pos=0.3] {$u(kh) = \sin(\omega kh)$} (plant);
     \draw[->] (plant) -- node [above, pos=1.1] {$y(kh) = |H(\mathrm{e}^{i\omega h})|\sin(\omega kh + \arg H(\mathrm{e}^{i\omega h}))$} (output);
   \end{tikzpicture}
 \end{center}
+\end{LaTeX}
 \alert{Prove it!} Some hints:
 \begin{itemize}
 \item Write \(\sin(\omega kh) = \mathrm{Im}\{\mathrm{e}^{i\omega kh}\}\).
-\item Use \(H(z)U(z) \stackrel{\mathcal{Z}}{\leftrightarrow} h(k)\ast u(k)\), and write out the discrete-time convolution \(h \ast u = \sum_{n=-\infty}^\infty h(n)u(k-n) = \sum_{n=0}^\infty h(n)u(k-n) \)
+\item Use \(H(z)U(z) \stackrel{\mathcal{Z}}{\leftrightarrow} h(k)\ast u(k)\), and write out the discrete-time convolution \(h \ast u = \sum_{n=-\infty}^\infty h(n)u(k-n) = \sum_{n=0}^\infty h(n)u(k-n)\)
 \item Try to rewrite to obtain as a factor \(\sum_{n=0}^\infty h(n) \mathrm{e}^{-i\omega nh} = H(\mathrm{e}^{i\omega h})\).
 \end{itemize}
 \end{frame}
 
 
 \section{Relative stability}
-\label{sec-5}
+\label{sec:org218756b}
 
-\begin{frame}[label=sec-5-1]{The Nyquist plot}
+\begin{frame}[label={sec:orgfe84823}]{The Nyquist plot}
 Example of a \alert{Nyquist plot} or \alert{frequency curve}.
+\begin{LaTeX}
 \begin{center}
   \begin{tikzpicture}
     \node at (0,0) {\includegraphics[width=0.4\linewidth]{../../figures/fig3-3.png}};
@@ -257,21 +265,22 @@ Example of a \alert{Nyquist plot} or \alert{frequency curve}.
     \node[pin=40:{$G(s)$ evaluated at $s=i\omega$, $0<\omega<\infty$}] at (-0.98,0.4) {};
   \end{tikzpicture}
 \end{center}
+\end{LaTeX}
 
 
 
 The system \(G(s) = \frac{1}{s^2 + 1.4s + 1}\) is sampled with ZOH-sampling (\(h=\unit{0.4}{\second}\)) to get \(H(z) = \frac{0.066z + 0.055}{z^2 - 1.45 z + 0.571}\)
 \end{frame}
 
-\begin{frame}[label=sec-5-2]{Simplified Nyquist criterion}
+\begin{frame}[label={sec:orgbad54b5}]{Simplified Nyquist criterion}
 \begin{center}
 \includegraphics[width=0.4\linewidth]{../../figures/fig3-3.png}
 \end{center}
 
-Consider the loop pulse-transfer function $L(z)$ of a closed-loop system. If $L(z)$ is stable (no poles outside the unit circle), then the closed-loop system with characteristic equation $1 + L(z) = 0$ will be stable iff $L(z)$ evaluated on the unit circle (i.e, the Nyquist plot of $L$) has the point \alert{-1 to the left}.
+Consider the loop pulse-transfer function \(L(z)\) of a closed-loop system. If \(L(z)\) is stable (no poles outside the unit circle), then the closed-loop system with characteristic equation \(1 + L(z) = 0\) will be stable iff \(L(z)\) evaluated on the unit circle (i.e, the Nyquist plot of \(L\)) has the point \alert{-1 to the left}.
 \end{frame}
 
-\begin{frame}[label=sec-5-3]{Stability margins - phase margin}
+\begin{frame}[label={sec:org75821a8}]{Stability margins - phase margin}
 \begin{center}
 \includegraphics[width=0.38\linewidth]{../../figures/implane-nyquist-margins}
 \end{center}
@@ -281,22 +290,21 @@ Consider the loop pulse-transfer function $L(z)$ of a closed-loop system. If $L(
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label=sec-5-4]{Stability margins - gain margin}
+\begin{frame}[label={sec:orgb16d58a}]{Stability margins - gain margin}
 \begin{center}
 \includegraphics[width=0.34\linewidth]{../../figures/implane-nyquist-margins}
 \end{center}
 \begin{itemize}
 \item phase-cross-over frequency: The frequency \(\omega_p\) for which \(\arg L(\mathrm{e}^{i\omega h}) = -180\degree\).
-\item Gain margin: The gain $K=A$ that would make the Nyquist curve of \(K L(\mathrm{e}^{i\omega h})\) go through the point \(-1 + i0\). This means that \[ |L(\mathrm{e}^{i\omega_p h})| = \frac{1}{A}. \]
+\item Gain margin: The gain \(K=A\) that would make the Nyquist curve of \(K L(\mathrm{e}^{i\omega h})\) go through the point \(-1 + i0\). This means that \[ |L(\mathrm{e}^{i\omega_p h})| = \frac{1}{A}. \]
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label=sec-5-5]{The relationship between Bode diagrams and frequency curves (Nyquist plots)}
-They are both showing the value of a pulse-transfer function $H(z)$ evaluated for $z = \mathrm{e}^{i\omega h}$, $0<\omega \le \frac{\pi}{h}$.
+\begin{frame}[label={sec:orge210cb8}]{The relationship between Bode diagrams and frequency curves (Nyquist plots)}
+They are both showing the value of a pulse-transfer function \(H(z)\) evaluated for \(z = \mathrm{e}^{i\omega h}\), \(0<\omega \le \frac{\pi}{h}\).
 
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/fig3-3-4.png}
 \end{center}
 \end{frame}
-% Emacs 25.3.50.2 (Org mode 8.2.10)
 \end{document}

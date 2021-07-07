@@ -1,0 +1,55 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+
+\pgfplotsset{compat=1.12}
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\def\axlim{7}
+\begin{document}
+
+  \begin{tikzpicture}[node distance=2cm] 
+
+\pgfplotstableread{apollo-discrete-lead-timeseries.txt}
+ \timeseriesdata
+
+\begin{groupplot} [
+    group style={
+      group name=timeplot,
+      group size=2 by 2,
+      xlabels at=all,
+      horizontal sep=2cm,
+    }, 
+    height=5.3cm, width=8.3cm,
+    axis line style={->},
+    axis lines=left,
+    xlabel={$k$ },
+    ylabel={$y$},
+      % xtick=\empty,
+      % ytick=\XNOLL,
+      % yticklabel=$x_0$,
+      ]
+ \nextgroupplot   
+ \addplot[green!60!blue, solid, const plot, ultra thick] table[y = 3] from \timeseriesdata ;
+ \nextgroupplot   
+\addplot[green!60!blue, solid, const plot, ultra thick] table[y = 1] from \timeseriesdata ;
+ \nextgroupplot   
+\addplot[green!60!blue, solid, const plot,ultra thick] table[y = 2] from \timeseriesdata ;
+ \nextgroupplot   
+\addplot[green!60!blue, solid, const plot, ultra thick] table[y = 4] from \timeseriesdata ;
+\end{groupplot}
+
+\node[blue!80!black] at ($ (timeplot c1r1.north) + (5mm, -5mm) $) {\Large \rom{1}};
+\node[blue!80!black] at ($ (timeplot c1r2.north) + (5mm, -5mm) $) {\Large \rom{2}};
+\node[blue!80!black] at ($ (timeplot c2r1.north) + (5mm, -10mm) $) {\Large \rom{3}};
+\node[blue!80!black] at ($ (timeplot c2r2.north) + (5mm, -5mm) $) {\Large \rom{4}};
+
+  \end{tikzpicture}
+\end{document}

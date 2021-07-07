@@ -1,0 +1,339 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{tcolorbox}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Stability
+#+date: 2021-07-05
+
+* What do I want the students to understand?			   :noexport:
+  - Como analisar estabilidad
+
+* Which activities will the students do?			   :noexport:
+  1. ZOH sampling of double-integrator
+  2. Algebra en diagrama de bloque
+  3. Root locus 
+  4. Apply Jury's criterion
+
+* Intro
+** Repetición: Controlador discreto para el brazo del disco duro
+   *Ejercicio de calentamiento*
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z)$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$H(z)$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(z)$};
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+  ¿Cuál de las funciones de transferencia abajo corresponde al discretización con ROC del integrador doble $G(s)=\frac{1}{s^2}$?
+  |                             1 |                             2 |                             3 |
+  | \(H(z)=\frac{h^2z}{2(z+1)^2}\)     | \(H(z)=\frac{h^2(z+1)}{2z^2}\) | \(H(z)=\frac{h^2(z+1)}{2(z-1)^2}\) |
+
+** Repetición: Controlador discreto para el brazo del disco duro
+   Usando $J=1$ y  $h=1$.
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$0.2K$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$\theta(k) = \frac{1}{(\shift-1)^2}u(k)$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$K\frac{\shift - 0.8}{\shift}$};
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+   #+end_export
+   Ecuación en diferencias para el sistema de lazo cerrado:
+   \[ \theta(k+3) -2\theta(k+2) + (1+K)\theta(k+1) - 0.8K\theta(k) = 0.2K\theta_{ref}(k+1)\]
+   Ecuación característica:
+   \[ \alpha^3 - 2\alpha^2 + (1+K)\alpha - 0.8K = 0\]
+
+** Repetición: Controlador discreto para el brazo del disco duro
+   #+begin_center
+   \includegraphics[width=0.6\linewidth]{rlocus-disk-arm.discrete}
+   #+end_center 
+
+** Algebra en diagramas de bloque
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z)$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$H(z)$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(z)$};
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+  Usando \[U(z) = U_1(z) - U_2(z) = F_f(z)\Theta_{ref}(z) - F_b(z)\Theta(z), \quad \text{y}\]
+  \[ \Theta(z) = H(z)U(z), \quad \text{obtenemos} \]
+  \[ \Theta(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} \Theta_{ref}(z). \]
+ 
+** Algebra en diagramas de bloque - pasos en detalle
+  Usando \[U(z) = U_1(z) - U_2(z) = F_f(z)\Theta_{ref}(z) - F_b(z)\Theta(z), \quad \text{y}\]
+  \[ \Theta(z) = H(z)U(z), \quad \text{obtenemos} \]
+  \[ \Theta(z) = H(z)U(z) = H(z)\left(F_f(z)\Theta_{ref}(z) - F_b(z)\Theta(z)\right)\]
+  Mueve todos los terminos con \(\Theta\) al lado izquierdo:
+  \[ \Theta(z) + H(z)F_b(z)\Theta(z) = H(z)F_f(z)\Theta_{ref}(z)\]
+  \[ \Theta(z)\big(1 + H(z)F_b(z)\big) = H(z)F_f(z)\Theta_{ref}(z)\]
+  \[ \Theta(z) = \frac{H(z)F_f(z)}{1 + H(z)F_b(z)}\Theta_{ref}(z)\]
+ 
+** Estabilidad del sistem an lazo cerrado
+  \[ \Theta(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} \Theta_{ref}(z). \]
+
+  \begin{tcolorbox}
+  Estabilidad requiere que todos los polos del sistema, es decir las soluciones de la ecuación característica
+  \[ 1 + F_b(z)H(z) = 0\]
+  están en el interior del circulo unitario  del plano $z$.
+  \end{tcolorbox}
+
+** Ejercicio
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block, above of=sum] (TR) {$F_f(z)$};
+    \node[block,right of=sum, node distance=20mm] (SR) {$F_e(z)$};
+    \node[sumnode, right of=SR, node distance=20mm] (sum2) {\tiny $\sum$};
+    \node[block,right of=sum2, node distance=30mm] (plant) {$H(z)$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} node[coordinate] (copy) {} (sum);
+    \draw[->] (copy) |- (TR);
+    \draw[->] (TR) -| node[above] {$u_1(k)$} (sum2);
+    \draw[->] (sum) -- node[above] {$e(k) $} (SR);
+    \draw[->] (SR) -- node[above] {$ u_2(k) $} (sum2);
+    \draw[->] (sum2) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) -- ++(0,-20mm) -| (sum) node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+   *Obtener la función de transferencia del lazo cerrado*
+
+** Solución
+   \[ U(z) = F_f(z)\Theta_{ref}(z) + F_e(z)E(z) = F_f(z)\Theta_{ref}(z) + F_e(z)\big(\Theta_{ref}(z) - \Theta(z)\big), \]
+   \[ \Theta(z) = H(z)U(z)\]
+   Entonces
+   \begin{align*}
+   \Theta(z) &= H(z)U(z) = H(z)\left(F_f(z)\Theta_{ref}(z) + F_e(z)\big(\Theta_{ref}(z) - \Theta(z)\big)\right)\\
+ &= H(z)F_f(z)\Theta_{ref}(z) + H(z)F_e(z)\Theta_{ref}(z) - H(z)F_e(z)\Theta(z)\\
+\big(1 + H(z)F_e(z)\big) \Theta(z) &= H(z)\big(F_f(z) + F_e(z)\big)\Theta_{ref}(z)\\
+\Theta(z) &= \frac{H(z)\big(F_f(z) + F_e(z)\big)}{1 + H(z)F_e(z)}\Theta_{ref}(z)
+\end{align*}
+
+* Estabilidad para el control del brazo del disko duro
+
+** Estabilidad para el control del brazo del disko duro
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z) = 0.2K$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$H(z) = \frac{z+1}{2(z-1)^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(z)=\frac{z-0.8}{z}$};
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+  *Ecuación característica*
+  \begin{align*}
+  1 + H(z)F_b(z) &= 0\\
+  1 + \frac{z+1}{2(z-1)^2}K\frac{z-0.8}{z} &= 0\\
+  (z-1)^2z + \frac{K}{2}(z+1)(z-0.8) &= 0
+  \end{align*}
+
+
+** Estabilidad para el control del brazo del disko duro
+   *Actividad en grupo* Completar el diagrama de lugares de los raíces abajo
+   \[(z-1)^2z + \frac{K}{2}(z+1)(z-0.8) = 0\]
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[scale=2.5]
+       \draw[->] (-1.2, 0) -- (1.2,0);
+       \draw[->] (0, -1.2) -- (0,1.2);
+       \node[red, pin=45:{2 polos del proceso}] at (1,0) {\large $\times$};
+       \node[red, pin=135:{polo del controlador}] at (0,0) {\large $\times$};
+       \node[green!70!black, pin=-145:{cero de controlador}] at (0.8,0) {\Large $\circ$};
+       \node[green!70!black, pin=-145:{cero del proceso}] at (-1,0) {\Large $\circ$};
+       \node at (0.8, -0.2) {$0.8$};
+       \node at (1, -0.2) {$1$};
+       \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
+       \node[coordinate, pin=60:{$|z|=1$}] at (0.5, 0.87) {};
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+
+* Jury's criterion                                                 :noexport:
+** El método de Jury para analizar estabilidad
+Tenemos el polinomio característico
+\[z^3 - 2z^2 + z + \frac{K}{2}(z^2 + 0.2z - 0.8)= z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
+
+*El método de Jury se usa para analisar si un polynomio tiene todos sus raíces en el interiod del círculo unitario*
+
+** El método de Jury para analizar estabilidad
+
+   Es como el método de Routh-Hurwitz de sistemas continuosos pero para sistemas discretos.
+
+   Considera el sistema
+   \[ H(z) = \frac{B(z)}{A(z)}. \] Es estable? Tenemos que investigar si los raíces del denominador están en el interiod del círculo unitario.
+
+   La idea es investigar ciertas relaciónes algebraicas entre los coeficientes del polinomio \( A(z) = a_0z^n + a_1z^{n-1} + \cdots + a_n \).
+
+** El método de Jury para analizar estabilidad
+   Con \( A(z) = a_0z^n + a_1z^{n-1} + \cdots + a_n \), forma la tabla
+   
+   | \(a_0\)           | \(a_1\)           | \(\cdots\) | \(a_{n-1}\)       | \(a_n\)    |                                               |
+   | \(a_n\)           | \(a_{n-1}\)       | \(\cdots\) | \(a_1\)           | \(a_0\)    | \(\alpha_n =\frac{a_n}{a_0}\)                 |
+   |-------------------+-------------------+------------+-------------------+------------+-----------------------------------------------|
+   | \(a_0^{n-1}\)     | \(a_1^{n-1}\)     | \(\cdots\) | \(a_{n-1}^{n-1}\) |            |                                               |
+   | \(a_{n-1}^{n-1}\) | \(a_{n-1}^{n-1}\) | \(\cdots\) | \(a_0^{n-1}\)     |            | \(\alpha_{n-1} =\frac{a_n^{n-1}}{a_0^{n-1}}\) |
+   |-------------------+-------------------+------------+-------------------+------------+-----------------------------------------------|
+   | \(\vdots\)        | \(\vdots \)       | \(\vdots\) | \(\vdots\)        | \(\vdots\) |                                               |
+   |-------------------+-------------------+------------+-------------------+------------+-----------------------------------------------|
+   | \(a_0^{0}\)       | 0                 | \(\cdots\) | 0                 |            |                                               |
+   
+   Las dos filas primeras son los coeficients de \(A(z)\). La tercera fila se obtiene eliminando el último elemento de la fila una: Multiplica fila 2 por \(\alpha_n = \frac{a_n}{a_0}\) y subtrae de la fila 1. Se repita el procedimiento hasta que solamente el primer elemento de la fila no es cero.
+
+** El método de Jury para analizar estabilidad
+   Con \( A(z) = a_0z^n + a_1z^{n-1} + \cdots + a_n \), forma la tabla
+
+   El criterión dice que todos los raíces de $A(z)$ están en el interior del circulo unitario, sí, y solo sí todos los elementos \(a_0^k\) el el primer columno tienen el mismom signo. 
+
+   Hay pruebas preliminares de estabilidad que podemos utilizar:
+   1. \(A(1) > 0\)
+   2. \( (-1)^nA(-1) > 0\)
+   3. \( |a_0^k| > |a_k^k| \)
+
+
+** Regresando al ejemplo
+Tenemos el polinomio característico \[ A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
+
+Aplica las pruebas preliminares 1 y 2:
+   1. \(A(1) > 0\)
+   2. \( (-1)^nA(-1) > 0\)
+
+** Aplica el método de Jury
+Tenemos el polinomio característico \[ A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
+
+Aplica las pruebas preliminares 1 y 2:
+   1. \(A(1) > 0\)
+   2. \( (-1)^nA(-1) > 0\)
+      \begin{align}
+      (-1)^3A(-1) &= -\left((-1)^3 + (0.5K-2)(-1)^2 + (1+0.1K)(-1) - 0.4K \right)\\
+       &= 1-(0.5K-2) +(1+0.1K) + 0.4K > 0\\
+       4 &>0, \quad \text{Holds for all \(K\)}
+       \end{align}
+
+       
+   *Actividad* Aplica prueba 1!
+
+** Aplica el método de Jury
+Tenemos el polinomio característico \(e A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\). La tabla sería
+
+| 1                                                               | \(0.5K - 2\)                                                    | \(0.1K + 1\)          | \(-0.4K\) |
+| \(-0.4K\)                                                       | \(0.1K + 1\)                                                    | \(0.5K - 2\)          |         1 |
+| \(-0.16K^2 + 1\)                                                | \(0.04K^2 + 0.9K - 2\)                                          | \(0.2K^2 - 0.7K + 1\) |         0 |
+| \(0.2K^2 - 0.7K + 1\)                                           | \(0.04K^2 + 0.9K - 2\)                                          | \(-0.16K^2 + 1\)      |         0 |
+| \(\frac{K(0.0144K^3 - 0.28K^2 + 1.21K - 1.4)}{0.16K^2 - 1.0}\)  | \(\frac{K(0.0144K^3 + 0.296K^2 - 1.35K + 1.4)}{0.16K^2 - 1.0}\) | 0                     |         0 |
+| \(\frac{K(0.0144K^3 + 0.296K^2 - 1.35K + 1.4)}{0.16K^2 - 1.0}\) | \(\frac{K(0.0144K^3 - 0.28K^2 + 1.21K - 1.4)}{0.16K^2 - 1.0}\)  | 0                     |         0 |
+
+Para estabilidad necesitamos
+\[ -0.16K^2 + 1 > 0 \quad \Rightarrow \quad K < \sqrt{\frac{1}{0.16}} = 2.5\]

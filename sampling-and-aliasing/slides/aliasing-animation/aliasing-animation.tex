@@ -1,0 +1,149 @@
+\documentclass[dvisvgm,hypertex,aspectratio=169]{beamer}
+\usefonttheme{serif}
+
+%\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+
+%\usepackage[draft]{animate}
+\usepackage[final]{animate}
+\usepackage{ifthen}
+
+
+%\usepackage{pythontex} % <--
+\usepackage{graphicx}
+
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.16}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\usepackage{amsmath}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Define footer
+\usepackage{ccicons}
+
+\makeatletter
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  %\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    %\usebeamerfont{title in head/foot}\insertsubsection
+  %\end{beamercolorbox}%
+  %\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+  %  \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+  %  \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  %\end{beamercolorbox}}%
+  %\vskip0pt%
+  \begin{beamercolorbox}[wd=.92\paperwidth,ht=2.25ex,dp=1ex,right]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.08\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \ccbysa
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\author{\href{mailto:kjartan@tec.mx}{kjartan@tec.mx}}
+
+\begin{document}
+
+\section{Create animation}
+
+\begin{frame}[label=A]{Aliasing}
+  \pgfplotsset{
+    dirac/.style={
+      mark=triangle*,
+      mark options={scale=0.6},
+      ycomb,
+      scatter,
+      visualization depends on={y/abs(y)-1 \as \sign},
+      scatter/@pre marker code/.code={\scope[rotate=90*\sign,yshift=-2pt]}
+    }
+  }
+
+\pgfmathsetmacro{\omegaS}{20}
+\pgfmathsetmacro{\omegaN}{\omegaS*0.5}
+\pgfmathsetmacro{\nframes}{\omegaS - 1}
+\pgfmathsetmacro{\ndsamples}{36}
+\pgfmathsetmacro{\hh}{2*pi/\omegaS}
+\pgfmathsetmacro{\tend}{\hh*(\ndsamples-1)}
+
+  \begin{center}
+    \begin{animateinline}[controls, loop, palindrome]{4}
+      \multiframe{\nframes}{n=1+1}{
+        \pgfmathsetmacro{\ww}{\n*1.0}
+        \pgfmathsetmacro{\nsamples}{\n*30}
+        \pgfmathsetmacro{\nasamples}{(\nframes-\n+1)*30}
+        \pgfmathsetmacro{\omegaal}{\omegaS - \ww}
+        \pgfmathsetmacro{\aliasing}{\omegaN - \omegaal}
+
+        \begin{tikzpicture}[scale=0.6,]
+          \begin{axis}[
+            width=14cm,
+            height=3.8cm,
+            title={Spectrum},
+            xlabel={$\omega$ [rad/s]},
+            ylabel={$|Y(i\omega)|$},
+            xmin=-22,
+            xmax=22,
+            xtick={-\omegaS, -\omegaN, 0, \omegaN, \omegaS},
+            xticklabels={$-\omega_s$, $-\omega_N$, 0, $\omega_N$, $\omega_s$},
+            ytick = \empty,
+            ymin = 0,
+            ymax = 1.2,
+            ]
+            \addplot[blue!80!green, thick, dirac] coordinates {(-\ww, 1) (\ww, 1)};
+            \addplot[red, thick, dashed, dirac] coordinates {(-\omegaal, 1) (\omegaal, 1)};
+          \end{axis}
+          
+          \begin{axis} [
+            title={Original signal},
+            width = 14cm,
+            height=3.8cm,
+            yshift = -4cm,
+            xlabel = {$t$},
+            ylabel = {$y$},
+            xtick = \empty,
+            ytick = \empty,
+            ymin=-1.1,
+            ymax = 1.1,
+            ]
+            \addplot+[thick, blue!80!green, no marks, domain=0:\tend, samples=\nsamples, smooth] {sin(deg(\ww*x)-20)};
+              \addplot+[black!80, ycomb, mark=*,  mark options={black!70}, domain=0:\tend, samples=\ndsamples] {sin(deg(\ww*x)-20)};
+
+          \end{axis}
+          \begin{axis} [
+            title={Alias signal},
+            width = 14cm,
+            height=3.8cm,
+            yshift = -8cm,
+            xlabel = {$t$},
+            ylabel = {$y_a$},
+            xtick = \empty,
+            ytick = \empty,
+            ymin=-1.1,
+            ymax = 1.1,
+            ]
+            \addplot[black!80, ycomb, mark=*, mark options={black!70}, domain=0:\tend, samples=\ndsamples] {sin(deg(\ww*x)-20)};
+              \addplot[red!80!black, domain=0:\tend, no marks, samples=\nasamples, smooth] {-(\aliasing >0)*sin(deg(\omegaal*x)+20) + (\aliasing <= 0)*sin(deg(\ww*x)-20)};
+
+            \end{axis}
+            %\node at (1,1) {$\omega_1 = \ww$};
+            %\node at (1,-1) {$\omega_a = \omegaal$};
+            %\node at (1,-2) {$h = \hh$};
+        \end{tikzpicture}
+      }
+    \end{animateinline}
+  \end{center}
+\end{frame}
+\end{document}
+
+

@@ -9,9 +9,11 @@
 #+LaTex_HEADER: \usepackage{amssymb}
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+#+LaTex_HEADER: \usepackage{tcolorbox}
 
-#+title: Computerized Control - discrete-time systems, z-transform
-#+date: 2018-08-29
+
+#+title: From analog to discrete-time systems
+#+date: 2021-07-01
 
 * What do I want the students to understand?			   :noexport:
   - How to sample cont-time system
@@ -25,11 +27,6 @@
   3. Root locus of simple system
 
 * Intro
-
-
-** Result from quizz
-   - z-transform
-   - State-space systems
 
 
 * Discrete-time system example
@@ -47,23 +44,182 @@ Level control in a hydro power plant dam
 
 ** The world according to the discrete-time controller
    #+BEGIN_CENTER 
-    \includegraphics[width=0.6\linewidth]{../../figures/fig1-1-schematic.png}
+    \includegraphics[width=0.6\linewidth]{../../figures/fig1-1-schematic.png} Source: Åström and Wittenmark "Computer-controlled systems".
    #+END_CENTER
+
+** Sampled systems are *not* invariant in continuous time          :noexport:
+# \includegraphics[height=0.5\textheight]{../../figures/diskdrive.png}
+\includegraphics[height=0.6\linewidth]{../../figures/fig1-9.png}
+
+*** Notes                                                          :noexport:
+    - La respuesta (el comportamiento) depende si el cambio escalón de la señal de referencia ocurre exactamente en un instante de muestreo, o si ocurre entre instantes de muestreo.
+    - Si ocurre entre instantes de muestreo, entonces el sistema no va a detectar el cambio en la señal hasta el proxima instante de muestreo
+    - Pero si el cambio ocurre en un instante de muestreo, el compartamiento no depende de en cual instante ocurrio. Este en inglés se llama /shift-invariant/
+
+** Discrete-time Linear Shift-Invariant systems
+
+   \begin{center}
+   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {g};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+*** General case (non-causal)
+   \[ y(k) = g \ast u = \sum_{n=-\infty}^\infty g(n) u(k-n) \]
+
+*** Causal case
+   \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
+
+
+   $g(k)$ is called the *weighting sequence*.
+
+
+** Discrete-time LSI systems
+*** Impulse response
+   If the input signal is a unit discrete impulse
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=14cm,
+  height=2.5cm,
+  xlabel={$k$},
+  ylabel={$u(k)$},
+  xmin=-2.5,
+  xmax=10.5,
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { (k==0)}; 
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+#+BEAMER: \pause
+
+   \[ y(k) = \sum_{n=0}^\infty g(n) \delta(k-n) = g(k) \]
+
+*The weighting sequence is equal to the impulse response of the system.*
+
+** The response of a discrete LSI system is a weighted sum of the current and previous values of the input
+
+   \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
+
+
+   *Activity* What is the response of a system to the input signal \(u(k)\) if its impulse response (weighting sequence) is the one below?
+
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+  width=14cm,
+  height=3.5cm,
+  xlabel={$k$},
+  ylabel={$g(k)$},
+  xmin=-0.5,
+  xmax=10.5,
+  ytick = {0, 1},
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { (k==4)}; 
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+ \[y(k) = \]
+
+
+* The z-transform
+** The Laplace transform
+*** Definition 
+    \[ F(s) = \laplace{f(t)} = \int_0^\infty f(t) \mathrm{e}^{-st} dt\]
+*** Inverse transform
+    \[ f(t) = \mathcal{L}^{-1}\{F(s)\} = \frac{1}{2\pi i} \int_{\gamma - i\infty}^{\gamma + i\infty} F(s)\mathrm{e}^{st} \, ds \]
+
+Note that in control engineering, the one-sided transform is used.
+
+** The z-transform
+*** Definition
+   \[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
+
+*** Inverse transform
+   \[ f(kh) = \frac{1}{2\pi i} \oint_r F(z) z^{k-1} \, dz \]
+
+Note that in control engineering, the one-sided transform is used.
+
+** The Laplace transform of a sampled signal
+Assume right-sided signal \(f(t)\), meaning it is zero for negative times $t<0$.
+\[f_s(t) = f(t)m(t) = f(t) \sum_{k=0}^{\infty} \delta(t-kh) = \sum_{k=0}^{\infty} f(t)\delta(t-kh) = \sum_{k=0}^{\infty} f(kh) \delta(t-kh) \]
+   
+   #+BEAMER: \pause
+
+   \begin{align*}
+   F_s(s) &= \laplace{f_s(t)} = \int_0^\infty \left(\sum_{k=0}^{\infty} f(kh) \delta(t-kh)\right)\mathrm{e}^{-st}\, dt \\
+   &= \sum_{k=0}^{\infty} \int_0^\infty  f(kh) \delta(t-kh) \mathrm{e}^{-st}\, dt = \sum_{k=0}^{\infty} f(kh) \mathrm{e}^{-skh}\\
+   &= \sum_{k=0}^{\infty} f(kh) \left(\mathrm{e}^{sh}\right)^{-k}
+   \end{align*}
+
+** The Laplace transform of a sampled signal
+
+   Nota:
+   \begin{align*}
+   F_s(s) &=  \sum_{k=0}^{\infty} f(kh) \left(\mathrm{e}^{sh}\right)^{-k}\quad \text{Laplace transform}\\
+   F(z) &= \sum_{k=0}^{\infty} f(kh) z^{-k} \quad \text{z-transform}
+   \end{align*}
+
+   \begin{tcolorbox}
+    The z-transform of a sampled signal corresponds to its Laplace transform with the following relationship between the s-plane of the Laplace transform and the z-plane of the z-plane of the z-transform.
+   \[ z = \mathrm{e}^{sh}\]
+   \end{tcolorbox}
+
+
+** One of the most important transform pairs
+   \[f(kh) = \alpha^{kh}, \quad \alpha \in \mathbb{C}\]
+
+   #+BEAMER: \pause
+   
+   \begin{align*}
+      F(z) &= \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k}
+      =  \sum_{k=0}^{\infty} \alpha^{kh}z^{-k} =  \sum_{k=0}^{\infty} \left(\alpha^{h}\right)^kz^{-k}\\
+      &=  \sum_{k=0}^{\infty} \left(\frac{\alpha^{h}}{z}\right)^{k}
+      =  \frac{1}{1 - \frac{\alpha^h}{z}} = \frac{z}{z-\alpha^{h}}, \quad |\frac{\alpha^h}{z}| < 1
+   \end{align*}
+
+   #+BEAMER: \pause
+
+   \begin{tcolorbox}
+   \[ \alpha^{kh} \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad \frac{z}{z-\alpha^h} \]
+   \end{tcolorbox}
+  
 
 ** Step-invariant sampling (a.k.a ZOH sampling)
 
+** Step-invariant sampling (a.k.a ZOH sampling)
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling-white.pdf}
+#+END_CENTER
+
+#+BEAMER: \pause
+   Step-invariant sampling (zero order hold): \( u(kh) = \begin{cases} 1, & k \ge 0\\0, & k<0 \end{cases} \)
+   
+** Step-invariant sampling (a.k.a ZOH sampling)
    The idea is to sample the continuous-time system's response to a step input, in order to obtain a discrete approximation which is *exact* (at the sampling instants) for such an input signal. 
 
 #+BEGIN_CENTER 
  \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
 #+END_CENTER
 
-   - Step-invariant sampling (zero order hold): \( u(t) = \begin{cases} 1, & t \ge 0\\0, & t<0 \end{cases} \)
+   Step-invariant sampling (zero order hold): \( u(kh) = \begin{cases} 1, & k \ge 0\\0, & k<0 \end{cases} \)
    
 ** Why is step-invariant sampling a good idea?
 
    A piecewise constant (stair-case shaped) function can be written as a sum of delayed step-responses!
-   #+BEGIN_LaTeX
+   #+begin_export latex
      \begin{center}
        \begin{tikzpicture}
          \small
@@ -106,13 +262,15 @@ Level control in a hydro power plant dam
 
        \end{tikzpicture}
      \end{center}
-   #+END_LaTeX
+
+   #+end_export
 
 
-** Why is step-invariant sampling a good idea? (contd)
+** Why is step-invariant sampling a good idea? (contd)             :noexport:
    Due to the system being LTI (linear time-invariant), the output to a sum of delayed step functions, is the same sum of delayed step-responses.
 
-   #+BEGIN_LaTeX
+#+begin_export latex
+
         \begin{center}
           \begin{tikzpicture}[node distance=20mm, block/.style={rectangle, draw, minimum width=15mm, }]
 
@@ -124,13 +282,15 @@ Level control in a hydro power plant dam
             \draw[->] (lti) -- node[above, near end] {$y_H(t)$} (output);
           \end{tikzpicture}
         \end{center}
-   #+END_LaTeX
+#+end_export
+
    Hence, $u(t) = \sum_{i} \alpha_i u_H(t-\tau_i)$ has the response \(y(t)=\). 
 
-** Why is step-invariant sampling a good idea? (contd)
+** Why is step-invariant sampling a good idea? (contd)             :noexport:
    Due to the system being LTI (linear time-invariant), the output to a sum of delayed step functions, is the same sum of delayed step-responses.
 
-   #+BEGIN_LaTeX
+#+begin_export latex
+
         \begin{center}
           \begin{tikzpicture}[node distance=20mm, block/.style={rectangle, draw, minimum width=15mm, }]
 
@@ -142,13 +302,13 @@ Level control in a hydro power plant dam
             \draw[->] (lti) -- node[above, near end] {$y_H(t)$} (output);
           \end{tikzpicture}
         \end{center}
-   #+END_LaTeX
+#+end_export
    Hence, $u(t) = \sum_{i} \alpha_i u_H(t-\tau_i)$ has the response $y(t) = \sum_i \alpha_i y_H(t-\tau_i)$. 
 
    *If the sampling method is exact for step input signals, it will also be exact for piecwise-constant step input signals, and this is exactly what the ZOH-block produces!*
 
-* The z-transform						   :noexport:
-** Need the z-transform to perform step-invariant sampling 
+* The z-transform
+** Need the z-transform to perform step-invariant sampling         :noexport:
 
    The idea is to sample the continuous-time system's response to a step input, in order to obtain a discrete approximation which is *exact* (at the sampling instants) for such an input signal. 
 
@@ -157,13 +317,14 @@ Level control in a hydro power plant dam
 #+END_CENTER
 
    - Step-invariant sampling (zero order hold): \( u(t) = \begin{cases} 1, & t \ge 0\\0, & t<0 \end{cases} \)
-   
+
+* The z-transform again                                            :noexport:
 ** The z-transform
    
    Definition of the one-sided z-transform:
    \[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
    
-** Two essential transforms (one whiteboard)			   :noexport:
+** Two essential transforms (on whiteboard)			   :noexport:
 
 
 ** The z-transform						   :noexport:
@@ -178,7 +339,7 @@ Level control in a hydro power plant dam
 
 
 * Zero-order hold sampling procedure
-** Impulse- step- and ramp-invariant sampling
+** Impulse- step- and ramp-invariant sampling                      :noexport:
 
 #+BEGIN_CENTER 
  \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
@@ -189,13 +350,13 @@ Level control in a hydro power plant dam
    - Ramp-invariant sampling: \( u(t) = \begin{cases} t, & t \ge 0\\0, & t<0 \end{cases} \)
 
 ** Step-invariant sampling, or zero-order-hold sampling
-   Let the input to the continuous-time system be a step \(u(t)=\stepfcn,\) which has Laplace transform \(U(s)=\frac{1}{s}.\) In the Laplace-domain we get
+   Let the input to the continuous-time system be a unit step \(u(t)=u_H(t),\) which has Laplace transform \(U(s)=\frac{1}{s}.\) In the Laplace-domain we get
    \[Y(s) = G(s)\frac{1}{s}\]
    1. Obtain the time-response by inverse Laplace: \(y(t)=\laplaceinv{Y(s)}\)
    2. Sample the time-response to obtain the sequence \(y(kh)\) and apply  the z-transform to obtain \(Y(z) = \ztrf{y(kh)}\)
    3. Calculate the pulse-transfer function by dividing with the z-transform of the input signal \(U(z) = \frac{z}{z-1}. \) \[H(z) = \frac{Y(z)}{U(z)} = \frac{z-1}{z}Y(z) \]
 
-* Zero-order hold sampling example
+* Zero-order hold sampling example                                 :noexport:
 ** Example: First-order system
    Let's apply step-invariant sampling to the system
    \[ G(s) = \frac{1}{s + a}. \]
@@ -247,7 +408,7 @@ Level control in a hydro power plant dam
 
    \[ G(s) = \frac{1}{s^2} \]
 
-* The solution to discrete-time systems
+* The solution to discrete-time systems                            :noexport:
 ** Another important property of the z-transform
 
    

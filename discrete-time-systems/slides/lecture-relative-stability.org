@@ -1,0 +1,466 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{tcolorbox}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Relative stability
+#+date: 2021-07-07
+
+* What do I want the students to understand?			   :noexport:
+  - Como analisar estabilidad
+
+* Which activities will the students do?			   :noexport:
+  1. Bode <-> Nyquist. Markar margenes de estabilidad
+  2. Filtro de antialiasing Bessel. Retraso o phase shift.
+  3. Jury's para model de segundo orden
+
+* Root locus
+** Root locus
+
+The rules for drawing the root locus is the same in continous as in discrete time. But the interpretation differs.
+| Continuous time  | Discrete time|
+| \includegraphics[width=0.28\linewidth]{../../figures/cont-stable}            | \includegraphics[width=0.28\linewidth]{../../figures/discrete-stable}   
+
+
+** Example: Position servo for the hard disk drive arm
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z) = 0.2K$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$H(z) = \frac{z+1}{2(z-1)^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(z)=K\frac{z-0.8}{z}$};
+    \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+  *Characteristic equation*
+  \begin{align*}
+  1 + H(z)F_b(z) &= 0\\
+  1 + \frac{z+1}{2(z-1)^2}K\frac{z-0.8}{z} &= 0\\
+  (z-1)^2z + \frac{K}{2}(z+1)(z-0.8) &= 0
+  \end{align*}
+
+  *For which values of \(K\) will the system be stable?*
+
+** Example: Position servo for the hard disk drive arm
+   *Activity* Complete the root locus!
+   \[(z-1)^2z + \frac{K}{2}(z+1)(z-0.8) = 0\]
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[scale=2.5]
+       \draw[->] (-1.2, 0) -- (1.2,0);
+       \draw[->] (0, -1.2) -- (0,1.2);
+       \node[red, pin=45:{2 process poles}] at (1,0) {\large $\times$};
+       \node[red, pin=135:{Controller pole}] at (0,0) {\large $\times$};
+       \node[green!70!black, pin=-145:{Controller zero}] at (0.8,0) {\Large $\circ$};
+       \node[green!70!black, pin=-145:{Process zero}] at (-1,0) {\Large $\circ$};
+       \node at (0.8, -0.2) {$0.8$};
+       \node at (1, -0.2) {$1$};
+       \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
+       \node[coordinate, pin=60:{$|z|=1$}] at (0.5, 0.87) {};
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+
+* Relative stability
+** Relative stability
+
+** Sinusoid in - sinusoid out
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+       \node[coordinate] (input) {};
+       \node[block, right of=input, node distance=40mm] (plant)  {$G(s)$};
+       \node[coordinate, right of=plant, node distance=40mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.1, color=blue!80!black] {$u(t)=\sin(\omega_1 t)$} (plant);
+       \draw[->] (plant) -- node[above, pos=0.3, anchor=south west, color=orange!80!red] {$y(t)=|G(i\omega_1)|\sin\big( \omega_1 t + \arg G(i\omega_1)\big)$} (output);
+
+
+       \begin{axis}[
+	 yshift=-4cm,
+	 width=12cm,
+	 height=4cm,
+	 clip=false,
+	 ytick ={-1,-0.7, 0, 0.7, 1},
+	 ]
+	 \addplot[blue!80!black, no marks, domain=0:4, samples=600] {sin(360*x)};
+	 \addplot[orange!80!red, no marks, domain=0:4, samples=600] {0.7*sin(360*x - 120)};
+	 \draw[dashed, blue!80!black] (axis cs: 0, 0) -- (axis cs: 0, -2);
+	 \draw[dashed, orange!80!red] (axis cs: 0.333, 0) -- (axis cs: 0.333, -2);
+	 \node at (axis cs: 0.15, -2) {$\Delta t=\frac{1}{3}$};
+       \end{axis}
+     \end{tikzpicture}
+     \end{center}
+   #+end_export
+   \( \omega_1 = \frac{2\pi}{T} = 2\pi \), \(|G(i\omega_1)| = 0.7\), \(\arg G(i\omega_1) = -\omega_1 \Delta t = -2\pi \frac{1}{3} = - \frac{2\pi}{3}\)
+** Sinusoid in - sinusoid out
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+       \node[coordinate] (input) {};
+       \node[block, right of=input, node distance=40mm] (plant)  {$G(s)$};
+       \node[coordinate, right of=plant, node distance=40mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.1, color=blue!80!black] {$u(t)=\sin(\omega_1 t)$} (plant);
+       \draw[->] (plant) -- node[above, pos=0.3, anchor=south west, color=orange!80!red] {$y(t)=|G(i\omega_1)|\sin\big( \omega_1 t + \arg G(i\omega_1)\big)$} (output);
+
+
+       \begin{axis}[
+	 yshift=-4cm,
+	 width=12cm,
+	 height=4cm,
+	 clip=false,
+	 %ytick ={-1,-0.7, 0, 0.7, 1},
+	 ]
+	 \addplot[blue!80!black, no marks, domain=0:4, samples=600] {sin(180*x)};
+	 \addplot[orange!80!red, no marks, domain=0:4, samples=600] {2*sin(180*x - 120)};
+	 \draw[dashed, blue!80!black] (axis cs: 0, 0) -- (axis cs: 0, -4);
+	 \draw[dashed, orange!80!red] (axis cs: 0.667, 0) -- (axis cs: 0.667, -4);
+	 \node at (axis cs: 0.3, -4.5) {$\Delta t=\frac{2}{3}$};
+       \end{axis}
+     \end{tikzpicture}
+     \end{center}
+   #+end_export
+   \( \omega_1 = \frac{2\pi}{T} = \qquad \),   \(  | G(i\omega_1)| = \qquad\),   \(\arg G(i\omega_1) = -\omega_1 \Delta t = \;\) 
+
+** If the phase shift is \(\pi\)
+
+   \( G_o(i\omega_1) = -1 \), \(|G_o(i\omega_1)| = 1\), \(\arg G_o(i\omega_1) = -\pi\)
+
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+       \node[coordinate] (input) {};
+       \node[circle, fill, inner sep=1pt, right of=input, node distance=24mm] (sum) {};
+       \node[circle, fill, inner sep=1pt, below of=sum, node distance=5mm] (sum2) {};
+       \node[coordinate, below of=sum, node distance=2.5mm] (summid) {};
+       \node[circle, fill, inner sep=1pt, right of=summid, node distance=5mm] (sum3) {};
+       \node[block, right of=sum3, node distance=20mm] (plant)  {$G_o(s)$};
+       \node[coordinate, right of=plant, node distance=40mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.1, color=blue!80!black] {$u(t)=\sin(\omega_1 t)$} (sum);
+       \draw[->] (plant) -- node[coordinate, pos=0.5] (measure) {} node[above, pos=0.3, anchor=south west, color=orange!80!red] {$y(t)=\sin\big(\omega_1 t -\pi\big) = -\sin(\omega_1 t)$} (output);
+       \draw[->] (sum3) -- node[above] {} (plant);
+       \draw[->] (measure) -- ++(0,-16mm) -| node[pos=0.95, left] {$-$} (sum2);
+       \draw (sum) to (sum3);
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+   #+BEAMER: \pause
+   Closed-loop transfer function: \(G_c(s) = \frac{G_o(s)}{1 + G_o(s)} \)
+   \begin{tcolorbox}
+   We want \[ 1 + G_o(i\omega) \neq 0, \quad \forall \omega \]
+   If not, then the closed-loop system will have poles on the imaginary axis (in the s-domain). 
+   \end{tcolorbox}
+
+** The simplified Nyquist criterion in the s-plane
+#+BEGIN_CENTER 
+ \includegraphics[width=0.65\linewidth]{../../figures/implane-nyquist-contour-map}
+#+END_CENTER
+\begin{tcolorbox}
+If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no poles in the right-half plane, then the closed-loop system will be stable if the Nyquist curve \textbf{do not encircle the point \(s=-1\)}. The point $s=-1$ should stay on the left side of the Nyquist curve when we go along the curve from low to high frequencies.
+\end{tcolorbox}
+
+** Stability margins
+#+BEGIN_CENTER 
+ \includegraphics[width=0.38\linewidth]{../../figures/implane-nyquist-margins}
+#+END_CENTER
+   - Cross-over frequency: The frequency \(\omega_c\) for which \(|G_o(i\omega)| = 1\). 
+   - Phase margin: The angle \(\varphi_m\) to the negative real axis for the point where the Nyquist curve intersects the unit circle. \[\varphi_m = \arg G_o(i\omega_c) - (-180\degree) = \arg G_o(i\omega_c) + 180\degree\]
+
+*** Notes							   :noexport:
+    The phase margin equals the  amount of extra negative phase that the loop gain can contribute before becoming unstable. For instance, assume delay of length T: F(s) = exp(-sT), which has phase 
+    \arg F(i\omega) = \arg exp(i\omegaT) = \omega T
+    If this is not accounted for in the loop gain
+    \arg G_o(i\omega_c) - \phasemargin = -180, but
+    \arg G_o^0 (i\omega_c) = \arg G_o(i\omega_c) - \omega_cT = -180 + \phasemargin - \omega_c T
+    So for the closed-loop system to remain stable we must have
+    \omega_c T = \phasemargin. 
+** Stability margins
+   
+#+BEGIN_CENTER 
+ \includegraphics[width=0.38\linewidth]{../../figures/implane-nyquist-margins}
+#+END_CENTER
+   - phase-cross-over frequency: The frequency \(\omega_p\) for which \(\arg G_o(i\omega) = -180\degree\). 
+   - Gain margin: The gain $K=A$ that would make the Nyquist curve of \(KG_o(i\omega h)\) go through the point \(-1 + i0\). This means that \[ |G_o(i\omega_p h| = \frac{1}{A}. \]
+
+
+
+** The effect of sampling on the stability margins
+   \[G(s) = \frac{1}{s^2 + 1.4s + 1} \quad \overset{h=0.4}{\longrightarrow} \quad H(z) = \frac{0.066z + 0.055}{z^2 - 1.450z + 0.571}\] 
+   #+begin_center
+   \includegraphics[width=0.6\linewidth]{../../figures/fig3-3.png}
+   #+end_center
+** The effect of sampling on the stability margins
+
+   \[G(s) = \frac{1}{s^2 + 1.4s + 1} \quad \overset{h=0.4}{\longrightarrow} \quad H(z) = \frac{0.066z + 0.055}{z^2 - 1.450z + 0.571}\] 
+   #+begin_center
+   \includegraphics[width=0.5\linewidth]{../../figures/fig3-4.png}
+   #+end_center
+
+** Selecting the sampling period
+   One can use the phase margin to determine a suitable sampling period. Given a desired cross-over frequency $\omega_c$ and a maximum acceptable negative change in the phase margin  \(\Delta\varphi \approx 5^\circ\; - \; 15^\circ \approx 0.09 \text{rad}\; - \; 0.26\text{rad}\) (a rule-of-thumb).
+
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+       \node[coordinate] (input) {};
+       \node[block, right of=input, node distance=40mm] (plant)  {$G_{ZOH}(s) = \frac{1 - \mathrm{e}^{-sh}}{s}\approx \mathrm{e}^{-s\frac{h}{2}}$};
+       \node[coordinate, right of=plant, node distance=40mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.1, ] {$u_s(t)$} (plant);
+       \draw[->] (plant) -- node[above, near end,] {$u(t)$} (output);
+       \node[above of=plant,  node distance=8mm] {ZOH};
+     \end{tikzpicture}
+   \end{center}
+       #+end_export
+\[ \arg G_{ZOH}(i\omega_c) \approx \arg \mathrm{e}^{-i\omega_c \frac{h}{2}} = -\omega_c \frac{h}{2} \approx -0.09 \text{rad}\; - \; -0.26\text{rad} \]
+
+*Activity* Use the rule-of-thumb above to calculate a sampling period for the case  \(\omega_c = \unit{20}{\rad\per\second}\) and \(\Delta\varphi = \unit{0.2}{\rad}\).
+
+** Efecto de un filtro de anti-aliasing                            :noexport:
+
+
+
+
+
+* Jury's criterion                                                 :noexport:
+
+** El criterion de Jury
+** Estabilidad para el control del brazo del disco duro
+   #+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z) = 0.2K$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$H(z) = \frac{z+1}{2(z-1)^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(z)=\frac{z-0.8}{z}$};
+    \draw[->] (input) -- node[above, pos=0.2] {$\theta_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$\theta(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+  *Ecuación característica*
+  \begin{align*}
+  1 + H(z)F_b(z) &= 0\\
+  1 + \frac{z+1}{2(z-1)^2}K\frac{z-0.8}{z} &= 0\\
+  (z-1)^2z + \frac{K}{2}(z+1)(z-0.8) &= 0
+  \end{align*}
+
+
+** El método de Jury para analizar estabilidad
+Tenemos el polinomio característico
+\[z^3 - 2z^2 + z + \frac{K}{2}(z^2 + 0.2z - 0.8)= z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
+
+*El método de Jury se usa para analisar si un polynomio tiene todos sus raíces en el interior del círculo unitario*
+
+** El método de Jury para analizar estabilidad
+
+   Es similar al método de Routh-Hurwitz de sistemas continuosos.
+
+   Considera el sistema
+   \[ H(z) = \frac{B(z)}{A(z)}. \] Es estable? Tenemos que investigar si los raíces del denominador están en el interior del círculo unitario.
+
+   La idea es investigar ciertas relaciónes algebraicas entre los coeficientes del polinomio \( A(z) = a_0z^n + a_1z^{n-1} + \cdots + a_n \).
+
+** El método de Jury para analizar estabilidad
+   Con \( A(z) = a_0z^n + a_1z^{n-1} + \cdots + a_n \), forma la tabla
+   
+   | \(a_0\)           | \(a_1\)           | \(\cdots\) | \(a_{n-1}\)       | \(a_n\)    |                                               |
+   | \(a_n\)           | \(a_{n-1}\)       | \(\cdots\) | \(a_1\)           | \(a_0\)    | \(\alpha_n =\frac{a_n}{a_0}\)                 |
+   |-------------------+-------------------+------------+-------------------+------------+-----------------------------------------------|
+   | \(a_0^{n-1}\)     | \(a_1^{n-1}\)     | \(\cdots\) | \(a_{n-1}^{n-1}\) |            |                                               |
+   | \(a_{n-1}^{n-1}\) | \(a_{n-1}^{n-1}\) | \(\cdots\) | \(a_0^{n-1}\)     |            | \(\alpha_{n-1} =\frac{a_n^{n-1}}{a_0^{n-1}}\) |
+   |-------------------+-------------------+------------+-------------------+------------+-----------------------------------------------|
+   | \(\vdots\)        | \(\vdots \)       | \(\vdots\) | \(\vdots\)        | \(\vdots\) |                                               |
+   |-------------------+-------------------+------------+-------------------+------------+-----------------------------------------------|
+   | \(a_0^{0}\)       | 0                 | \(\cdots\) | 0                 |            |                                               |
+   
+   Las dos filas primeras son los coeficients de \(A(z)\). La tercera fila se obtiene eliminando el último elemento de la fila una: Multiplica fila 2 por \(\alpha_n = \frac{a_n}{a_0}\) y subtrae de la fila 1. Se repita el procedimiento hasta que solamente el primer elemento de la fila no es cero.
+
+** El método de Jury para analizar estabilidad
+   Con \( A(z) = a_0z^n + a_1z^{n-1} + \cdots + a_n \), forma la tabla
+
+   El criterión dice que todos los raíces de $A(z)$ están en el interior del circulo unitario, sí, y solo sí todos los elementos \(a_0^k\) el el primer columno tienen el mismo signo. 
+
+   Hay pruebas preliminares de estabilidad que podemos utilizar:
+   1. \(A(1) > 0\)
+   2. \( (-1)^nA(-1) > 0\)
+   3. \( |a_0^k| > |a_k^k| \)
+
+
+** Ejemplo - control del brazo del disco duro
+Polinomio característico \[ A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
+#+begin_center
+\includegraphics[width=0.5\linewidth]{../../figures/diskdrive-lead-discrete-rlocus.png}
+#+end_center
+
+** Ejemplo - Método de Jury
+Polinomio característico \[ A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
+
+Aplica las pruebas preliminares 1 y 2:
+   1. \(A(1) > 0\)
+   2. \( (-1)^nA(-1) > 0\)
+
+** Ejemplo - Método de Jury
+Polinomio característico \[ A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\]
+
+Aplica las pruebas preliminares 1 y 2:
+   1. \(A(1) > 0\)
+   2. \( (-1)^nA(-1) > 0\)
+      \begin{align}
+      (-1)^3A(-1) &= -\left((-1)^3 + (0.5K-2)(-1)^2 + (1+0.1K)(-1) - 0.4K \right)\\
+       &= 1-(0.5K-2) +(1+0.1K) + 0.4K > 0\\
+       &=4 >0, \quad \text{Holds for all \(K\)}
+       \end{align}
+
+       
+   *Actividad* Aplica prueba 1!
+
+** Ejemplo - Método de Jury
+Tenemos el polinomio característico \(e A(z) = z^3 + (0.5K-2)z^2 + (1+0.1K)z - 0.4K\). La tabla sería
+
+| 1                                                               | \(0.5K - 2\)                                                    | \(0.1K + 1\)          | \(-0.4K\) |
+| \(-0.4K\)                                                       | \(0.1K + 1\)                                                    | \(0.5K - 2\)          |         1 |
+| \(-0.16K^2 + 1\)                                                | \(0.04K^2 + 0.9K - 2\)                                          | \(0.2K^2 - 0.7K + 1\) |         0 |
+| \(0.2K^2 - 0.7K + 1\)                                           | \(0.04K^2 + 0.9K - 2\)                                          | \(-0.16K^2 + 1\)      |         0 |
+| \(\frac{K(0.0144K^3 - 0.28K^2 + 1.21K - 1.4)}{0.16K^2 - 1.0}\)  | \(\frac{K(0.0144K^3 + 0.296K^2 - 1.35K + 1.4)}{0.16K^2 - 1.0}\) | 0                     |         0 |
+| \(\frac{K(0.0144K^3 + 0.296K^2 - 1.35K + 1.4)}{0.16K^2 - 1.0}\) | \(\frac{K(0.0144K^3 - 0.28K^2 + 1.21K - 1.4)}{0.16K^2 - 1.0}\)  | 0                     |         0 |
+
+Para estabilidad necesitamos
+\begin{align*}
+ -0.16K^2 + 1 &> 0 \\
+\frac{K(0.0144K^3 - 0.28K^2 + 1.21K - 1.4)}{0.16K^2 - 1} &> 0
+\end{align*}
+
+** Ejemplo - Método de Jury
+Para estabilidad necesitamos
+\[ -0.16K^2 + 1 > 0 \quad \Rightarrow \quad K < \sqrt{\frac{1}{0.16}} = 2.5\]
+Asumiendo  \(0<K<2.5\)
+\[ 0.0144K^3 - 0.28K^2 + 1.21K - 1.4 < 0 \quad \Rightarrow \quad x < \frac{35}{18} \approx 1.94\] 
+
+\begin{tcolorbox}
+ El sistema en lazo cerrado será estable si \[ 0 < K < 1.94\]
+\end{tcolorbox}
+
+** Ejercicio - estabilidad de sistemas de segunda orden
+Polinomio característico \[A(z) = z^2 + a_1z + a_2\]
+
+*Actividad* Forma la tabla de Jury, y determina los valores de \(a\) y \(b\) que da raíces dentro del circulo unitario.
+
+Puedes utilizar 
+\[ 1-a_2^2 - \frac{a_1^2(1-a_2)}{1+a_2} = \frac{(1-a^2)(1+a_2) - a_1^2(1-a_2)}{1+a_2} = \frac{1-a_2}{1+a_2}\big((1+a_2)^2 - a_1^2\big)\]
+
+** Ejercicio - Solución
+
+Polinomio característico \[A(z) = z^2 + a_1z + a_2\]
+
+| 1                                        | \(a_1\)       | \(a_2\) |
+| \(a_2\)                                  | \(a_1\)       |       1 |
+| \(1 - a_2^2\)                            | \(a_1(1-a_2)\) |       0 |
+| \(a_1(1-a_2\)                            | \(1 - a_2^2\) |       0 |
+| \(1-a_2^2 - \frac{a_1^2(1-a_2)}{1+a_2}\) | 0             |         |
+
+Los raíces van a estar adentro del circulo unitario si
+\begin{align*}
+  1 - a_2^2 &> 0 \quad \Rightarrow \quad -1 < a_2 < 1\\
+  \frac{1-a_2}{1+a_2} \big((1+a_2)^2 - a_1^2\big) &> 0\\
+\end{align*}
+
+** Ejercicio - Solución
+   Con \(-1 < a_2 < 1\) la fraccion en 
+   \[\frac{1-a_2}{1+a_2} \big((1+a_2)^2 - a_1^2\big) > 0\]
+   siempre va a ser positiva.
+   \[(1+a_2)^2 - a_1^2 > 0 \quad \Rightarrow \quad \begin{cases} 1+a_2 > a_1, & a_1 > 0,\\ 1 + a_2 > -a_1, & a_1 < 0 \end{cases}. \]
+Los raíces del polinomio \(A(z) = z^2 + a_1z + a_2\) están adentro del circulo unitario si
+\begin{align*}
+a_1 &< 1\\
+a_2 &> -1+a_1\\
+a_2 &> -1 - a_1
+\end{align*}
+
+** Ejercicio - graficar
+
+*** Text
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+
+Los raíces del polinomio \(A(z) = z^2 + a_1z + a_2\) están adentro del circulo unitario si
+\begin{align*}
+<<<<<<< HEAD
+a_1 &< 1\\
+=======
+a_2 &< 1\\
+>>>>>>> b22b6989bdef1c67fd3782e3ca70ba70c94ec33b
+a_2 &> -1+a_1\\
+a_2 &> -1 - a_1
+\end{align*}
+
+*Dibuja la region definida por las inequalidades*
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+#+begin_export latex
+\begin{center}
+  \begin{tikzpicture}[scale=0.8]
+    \draw[->] (-4,0) -- (4,0) node[below] {$a_1$};
+    \draw[->] (0,-3) -- (0,3) node[left] {$a_2$};
+    \draw (0.1,2) -- (-0.1, 2) node[left] {1};
+    \draw (0.1,-2) -- (-0.1, -2) node[left] {-1};
+  \end{tikzpicture}
+\end{center}
+#+end_export

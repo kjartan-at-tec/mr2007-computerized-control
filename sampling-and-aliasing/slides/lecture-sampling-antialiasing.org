@@ -11,8 +11,8 @@
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
-#+title: Computerized Control - Sampling and aliasing
-#+date: 2020-07-01
+#+title: Sampling and aliasing
+#+date: 2021-06-30
 
 * What do I want the students to understand?			   :noexport:
   - The sampling theorem
@@ -37,11 +37,13 @@
 \includegraphics[width=\linewidth]{../../figures/computer-control-approaches}
 \end{center}
 
-** Repetition
+** Computer-controlled system
    #+BEGIN_CENTER 
     \includegraphics[width=0.7\linewidth]{../../figures/fig7-2.png}
    #+END_CENTER
-
+#+begin_export latex
+{\footnotesize Source: Åström \& Wittenmark}
+#+end_export
 
 
 * Intro example - Use later!					   :noexport:
@@ -473,7 +475,7 @@ A continuous-time signal with Fourier transform that is zero outside the interva
      \end{tikzpicture}
      \end{center}
    #+end_export
-   Since \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{i \omega_1 t} \right)\]
+   Since \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{-i \omega_1 t} \right)\]
    the Fourier transform of a sinusoid becomes
    \[ Y(i\omega) = \frac{1}{2i} \left( \delta(\omega_1 - \omega) - \delta(\omega_1 + \omega) \right)\]
 
@@ -870,7 +872,7 @@ can be used.
           = | ( 800\pi ) - 1000\pi | = 200\pi
        \omega_N - (\omega - \omega_N) = 1000\pi - 800\pi = 200\pi rad/s.
 
-** Group exercise: Alias frequency
+** Group exercise: Alias frequency                                 :noexport:
 
 *** Text
     :PROPERTIES:
@@ -892,9 +894,29 @@ can be used.
 
 
 
-* antialiasing                                                     :noexport:
+* antialiasing
 
 ** Noisy measurements
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}
+	\node {\includegraphics[width=0.99\linewidth]{../../figures/comp-contr-sys.png}};
+	\node[pin=145:{60Hz mains hum}] at (2.7,2.4) {};
+	\node[pin=-60:{90Hz sampling freq}] at (0.5,-1.4) {};
+      \end{tikzpicture}
+    \end{center}
+    #+end_export    
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :END:
+
+\includegraphics[width=0.99\linewidth]{../../figures/aliasing-example-60Hz}
+
    
 ** Antialiasing filter
    The *Bessel filter* is often used. From wikipedia:
@@ -915,6 +937,11 @@ can be used.
    - Preserves wave shapes \(\Rightarrow\) very little distortion of signals in the passband
    - Maximally linear phase response \(\Rightarrow\) \(\arg H \approx -T\omega\),  Can be modelled as a pure delay 
 
+*** Notes                                                          :noexport:
+    Delay
+    H_d = exp(-sT), H_d(i\omega) = exp(-i\omegaT).
+    |H_d| = |exp(-i\omegaT)| = 1
+    arg H_d = -\omega T
 **  Bessel filter exercise					   :noexport:
     Second order Bessel filter which gives attenuation $|H(i\omega_N)| = 0.1$ at the Nyquist frequency.
 *** q

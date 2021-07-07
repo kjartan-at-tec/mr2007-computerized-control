@@ -1,0 +1,24 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=2.6cm, block/.style={rectangle, draw, minimum height=12mm, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {\footnotesize $\Sigma$};
+  \node[block, right of=sum] (gain) {$K$};
+  \node[block, right of=gain, node distance=32mm] (plant) {$H(z)=\frac{Q(z)}{P(z)}$};
+  \node[coordinate, right of=plant, node distance=4cm] (output) {};
+  \draw[->] (plant) -- node[coordinate](measure) {} (output);
+  \draw[->] (measure) -- ++(0, -16mm) -| node[left, pos=0.95] {$-$} (sum);
+  \draw[->] (input) -- (sum);
+  \draw[->] (sum) -- (gain);
+  \draw[->] (gain) -- (plant);
+\end{tikzpicture}
+
+\end{document}
