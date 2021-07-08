@@ -1,0 +1,21 @@
+
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=26mm, anchor=north]
+  \node[coordinate] (input) {};
+  \node[circle, draw, inner sep=2pt, right of=input] (sum) {\footnotesize $\Sigma$};
+   \node[rectangle, draw, right of=sum, inner sep=3mm] (contr) {Controller};
+   \node[rectangle, draw, right of=contr, inner sep=3mm, node distance=32mm] (lti) {plant};
+   \node[coordinate, right of=lti, node distance=30mm] (output) {};
+   \draw[->] (input) -- node[near start, above] {$r(t)$}  (sum);
+   \draw[->] (sum) -- node[above] {$e(t)$}  (contr);
+   \draw[->] (contr) -- node[above] {$u(t)$}  (lti);
+   \draw[->] (lti) -- node[coordinate] (meas) {} node[near end, above] {$y(t)$} (output);
+   \draw[->] (meas) -- ++(0, -14mm) -| node[left, pos=0.96] {$-$} (sum);
+ \end{tikzpicture}
+\end{document}
