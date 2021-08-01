@@ -1,0 +1,23 @@
+
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{amsmath}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=24mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {$\frac{B(\operatorname{q})}{A(\operatorname{q})}$};
+   \node[circle, draw, right of=lti, inner sep=2pt] (sum) {\footnotesize $\Sigma$};
+   \node[rectangle, draw, above of=sum, inner sep=3mm, node distance=18mm] (em) {$\frac{q^{n}}{A(\operatorname{q})}$};
+   \node[coordinate, right of=sum] (output) {};
+   \node[coordinate, above of=em, node distance=18mm] (dist) {};
+   \draw[->] (input) -- node[near start, above] {$u(kh)$}  (lti);
+   \draw[->] (sum) -- node[near end, above] {$y(kh)$} (output);
+   \draw[->] (dist) -- node[near start, right] {$e(kh)$} (em);
+   \draw[->] (lti) -- node[near start, right] {} (sum);
+   \draw[->] (em) -- node[near start, right] {} (sum);
+ \end{tikzpicture}
+\end{document}

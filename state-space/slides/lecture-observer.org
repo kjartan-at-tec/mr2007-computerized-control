@@ -1,0 +1,174 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+OPTIONS: H:2
+# #+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+     
+#+LaTex_HEADER: \usepackage{khpreamble, euscript}
+#+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
+#+LaTex_HEADER: \newcommand*{\ctrb}{\EuScript{C}}
+#+LaTex_HEADER: \newcommand*{\obsv}{\EuScript{O}}
+
+#+title: Output feedback (observer)
+
+* What do I want the students to understand?			   :noexport:
+  - Understand observer feedback
+
+* Which activities will the students do?			   :noexport:
+
+* Apollo moon lander
+** Example - The Apollo lunar module
+
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=\linewidth]{fig-apollo}
+   \end{center}
+   #+end_export
+
+*** Notas                                                          :noexport:
+    Ayer vímos este modelo del módulo lunar de Apollo. El modelo es para el control de la velocidad horizaontal, z dot. Cambié la dirección de esta flecha que representa el empuje del propulsor principal, para que enseña la fuerza que actua en el módulo. Para que este se mantenga a cierta distancia del superficie de la luna, esta fuerza tiene que tener un componente vertical con magnitúd mg, donde este g es la acceleration de gravedad en el superficie de la luna, que es 1.62 m/s^2.
+
+    Cuando el módulo tiene un  angula al respeto al vertical, esta fuerza de propulso va a tener un componente horizontal. Cual es su magnitúd?
+
+    La dinámica del sistema está expresado abajo en forma de un diagrama de bloques. La señal de entrada es el torque causada por los propulsores de atitúd. Esta causa una acceleracińo angular del módulo de 1/J por el torque, dónde J es el momento de inertia. Integrando la acceleración nos da la velocidad angular. 
+
+    Si vemos las fuerzas en la dirección horizontal, vemos que 
+    m\ddot{z} = F_h = mg tan\theta
+    \ddot{z} = g \tan\theta \approz g \theta, entonces k2=g
+
+    Integrando la acceleración nos da la velocidad.
+
+    La approximación lineal tiene la función de transferencia G = k_1k_2/s^3 = (g/J) / s^3
+
+    Es una sistema de orden tres, entonces se necesita tres variables de estado para representar su dinámica. 
+
+** Example - The Apollo lunar module
+   State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
+   \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} &\textcolor{red!60!black}{0} \\\textcolor{red!60!black}{1} & \textcolor{red!60!black}{0}& \textcolor{red!60!black}{0}\\ \textcolor{red!60!black}{0}& \textcolor{red!60!black}{k_2} &\textcolor{red!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{red!60!black}{k_1} \\ \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0}  \end{bmatrix}}_{B} u \]
+
+
+** Example - The Apollo lunar module
+   \begin{align*}
+    x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
+     &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)\\
+     &= \begin{bmatrix} 1 & 0 & 0\\h & 1 & 0\\\frac{h^2k_2}{2} & hk_2 & 1\end{bmatrix} x(kh) + k_1 \begin{bmatrix} h\\ \frac{h^2}{2} \\ \frac{k_2 h^3}{6} \end{bmatrix} u(kh)
+  \end{align*}
+
+
+* State feedback with observer
+** State feedback with reconstructed states
+
+** State feedback with reconstructed states
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.9\linewidth]{fig-apollo}
+   \end{center}
+   #+end_export
+
+** State feedback
+   Given
+   \begin{equation}
+   \begin{split}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:ssmodel}
+  \end{equation}
+  and measurements (or estimates) of the state vector \(x(k)\). 
+
+  *Linear state feedback* is the control law
+  \begin{equation*}
+  \begin{split}
+   u(k) &= f\big((x(k), u_c(k)\big) = -l_1x_1(k) - l_2x_2(k) - \cdots - l_n x_n(k) + l_0u_c(k)\\
+        &= -Lx(k) + l_0u_c(k), 
+  \end{split}
+  \end{equation*}
+  where \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
+  Substituting the control law in the state space model \eqref{eq:ssmodel} gives
+   \begin{equation}
+   \begin{split}
+    x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + l_0\Gamma u_c(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:closedloop}
+  \end{equation}
+
+
+
+** Observer design
+   Given model
+   \begin{equation*}
+   \begin{split}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:ssmodel}
+  \end{equation*}
+  and measurements of the output signal \(y(k)\). 
+
+  The obserser is given by
+      \begin{equation*}
+      \begin{split}
+      \hat{x}(k+1) &= \underbrace{\Phi \hat{x}(k) + \Gamma u(k)}_{\text{simulation}} + \underbrace{K\big(y(k) - C\hat{x}(k)\big)}_{\text{correction}} = \left(\Phi - KC\right)\hat{x}(k) +  \Gamma u(k) + Ky(k)
+      \end{split}
+      \end{equation*}
+  with poles given by the eigenvalues of the matrix \(\Phi_o = \Phi - KC\)
+
+  *Rule-of-thumb* Choose the poles of the observer (eigenvalues of \(\Phi-KC\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\).
+
+** Observer design
+  *Rule-of-thumb* Choose the poles of the observer (eigenvalues of \(\Phi-KC\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\).
+
+  In continuous time (the s-plane), choosing a pole to be twice as fast, means moving the pole to twice the disance from the origin. Given a discrete pole $p_1$, the discrete pole in 
+  \[ p_2 = \text{exp}\left( 2 \frac{\ln p_1}{h} h\right) = \text{exp} \big( 2 \ln p_1 \big) = p_1^2\]
+  corresponds to a response that is twice as fast.
+
+** Control by feedback from reconstructed states
+   The design problem can be separates into two problems
+   1. Determine the gain vector \(\textcolor{orange!80!black}{L}\) and the gain \(l_0\) of the control law
+      \[ u(k) = -\textcolor{orange!80!black}{L} \hat{x}(k) + l_0 u_c(k)\]
+      so that the closed-loop system has good reference tracking.
+   2. Determine the gain vector \(\textcolor{red}{K}\) of the observer
+      \begin{equation*}
+      \begin{split}
+      \hat{x}(k+1) &= \Phi \hat{x}(k) + \Gamma u(k) + \textcolor{red}{K} \big(y(k) - C\hat{x}(k)\big)
+      \end{split}
+      \end{equation*}
+      to get a good balance between disturbance rejection and noise attenuation.
+
+** Computing the observer gain
+   A matrix $M$ and its transpose $M\transp$ have the same eigenvalues. Hence, the problem of determining the gain $K$ to obtain desired eigenvalues of 
+   \[\Phi- KC\] is equivalent to determining the gain $K$ in 
+   \[(\Phi-KC)\transp = \Phi\transp - C\transp K\transp.\]
+   The last problem has the exact same form as the problem of determining $L$ to obtain desired eigenvalues of 
+   \[\Phi - \Gamma L\]
+   
+   So, the same matlab function can be used for both problems.
+
+** Computing the observer gain
+   
+  1. *Ackerman's method* 
+     #+begin_src octave
+	K = acker(Phi', C', po)'
+     #+end_src
+  1. *More numerically stable method* 
+     #+begin_src octave
+	K = place(Phi', C', pd)'
+     #+end_src
+
+
+* Activity                                                         :noexport:
+
+** Matlab   
+** Actividad
+   En grupos: 
+   1. Agrega simulación de una perturbancia constante a la salida del sistema (pero antes de la medición). Esa perturbación representa un error de modelación. Simula un escalón positivo unitario occurriendo en \(t=10\)s
+   2. Determina la desviación máxima en la velocidad en respuesto a la perturbancia.
+   3. Determina las ganancias \(K = \bbm k_1 & k_2 & k_3 \ebm\transp\) para un observador /dead-beat/. Es decir con todos los polos en el origen. Cómo cambia la desviación en la respuesta a la perturbancia?
+   4. Cambió la respuesta al escalón en la referencia al cambiar a un observador dead-beat? 
+

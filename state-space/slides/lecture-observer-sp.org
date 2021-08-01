@@ -123,7 +123,7 @@
   *Regla de oro* Eliga los polos del observador (eigenvalores de \(\Phi-KC\)) por lo menos dos veces más rápidos que los polos (eigenvalores) de \(\Phi-\Gamma L\).
 
   En tiempo continua (el plano s) hacer un polo dos veces más rápido significa mover el polo a una distancia doble del origen. Entonces, dado el polo discreto $p_1$, el polo discreto en 
-  \[ p_2 = \text{exp}\left( 2 \frac{\ln p_1}{h} h\right) = \text{exp} \big( 2 \ln p_1 \big)\]
+  \[ p_2 = \text{exp}\left( 2 \frac{\ln p_1}{h} h\right) = \text{exp} \big( 2 \ln p_1 \big) = p_1^2\]
   corresponde a una respuesta dos veces más rapida.
 
 ** Control por retroalimentación de estados reconstruidos

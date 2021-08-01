@@ -12,7 +12,7 @@ k1 = 1/J; % Torque input u has unit Nm
 k2 = gM;
 
 % Discrete-time model
-h = 1; % Sampling period, in seconds
+h = 0.25; % Sampling period, in seconds
 
 Phi = [1, 0 , 0
     h, 1, 0
@@ -34,7 +34,7 @@ sys_dt = c2d(sys_ct, h)
 [Phi, Phi_c2d]
 
 % Desired poles
-pd = [0.7, 0.7+0.1j, 0.7-0.1j];
+pd = sqrt(sqrt([0.7, 0.7+0.1j, 0.7-0.1j]));
 
 L_a = acker(Phi, Gamma, pd)
 L_p = place(Phi, Gamma, pd) % More accurate, but no repeated poles

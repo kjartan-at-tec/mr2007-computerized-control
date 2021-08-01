@@ -1,4 +1,4 @@
-% Created 2020-07-17 vie 11:39
+% Created 2021-07-13 Tue 19:16
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -28,18 +28,18 @@
  pdftitle={Control computarizado - Mínimos cuadrados},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.3.6)}, 
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
  pdflang={English}}
 \begin{document}
 
 \maketitle
 
 \section{Intro}
-\label{sec:org8ad0ffa}
-\begin{frame}[label={sec:org879d353}]{Identificación de sistemas}
+\label{sec:org3039ec7}
+\begin{frame}[label={sec:orgc3f2bb1}]{Identificación de sistemas}
 \end{frame}
 
-\begin{frame}[label={sec:org65b78ca}]{Un proceso complejo}
+\begin{frame}[label={sec:org90d5fe9}]{Un proceso complejo}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 From Wikipedia "Cyclonic separation"
@@ -52,7 +52,7 @@ From Wikipedia "Cyclonic separation"
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orge225b5f}]{Identificación de sistemas}
+\begin{frame}[label={sec:org6f500c7}]{Identificación de sistemas}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, inner sep=10pt}, sumnode/.style={circle, draw, inner sep=2pt},]
 
@@ -76,13 +76,13 @@ From Wikipedia "Cyclonic separation"
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org9cad54f}]{Ajustando un modelo}
+\begin{frame}[label={sec:org0e5956e}]{Ajustando un modelo}
 \begin{center}
 \includegraphics[height=0.8\textheight]{lsq-example-no-reg}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org885b148}]{Ajustando un modelo - regresión lineal}
+\begin{frame}[label={sec:orgd621ef1}]{Ajustando un modelo - regresión lineal}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \alert{Objetivo} Dado observaciones \[\mathcal{D} = \{ (x_1,y_1), (x_2, y_2), \ldots, (x_N, y_N)\}\] y 
@@ -99,7 +99,7 @@ El término de ruido, o error, \(e\), incluye errores de modelación y perturbac
 \end{frame}
 
 
-\begin{frame}[label={sec:org799ac10}]{Ajustando un modelo - regresión lineal}
+\begin{frame}[label={sec:org378a72b}]{Ajustando un modelo - regresión lineal}
 Dado observaciones \(\mathcal{D} = \{ (x_1,y_1), (x_2, y_2), \ldots, (x_N, y_N)\}\) y 
 modelo \(\mathcal{M}: \; y = ax + b  + e\). 
 
@@ -123,7 +123,7 @@ Buscamos parametros \(\theta^T = \begin{bmatrix} a & b \end{bmatrix}\) que minim
 \end{frame}
 
 
-\begin{frame}[label={sec:org0e19351}]{Ajustando un modelo - regresión lineal}
+\begin{frame}[label={sec:orge976682}]{Ajustando un modelo - regresión lineal}
 Dado observaciones \(\mathcal{D} = \{ (x_1,y_1), (x_2, y_2), \ldots, (x_N, y_N)\}\) y 
 modelo \(\mathcal{M}: \; y = ax + b  + e\). 
 
@@ -149,7 +149,7 @@ La función de pérdida más común es \alert{mínimos cuadrados}
 
 
 
-\begin{frame}[label={sec:org58be8f8}]{El problema con mínimos cuadrados}
+\begin{frame}[label={sec:org75ca46a}]{El problema con mínimos cuadrados}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{align*}
@@ -175,7 +175,7 @@ La función de pérdida más común es \alert{mínimos cuadrados}
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orge9065b6}]{Más robusta: La función de pérdida de Huber}
+\begin{frame}[label={sec:org240edf5}]{Más robusta: La función de pérdida de Huber}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 También conocido como \alert{regresión robusta}
@@ -206,11 +206,11 @@ También conocido como \alert{regresión robusta}
 \end{frame}
 
 \section{AR-model}
-\label{sec:orgaaad313}
+\label{sec:org4f000d2}
 
-\begin{frame}[label={sec:org33dce0c}]{Ejemplo - Modelo autorregresivo (AR)}
+\begin{frame}[label={sec:org023cc94}]{Ejemplo - Modelo autorregresivo (AR)}
 \end{frame}
-\begin{frame}[label={sec:orgb3064c0}]{Modelo autorregresivo (AR)}
+\begin{frame}[label={sec:org0019461}]{Modelo autorregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo
 \[ y(k+1) = -ay(k) + e(k+1),\]
 dónde \(e(k)\) es una sequencia discreto de ruido blanco.
@@ -223,7 +223,7 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:org0cb988c}]{Modelo autorregresivo (AR)}
+\begin{frame}[label={sec:org27eb1d8}]{Modelo autorregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo
 \(y(k+1) = -ay(k) + e(k+1),\)
 dónde \(e(k)\) es una sequencia discreto de ruido blanco.
@@ -243,7 +243,7 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 
 
 
-\begin{frame}[label={sec:org7a6ec84}]{Modelo autorregresivo (AR)}
+\begin{frame}[label={sec:orgda50524}]{Modelo autorregresivo (AR)}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo
 \(y(k+1) = -ay(k) + e(k+1),\)
 dónde \(e(k)\) es una sequencia discreto de ruido blanco.
@@ -261,7 +261,7 @@ dónde \(e(k)\) es una sequencia discreto de ruido blanco.
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd7ab8a2},fragile]{Computación de la solución de mínimos cuadrados}
+\begin{frame}[label={sec:org87d1346},fragile]{Computación de la solución de mínimos cuadrados}
  Dado error de predicción en forma vectoral para sistema de orden \(n\)
 \(\epsilon = y - \Phi\theta\). Forma las \alert{ecuaciones normales}
 \begin{align*}
@@ -274,7 +274,7 @@ theta_LS = Phi \ y
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[label={sec:orgb6320d3}]{Ejemplo numerico}
+\begin{frame}[label={sec:org07df134}]{Ejemplo numerico}
 \href{https://mybinder.org/v2/gh/kjartan-at-tec/mr2007-computerized-control/master?filepath=.\%2Fsystem-identification\%2Fnotebooks\%2FAR-example.ipynb}{Mybinder}
 \end{frame}
 
@@ -282,7 +282,7 @@ theta_LS = Phi \ y
 
 
 
-\begin{frame}[label={sec:org616da4b}]{Modelo autorregresivo (AR) - Ejercicio}
+\begin{frame}[label={sec:orgaec78da}]{Modelo autorregresivo (AR) - Ejercicio}
 Dado una secuencia discreta observada \(y(k), \; k=1,2,\ldots,N\), y el modelo autorregresivo de segunda orden
 \[ y(k+2) = a_1y(k+1) + a_2y(k) + e(k+2),\]
 dónde \(e(k)\) es una sequencia discreto de ruido blanco.

@@ -1,0 +1,180 @@
+% Created 2021-07-12 Mon 09:36
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation,aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{khpreamble}
+\usepackage{amssymb}
+\DeclareMathOperator{\shift}{q}
+\DeclareMathOperator{\diff}{p}
+\usetheme{default}
+\author{Kjartan Halvorsen}
+\date{2021-07-12}
+\title{Digital PID}
+\hypersetup{
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Digital PID},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+
+\section{Discretization - repetición}
+\label{sec:orgdd9cf55}
+\begin{frame}[label={sec:org41ab6a0}]{Context}
+\begin{itemize}
+\item Controller \(F(s)\) obtained from a design in continuous time.
+\item Need discrete approxmation in order to implement on a computer
+\end{itemize}
+
+\begin{center}
+ \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}\\
+   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org6622ef4}]{Mapping of the stable region of the s-plane}
+\begin{center}
+ \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
+{\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+\end{center}
+\end{frame}
+
+
+\section{PID}
+\label{sec:orgc08e8ae}
+\begin{frame}[label={sec:orgef96f64}]{ISA form of the PID}
+ISA - International Society of Automation
+
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
+
+With low-pass filter for the derivative part
+
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
+\end{frame}
+
+\begin{frame}[label={sec:orgc489bcc}]{ISA form of the PID - derivative part}
+\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
+
+\begin{columns}
+\begin{column}{0.4\columnwidth}
+\alert{Activity} Sketch the Bode plot for the derivative part (\(T_d = 1\), \(N=10\))
+\[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] using the low-frequency and high-frequency approximations.
+\begin{align*}
+ \text{$\omega$ small:} \quad & F_d(i\omega) \approx T_d i\omega \\
+ \text{$\omega$ large:} \quad & F_d(i\omega) \approx \frac{T_d i \omega }{\frac{T_d}{N} i\omega} = N
+\end{align*}
+\end{column}
+
+
+\begin{column}{0.6\columnwidth}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/bode-derivative-empty}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org7a93560}]{ISA form of the PID - derivative part}
+\end{frame}
+
+
+\begin{frame}[label={sec:org13a48f0}]{PID with derivative action only on the process variable}
+\begin{center}
+  \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+    \node[block, right of=sum, node distance=20mm] (pi)  {$F_{PI}(s)$};
+    \node[block, below of=pi, node distance=12mm] (dd)  {$F_{D}(s)$};
+    \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
+    \node[coordinate, below of=sum, node distance=22mm] (yy) {};
+    \node[coordinate, right of=sum2, node distance=20mm] (output) {};
+
+    \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
+    \draw[->] (sum) -- node[above] {$e(t)$} (pi);
+    \draw[->] (sum2) -- node[above, near end] {$u(t)$} (output);
+    \draw[->] (yy) -- node[right, pos=0.2] {$y(t)$} node[pos=0.9, left] {$-$} (sum);
+    \draw[->] (pi) -- node[above, near end] {} (sum2);
+    \draw[->] (dd) -| node[left, pos=0.9] {$-$} (sum2);
+    \draw[->] (yy) |- (dd);
+
+  \end{tikzpicture}
+\end{center}
+
+\[ U(s) = \underbrace{K_c\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
+\end{frame}
+
+\section{Discretización del PID}
+\label{sec:orgcc2def9}
+\begin{frame}[label={sec:org7fb50fe}]{Common discretization of the PID}
+\begin{center}
+  \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+    \node[coordinate] (input) {};
+    \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+    \node[block, right of=sum, node distance=27mm] (pi)  {$K_c\frac{1}{T_is}$};
+    \node[block, below of=pi, node distance=12mm] (dd)  {$K_c\frac{T_d s}{\frac{T_d}{N} s + 1}$};
+    \node[block, above of=pi, node distance=12mm] (pp)  {$K_c$};
+    \node[sumnode, right of=pi, node distance=30mm] (sum2) {\tiny $\Sigma$};
+    \node[coordinate, below of=sum, node distance=22mm] (yy) {};
+    \node[coordinate, right of=sum2, node distance=20mm] (output) {};
+
+    \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
+    \draw[->] (sum) -- node[above, pos=0.2] {$e(t)$} node[coordinate, pos=0.6] (copy) {} (pi);
+    \draw[->] (sum2) -- node[above, near end] {$u(t)$} (output);
+    \draw[->] (yy) -- node[right, pos=0.2] {$y(t)$} node[pos=0.9, left] {$-$} (sum);
+    \draw[->] (pi) -- node[above, ] {$u_I(t)$} (sum2);
+    \draw[->] (dd) -| node[left, pos=0.9] {$-$} node[above, pos=0.3] {$u_D(t)$} (sum2);
+    \draw[->] (yy) |- (dd);
+    \draw[->] (pp) -| node[above, pos=0.3] {$u_P(t)$} (sum2);
+    \draw[->] (copy) |- (pp);
+
+
+  \end{tikzpicture}
+\end{center}
+
+\[ U(s) = U_P(s) + U_I(s) - U_D(s) = K_cE(s) + K_c\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
+
+\alert{Activity} 1) Use Euler's method \(s \approx \frac{z-1}{h}\) for the integral part, and the backward difference \(s \approx \frac{z-1}{zh}\) for the derivative part. 2) Apply the inverse z-transform to obtain the controller in the form of a difference equation.
+\end{frame}
+
+\begin{frame}[label={sec:orgbb029a6}]{The discrete PID algorithm}
+\begin{align*}
+&\text{Dado:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
+& \text{\textcolor{green!60!black}{Sample signals:}} \; r(kh), \; y(kh)\\
+&e(kh) = r(kh) - y(kh)\\
+&u_P(kh) = K_ce(kh)\\
+&u_D(kh) = \frac{\frac{T_d}{N}}{\frac{T_d}{N} + h}u_D(kh-h) + K_c\frac{T_d}{\frac{T_d}{N} + h}\big(y(kh) - y(kh-h)\big)\\
+&u(kh) = u_P(kh) + u_I(kh-h) + u_D(kh), \qquad \text{\textcolor{red}{Send to DAC}}\\
+&u_I(kh) = u_I(kh-h) + K_c \frac{h}{T_i} e(kh)
+\end{align*}
+
+\begin{center}
+  \begin{tikzpicture}
+    \draw[->] (0,0) -- (10,0) node[below] {$t$};
+    \draw (2,0) -- (2,-0.2) node[below] {$kh-h$};
+    \draw (4,0) -- (4,-0.2) node[below] {$kh$};
+    \draw (6,0) -- (6,-0.2) node[below] {$kh+h$};
+    \draw[green!60!black, dashed] (4,0) -- (4, 1) node[above] {Sampling signals};
+    \draw[red, dashed] (4.2,0) -- (4.2, -0.9) node[below] {Calculations done};
+    \draw[blue, ultra thick] (4,0) -- (4.2,0) node[coordinate, pin=45:{Computational delay}] {};
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+\end{document}

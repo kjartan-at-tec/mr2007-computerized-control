@@ -1,4 +1,4 @@
-% Created 2020-07-28 mar 10:02
+% Created 2021-07-25 Sun 19:44
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -27,27 +27,27 @@
  pdftitle={Control computarizado - Retroalimentación con observador},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.3.6)}, 
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
  pdflang={English}}
 \begin{document}
 
 \maketitle
 
 \section{Apollo moon lander}
-\label{sec:org5671638}
-\begin{frame}[label={sec:orge1a9d61}]{Ejemplo - El módulo lunar de Apollo}
+\label{sec:org0de76d9}
+\begin{frame}[label={sec:org694beea}]{Ejemplo - El módulo lunar de Apollo}
 \begin{center}
 \includegraphics[width=\linewidth]{fig-apollo}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:org8af05d3}]{Ejemplo - El módulo lunar de Apollo}
+\begin{frame}[label={sec:orge040a0d}]{Ejemplo - El módulo lunar de Apollo}
 Variables del estado: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). Con dinamica
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
 
 \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} &\textcolor{red!60!black}{0} \\\textcolor{red!60!black}{1} & \textcolor{red!60!black}{0}& \textcolor{red!60!black}{0}\\ \textcolor{red!60!black}{0}& \textcolor{red!60!black}{k_2} &\textcolor{red!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{red!60!black}{k_1} \\ \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0}  \end{bmatrix}}_{B} u \]
 \end{frame}
 
-\begin{frame}[label={sec:orgdc23af2}]{Discretización - Módulo lunar de Apollo}
+\begin{frame}[label={sec:orgfd6070c}]{Discretización - Módulo lunar de Apollo}
  \begin{align*}
   x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
    &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)\\
@@ -57,17 +57,17 @@ Variables del estado: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \b
 
 
 \section{State feedback with observer}
-\label{sec:org8867cbe}
-\begin{frame}[label={sec:orgd6bed3a}]{Control por retroalimentación de estados reconstruidos}
+\label{sec:orge77f6ad}
+\begin{frame}[label={sec:org8e07f88}]{Control por retroalimentación de estados reconstruidos}
 \end{frame}
 
-\begin{frame}[label={sec:org74a0bb5}]{Control por retroalimentación de estados reconstruidos}
+\begin{frame}[label={sec:orgeb10e0a}]{Control por retroalimentación de estados reconstruidos}
 \begin{center}
 \includegraphics[width=0.9\linewidth]{fig-apollo}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orge5192cb}]{Retroalimentación de estados}
+\begin{frame}[label={sec:org3da2fc9}]{Retroalimentación de estados}
 Dado
  \begin{equation}
  \begin{split}
@@ -98,7 +98,7 @@ Sustituyende la ley de control en el modelo en espacio de estado \eqref{eq:ssmod
 
 
 
-\begin{frame}[label={sec:org13f2b17}]{Diseño del observador}
+\begin{frame}[label={sec:orge540cb4}]{Diseño del observador}
 Dado modelo
  \begin{equation*}
  \begin{split}
@@ -120,15 +120,15 @@ con polos dados por los eigenvalores de la matriz \(\Phi_o = \Phi - KC\)
 \alert{Regla de oro} Eliga los polos del observador (eigenvalores de \(\Phi-KC\)) por lo menos dos veces más rápidos que los polos (eigenvalores) de \(\Phi-\Gamma L\).
 \end{frame}
 
-\begin{frame}[label={sec:org879dcc9}]{Diseño del observador}
+\begin{frame}[label={sec:org9316cbd}]{Diseño del observador}
 \alert{Regla de oro} Eliga los polos del observador (eigenvalores de \(\Phi-KC\)) por lo menos dos veces más rápidos que los polos (eigenvalores) de \(\Phi-\Gamma L\).
 
-En tiempo continua (el plano s) hacer un polo dos veces más rápido significa mover el polo a una distancia doble del origen. Entonces, con el polo discreto \(p_1\) el polo discreto en 
+En tiempo continua (el plano s) hacer un polo dos veces más rápido significa mover el polo a una distancia doble del origen. Entonces, dado el polo discreto \(p_1\), el polo discreto en 
 \[ p_2 = \text{exp}\left( 2 \frac{\ln p_1}{h} h\right) = \text{exp} \big( 2 \ln p_1 \big)\]
 corresponde a una respuesta dos veces más rapida.
 \end{frame}
 
-\begin{frame}[label={sec:orgc512225}]{Control por retroalimentación de estados reconstruidos}
+\begin{frame}[label={sec:org8eff4f7}]{Control por retroalimentación de estados reconstruidos}
 Se puede separar el problema del diseño del controlador en dos
 \begin{enumerate}
 \item Diseñar el vector de ganancias \(\textcolor{orange!80!black}{L}\) en la ley de control
@@ -144,10 +144,10 @@ para obtener una balancia entre rechazo a perturbaciones y sensibilidad a ruido 
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgbe44045}]{Matlab/simulink}
+\begin{frame}[label={sec:org84b3070}]{Matlab/simulink}
 \end{frame}
 
-\begin{frame}[label={sec:orgafeac82}]{Calculo de la ganancia del observador}
+\begin{frame}[label={sec:orgcdca007}]{Calculo de la ganancia del observador}
 Una matriz \(M\) y su transponada \(M\transp\) tienen los mismos eigenvalores. Entonces,  el problema de determinar las ganancias \(K\) para obtener eigenvalores deseados de
 \[\Phi- KC\] es equivalente de determinar las ganancias \(K\) en 
 \[(\Phi-KC)\transp = \Phi\transp - C\transp K\transp.\]
@@ -157,7 +157,7 @@ Este último problema tiene la misma forma como el problem de determinar \(L\) p
 Entonces, se puede usar el mismo método en matlab para calcular los dos vectores de ganancia, \(L\) y \(K\)
 \end{frame}
 
-\begin{frame}[label={sec:orgdd489e9},fragile]{Calculo de la ganancia del observador}
+\begin{frame}[label={sec:org918a5dc},fragile]{Calculo de la ganancia del observador}
  \begin{enumerate}
 \item \alert{Método de Ackerman} 
 \begin{verbatim}
@@ -172,9 +172,9 @@ K = (place(Phi', C', pd))'
 
 
 
-\begin{frame}[label={sec:orgddbb34d}]{Matlab}
+\begin{frame}[label={sec:org0198178}]{Matlab}
 \end{frame}
-\begin{frame}[label={sec:org784503f}]{Actividad}
+\begin{frame}[label={sec:org6b264d4}]{Actividad}
 En grupos: 
 \begin{enumerate}
 \item Agrega simulación de una perturbancia constante a la salida del sistema (pero antes de la medición). Esa perturbación representa un error de modelación. Simula un escalón positivo unitario occurriendo en \(t=10\)s

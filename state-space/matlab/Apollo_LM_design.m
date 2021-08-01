@@ -12,7 +12,7 @@ k1 = 1/J; % Torque input u has unit Nm
 k2 = gM;
 
 % Discrete-time model
-h = 1; % Sampling period, in seconds
+h = 0.25; % Sampling period, in seconds
 
 Phi = [1, 0 , 0
     h, 1, 0

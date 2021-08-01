@@ -1,4 +1,4 @@
-% Created 2020-07-07 mar 22:20
+% Created 2021-07-08 Thu 10:15
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -20,14 +20,14 @@
 \DeclareMathOperator{\diff}{p}
 \usetheme{default}
 \author{Kjartan Halvorsen}
-\date{2020-07-08}
-\title{Control Computarizado - Discretización de controladores continuos}
+\date{2021-07-08}
+\title{Discretizing continuous-time controllers}
 \hypersetup{
  pdfauthor={Kjartan Halvorsen},
- pdftitle={Control Computarizado - Discretización de controladores continuos},
+ pdftitle={Discretizing continuous-time controllers},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.3.6)}, 
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
  pdflang={English}}
 \begin{document}
 
@@ -35,22 +35,70 @@
 
 
 \section{Intro}
-\label{sec:org8f7554b}
+\label{sec:org5096880}
 
 \section{Discretization}
-\label{sec:org9f28dad}
-\begin{frame}[label={sec:orgce53e41}]{Discretizing a controller}
+\label{sec:org497335f}
+\begin{frame}[label={sec:orga5cf6e7}]{Context}
 \begin{itemize}
-\item Have a controller \(F(s)\) obtained from a design in continuous time.
-\item Discretize in order to implement on a computer
+\item Controller \(F(s)\) obtained from a design in continuous time.
+\item Need discrete approxmation in order to implement on a computer
 \end{itemize}
 
 \begin{center}
-\includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
+ \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}\\
+ \footnotesize Source: Åström \& Wittenmark 
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org51419b3}]{Discretization methods}
+\section{Warm-up: Differentiation}
+\label{sec:org1fa17cb}
+
+\begin{frame}[label={sec:org07d6f70}]{Warm-up exercise}
+\begin{columns}
+\begin{column}{0.4\columnwidth}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/block-simple-derivative}
+\end{center}
+
+\alert{Draw the Bode diagram for the transfer function}
+\end{column}
+\begin{column}{0.6\columnwidth}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/bode-derivative-empty}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org2b5bba8}]{Discrete-time differentiation}
+\begin{center}
+\begin{tabular}{lll}
+\includegraphics[width=0.3\linewidth]{../../figures/block-simple-shift-z} & \(\Leftrightarrow\) & \includegraphics[width=0.3\linewidth]{../../figures/block-simple-shift}\\
+\end{tabular}
+\end{center}
+
+
+
+\begin{columns}
+\begin{column}{0.4\columnwidth}
+\vspace*{5mm}
+
+\includegraphics[width=\linewidth]{../../figures/block-simple-discrete-derivative-fwd}
+
+\textcolor{white}{Space}
+
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/block-simple-discrete-derivative}
+\end{center}
+\end{column}
+
+\begin{column}{0.6\columnwidth}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:orgc048ecb}]{Discretization methods}
 \begin{enumerate}
 \item Forward difference. Substitute 
 \[ s = \frac{z-1}{h} \] in \(F(s)\) to get
@@ -60,7 +108,7 @@
 \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:org44a4d27}]{Discretization methods, contd.}
+\begin{frame}[label={sec:org6c3e541}]{Discretization methods, contd.}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item Tustin's method (also known as the bilinear transform). Substitute
@@ -72,13 +120,13 @@ Since a unit ramp has z-transform \(\frac{zh}{(z-1)^2}\) and Laplace-transform \
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org7cde955}]{Frequency warping using Tustin's}
+\begin{frame}[label={sec:orgcde3040}]{Frequency warping using Tustin's}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}
 \end{center}
 The infinite positive imaginary axis in the s-plane is mapped to the finite-length upper half of the unit circle in the z-plane.
 \end{frame}
-\begin{frame}[label={sec:orge1d3f82}]{Exercise}
+\begin{frame}[label={sec:org92aad28}]{Exercise}
 Find the discrete approximation of the lead-compensator \(F(s) = \frac{s+b}{s+a}\), and determine the pole for 
 \begin{enumerate}
 \item Forward difference. Substitute 
@@ -89,13 +137,13 @@ Find the discrete approximation of the lead-compensator \(F(s) = \frac{s+b}{s+a}
 \[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:org5c33405}]{Forward difference exercise}
+\begin{frame}[label={sec:org4007077}]{Forward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org357e357}]{Backward difference exercise}
+\begin{frame}[label={sec:org912e773}]{Backward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
 \end{center}

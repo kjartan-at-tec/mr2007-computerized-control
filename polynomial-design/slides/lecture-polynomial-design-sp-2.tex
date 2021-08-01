@@ -1,4 +1,4 @@
-% Created 2020-07-15 mié 09:02
+% Created 2021-07-19 Mon 07:53
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -27,15 +27,15 @@
  pdftitle={Control computarizado - Asignación de polos, parte 2},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.3.6)}, 
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
  pdflang={English}}
 \begin{document}
 
 \maketitle
 
 \section{Conceptos claves - repetición}
-\label{sec:orgb4104f7}
-\begin{frame}[label={sec:orgd85e7c9}]{Tres conceptos claves}
+\label{sec:org17f3c07}
+\begin{frame}[label={sec:orgeac3a45}]{Tres conceptos claves}
 \begin{enumerate}
 \item Dónde poner los polos del sistem en lazo cerrado
 \item La función de \emph{sensibilidad} y la función de \emph{sensibilidad complementaria}
@@ -43,15 +43,15 @@
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgd4e4066}]{Concepto clave 1) Los polos del sistema en lazo cerrado}
+\begin{frame}[label={sec:orgf4eeef0}]{Concepto clave 1) Los polos del sistema en lazo cerrado}
 \begin{center}
 \includegraphics[height=0.8\textheight]{../../figures/screenshot-2020-07-14.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgb9132e1}]{Concepto clave 2) Las funciones de sensibilidad y sensibilidad complementaria}
+\begin{frame}[label={sec:org004fe2d}]{Concepto clave 2) Las funciones de sensibilidad y sensibilidad complementaria}
 \end{frame}
-\begin{frame}[label={sec:orga4d1efe}]{Controlador de dos grados de libertad}
+\begin{frame}[label={sec:org702adbb}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -63,14 +63,14 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \alert{Evidentemente} \(S_s(z) + T_s(z) = 1\) \alert{Conclusion:} Hay que encontrar un equilibrio entre rechazo a perturbaciones y rechazo a ruido de medida.
 \end{frame}
 
-\begin{frame}[label={sec:orge43b30d}]{Sensibilidad y sensibilidad complementaria}
+\begin{frame}[label={sec:org343ebf9}]{Sensibilidad y sensibilidad complementaria}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../matlab/bode-sensitivity-exercise-crop}
 \end{center}
 \end{frame}
 
 
-\begin{frame}[label={sec:org7b4bd50}]{Sensibilidad y sensibilidad complementaria -  Solución}
+\begin{frame}[label={sec:orgac7cde8}]{Sensibilidad y sensibilidad complementaria -  Solución}
 \pgfmathsetmacro{\Smag}{0.12}
 \pgfmathsetmacro{\Sarg}{70}
 \pgfmathsetmacro{\Tmag}{0.98}
@@ -116,7 +116,7 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd96122e}]{La función de sensibilidad}
+\begin{frame}[label={sec:org88365bf}]{La función de sensibilidad}
 \[S_s(z) = \frac{1}{1 + z^{-d}F_b(z)H(z)} = \frac{1}{1 + G_o(z)}= \frac{1}{G_o(z) - (-1)}\]
 
 
@@ -135,7 +135,7 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org7e2a636}]{La función de sensibilidad - ejercicio}
+\begin{frame}[label={sec:orgc7687c0}]{La función de sensibilidad - ejercicio}
 \alert{Actividad} Dibuja la magnitúd de la funcion de sensibilidad, dado la curva de Nyquist.
 
 \begin{columns}
@@ -174,7 +174,7 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org2227764}]{La función de sensibilidad - solución}
+\begin{frame}[label={sec:org13d8169}]{La función de sensibilidad - solución}
 \begin{columns}
 \begin{column}{0.65\columnwidth}
     \begin{center}
@@ -212,8 +212,8 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 
 
 \section{Cancelación de polos del observador}
-\label{sec:orgce96d96}
-\begin{frame}[label={sec:org3b9d4ac}]{Controlador de dos grados de libertad}
+\label{sec:orgb82353f}
+\begin{frame}[label={sec:orgbdf2dad}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -223,7 +223,7 @@ Y(z) &= \frac{T(z)B(z)z^d}{z^dA(z)R(z) + B(z)S(z)}U_c(z) + \frac{A(z)R(z)z^d}{z^
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org01ce4f3}]{Controlador de dos grados de libertad}
+\begin{frame}[label={sec:org0bf267e}]{Controlador de dos grados de libertad}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
@@ -235,9 +235,9 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 
 
 \section{RST}
-\label{sec:org3f1bea2}
+\label{sec:org76211ca}
 
-\begin{frame}[label={sec:org7612dfb}]{Procedimiento - asignación de polos}
+\begin{frame}[label={sec:org73a2b7f}]{Procedimiento - asignación de polos}
 Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y especificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
 \begin{enumerate}
 \item Determina la ecuación diofantina
@@ -249,7 +249,7 @@ y el orden adecuado del controlador, con \(\deg S = \deg R\).
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org5b511b8}]{Procedimiento}
+\begin{frame}[label={sec:orgf23aaf5}]{Procedimiento}
 Dado modelo del proceso \(H(z)=\frac{B(z)}{A(z)}\), y especificaciones de polos deseados del sistema en lazo cerrado \(A_{cl}(z) = (z-\alpha_1)(z-\alpha_2) \cdots (z-\alpha_{n_c})\)
 \begin{enumerate}
 \setcounter{enumi}{3}
@@ -263,7 +263,7 @@ y la respuesta en lazo cerrado a la señal de referencia
 \[ y(k) = \frac{t_0 B(q)}{A_c(q)} u_c(k). \]
 \end{frame}
 
-\begin{frame}[label={sec:org4d4b4b2}]{Concepto clave 3) Determinando el orden del controlador}
+\begin{frame}[label={sec:org55d802c}]{Concepto clave 3) Determinando el orden del controlador}
 Tenemos la ecuación diofantina
    \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
 y el controlador
@@ -280,8 +280,8 @@ y el controlador
 
 
 \section{Ejemplo}
-\label{sec:orgf39abec}
-\begin{frame}[label={sec:orgbeb7279}]{Ejemplo - Control de nivel de una presa}
+\label{sec:orgd40b2e8}
+\begin{frame}[label={sec:org8fcfa55}]{Ejemplo - Control de nivel de una presa}
 \begin{center}
 \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
 \end{center}
@@ -289,7 +289,7 @@ y el controlador
 \alert{Objetivo} Obtener un sistema en lazo cerrado con polos en \(z=0.9\).
 \end{frame}
 
-\begin{frame}[label={sec:org0a30af8}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:orga78f9d9}]{Ejemplo - Control de nivel de una presa}
 \begin{center}
 \includegraphics[width=0.3\linewidth]{../../figures/kraftverk}
 \end{center}
@@ -323,7 +323,7 @@ y el controlador
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgb746b68}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:org77bd9e3}]{Ejemplo - Control de nivel de una presa}
 \alert{Dinámica del proceso}
 
 \begin{center}
@@ -361,7 +361,7 @@ y el controlador
 \end{frame}
 
 
-\begin{frame}[label={sec:orgc02128f}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:orga1ce194}]{Ejemplo - Control de nivel de una presa}
 Dado proceso \(H(z) = \frac{B(z)}{A(z)} = \frac{1}{z(z-1)}\) y polos deseados en \(z=0.9\).
 
 \begin{enumerate}
@@ -376,7 +376,7 @@ El grado de \(A_{cl}(z)\) es 3. Eligimos \(A_o(z) = z\),  ( \(\deg A_o = \deg R\
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org7da215b}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:org1f32865}]{Ejemplo - Control de nivel de una presa}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item De la ecuación diofantina \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
@@ -394,7 +394,7 @@ z^0 &: \quad s_1 = 0
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org8849772}]{Ejemplo - Control de nivel de una presa}
+\begin{frame}[label={sec:orgba41f81}]{Ejemplo - Control de nivel de una presa}
 \begin{enumerate}
 \setcounter{enumi}{3}
 \item Tenemos \(A_o(z) = z\), entonces 
@@ -411,10 +411,10 @@ z^0 &: \quad s_1 = 0
 
 
 \section{Ejercicios}
-\label{sec:org1c5ba3d}
-\begin{frame}[label={sec:orgca8b741}]{Ejercicios}
+\label{sec:org27fb194}
+\begin{frame}[label={sec:orge94b468}]{Ejercicios}
 \end{frame}
-\begin{frame}[label={sec:org4b6bc2c}]{Concepto clave 3) Determinando el orden del controlador}
+\begin{frame}[label={sec:org0e4d641}]{Concepto clave 3) Determinando el orden del controlador}
 Tenemos la ecuación diafóntica
    \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
 y el controlador de retroalimentación
@@ -429,7 +429,7 @@ y el controlador de retroalimentación
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org72ed08a}]{Determinando el orden del controlador - Ejercicio 1}
+\begin{frame}[label={sec:orgd25a365}]{Determinando el orden del controlador - Ejercicio 1}
 Recuerda    \alert{\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)}
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
@@ -445,7 +445,7 @@ para que se puede determinar todos los parametros usando la ecuación diofantina
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgd6b6dea}]{Determinando el orden del controlador - Ejercicio 1, Solución}
+\begin{frame}[label={sec:org1b77aa0}]{Determinando el orden del controlador - Ejercicio 1, Solución}
 Recuerda    \alert{\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)}
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] y \(d=0\) (ningun retraso en el lazo) ¿Cuál es el orden apropiado del controlador 
@@ -461,7 +461,7 @@ para que se puede determinar todos los parametros usando la ecuación diofantina
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgdf22b97}]{Determinando el orden del controlador - Ejercicio 2}
+\begin{frame}[label={sec:org3ee95c1}]{Determinando el orden del controlador - Ejercicio 2}
 Recuerda    \alert{\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)}
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
@@ -478,7 +478,7 @@ para que se puede determinar todos los parametros usando la ecuación diofantina
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orge97733e}]{Determinando el orden del controlador - Ejercicio 2, Solución}
+\begin{frame}[label={sec:org0cc5354}]{Determinando el orden del controlador - Ejercicio 2, Solución}
 Recuerda    \alert{\(\Rightarrow\;\)Elige \(\deg R\) que satisface \(2\deg R + 1 = \deg A + \deg R + d\)}
 
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)  ¿Cuál es el orden apropiado del controlador 
@@ -497,7 +497,7 @@ para que se puede determinar todos los parametros usando la ecuación diofantina
 \end{frame}
 
 
-\begin{frame}[label={sec:org970a812}]{Determinando el orden del controlador - Ejercicio 3}
+\begin{frame}[label={sec:org3b9df77}]{Determinando el orden del controlador - Ejercicio 3}
    Dado modelo del proceso \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] y \(d=2\)   el controlador aproprioado es 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
 ¿Cuáles son los grados permisibles del polinomio observador \(A_o(z)\) en
@@ -511,7 +511,7 @@ para que se puede determinar todos los parametros usando la ecuación diofantina
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgc6def42}]{Determining the order of the controller - Exercise 3, Solución}
+\begin{frame}[label={sec:org30afa69}]{Determining the order of the controller - Exercise 3, Solución}
 With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\)    the appropriate degree of the controller is 3
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
 What are the possible choices of the degree of the observer polynomial \(A_o(z)\) in

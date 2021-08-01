@@ -1,0 +1,279 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Polynomial pole placement - part 2
+# #+date: 2018-08-29
+
+
+* Intro
+
+** Goal of today's lecture 					      :slide:
+    Understand the design procedure of polynomial pole placement
+
+
+* 2-dof controller
+
+** Two-degree-of-freedom controller
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
+#+END_CENTER
+
+\begin{align*}
+Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
+\end{align*}
+ 
+*Evidently* \( S_s(z) + T_s(z) = 1\) *Conclusion:* One must find a balance between disturbance rejection and noise attenuation.
+
+
+* Key concepts                                                     :noexport:
+** Three key concepts
+   1. Where to place the poles of the closed-loop system.
+   2. The /sensitivity function/ and the /complementary sensitivity function/.
+   3. How to determine the order of the controller.
+
+* Sensitivity, revisited
+** The sensitivity function
+
+   \[S_s(z) = \frac{1}{1 + z^{-d}F_b(z)H(z)} = \frac{1}{1 + G_o(z)}= \frac{1}{G_o(z) - (-1)}\]
+
+
+*** Text
+    :PROPERTIES:
+    :BEAMER_col: 0.45
+    :END:
+
+   \[|S_s(\mathrm{e}^{i\omega h})| = |S_s(i\omega)| = \frac{1}{| G_o(i\omega) - (-1)|}\]
+
+    *The magnitude of the sensitivity function is inverse proportional to the distance of the Nyquist curve to the critical point -1*
+
+*** Graphics
+    :PROPERTIES:
+    :BEAMER_col: 0.65
+    :END:
+    #+begin_center
+    \includegraphics[width=0.6\linewidth]{../../figures/implane-nyquist-margins}
+    #+end_center
+
+
+
+* RST
+
+** The design procedure
+** The design procedure
+   Given plant model \(H(z)=\frac{B(z)}{A(z)}\) and specifications on the desired closed-loop poles \(A_{cl}(z)\)
+   1. Find polynomials \(R(z)\) and \(S(z)\) with \(n_R \ge n_S\) such that 
+      \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
+   2. Factor the closed-loop polynomial as \(A_{cl}(z) = A_c(z)A_o(z)\), where \(n_{A_o} \le n_R\). Choose
+      \[T(z) = t_0 A_o(z),\] where \(t_0 = \frac{A_c(1)}{B(1)}\).
+
+   The control law is then
+   \[ R(q) u(k) = T(q)u_c(k) - S(q)y(k). \]
+   The closed-loop response to the command signal is given by
+   \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
+** Determining the order of the controller
+   With Diophantine equation 
+      \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
+   and feedback controller
+   \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+   *How should we choose the order of the controller?* Note:
+   - the controller has $n+n+1 = 2\deg R + 1$ unknown parameters
+   - the LHS of \((*)\) has degree $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
+   - The diophantine gives as many (nontrivial) equations as the degree of the polynomials on each side when we set the coefficients equal.
+
+     *\(\Rightarrow\;\)Choose \(\deg R\) so that \(2\deg R + 1 = \deg A + \deg R + d\)*
+     
+
+** Determining the order of the controller - Exercise
+   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller 
+\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+   so that all parameters can be determined from the diophantine equation
+   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
+   | 1. \(n = 0\) | 2. \(n = 1\) |
+   | 3. \(n=2\)   | 4. \(n=3\)   |
+
+** Determining the order of the controller - Exercise - Solution 
+   With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
+   so that all parameters can be determined from the diophantine equation
+   \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
+   | 1. \(n = 0\) | 2.           |
+   | 3.           | 4.           |
+
+
+** Two-degree-of-freedom controller, the importance of the observer poles
+#+BEGIN_CENTER 
+ \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
+#+END_CENTER
+\begin{align*}
+Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
+\end{align*}
+ *Conclusiones* 1) There is a partial separation between designing for reference tracking and designing for perturbance rejection. 2) The observer poles (the roots of \(A_o(z)\)) can be used to determine a balance between disturbance rejection and noise attenuation.
+
+
+
+
+* Example
+** Example - Level control of a dam
+#+BEGIN_CENTER 
+ \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
+#+END_CENTER
+
+*Objective* Design a control system to maintain the water level under influence of disturbances.
+
+** Example - Level control of a dam
+#+BEGIN_CENTER 
+ \includegraphics[width=0.3\linewidth]{../../figures/kraftverk}
+#+END_CENTER
+
+*The process dynamics*
+
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}
+	\node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
+	\node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
+	\node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
+	\node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
+    \end{tikzpicture}
+    \end{center}
+    \begin{center}
+      \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+	\node[coordinate] (input) {};
+	\node[block, right of=input, node distance=20mm] (delay)  {$z^{-1}$};
+	\node[sumnode, right of=delay, node distance=16mm] (sum) {\tiny $\Sigma$};
+	\node[block, right of=sum, node distance=20mm] (plant)  {$H_p(z)$};
+	\node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+	\node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+	\draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (delay);
+	\draw[->] (sum) -- node[above] {} (plant);
+	\draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
+	\draw[->] (disturbance) -- node[right, pos=0.2] {$v(k)$} node[left, pos=0.8] {$-$} (sum);
+	\draw[->] (delay) -- (sum);
+      \end{tikzpicture}
+    \end{center}
+    #+end_export
+
+** Example - Level control of a dam
+
+*The process dynamics*
+
+    #+begin_export latex
+    \begin{center}
+      \begin{tikzpicture}
+	\node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
+	\node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
+	\node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
+	\node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
+    \end{tikzpicture}
+    \end{center}
+    \begin{center}
+      \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+	\node[coordinate] (input) {};
+	\node[block, right of=input, node distance=20mm] (delay)  {$z^{-1}$};
+	\node[sumnode, right of=delay, node distance=16mm] (sum) {\tiny $\Sigma$};
+	\node[block, right of=sum, node distance=20mm] (plant)  {$H_p(z)$};
+	\node[coordinate, above of=sum, node distance=12mm] (disturbance) {};
+	\node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+	\draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (delay);
+	\draw[->] (sum) -- node[above] {} (plant);
+	\draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
+	\draw[->] (disturbance) -- node[right, pos=0.2] {$v(k)$} node[left, pos=0.8] {$-$} (sum);
+	\draw[->] (delay) -- (sum);
+      \end{tikzpicture}
+    \end{center}
+    #+end_export
+*Activity* What is the transfer function from $u(k)$ to $y(k)$?
+
+|1: \(H(z) = \frac{z}{z-1}\) | 2: \(H(z)=\frac{1}{z-1} \) | 3: \(H(z)=\frac{1}{z(z-1)}\) |
+
+
+** Example - Level control of a dam
+   Given process \(H(z) = \frac{B(z)}{A(z)} = \frac{1}{z(z-1)}\) and desired poles in \(z=0.9\).
+   
+  1. The Diophantine equation \(A(z)R(z)z^d + B(z)S(z) = A_{cl}(z)\)
+     \[ z(z-1)R(z) + S(z) = A_{cl}(z)\]
+     The order of the controller is
+     \[\deg R = \deg A + d - 1 = 2-1 = 1, \quad \Rightarrow \quad F_b(z)=\frac{S(z)}{R(z)} = \frac{s_0z + s_1}{z + r_1}\]
+  2. Resulting Diophantine equation
+     \[ z(z-1)(z+r_1) + s_0z + s_1 = A_{cl}(z)\]
+     The degree of \(A_{cl}(z)\) is 3. Choose \(A_o(z) = z\),  ( \(\deg A_o = \deg R\)) 
+     \[ A_{cl}(z) = A_o(z) A_c(z) = z(z-0.9)^2\]
+
+** Example - Level control of a dam
+  3. [@3] From the Diophantine equation \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
+     \[ z^3 + (r_1-1)z^2 - r_1z + s_0z + s_1 = z^3 -1.8z^2 + 0.81z\]
+     we obtain the equations
+     \begin{align*}
+     \begin{cases} z^2 &: \quad r_1-1 = -1.8\\
+     z^1 &: \quad -r_1 + s_0 = 0.81\\
+     z^0 &: \quad s_1 = 0
+     \end{cases}
+     \quad \Rightarrow \quad 
+     \begin{cases} r_1 &= -0.8\\ s_0 &= 0.01\\ s_1 &=0 \end{cases}
+     \end{align*}
+     \[F_b(z) = \frac{0.01z}{z - 0.8}\]
+
+** Example - Level control of a dam
+  4. [@4] We have \(A_o(z) = z\), so 
+     \[T(z) = t_0A_o(z) = t_0z\]
+     \[G_c(z) = \frac{T(z)B(z)}{A_o(z)A_c(z)} = \frac{t_0 B(z)}{A_c(z)}, \quad \text{queremos}\, G_c(1)=1\]
+     \[ t_0 = \frac{A_c(1)}{B(1)} = \frac{(1-0.9)^2}{1} = 0.01\]
+
+  *Control law*
+  \[R(\shift) u(kh) = T(\shift)u_c(kh) - S(\shift)y(kh)\]
+  \[ (\shift - 0.8)u(kh) = 0.01\shift u_c(kh) - 0.01\shift y(kh)\]
+  \[ u(kh+h) = 0.8u(kh) + 0.01 u_c(kh+h) - 0.01y(kh+h)\]
+
+*** Notes							   :noexport:
+    - x is change in level of water in the dam from some operating point Volume = Volume_0 + x
+    - u is change in flow through dam gates from some operating point. 
+    - v is change in flow out. Either through increase in flow through power dam or decrease in river  
+      d/dt Vol =  d/dt (Vol_0 + x(t)) = flow in - flow out
+               = n_0 - v_0 - v(t) - u_0 + u(t), with n_0 - v_0 - u_0 = 0   
+      dx/dt = u - v. 
+
+    - Model  X = \frac{z}{z-1} (U-V) 
+
+    - H(z) = B(z)/A(z) = z/(z-1). 
+
+    - Diophantine eqn
+      AR + BS = Ac
+      (z-1)R + zS = Ac
+      With first-order controller S/R = (s0z + s1)/(z + r1)
+      (z-1)(z+r1) + z(s0z + s1) = (z-0.7)^2 , Ac = Acl = (z-0.7)^2 
+      or Ac = Acl Ao = (z-0.7)(z-a) 
+
+      (z-1)(z+r1) + s0z^2 + s1z = (z-0.7)(z-a)
+      z^2 - (1-r1)z -r1  + s0z^2 + s1z = z^2 - (0.7+a)z + 0.7*a.
+      z^2: 1 + s0 = 1   => s0=0
+      z^1: -(1-r1) + s1 = -(0.7+a)
+      z^0: -r1 = 0.7a
+
+      
+      r1s0s1 = [0, 1, 0; 1, 0, 1; -1, 0, 0]\[1; -0.7-a; 0.7*a] 
+
+
+      (-2+s0) = -0.7-a => s0 = 1.3-a
+      s1 = 0.7*a - 1
+
+      We have Gc = T/R B/A / (1 + S/R B/A) = TB / (AR + BS) = TB / (Ao Ac)
+      Let T = Ao*t_0
+      Gc = t_0 B / Ac, Want Gc(1) = 1 
+      t_0 = Ac(1) / B(1) = (1-0.7)/1 = 0.3.
+
+
+      Try 
+      
+

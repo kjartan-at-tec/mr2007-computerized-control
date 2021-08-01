@@ -1,21 +1,19 @@
-% Created 2019-10-10 jue 11:43
+% Created 2021-07-19 Mon 09:18
+% Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{fixltx2e}
 \usepackage{graphicx}
+\usepackage{grffile}
 \usepackage{longtable}
-\usepackage{float}
 \usepackage{wrapfig}
 \usepackage{rotating}
 \usepackage[normalem]{ulem}
 \usepackage{amsmath}
 \usepackage{textcomp}
-\usepackage{marvosym}
-\usepackage{wasysym}
 \usepackage{amssymb}
+\usepackage{capt-of}
 \usepackage{hyperref}
-\tolerance=1000
 \usepackage{khpreamble}
 \usepackage{amssymb}
 \DeclareMathOperator{\shift}{q}
@@ -23,38 +21,193 @@
 \usetheme{default}
 \author{Kjartan Halvorsen}
 \date{\today}
-\title{Computerized Control - Polynomial pole placement (RST)}
+\title{Polynomial pole placement}
 \hypersetup{
-  pdfkeywords={},
-  pdfsubject={},
-  pdfcreator={Emacs 25.3.50.2 (Org mode 8.2.10)}}
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Polynomial pole placement},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
+ pdflang={English}}
 \begin{document}
 
 \maketitle
 
 
 \section{Intro}
-\label{sec-1}
+\label{sec:org8473273}
 
-\begin{frame}[label=sec-1-1]{Goal of today's lecture}
-\begin{itemize}
-\item Understand how to design an RST controller
-\end{itemize}
+\begin{frame}[label={sec:orgf130457}]{Goal of today's lecture}
+Understand key concepts of the two-degree-of-freedom controller structure.
 \end{frame}
 
-\section{2-dof controller}
-\label{sec-2}
 
-\begin{frame}[label=sec-2-1]{Two-degree-of-freedom controller}
+\section{2-dof controller}
+\label{sec:org8ecad3b}
+
+\begin{frame}[label={sec:org79b98bd}]{Two-degree-of-freedom controller}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
 \end{frame}
 
-\section{RST}
-\label{sec-3}
+\section{Key concepts}
+\label{sec:org1d7ff68}
+\begin{frame}[label={sec:orgf6d6ee9}]{Three key concepts}
+\begin{enumerate}
+\item Where to place the poles of the closed-loop system.
+\item The \emph{sensitivity function} and the \emph{complementary sensitivity function}.
+\item How to determine the order of the controller.
+\end{enumerate}
+\end{frame}
 
-\begin{frame}[label=sec-3-1]{Procedure}
+\begin{frame}[label={sec:org18d5d4d}]{The closed-loop poles}
+Complex poles in the s-plane
+\begin{center}
+\includegraphics[width=0.45\linewidth]{../../figures/implane-second-order-poles}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org695212c}]{The closed-loop poles}
+Given specifications on the velocity and damping of the closed-loop system
+\[ t_s \approx \frac{4}{\zeta\omega_n} < 1 s \qquad \zeta \approx \frac{-\ln (\%OS/100)}{\sqrt{\pi^2 + \ln^2(\%OS/100)}}, \quad OS < 10\%  \]
+gives
+\[ \zeta > 0.59,  \qquad \zeta\omega_n > 4\]
+
+\begin{center}
+\includegraphics[width=0.6\linewidth]{../../figures/step-response-specifications}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:orgb3cd3e5}]{Closed-loop poles}
+\alert{Activity} Given the specifications \(\zeta > 0.59\) and \(\zeta\omega_n > 4\), mark the regions in the s-plane and in the z-plane that corresponds to the specifications.
+\begin{center}
+\alert{plano s} \hspace*{0.4\linewidth} \alert{plano z}\\
+\includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
+\includegraphics[height=0.6\textheight]{../../figures/zgrid-crop}\\
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org18f10eb}]{Closed-loop poles - Solution}
+\end{frame}
+\begin{frame}[label={sec:org6b73f68}]{Closed-loop poles - Solution}
+\begin{center}
+\includegraphics[height=0.9\textheight]{../../figures/screenshot-2020-07-14.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org3c64092}]{The sensitivity and the complementary sensitivity}
+\end{frame}
+\begin{frame}[label={sec:org8ee3c7d}]{Two-degree-of-freedom controller}
+\begin{center}
+\includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
+\end{center}
+
+\begin{align*}
+Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z)}^{\text{sens compl}}N(z)\\
+     &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{z^{-d}F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
+\end{align*}
+\end{frame}
+
+\begin{frame}[label={sec:orge8baa34}]{Two-degree-of-freedom controller}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
+\end{center}
+
+\begin{align*}
+Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
+\end{align*}
+
+\alert{Evidently} \(S_s(z) + T_s(z) = 1\) \alert{Conclusion:} One must find a balance between disturbance rejection and noise attenuation.
+\end{frame}
+
+\begin{frame}[label={sec:orgeae52d9}]{The sensitivity and the complementary sensitivity}
+\alert{Activity} Mark in the complex plane the points indicated in the Bode plot of the two systems \(S_s(z)\) and \(T_s(z)\). Verify that the vector sum is equal to 1.
+\begin{center}
+\includegraphics[width=0.7\linewidth]{../matlab/bode-sensitivity-exercise-crop}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org8396314}]{The sensitivity and the complementary sensitivity}
+\pgfmathsetmacro{\Smag}{0.12}
+\pgfmathsetmacro{\Sarg}{70}
+\pgfmathsetmacro{\Sreal}{\Smag*cos(\Sarg)}
+\pgfmathsetmacro{\Sim}{\Smag*sin(\Sarg)}
+\pgfmathsetmacro{\Tmag}{0.98}
+\pgfmathsetmacro{\Targ}{-6}
+\pgfmathsetmacro{\Treal}{\Tmag*cos(\Targ)}
+\pgfmathsetmacro{\Tim}{\Tmag*sin(\Targ)}
+\alert{Point 1:} \(\omega=0.1\), \(T_s(0.1) = 10^{-0.149/20}\mathrm{e}^{-i6^o} = 0.98\mathrm{e}^{-i6^o} = 0.97 - i0.1\), \(S_s(0.1) = 10^{-18/20}\mathrm{e}^{i70^o} = 0.12\mathrm{e}^{i70^o} = 0.04 + i0.11\)
+\begin{center}
+  \begin{tikzpicture}[scale=1.6]
+
+    \draw[->] (-2, 0) -- (2, 0) node[below] {Re};
+    \draw[->] (0,-2) -- (0,2) node[left] {Im};
+    \node[circle, fill, orange, inner sep= 1pt] (Tone) at (\Treal, \Tim) {};
+    \draw[thin, ->, orange] (0,0) to (Tone);
+    \node[circle, fill, blue!80, inner sep= 1pt] (Sone) at (\Sreal, \Sim) {};
+    \draw[thin, ->, blue!80] (0,0) to (Sone);
+    \draw (1,0) -- (1,-0.05) node[below] {1};
+    \draw (-1,0) -- (-1,-0.05) node[below] {-1};
+    \draw (0,1) -- (-0.05,1) node[left] {i};
+    \draw (0,-1) -- (-0.05,-1) node[left] {-i};
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org68f0c78}]{The sensitivity and the complementary sensitivity - Solution}
+\end{frame}
+
+\begin{frame}[label={sec:orgd08a7b7}]{The sensitivity and the complementary sensitivity - Solution}
+\pgfmathsetmacro{\Smag}{0.12}
+\pgfmathsetmacro{\Sarg}{70}
+\pgfmathsetmacro{\Tmag}{0.98}
+\pgfmathsetmacro{\Targ}{-6}
+\pgfmathsetmacro{\Treal}{\Tmag*cos(\Targ)}
+\pgfmathsetmacro{\Tim}{\Tmag*sin(\Targ)}
+
+\pgfmathsetmacro{\Smagtwo}{0.12}
+\pgfmathsetmacro{\Sargtwo}{70}
+\pgfmathsetmacro{\Srealtwo}{\Smagtwo*cos(\Sargtwo)}
+\pgfmathsetmacro{\Simtwo}{\Smag*sin(\Sarg)}
+\pgfmathsetmacro{\Tmagtwo}{0.98}
+\pgfmathsetmacro{\Targtwo}{-6}
+
+\begin{center}
+  \begin{tikzpicture}[scale=1.6]
+
+    \draw[->] (-2, 0) -- (2, 0) node[below] {Re};
+    \draw[->] (0,-2) -- (0,2) node[left] {Im};
+    \draw (1,0) -- (1,-0.05) node[below] {1};
+    \draw (-1,0) -- (-1,-0.05) node[below] {-1};
+    \draw (0,1) -- (-0.05,1) node[left] {i};
+    \draw (0,-1) -- (-0.05,-1) node[left] {-i};
+ 
+
+    \foreach \Tmag/\Targ/\nn in {-0.149/-6/1, 3.44/-88/2, -19/-196/3} {
+       \pgfmathsetmacro{\Treal}{pow(10,\Tmag/20)*cos(\Targ)}
+       \pgfmathsetmacro{\Tim}{pow(10,\Tmag/20)*sin(\Targ)}
+       \node[circle, fill, orange, inner sep= 1pt] (Tone) at (\Treal, \Tim) {};
+           \draw[thin, ->, orange] (0,0) to (Tone) node[right] {\tiny \nn};
+	   }
+    \foreach \Smag/\Sarg/\nn in {-18/78/1, 4.9/57/2, 0.85/-1.67/3} {
+       \pgfmathsetmacro{\Sreal}{pow(10,\Smag/20)*cos(\Sarg)}
+       \pgfmathsetmacro{\Sim}{pow(10,\Smag/20)*sin(\Sarg)}
+       \node[circle, fill, blue!80, inner sep= 1pt] (Sone) at (\Sreal, \Sim) {};
+           \draw[thin, ->, blue!80] (0,0) to (Sone) node[right] {\tiny \nn};
+	   }
+
+    %\node[circle, fill, blue!80, inner sep= 1pt] (Sone) at (\Sreal, \Sim) {};
+    %\draw[thin, ->, blue!80] (0,0) to (Sone);
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+\section{RST}
+\label{sec:org82e3bcb}
+
+\begin{frame}[label={sec:org0c8aa0e}]{Procedure}
 Given plant model \(H(z)=\frac{B(z)}{A(z)}\) and specifications on the desired closed-loop poles \(A_{cl}(z)\)
 \begin{enumerate}
 \item Find polynomials \(R(z)\) and \(S(z)\) with \(n_R \ge n_S\) such that 
@@ -68,15 +221,15 @@ The control law is then
 The closed-loop response to the command signal is given by
 \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
 \end{frame}
-\begin{frame}[label=sec-3-2]{Determining the order of the controller}
+\begin{frame}[label={sec:org4fc5796}]{Determining the order of the controller}
 With Diophantine equation 
    \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
 and feedback controller
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
 \alert{How should we choose the order of the controller?} Note:
 \begin{itemize}
-\item the controller has $n+n+1 = 2\deg R + 1$ unknown parameters
-\item the LHS of \((*)\) has degree $\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d$
+\item the controller has \(n+n+1 = 2\deg R + 1\) unknown parameters
+\item the LHS of \((*)\) has degree \(\deg \big(A(z)R(z)z^d + B(z)S(z)\big) = \deg A + \deg R + d\)
 \item The diophantine gives as many (nontrivial) equations as the degree of the polynomials on each side when we set the coefficients equal.
 
 \alert{\(\Rightarrow\;\)Choose \(\deg R\) so that \(2\deg R + 1 = \deg A + \deg R + d\)}
@@ -84,7 +237,7 @@ and feedback controller
 \end{frame}
 
 
-\begin{frame}[label=sec-3-3]{Determining the order of the controller - Exercise 1}
+\begin{frame}[label={sec:org012c28b}]{Determining the order of the controller - Exercise}
 With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
 so that all parameters can be determined from the diophantine equation
@@ -97,7 +250,7 @@ so that all parameters can be determined from the diophantine equation
 \end{center}
 \end{frame}
 
-\begin{frame}[label=sec-3-4]{Determining the order of the controller - Exercise 1}
+\begin{frame}[label={sec:org694cb05}]{Determining the order of the controller - Exercise - Solution}
 With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
 so that all parameters can be determined from the diophantine equation
 \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
@@ -108,65 +261,4 @@ so that all parameters can be determined from the diophantine equation
 \end{tabular}
 \end{center}
 \end{frame}
-
-\begin{frame}[label=sec-3-5]{Determining the order of the controller - Exercise 2}
-With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-so that all parameters can be determined from the diophantine equation
-\[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-\begin{center}
-\begin{tabular}{ll}
-1. \(n = 1\) & 2. \(n = 2\)\\
-3. \(n=3\) & 4. \(n=4\)\\
-\end{tabular}
-\end{center}
-\end{frame}
-
-\begin{frame}[label=sec-3-6]{Determining the order of the controller - Exercise 2}
-With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
-so that all parameters can be determined from the diophantine equation
-\[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-\begin{center}
-\begin{tabular}{rr}
-1. & 2.\\
-3. \(n=3\) & 4.\\
-\end{tabular}
-\end{center}
-\end{frame}
-
-\begin{frame}[label=sec-3-7]{Determining the order of the controller - Exercise 3}
-With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\)    the appropriate degree of the controller is 3 
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
-What are the possible choices of the degree of the observer polynomial \(A_o(z)\) in
-\[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-\begin{center}
-\begin{tabular}{ll}
-1. less than 2 & 2. less than 3\\
-3. higher than 2 & 4. less than or equal to 3\\
-\end{tabular}
-\end{center}
-\end{frame}
-
-\begin{frame}[label=sec-3-8]{Determining the order of the controller - Exercise 3}
-With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b_0z + b_1}{z^2 + a_1z + a_2}\] and \(d=2\)    the appropriate degree of the controller is 3
-\[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^3 + s_1z^2 + s_2z + s_3}{z^3 + r_1 z^2 + r_2z + r_3}.\]
-What are the possible choices of the degree of the observer polynomial \(A_o(z)\) in
-\[ A(z)R(z)z^2 + B(z)S(z) = A_c(z)A_o(z)?\]
-\begin{center}
-\begin{tabular}{rr}
-1. & 2.\\
-3. & 4. less than or equal to 3\\
-\end{tabular}
-\end{center}
-\end{frame}
-
-\begin{frame}[label=sec-3-9]{Where to place the closed-loop poles?}
-\begin{center}
-\begin{tabular}{cc}
- \includegraphics[width=0.41\linewidth]{../../figures/sgrid-crop}
-& \includegraphics[width=0.43\linewidth]{../../figures/zgrid-crop}\\
-s-plane & z-plane
-\end{tabular}
-\end{center}
-\end{frame}
-% Emacs 25.3.50.2 (Org mode 8.2.10)
 \end{document}

@@ -10,8 +10,8 @@
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
-#+title: Control Computarizado - Discretización de controladores continuos
-#+date: 2020-07-08
+#+title: Discretizing continuous-time controllers
+#+date: 2021-07-08
 
 
 * What do I want the students to understand?			   :noexport:
@@ -26,17 +26,72 @@
 * Intro
 
 * Discretization
-** Discretizar a controller
-   - Have a controller \(F(s)\) obtained from a design in continuous time. 
-   - Discretize in order to implement on a computer
+** Context
+   - Controller \(F(s)\) obtained from a design in continuous time. 
+   - Need discrete approxmation in order to implement on a computer
 
-#+BEGIN_CENTER 
- \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}
-#+END_CENTER
+#+begin_export latex
+\begin{center}
+ \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}\\
+ \footnotesize Source: Åström \& Wittenmark 
+\end{center}
+#+end_export
+
 
 *** Notes							   :noexport:
    When we first encountered the problem of obtaining a discrete model from a continous model, in the case of finding a discrete pulse-tranfer function to describe our continuous-time dynamic plant model, we used zero-order-hold sampling. Why is this not such a good idea for approximating the controller $F(s)$?
 
+* Warm-up: Differentiation
+
+** Warm-up exercise
+
+*** C1
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :END:
+
+#+begin_center
+\includegraphics[width=\linewidth]{../../figures/block-simple-derivative}
+#+end_center
+
+*Draw the Bode diagram for the transfer function*
+*** C1
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+
+#+begin_center
+\includegraphics[width=\linewidth]{../../figures/bode-derivative-empty}
+#+end_center
+
+** Discrete-time differentiation
+
+
+|\includegraphics[width=0.3\linewidth]{../../figures/block-simple-shift-z}|\(\Leftrightarrow\) |\includegraphics[width=0.3\linewidth]{../../figures/block-simple-shift}|
+
+
+
+*** C1
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :END:
+    
+
+\vspace*{5mm}
+
+\includegraphics[width=\linewidth]{../../figures/block-simple-discrete-derivative-fwd}
+
+\textcolor{white}{Space}
+
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/block-simple-discrete-derivative}
+\end{center}
+    
+*** C2
+    :PROPERTIES:
+    :BEAMER_col: 0.6
+    :END:
+    
 ** Discretization methods
    
    1. Forward difference. Substitute 
