@@ -18,6 +18,7 @@ simin2 = cat(2, tt, uu2);
 
 
 % Run simulation crane_sysid_KH
+stepdata = iddata(out.simout.Data(:,2), out.simout.Data(:,1), h);
 
 % Simulation output
 sdata = iddata(out.simout.Data(:,2), out.simout.Data(:,1), h);

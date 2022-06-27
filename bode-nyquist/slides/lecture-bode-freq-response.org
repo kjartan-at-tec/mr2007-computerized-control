@@ -10,7 +10,7 @@
 #+LaTex_HEADER: \usepackage{khpreamble}
 #+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
 #+title: Frequency response
-#+date: 2021-06-29
+#+date: 2022-06-28
 
 * What do I want the students to understand?			   :noexport:
   - The Frequency response of LTI's
@@ -113,6 +113,97 @@
     \includegraphics[width=\linewidth]{../../figures/alias-example-bode-timeseries}
    #+END_CENTER
 
+** Stability of the closed-loop system
+   #+begin_export latex
+    \begin{center}
+    \begin{tikzpicture}
+   \tikzset{node distance=2cm, 
+       block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+       sumnode/.style={circle, draw, inner sep=2pt}        
+   }
+   
+     \node[coordinate] (input) {};
+     \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+     \node[block,right of=sum, node distance=30mm] (fb) {$F(s)$};
+     \node[block,right of=fb, node distance=30mm] (plant) {$G(s)$};
+     \node[coordinate, right of=plant, node distance=30mm] (output) {};
+     \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+     \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(t)$} (sum);
+     \draw[->] (sum) -- node[above] {$e(t)$} (fb);
+     \draw[->] (fb) -- node[above] {$u(t)$} (plant);
+     \draw[->] (plant) -- node[at end, above] {$y(t)$} (output);
+     \draw[->] (measure) -- ++(0, -18mm) -| (sum) node[left, pos=0.96] {$-$};
+     \draw[red] (3.8, -1) rectangle (9.4, 1.7);
+     \node[red] at (8, 1.4) {$G_o(s)$};
+     \end{tikzpicture}
+   \end{center}
+  #+end_export
+
+** Stability of the closed-loop system
+   #+begin_export latex
+    \begin{center}
+    \begin{tikzpicture}
+   \tikzset{node distance=2cm, 
+       block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+       sumnode/.style={circle, draw, inner sep=2pt}        
+   }
+   
+     \node[coordinate] (input) {};
+     \node[circle, black, fill, inner sep=2pt, right of=input, node distance=20mm] (sum) {};
+     \node[circle, black, fill, inner sep=2pt, below of=sum, node distance=5mm] (sum2) {};
+     \node[coordinate, right of=sum, node distance=5mm] (sum3) {};
+     \node[circle, black, fill, inner sep=2pt, below of=sum3, node distance=2.5mm] (sum4) {};
+     \node[block,right of=sum4, node distance=30mm] (fb) {$F(s)$};
+     \node[block,right of=fb, node distance=30mm] (plant) {$G(s)$};
+     \node[coordinate, right of=plant, node distance=30mm] (output) {};
+     \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+     \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(t)$} (sum);
+     \draw[->] (sum4) -- node[above] {$e(t)$} (fb);
+     \draw[->] (fb) -- node[above] {$u(t)$} (plant);
+     \draw[->] (plant) -- node[at end, above] {$y(t)$} (output);
+     \draw[->] (measure) -- ++(0, -18mm) -| (sum2) node[left, pos=0.96] {$-$};
+     \draw[red] (3.2, -1.25) rectangle (9.6, 1.45);
+     \node[red] at (8, 1.2) {$G_o(s)$};
+     \draw[thick] (sum) to (sum4);
+     \end{tikzpicture}
+   \end{center}
+   
+   \begin{center}
+   
+     \begin{tikzpicture}
+       \begin{semilogxaxis}[%
+	 width=6cm,
+	 height=4cm,
+	 axis lines=center,
+	 xtick = {1},
+	 xticklabels = {$\omega_1$},
+	 ytick = \empty,
+	 ylabel = {$|G_o(i\omega)|$},
+	 xlabel = {$\omega$},
+	 ]
+	 \addplot[solid, red!60!black, smooth, domain=0.1:100] {20*log10(10/x * 100/(sqrt(pow((100-x*x),2) + 20*20*x)))};
+       \end{semilogxaxis}
+
+       \begin{semilogxaxis}[%
+       xshift=7cm,
+       width=6cm,
+	 height=4cm,
+	 axis lines=center,
+	 xtick = {1},
+	 xticklabels = {$\omega_1$},
+	 ytick = {0,-90,-180, -270},
+	 ylabel = {$\arg G_o(i\omega)$},
+	 xlabel = {$\omega$},
+	 ymax = 90,
+	 ]
+	 \addplot[solid, red!60!black, smooth, domain=0.1:100] {-90 - atan2(20*x, 100-x*x)};
+       \end{semilogxaxis}
+
+       \end{tikzpicture}
+   \end{center}
+  #+end_export
+
+
 ** From loop gain to closed-loop gain
    #+begin_export latex
    \begin{center}
@@ -139,9 +230,12 @@
   \end{center}
   #+end_export
 
+#+beamer: \pause
 \[ G_c(i\omega) = \frac{G(i\omega)F(i\omega)}{1 + G(i\omega)F(i\omega)} = \frac{G_o(i\omega)}{1 + G_o(i\omega)} \]
+#+beamer: \pause
 \[ |G_c(i\omega)| = \frac{|G_o(i\omega)|}{|1 + G_o(i\omega)|} = \frac{|G_o(i\omega)|}{|G_o(i\omega) - (-1)|} \]
 
+#+beamer: \pause
 *Keep the loop gain \(G_o(i\omega)\) away from -1!* 
 
 

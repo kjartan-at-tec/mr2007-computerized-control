@@ -12,7 +12,7 @@
 
 
 #+title: Computerized control - Introduction
-#+date: 2021-06-28
+#+date: 2022-06-27
 
 * What do I want the students to understand?			   :noexport:
   - Why a theory of discrete-time systems are important
@@ -112,7 +112,11 @@ Sales of microcontrollers 2012-2019.
 
 ** Two approaches to designing a  discrete-time controller 
    1. Do design the controller in the continuous-time domain (methods from control engineering class). Then discretize the continuous-time controller.
+#+beamer: \pause      
    2. Determine discrete-time model of the plant. Do design in discrete-time domain.
+
+*** Notes                                                          :noexport:
+The discrete-time controller designed using Approach 1) will never have better performance than the analog controller. The controller design using 2) can achieve better performance than an analog controller. 
 
 * Discrete vs contionuous-time systems
 ** Discrete-time systems
@@ -122,11 +126,35 @@ Example:
 \[ x_{k+1} = ax_k + bu_k \]
 #+beamer: \pause
 Introducing the shift operator \shift: \(\shift x(k) = x(k+1), \; \shift^{-1}x(k) = x(k-1)\)
+#+beamer: \pause
 \[ \shift x_k - ax_k = bu_k \quad\Leftrightarrow\quad (\shift - a)x_k = bu_k \quad\Leftrightarrow\quad x_k = \frac{b}{\shift-a} u_k. \]
 #+beamer: \pause
 Using the z-transform: \(\ztrf{x(k)} = X(z), \; \ztrf{x(k+1)} = zX(z) - x(0) \)
+#+beamer: \pause
 \[  zX(z) - x(0) - aX(z) = bU(z) \quad\Leftrightarrow\quad (z - a)X(z) = x(0) + bU(z)\]
 \[ \quad\Leftrightarrow\quad X(z) = \frac{x(0)}{z-a}  + \frac{b}{z-a}U(z). \]
+
+** Exercise
+Consider the following discrete-time system
+
+\begin{center}
+\begin{tikzpicture}[node distance=20mm,
+                    block/.style={rectangle, draw, minimum width=15mm, inner sep=3mm},
+                    sumnode/.style={circle, draw, inner sep=3pt}]
+  \node[coordinate] (input) {};
+   \node[block, right of=input,] (lti) {$\frac{h}{\shift -1}$};
+   \node[coordinate, right of=lti, ] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u_k$}  (lti);
+   \draw[->] (lti) -- node[coordinate] (meas) {} node[near end, above] {$y_k$} (output);
+ \end{tikzpicture}
+\end{center}
+
+Recall the definition of the shift operator  \(\shift x(k) = x(k+1), \; \shift^{-1}x(k) = x(k-1)\).
+
+#+beamer: \pause
+1. Write the system as a difference equation \(y_{k+1} = f(y_{k}, u_k)\).
+2. What is this type of system called?
+
 
 ** Homogenous solution
 \[ x(k+1) = a x(k), \quad x(0) = x_0 \]

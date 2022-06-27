@@ -1,4 +1,4 @@
-% Created 2021-06-29 Tue 10:19
+% Created 2022-06-27 Mon 10:03
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -18,7 +18,7 @@
 \DeclareMathOperator{\atantwo}{atan2}
 \usetheme{default}
 \author{Kjartan Halvorsen}
-\date{2021-06-29}
+\date{2022-06-28}
 \title{Frequency response}
 \hypersetup{
  pdfauthor={Kjartan Halvorsen},
@@ -32,9 +32,9 @@
 \maketitle
 
 \section{Bode diagram}
-\label{sec:org11cd25a}
+\label{sec:org12b14cf}
 
-\begin{frame}[label={sec:org73f82b9}]{Response of LTI systems to sinusoids}
+\begin{frame}[label={sec:orge6079e2}]{Response of LTI systems to sinusoids}
 \begin{center}
   \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -52,20 +52,20 @@ Let \(u(t) = \sin\omega_1 t\). Then, after transients have died out,
 \end{frame}
 
 
-\begin{frame}[label={sec:orgbe017dd}]{The Bode diagram}
+\begin{frame}[label={sec:org2462e6a}]{The Bode diagram}
 \[ y(t) = \underbrace{|G(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G(i\omega_1)}_{\text{phase shift}} \big) \]
 
 The Bode diagram shows the magnitude and phase of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
 \end{frame}
 
 
-\begin{frame}[label={sec:orgb9e4790}]{Specifications on the frequency properties of the closed-loop system}
+\begin{frame}[label={sec:orgade3c46}]{Specifications on the frequency properties of the closed-loop system}
 \begin{center}
 \includegraphics[width=0.899\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgdf7a519}]{Exercise: Reading the Bode diagram}
+\begin{frame}[label={sec:orgd748c93}]{Exercise: Reading the Bode diagram}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/alias-example-bode-GC}
 \end{center}
@@ -76,7 +76,96 @@ which of the below frequency responses \alert{is not} compatible with the Bode d
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org56bfd92}]{From loop gain to closed-loop gain}
+\begin{frame}[label={sec:org47b536e}]{Stability of the closed-loop system}
+ \begin{center}
+ \begin{tikzpicture}
+\tikzset{node distance=2cm, 
+    block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+    sumnode/.style={circle, draw, inner sep=2pt}        
+}
+
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input, node distance=20mm] (sum) {\tiny $\sum$};
+  \node[block,right of=sum, node distance=30mm] (fb) {$F(s)$};
+  \node[block,right of=fb, node distance=30mm] (plant) {$G(s)$};
+  \node[coordinate, right of=plant, node distance=30mm] (output) {};
+  \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+  \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(t)$} (sum);
+  \draw[->] (sum) -- node[above] {$e(t)$} (fb);
+  \draw[->] (fb) -- node[above] {$u(t)$} (plant);
+  \draw[->] (plant) -- node[at end, above] {$y(t)$} (output);
+  \draw[->] (measure) -- ++(0, -18mm) -| (sum) node[left, pos=0.96] {$-$};
+  \draw[red] (3.8, -1) rectangle (9.4, 1.7);
+  \node[red] at (8, 1.4) {$G_o(s)$};
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:orgd22ccdc}]{Stability of the closed-loop system}
+ \begin{center}
+ \begin{tikzpicture}
+\tikzset{node distance=2cm, 
+    block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+    sumnode/.style={circle, draw, inner sep=2pt}        
+}
+
+  \node[coordinate] (input) {};
+  \node[circle, black, fill, inner sep=2pt, right of=input, node distance=20mm] (sum) {};
+  \node[circle, black, fill, inner sep=2pt, below of=sum, node distance=5mm] (sum2) {};
+  \node[coordinate, right of=sum, node distance=5mm] (sum3) {};
+  \node[circle, black, fill, inner sep=2pt, below of=sum3, node distance=2.5mm] (sum4) {};
+  \node[block,right of=sum4, node distance=30mm] (fb) {$F(s)$};
+  \node[block,right of=fb, node distance=30mm] (plant) {$G(s)$};
+  \node[coordinate, right of=plant, node distance=30mm] (output) {};
+  \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+  \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(t)$} (sum);
+  \draw[->] (sum4) -- node[above] {$e(t)$} (fb);
+  \draw[->] (fb) -- node[above] {$u(t)$} (plant);
+  \draw[->] (plant) -- node[at end, above] {$y(t)$} (output);
+  \draw[->] (measure) -- ++(0, -18mm) -| (sum2) node[left, pos=0.96] {$-$};
+  \draw[red] (3.2, -1.25) rectangle (9.6, 1.45);
+  \node[red] at (8, 1.2) {$G_o(s)$};
+  \draw[thick] (sum) to (sum4);
+  \end{tikzpicture}
+\end{center}
+
+\begin{center}
+
+  \begin{tikzpicture}
+    \begin{semilogxaxis}[%
+      width=6cm,
+      height=4cm,
+      axis lines=center,
+      xtick = {1},
+      xticklabels = {$\omega_1$},
+      ytick = \empty,
+      ylabel = {$|G_o(i\omega)|$},
+      xlabel = {$\omega$},
+      ]
+      \addplot[solid, red!60!black, smooth, domain=0.1:100] {20*log10(10/x * 100/(sqrt(pow((100-x*x),2) + 20*20*x)))};
+    \end{semilogxaxis}
+
+    \begin{semilogxaxis}[%
+    xshift=7cm,
+    width=6cm,
+      height=4cm,
+      axis lines=center,
+      xtick = {1},
+      xticklabels = {$\omega_1$},
+      ytick = {0,-90,-180, -270},
+      ylabel = {$\arg G_o(i\omega)$},
+      xlabel = {$\omega$},
+      ymax = 90,
+      ]
+      \addplot[solid, red!60!black, smooth, domain=0.1:100] {-90 - atan2(20*x, 100-x*x)};
+    \end{semilogxaxis}
+
+    \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgcc54f31}]{From loop gain to closed-loop gain}
  \begin{center}
  \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -100,9 +189,12 @@ which of the below frequency responses \alert{is not} compatible with the Bode d
   \end{tikzpicture}
 \end{center}
 
+\pause
 \[ G_c(i\omega) = \frac{G(i\omega)F(i\omega)}{1 + G(i\omega)F(i\omega)} = \frac{G_o(i\omega)}{1 + G_o(i\omega)} \]
+\pause
 \[ |G_c(i\omega)| = \frac{|G_o(i\omega)|}{|1 + G_o(i\omega)|} = \frac{|G_o(i\omega)|}{|G_o(i\omega) - (-1)|} \]
 
+\pause
 \alert{Keep the loop gain \(G_o(i\omega)\) away from -1!} 
 \end{frame}
 \end{document}

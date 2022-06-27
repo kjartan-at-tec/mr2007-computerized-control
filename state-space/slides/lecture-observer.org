@@ -111,7 +111,7 @@
   \end{equation*}
   and measurements of the output signal \(y(k)\). 
 
-  The obserser is given by
+  The observer is given by
       \begin{equation*}
       \begin{split}
       \hat{x}(k+1) &= \underbrace{\Phi \hat{x}(k) + \Gamma u(k)}_{\text{simulation}} + \underbrace{K\big(y(k) - C\hat{x}(k)\big)}_{\text{correction}} = \left(\Phi - KC\right)\hat{x}(k) +  \Gamma u(k) + Ky(k)

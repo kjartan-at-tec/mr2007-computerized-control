@@ -13,7 +13,7 @@
 
 
 #+title: From analog to discrete-time systems
-#+date: 2021-07-01
+#+date: 2022-06-30
 
 * What do I want the students to understand?			   :noexport:
   - How to sample cont-time system
@@ -67,8 +67,13 @@ Level control in a hydro power plant dam
    \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
    \end{tikzpicture}
    \end{center}
+
+   #+BEAMER: \pause
+
 *** General case (non-causal)
    \[ y(k) = g \ast u = \sum_{n=-\infty}^\infty g(n) u(k-n) \]
+
+#+BEAMER: \pause
 
 *** Causal case
    \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
@@ -165,7 +170,7 @@ Assume right-sided signal \(f(t)\), meaning it is zero for negative times $t<0$.
 
 ** The Laplace transform of a sampled signal
 
-   Nota:
+   Note:
    \begin{align*}
    F_s(s) &=  \sum_{k=0}^{\infty} f(kh) \left(\mathrm{e}^{sh}\right)^{-k}\quad \text{Laplace transform}\\
    F(z) &= \sum_{k=0}^{\infty} f(kh) z^{-k} \quad \text{z-transform}
