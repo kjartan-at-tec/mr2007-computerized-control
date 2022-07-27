@@ -1,4 +1,4 @@
-% Created 2021-07-20 Tue 10:14
+% Created 2022-07-20 Wed 11:17
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,23 +35,23 @@
 
 
 \section{Intro}
-\label{sec:org8bb9cb2}
+\label{sec:org818d44f}
 
-\begin{frame}[label={sec:orgef2154c}]{Goal of today's lecture}
+\begin{frame}[label={sec:orgbc7eded}]{Goal of today's lecture}
 Understand the design procedure of polynomial pole placement
 \end{frame}
 
 
 \section{2-dof controller}
-\label{sec:orga4e419a}
+\label{sec:org1fb4a8a}
 
-\begin{frame}[label={sec:org6dfc545}]{Two-degree-of-freedom controller}
+\begin{frame}[label={sec:org45c069c}]{Two-degree-of-freedom controller}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
 
 \begin{align*}
-Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
+Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}Y_{ref}(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
 \end{align*}
 
 \alert{Evidently} \(S_s(z) + T_s(z) = 1\) \alert{Conclusion:} One must find a balance between disturbance rejection and noise attenuation.
@@ -59,8 +59,8 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 
 
 \section{Sensitivity, revisited}
-\label{sec:orgaa3ab2a}
-\begin{frame}[label={sec:org523ac99}]{The sensitivity function}
+\label{sec:org9656a9b}
+\begin{frame}[label={sec:orgbf6a361}]{The sensitivity function}
 \[S_s(z) = \frac{1}{1 + z^{-d}F_b(z)H(z)} = \frac{1}{1 + G_o(z)}= \frac{1}{G_o(z) - (-1)}\]
 
 
@@ -82,16 +82,16 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 
 
 \section{RST}
-\label{sec:orgb0db44e}
+\label{sec:orgb6d580c}
 
-\begin{frame}[label={sec:org73a5512}]{The design procedure}
+\begin{frame}[label={sec:orgc5e3dd4}]{The design procedure}
 \end{frame}
-\begin{frame}[label={sec:org07f51fc}]{The design procedure}
+\begin{frame}[label={sec:org6ac9682}]{The design procedure}
 Given plant model \(H(z)=\frac{B(z)}{A(z)}\) and specifications on the desired closed-loop poles \(A_{cl}(z)\)
 \begin{enumerate}
 \item Find polynomials \(R(z)\) and \(S(z)\) with \(n_R \ge n_S\) such that 
 \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \]
-\item Factor the closed-loop polynomials as \(A_{cl}(z) = A_c(z)A_o(z)\), where \(n_{A_o} \le n_R\). Choose
+\item Factor the closed-loop polynomial as \(A_{cl}(z) = A_c(z)A_o(z)\), where \(n_{A_o} \le n_R\). Choose
 \[T(z) = t_0 A_o(z),\] where \(t_0 = \frac{A_c(1)}{B(1)}\).
 \end{enumerate}
 
@@ -100,7 +100,7 @@ The control law is then
 The closed-loop response to the command signal is given by
 \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
 \end{frame}
-\begin{frame}[label={sec:org1a53433}]{Determining the order of the controller}
+\begin{frame}[label={sec:orgaf12c0c}]{Determining the order of the controller}
 With Diophantine equation 
    \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
 and feedback controller
@@ -116,7 +116,7 @@ and feedback controller
 \end{frame}
 
 
-\begin{frame}[label={sec:org2ebbb1d}]{Determining the order of the controller - Exercise}
+\begin{frame}[label={sec:org2871584}]{Determining the order of the controller - Exercise}
 With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
 so that all parameters can be determined from the diophantine equation
@@ -129,7 +129,7 @@ so that all parameters can be determined from the diophantine equation
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgefa8757}]{Determining the order of the controller - Exercise - Solution}
+\begin{frame}[label={sec:org810c521}]{Determining the order of the controller - Exercise - Solution}
 With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
 so that all parameters can be determined from the diophantine equation
 \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
@@ -142,12 +142,12 @@ so that all parameters can be determined from the diophantine equation
 \end{frame}
 
 
-\begin{frame}[label={sec:orgcbd8cc2}]{Two-degree-of-freedom controller, the importance of the observer poles}
+\begin{frame}[label={sec:org4374619}]{Two-degree-of-freedom controller, the importance of the observer poles}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
 \begin{align*}
-Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
+Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}Y_{ref}(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
 \end{align*}
 \alert{Conclusiones} 1) There is a partial separation between designing for reference tracking and designing for perturbance rejection. 2) The observer poles (the roots of \(A_o(z)\)) can be used to determine a balance between disturbance rejection and noise attenuation.
 \end{frame}
@@ -156,8 +156,8 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 
 
 \section{Example}
-\label{sec:orgabd7f07}
-\begin{frame}[label={sec:org2ecba8c}]{Example - Level control of a dam}
+\label{sec:org9c65b0f}
+\begin{frame}[label={sec:org569c3db}]{Example - Level control of a dam}
 \begin{center}
 \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
 \end{center}
@@ -165,19 +165,33 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 \alert{Objective} Design a control system to maintain the water level under influence of disturbances.
 \end{frame}
 
-\begin{frame}[label={sec:org3c2cd7f}]{Example - Level control of a dam}
+\begin{frame}[label={sec:orgc88054a}]{Example - Level control of a dam}
+\begin{center}
+\includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
+\end{center}
+
+\begin{align*}
+\text{Amount of water in dam:}\quad & x(t) = x_0 + y(t)\\
+\text{Flow through dam ports:}\quad & f(t) = f_0 - u(t)\\
+\text{Uncontrolled flows out:}\quad & d(t) = f_p(t) - f_i(t) = d_0 + v(t)\\
+\text{Dynamics:}\quad & \frac{d}{dt} x(t) = \frac{d}{dt} y(t)\\ &\quad = - f(t) - d(t) = \underbrace{-f_0 - d_0}_{=0} + u(t) - v(t)\\
+\end{align*}
+\end{frame}
+
+
+\begin{frame}[label={sec:org5db5c69}]{Example - Level control of a dam}
 \begin{center}
 \includegraphics[width=0.3\linewidth]{../../figures/kraftverk}
 \end{center}
 
-\alert{The process dynamics}
+\alert{Discrete-time process dynamics}
 
 \begin{center}
   \begin{tikzpicture}
     \node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
-    \node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
-    \node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
-    \node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
+    \node[coordinate, pin=140:{\textcolor{blue!50}{Deviation in the level of water}}] at (-2.6,0.2) {};
+    \node[coordinate, pin=-140:{\textcolor{blue!50}{Deviation in the non-controlled flows}}] at (0.8,-0.2) {};
+    \node[coordinate, pin=90:{\textcolor{blue!50}{Deviation in the controlled flow}}] at (2,0.2) {};
 \end{tikzpicture}
 \end{center}
 \begin{center}
@@ -199,15 +213,15 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org61013f5}]{Example - Level control of a dam}
+\begin{frame}[label={sec:org3c0828a}]{Example - Level control of a dam}
 \alert{The process dynamics}
 
 \begin{center}
   \begin{tikzpicture}
     \node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
-    \node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
-    \node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
-    \node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
+    \node[coordinate, pin=140:{\textcolor{blue!50}{Deviation in the level of water}}] at (-2.6,0.2) {};
+    \node[coordinate, pin=-140:{\textcolor{blue!50}{Deviation in the non-controlled flows}}] at (0.8,-0.2) {};
+    \node[coordinate, pin=90:{\textcolor{blue!50}{Deviation in the controlled flow}}] at (2,0.2) {};
 \end{tikzpicture}
 \end{center}
 \begin{center}
@@ -237,7 +251,7 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd0cf498}]{Example - Level control of a dam}
+\begin{frame}[label={sec:orgba26ae0}]{Example - Level control of a dam}
 Given process \(H(z) = \frac{B(z)}{A(z)} = \frac{1}{z(z-1)}\) and desired poles in \(z=0.9\).
 
 \begin{enumerate}
@@ -252,7 +266,7 @@ The degree of \(A_{cl}(z)\) is 3. Choose \(A_o(z) = z\),  ( \(\deg A_o = \deg R\
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgc75df91}]{Example - Level control of a dam}
+\begin{frame}[label={sec:org86841ed}]{Example - Level control of a dam}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item From the Diophantine equation \[ z(z-1)(z+r_1) + s_0z + s_1 = z(z-0.9)^2\]
@@ -270,7 +284,7 @@ z^0 &: \quad s_1 = 0
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org2dcdae7}]{Example - Level control of a dam}
+\begin{frame}[label={sec:org469e042}]{Example - Level control of a dam}
 \begin{enumerate}
 \setcounter{enumi}{3}
 \item We have \(A_o(z) = z\), so 

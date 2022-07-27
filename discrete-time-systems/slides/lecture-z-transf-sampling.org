@@ -58,8 +58,10 @@ Level control in a hydro power plant dam
 
 ** Discrete-time Linear Shift-Invariant systems
 
+\small
+
    \begin{center}
-   \begin{tikzpicture}[node distance=20mm, anchor=north]
+   \begin{tikzpicture}[scale=0.6,node distance=20mm, anchor=north]
    \node[coordinate] (input) {};
    \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {g};
    \node[coordinate, right of=lti] (output) {};
@@ -70,14 +72,20 @@ Level control in a hydro power plant dam
 
    #+BEAMER: \pause
 
-*** General case (non-causal)
-   \[ y(k) = g \ast u = \sum_{n=-\infty}^\infty g(n) u(k-n) \]
+*General case (non-causal)*
+
+\begin{align*}
+ y(k) &= g \ast u = \sum_{n=-\infty}^\infty g(n) u(k-n)\\ &= \cdots + g(-2)u(k+2) + g(-1)u(k+1) + g(0)u(k) + g(1)u(k-1) + \cdots
+ \end{align*}
 
 #+BEAMER: \pause
 
-*** Causal case
-   \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
-
+*Causal case*
+\begin{align*}
+ y(k) &= g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \\
+ &= g(0)u(k) + g(1)u(k-1) + g(2)u(k-2) + g(3)u(k-3) + \cdots
+ \end{align*}
+ 
 
    $g(k)$ is called the *weighting sequence*.
 
@@ -92,7 +100,7 @@ Level control in a hydro power plant dam
   width=14cm,
   height=2.5cm,
   xlabel={$k$},
-  ylabel={$u(k)$},
+  ylabel={$\delta(k)$},
   xmin=-2.5,
   xmax=10.5,
 ]
@@ -111,7 +119,9 @@ Level control in a hydro power plant dam
 
 ** The response of a discrete LSI system is a weighted sum of the current and previous values of the input
 
-   \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
+\small 
+
+\[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) = g(0)u(k) + g(1)u(k-1) + g(2)u(k-2) + \cdots \]
 
 
    *Activity* What is the response of a system to the input signal \(u(k)\) if its impulse response (weighting sequence) is the one below?
@@ -181,6 +191,46 @@ Assume right-sided signal \(f(t)\), meaning it is zero for negative times $t<0$.
    \[ z = \mathrm{e}^{sh}\]
    \end{tcolorbox}
 
+** Exercise on the z-transform
+\small
+
+   \begin{center}
+   \begin{tikzpicture}[scale=0.6,node distance=20mm, anchor=north]
+   \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti) {g};
+   \node[coordinate, right of=lti] (output) {};
+   \draw[->] (input) -- node[near start, above] {$u(k)$}  (lti);
+   \draw[->] (lti) -- node[near end, above] {$y(k)$} (output);
+   \end{tikzpicture}
+   \end{center}
+
+   #+BEAMER: \pause
+
+   \[ G(z) &= \sum_{k=0}^{\infty} g(k) z^{-k} \quad \text{z-transform}\]
+
+   *Activity* What is the z-transform of the delayed impulse signal \(g(k) = \delta(k-4)\) below?
+
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+  width=14cm,
+  height=3.5cm,
+  xlabel={$k$},
+  ylabel={$g(k)$},
+  xmin=-0.5,
+  xmax=10.5,
+  ytick = {0, 1},
+]
+
+\addplot+[black, ycomb, domain=-2:10, samples=13,variable=k] { (k==4)}; 
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+
+
 
 ** One of the most important transform pairs
    \[f(kh) = \alpha^{kh}, \quad \alpha \in \mathbb{C}\]
@@ -203,6 +253,10 @@ Assume right-sided signal \(f(t)\), meaning it is zero for negative times $t<0$.
 
 ** Step-invariant sampling (a.k.a ZOH sampling)
 
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.6\linewidth]{../../figures/fig1-1-schematic.png} Source: Åström and Wittenmark "Computer-controlled systems".
+   #+END_CENTER
+
 ** Step-invariant sampling (a.k.a ZOH sampling)
 
 #+BEGIN_CENTER 
@@ -223,7 +277,7 @@ Assume right-sided signal \(f(t)\), meaning it is zero for negative times $t<0$.
    
 ** Why is step-invariant sampling a good idea?
 
-   A piecewise constant (stair-case shaped) function can be written as a sum of delayed step-responses!
+   A piecewise constant (stair-case shaped) function can be written as a sum of delayed and scaled unit step-signals!
    #+begin_export latex
      \begin{center}
        \begin{tikzpicture}

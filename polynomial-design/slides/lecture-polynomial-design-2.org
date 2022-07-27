@@ -28,7 +28,7 @@
 #+END_CENTER
 
 \begin{align*}
-Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
+Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}Y_{ref}(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
 \end{align*}
  
 *Evidently* \( S_s(z) + T_s(z) = 1\) *Conclusion:* One must find a balance between disturbance rejection and noise attenuation.
@@ -113,7 +113,7 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
  \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 #+END_CENTER
 \begin{align*}
-Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
+Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}Y_{ref}(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- \frac{S(z)B(z)}{A_c(z)A_o(z)}N(z)
 \end{align*}
  *Conclusiones* 1) There is a partial separation between designing for reference tracking and designing for perturbance rejection. 2) The observer poles (the roots of \(A_o(z)\)) can be used to determine a balance between disturbance rejection and noise attenuation.
 
@@ -130,18 +130,31 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 
 ** Example - Level control of a dam
 #+BEGIN_CENTER 
+ \includegraphics[width=0.5\linewidth]{../../figures/kraftverk}
+#+END_CENTER
+
+\begin{align*}
+\text{Amount of water in dam:}\quad & x(t) = x_0 + y(t)\\
+\text{Flow through dam ports:}\quad & f(t) = f_0 - u(t)\\
+\text{Uncontrolled flows out:}\quad & d(t) = f_p(t) - f_i(t) = d_0 + v(t)\\
+\text{Dynamics:}\quad & \frac{d}{dt} x(t) = \frac{d}{dt} y(t)\\ &\quad = - f(t) - d(t) = \underbrace{-f_0 - d_0}_{=0} + u(t) - v(t)\\
+\end{align*}
+
+
+** Example - Level control of a dam
+#+BEGIN_CENTER 
  \includegraphics[width=0.3\linewidth]{../../figures/kraftverk}
 #+END_CENTER
 
-*The process dynamics*
+*Discrete-time process dynamics*
 
     #+begin_export latex
     \begin{center}
       \begin{tikzpicture}
 	\node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
-	\node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
-	\node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
-	\node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
+	\node[coordinate, pin=140:{\textcolor{blue!50}{Deviation in the level of water}}] at (-2.6,0.2) {};
+	\node[coordinate, pin=-140:{\textcolor{blue!50}{Deviation in the non-controlled flows}}] at (0.8,-0.2) {};
+	\node[coordinate, pin=90:{\textcolor{blue!50}{Deviation in the controlled flow}}] at (2,0.2) {};
     \end{tikzpicture}
     \end{center}
     \begin{center}
@@ -171,9 +184,9 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
     \begin{center}
       \begin{tikzpicture}
 	\node at (0,0) {$y(k) = y(k-1) -v(k-1) + u(k-2)$};
-	\node[coordinate, pin=140:{Cambio en el nivel de agua}] at (-2.6,0.2) {};
-	\node[coordinate, pin=-140:{Cambio en flujos no controlados}] at (0.8,-0.2) {};
-	\node[coordinate, pin=60:{Cambio en flujo controlado}] at (2,0.2) {};
+	\node[coordinate, pin=140:{\textcolor{blue!50}{Deviation in the level of water}}] at (-2.6,0.2) {};
+	\node[coordinate, pin=-140:{\textcolor{blue!50}{Deviation in the non-controlled flows}}] at (0.8,-0.2) {};
+	\node[coordinate, pin=90:{\textcolor{blue!50}{Deviation in the controlled flow}}] at (2,0.2) {};
     \end{tikzpicture}
     \end{center}
     \begin{center}
@@ -228,12 +241,13 @@ Y(z) &= \frac{t_0B(z)z^d}{A_c(z)}U_c(z) + \frac{A(z)R(z)z^d}{A_c(z)A_o(z)}V(z)- 
 ** Example - Level control of a dam
   4. [@4] We have \(A_o(z) = z\), so 
      \[T(z) = t_0A_o(z) = t_0z\]
-     \[G_c(z) = \frac{T(z)B(z)}{A_o(z)A_c(z)} = \frac{t_0 B(z)}{A_c(z)}, \quad \text{queremos}\, G_c(1)=1\]
+     \[G_c(z) = \frac{T(z)B(z)}{A_o(z)A_c(z)} = \frac{t_0 B(z)}{A_c(z)}, \quad \text{want}\, G_c(1)=1\]
      \[ t_0 = \frac{A_c(1)}{B(1)} = \frac{(1-0.9)^2}{1} = 0.01\]
 
   *Control law*
   \[R(\shift) u(kh) = T(\shift)u_c(kh) - S(\shift)y(kh)\]
   \[ (\shift - 0.8)u(kh) = 0.01\shift u_c(kh) - 0.01\shift y(kh)\]
+  #+BEAMER: \pause
   \[ u(kh+h) = 0.8u(kh) + 0.01 u_c(kh+h) - 0.01y(kh+h)\]
 
 *** Notes							   :noexport:

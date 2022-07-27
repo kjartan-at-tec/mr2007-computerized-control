@@ -12,7 +12,7 @@
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
 #+title: Stability
-#+date: 2021-07-05
+#+date: 2022-07-04
 
 * What do I want the students to understand?			   :noexport:
   - Como analisar estabilidad

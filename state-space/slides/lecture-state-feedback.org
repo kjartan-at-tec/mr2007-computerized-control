@@ -112,7 +112,7 @@ To find the input sequence \(u(k)\) that takes the state from  \(x(0)=x_0\) to \
 
 \[ U = W_c\inv \left(x_d - \Phi^nx(0)\right) \]
 
-This is possible when the matrix \(W_x\) is *invertible*:
+This is possible when the matrix \(W_c\) is *invertible*:
 
 The state-space system above is controllable if and only if the /Controllability matrix/ \(W_c\)  has rank \(n\), i.e. 
 \[ \det W_c \neq 0.\]
@@ -121,19 +121,24 @@ The state-space system above is controllable if and only if the /Controllability
 ** Observability
 \footnotesize
 
-Observability is the answer to the question "Can we determine the initial state \(x(0)\) if we only know \(y(k), \; k=0,1,2,\ldots, n-1\)?"
+Observability is the answer to the question "Can we determine the initial state \(x(0)\) from measurements \(y(k), \; k=0,1,2,\ldots, n-1\)?"
 
-The first \(n\) values of the output sequence are given by
+The first \(n\) values of the output sequence (with \(u=0\))are given by
 \begin{align*}
 y(0) &= Cx(0)\\
-y(1) &= Cx(1) = C \left( \Phi x(0) + \Gamma u(0)  \right)\\
+y(1) &= Cx(1) = C \Phi x(0)\\
 & \vdots\\
-y(n-1) &= Cx(n-1) = C \left( \Phi^{n-1} x(0) + W_c U \right).
+y(n-1) &= Cx(n-1) = C\Phi^{n-1} x(0).
 \end{align*}
 This gives the equation
-\[ \bbm C\\C\Phi\\\vdots\\C\Phi^{n-1} \ebm x(0) = \bbm y(0)\\y(1) - C\Gamma u(0)\\\vdots\\ y(n-1) - CW_c U\ebm \]
-which can be solved for \(x(0)\) if and only if the matrix 
-\[W_o = \bbm C\\C\Phi\\\vdots\\C\Phi^{n-1} \ebm\] has full rank.
+\[ \bbm C\\C\Phi\\\vdots\\C\Phi^{n-1} \ebm x(0) = \bbm y(0)\\y(1))\\\vdots\\ y(n-1)\ebm \]
+
+#+BEAMER: \pause
+*Activity* Solve for \(x(0)\)!
+
+#+BEAMER: \pause
+
+\[ \text{possible iff} \quad \[W_o = \bbm C\\C\Phi\\\vdots\\C\Phi^{n-1} \ebm\quad \text{has full rank.}\]
 
 ** Observability, contd
 The equation
@@ -163,10 +168,13 @@ Given
   \end{split}
   \end{equation*}
   where \[ L = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
-  Substituting this in the state-space model \eqref{eq:ssmodel} gives
+  #+BEAMER: \pause
+*Activity* Substitute the control law  \(u = l_0u_c(k) - Lx(k)\) into the state-space model \eqref{eq:ssmodel}
+#+BEAMER: \pause
+  
    \begin{equation}
    \begin{split}
-    x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + m\Gamma u_c(k)\\
+    x(k+1) &= \left(\Phi -\Gamma L \right) x(k) + l_0\Gamma u_c(k)\\
     y(k) &= C x(k)
    \end{split}
    \label{eq:closedloop}
@@ -179,6 +187,7 @@ Given
    \label{eq:desiredpoles}
    \end{equation}
 
+#+BEAMER: \pause
    Linear state feedback gives the system
    \begin{equation}
    \begin{split}
@@ -193,6 +202,7 @@ Given
    \label{eq:poles}
    \end{equation}
   
+#+BEAMER: \pause
    Set the coefficients of the desired characteristic polynomial \eqref{eq:desiredpoles} equal to the coefficients of \eqref{eq:poles} to obtain the system of equations
    \begin{equation*}
    \begin{split}

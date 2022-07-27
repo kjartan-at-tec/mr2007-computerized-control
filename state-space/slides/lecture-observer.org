@@ -109,8 +109,9 @@
    \end{split}
    \label{eq:ssmodel}
   \end{equation*}
-  and measurements of the output signal \(y(k)\). 
+  input signal \(u(k)\) and measurements of the output signal \(y(k)\). 
 
+  #+BEAMER: \pause
   The observer is given by
       \begin{equation*}
       \begin{split}
@@ -119,7 +120,9 @@
       \end{equation*}
   with poles given by the eigenvalues of the matrix \(\Phi_o = \Phi - KC\)
 
-  *Rule-of-thumb* Choose the poles of the observer (eigenvalues of \(\Phi-KC\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\).
+  #+BEAMER: \pause
+
+*Rule-of-thumb* Choose the poles of the observer (eigenvalues of \(\Phi-KC\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\).
 
 ** Observer design
   *Rule-of-thumb* Choose the poles of the observer (eigenvalues of \(\Phi-KC\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\).

@@ -1,0 +1,61 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{mathtools}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Delay and phase shift
+#+date: 2022-07-01
+
+* Delay
+
+** Delay and phase lag
+
+        \begin{center}
+          \begin{tikzpicture}[node distance=20mm, block/.style={rectangle, draw, minimum width=15mm, minimum height=12mm}]
+
+            \node[coordinate] (input) {};
+            \node[block, right of=input, node distance=42mm] (lti) {$\mathrm{e}^{-sT}$};
+            \node[coordinate, right of=lti, node distance=42mm] (output) {};
+
+            \draw[->, blue!80!black] (input) -- node[above, at start] {\small $\sin(\omega t)$} (lti);
+            \draw[->, orange!80!black] (lti) -- node[above, at end] {\small $\sin\big(\omega(t-T)\big) = \sin\big(\omega t - \omega T\big)$} (output);
+          \end{tikzpicture}
+        \end{center}
+
+#+beamer: \pause	
+
+#+begin_export latex
+     \begin{center}
+     \begin{tikzpicture}
+     \small
+     \pgfmathsetmacro{\ww}{1}
+     \pgfmathsetmacro{\TT}{2*pi/\ww}
+     \begin{axis}[
+     width=14cm,
+     height=3.5cm,
+     xlabel={$t$},
+     xmin=0.,
+     xmax=10.5,
+     ytick = {0},
+     %xtick = {0, \TT},
+     %xticklabels={0, $2\pi$},
+     ]
+     \addplot+[blue!80!black, thick,no marks, domain=0:30, samples=400,variable=t] { sin(deg(\ww*t)) };
+     \addplot+[orange!80!black, thick,no marks, domain=0:30, samples=400,variable=t] { sin(deg(\ww*(t-1))) };
+     \end{axis}
+     \end{tikzpicture}
+     \end{center}
+   #+end_export
+
+#+beamer: \pause	
+
+*Activity* Determine the frequency $\omega$ of the sine waves, the delay $T$ and the phase lag $\omega T$.

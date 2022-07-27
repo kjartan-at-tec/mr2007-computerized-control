@@ -1,4 +1,4 @@
-% Created 2021-07-12 Mon 09:36
+% Created 2022-07-12 Tue 19:12
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,20 +35,20 @@
 
 
 \section{Discretization - repetición}
-\label{sec:orgdd9cf55}
-\begin{frame}[label={sec:org41ab6a0}]{Context}
-\begin{itemize}
-\item Controller \(F(s)\) obtained from a design in continuous time.
-\item Need discrete approxmation in order to implement on a computer
-\end{itemize}
+\label{sec:org2a507e9}
+\begin{frame}[label={sec:org7dfdbb8}]{Mapping of the stable region of the s-plane when discretizing the controller}
+\pause
 
 \begin{center}
- \includegraphics[width=0.7\linewidth]{../../figures/fig8-1.png}\\
-   {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
+ \includegraphics[width=0.7\linewidth]{../../figures/mapping-stable-s-region.png}\\
 \end{center}
+
+\pause
+
+\alert{Activity} Which of the above mappings of the left-half plane of the s-plane corresponds to A) the bilinear transformation (Tustin's approximation), B) the forward difference approximation, C) the backward difference approximation?
 \end{frame}
 
-\begin{frame}[label={sec:org6622ef4}]{Mapping of the stable region of the s-plane}
+\begin{frame}[label={sec:orgb3452e6}]{Mapping of the stable region of the s-plane}
 \begin{center}
  \includegraphics[width=0.79\linewidth]{../../figures/fig8-2.png}\\
 {\tiny Åström and Wittenmark \emph{Computer-controlled systems}}
@@ -57,8 +57,8 @@
 
 
 \section{PID}
-\label{sec:orgc08e8ae}
-\begin{frame}[label={sec:orgef96f64}]{ISA form of the PID}
+\label{sec:org3fee3aa}
+\begin{frame}[label={sec:orgddb36f2}]{ISA form of the PID}
 ISA - International Society of Automation
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + T_d s\right) \]
@@ -68,33 +68,7 @@ With low-pass filter for the derivative part
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 \end{frame}
 
-\begin{frame}[label={sec:orgc489bcc}]{ISA form of the PID - derivative part}
-\[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
-
-\begin{columns}
-\begin{column}{0.4\columnwidth}
-\alert{Activity} Sketch the Bode plot for the derivative part (\(T_d = 1\), \(N=10\))
-\[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] using the low-frequency and high-frequency approximations.
-\begin{align*}
- \text{$\omega$ small:} \quad & F_d(i\omega) \approx T_d i\omega \\
- \text{$\omega$ large:} \quad & F_d(i\omega) \approx \frac{T_d i \omega }{\frac{T_d}{N} i\omega} = N
-\end{align*}
-\end{column}
-
-
-\begin{column}{0.6\columnwidth}
-\begin{center}
-\includegraphics[width=\linewidth]{../../figures/bode-derivative-empty}
-\end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}[label={sec:org7a93560}]{ISA form of the PID - derivative part}
-\end{frame}
-
-
-\begin{frame}[label={sec:org13a48f0}]{PID with derivative action only on the process variable}
+\begin{frame}[label={sec:orgc54bb43}]{PID with derivative action only on the process variable}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -117,12 +91,12 @@ With low-pass filter for the derivative part
   \end{tikzpicture}
 \end{center}
 
-\[ U(s) = \underbrace{K_c\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
+\[ U(s) = \underbrace{K_c\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{K_c\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
 \end{frame}
 
 \section{Discretización del PID}
-\label{sec:orgcc2def9}
-\begin{frame}[label={sec:org7fb50fe}]{Common discretization of the PID}
+\label{sec:orgc14bf56}
+\begin{frame}[label={sec:orgb59510c}]{Common discretization of the PID}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -149,20 +123,48 @@ With low-pass filter for the derivative part
   \end{tikzpicture}
 \end{center}
 
-\[ U(s) = U_P(s) + U_I(s) - U_D(s) = K_cE(s) + K_c\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
+\[ U(s) = U_P(s) + U_I(s) - U_D(s) = K_cE(s) + K_c\frac{1}{T_i s} E(s) - K_c\frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
 
-\alert{Activity} 1) Use Euler's method \(s \approx \frac{z-1}{h}\) for the integral part, and the backward difference \(s \approx \frac{z-1}{zh}\) for the derivative part. 2) Apply the inverse z-transform to obtain the controller in the form of a difference equation.
+\alert{Activity} 1) Use the forward difference \(s \approx \frac{z-1}{h}\) for the integral part, and the backward difference \(s \approx \frac{z-1}{zh}\) for the derivative part. 2) Apply the inverse z-transform to obtain the controller in the form of a difference equation.
 \end{frame}
 
-\begin{frame}[label={sec:orgbb029a6}]{The discrete PID algorithm}
+\begin{frame}[label={sec:orgc818e6c}]{Common discretization of the PID  - Solution}
+\begin{block}{Proportional part}
+Very simple: \(u_P(kh) = K_c e(kh)\)
+\end{block}
+\begin{block}{Integral part}
+Substitute \(s = \frac{z-1}{h}\) in the transfer function \(F_I(s) = \frac{K_c}{T_i} \frac{1}{s}\)
+\[ F_{I,d}(z) = \frac{K_c}{T_i}\frac{1}{\frac{z-1}{h}} = \frac{K_c}{T_i} \frac{h}{z-1}\]
+\[U_I(z) = \frac{K_c}{T_i} \frac{h}{z-1} E(z), \qquad \text{}\]
+\[U_I(z)(z-1) = \frac{K_c}{T_i} h E(z), \qquad \text{Apply inverse z-transform}\]
+\[ u_I(kh+h) - u_I(kh) = \frac{K_c}{T_i} h e(kh) \qquad \Leftrightarrow \qquad u_I(kh+h) = u_I(kh) + \frac{K_c}{T_i} h e(kh)\]
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:orgb0f28b9}]{Common discretization of the PID  - Solution}
+\begin{block}{Derivative part}
+Substitute \(s = \frac{z-1}{zh}\) in the transfer function \(F_D(s) = K_c \frac{T_d s}{\frac{T_d}{N} s + 1}\)
+\[ F_{D,d}(z) = K_c\frac{T_d \frac{z-1}{zh}}{\frac{T_d}{N}\cdot\frac{z-1}{zh}+1} 
+         = K_c \frac{T_d(z-1)}{\frac{T_d}{N}(z-1) + zh} 
+= K_c \frac{T_d(z-1)}{(\frac{T_d}{N}+h)z -\frac{T_d}{N}} \]
+\[ U_D(z) = K_c \frac{T_d(z-1)}{(\frac{T_d}{N}+h)z -\frac{T_d}{N}} Y(z)\]
+\[ \Big((\frac{T_d}{N}+h)z -\frac{T_d}{N}\Big) U_D(z) = K_cT_d(z-1) Y(z), \qquad \text{Apply the inverse z-transform} \]
+\[ (\frac{T_d}{N}+h)u_D(kh+h) -\frac{T_d}{N}u_D(kh) = K_cT_d\big(y(kh+h) - y(kh)\big)\]
+\end{block}
+\end{frame}
+
+\begin{frame}[label={sec:orgffa2860}]{The discrete PID algorithm}
+\small
+
 \begin{align*}
-&\text{Dado:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
+&\text{Calculated:}  \;  \alpha_1 = \frac{\frac{T_d}{N}}{\frac{T_d}{N} + h},\; \alpha_2 = K_c\frac{T_d}{\frac{T_d}{N} + h}, \; \beta = K_c \frac{h}{T_i}\\
+&\text{Stored:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
 & \text{\textcolor{green!60!black}{Sample signals:}} \; r(kh), \; y(kh)\\
 &e(kh) = r(kh) - y(kh)\\
 &u_P(kh) = K_ce(kh)\\
-&u_D(kh) = \frac{\frac{T_d}{N}}{\frac{T_d}{N} + h}u_D(kh-h) + K_c\frac{T_d}{\frac{T_d}{N} + h}\big(y(kh) - y(kh-h)\big)\\
-&u(kh) = u_P(kh) + u_I(kh-h) + u_D(kh), \qquad \text{\textcolor{red}{Send to DAC}}\\
-&u_I(kh) = u_I(kh-h) + K_c \frac{h}{T_i} e(kh)
+&u_D(kh) = \alpha_1 u_D(kh-h) + \alpha_2\big(y(kh) - y(kh-h)\big)\\
+&u(kh) = u_P(kh) + u_I(kh-h) - u_D(kh), \qquad \text{\textcolor{red}{Send to DAC}}\\
+&u_I(kh) = u_I(kh-h) + \beta e(kh)
 \end{align*}
 
 \begin{center}

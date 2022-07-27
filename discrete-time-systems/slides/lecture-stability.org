@@ -14,7 +14,7 @@
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
 #+title: Stability
-#+date: 2021-07-05
+#+date: 2022-07-04
 
 * What do I want the students to understand?			   :noexport:
   - Como analisar estabilidad
@@ -41,6 +41,9 @@
   \node at (-2, 1) {$J\ddot{y} = u$};
   \end{tikzpicture}
 \end{center}
+
+#+beamer: \pause
+
 Which of the below graphs show the sampled step-response of the system?
 
 #+begin_export latex
@@ -59,16 +62,16 @@ Which of the below graphs show the sampled step-response of the system?
        xtick = 0,
        ]
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*,domain=0:8, samples=9]  {x};
+       \addplot[red!60!black, thick, ycomb, mark=*,domain=0:8, samples=9]  {x};
 
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*, domain=0:8, samples=9]  {1};
+       \addplot[red!60!black, thick, ycomb, mark=*, domain=0:8, samples=9]  {1};
 
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*, domain=0:8, samples=9]  {2*exp(-x/2)};
+       \addplot[red!60!black, thick, ycomb, mark=*, domain=0:8, samples=9]  {2*exp(-x/2)};
 
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*,domain=0:8, samples=9]  {pow(x,2)};
+       \addplot[red!60!black, thick, ycomb, mark=*,domain=0:8, samples=9]  {pow(x,2)};
        
      \end{groupplot}
      \node[blue!60] at (group c1r1.center) {\huge 1};
@@ -102,17 +105,20 @@ Which of the below graphs show the sampled step-response of the system?
 Sampled step-response: \(y(kh) = \frac{1}{2J}(kh)^2\)
 \[ k^2 \qquad \overset{\mathcal{Z}}{\longleftrightarrow} \qquad \frac{z(z+1)}{(z-1)^3}\]
 
+#+beamer: \pause
+
   Which of the below pulse-transfer functions corresponds to the discretized hard disk drive model?
   |                             1 |                             2 |                             3 |
   | \(H(z)=\frac{h^2z}{2J(z+1)^2}\)    | \(H(z)=\frac{h^2(z+1)}{2Jz^2}\) | \(H(z)=\frac{h^2(z+1)}{2J(z-1)^2}\) |
 
 * Block-diagram algebra
 ** Block-diagram algebra
+\small
 
 *Same rules as in the continuous-time case!*
 #+begin_export latex
   \begin{center}
-  \begin{tikzpicture}
+  \begin{tikzpicture}[scale=0.9]
   \tikzset{node distance=2cm, 
       block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
       sumnode/.style={circle, draw, inner sep=2pt}        
@@ -139,10 +145,19 @@ Sampled step-response: \(y(kh) = \frac{1}{2J}(kh)^2\)
   \end{tikzpicture}
   \end{center}
   #+end_export
-  With \[U(z) = U_1(z) - U_2(z) = F_f(z)Y_{ref}(z) - F_b(z)Y(z), \quad \text{and}\]
+
+#+beamer: \pause
+
+With \[U(z) = U_1(z) - U_2(z) = F_f(z)Y_{ref}(z) - F_b(z)Y(z), \quad \text{and}\]
   \[ Y(z) = H(z)U(z), \quad \text{we obtain} \]
-  \[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} Y_{ref}(z). \]
- 
+  \[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c(z)} Y_{ref}(z). \]
+
+#+beamer: \pause
+
+\footnotesize
+*** Resource
+[[https://youtu.be/RTTk7ZJlGlI][Block diagram basics from LearnChemE]]
+
 ** Block-diagram algebra - steps in detail
   With \[U(z) = U_1(z) - U_2(z) = F_f(z)Y_{ref}(z) - F_b(z)Y(z), \quad \text{and}\]
   \[ Y(z) = H(z)U(z), \quad \text{we obtain} \]
@@ -153,7 +168,7 @@ Sampled step-response: \(y(kh) = \frac{1}{2J}(kh)^2\)
   \[ Y(z) = \frac{H(z)F_f(z)}{1 + H(z)F_b(z)}Y_{ref}(z)\]
  
 ** Stability for the closed-loop system
-  \[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} Y_{ref}(z). \]
+  \[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c(z)} Y_{ref}(z). \]
 
   \begin{tcolorbox}
   Stability requires that all poles of the system, that is all solutions to the characteristic equation
@@ -162,12 +177,13 @@ Sampled step-response: \(y(kh) = \frac{1}{2J}(kh)^2\)
   \end{tcolorbox}
 
 ** Stability for the disk drive arm
+\small
 
 Case $\frac{h^2}{J} = 1$.
 
 #+begin_export latex
   \begin{center}
-  \begin{tikzpicture}
+  \begin{tikzpicture}[scale=0.7]
   \tikzset{node distance=2cm, 
       block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
       sumnode/.style={circle, draw, inner sep=2pt}        
@@ -195,14 +211,18 @@ Case $\frac{h^2}{J} = 1$.
   \end{center}
   #+end_export
 
-  *Characteristic equation*
+#+beamer: \pause
+
+*Characteristic equation*
   \begin{align*}
   1 + H(z)F_b(z) &= 0\\
   1 + \frac{z+1}{2(z-1)^2}K\frac{z-0.8}{z} &= 0\\
   (z-1)^2z + \frac{K}{2}(z+1)(z-0.8) &= 0
   \end{align*}
 
-  *Is the system stable for the gain \(K=2\)?*
+#+beamer: \pause
+
+*Is the system stable for the gain \(K=1\), and for \(K=2\)?*
 
 * Skip                                                             :noexport:
 ** Estabilidad para el control del brazo del disko duro

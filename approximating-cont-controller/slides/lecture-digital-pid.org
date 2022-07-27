@@ -23,7 +23,7 @@
 
 
 * Discretization - repetición
-** Context
+** Context                                                         :noexport:
    - Controller \(F(s)\) obtained from a design in continuous time. 
    - Need discrete approxmation in order to implement on a computer
 
@@ -37,6 +37,20 @@
 *** Notes							   :noexport:
    When we first encountered the problem of obtaining a discrete model from a continous model, in the case of finding a discrete pulse-tranfer function to describe our continuous-time dynamic plant model, we used zero-order-hold sampling. Why is this not such a good idea for approximating the controller $F(s)$?
 
+** Mapping of the stable region of the s-plane when discretizing the controller
+
+  #+BEAMER: \pause
+
+#+begin_export latex
+   \begin{center}
+    \includegraphics[width=0.7\linewidth]{../../figures/mapping-stable-s-region.png}\\
+   \end{center}
+  #+end_export
+
+  #+BEAMER: \pause
+  
+  *Activity* Which of the above mappings of the left-half plane of the s-plane corresponds to A) the bilinear transformation (Tustin's approximation), B) the forward difference approximation, C) the backward difference approximation?
+  
 ** Mapping of the stable region of the s-plane
 #+begin_export latex
    \begin{center}
@@ -56,7 +70,7 @@ With low-pass filter for the derivative part
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
-** ISA form of the PID - derivative part
+** ISA form of the PID - derivative part                           :noexport:
 
 \[ F(s) = K_c\left( 1 + \frac{1}{T_i s} + \frac{T_d s}{\frac{T_d}{N} s + 1}\right), \quad N \approx 3\; - \; 10 \]
 
@@ -65,7 +79,7 @@ With low-pass filter for the derivative part
     :BEAMER_col: 0.4
     :END:
 
-*Activity* Sketch the Bode plot for the derivative part (\(T_d = 1\), \(N=10\))
+*Activity* Sketch the Bode plot for the derivative part (\(T_d = 1\), \(N=6\))
 \[F_d(s) = \frac{T_d s}{\frac{T_d}{N} s + 1}\] using the low-frequency and high-frequency approximations.
 \begin{align*}
  \text{$\omega$ small:} \quad & F_d(i\omega) \approx T_d i\omega \\
@@ -81,8 +95,6 @@ With low-pass filter for the derivative part
 #+begin_center
 \includegraphics[width=\linewidth]{../../figures/bode-derivative-empty}
 #+end_center
-
-** ISA form of the PID - derivative part
 
 
 ** ISA form of the PID - derivative part                           :noexport:
@@ -138,7 +150,7 @@ With low-pass filter for the derivative part
 
    #+end_export
 
-\[ U(s) = \underbrace{K_c\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
+\[ U(s) = \underbrace{K_c\left( 1 + \frac{1}{T_i s} \right)}_{F_{PI}(s)} E(s) - \underbrace{K_c\frac{T_d s}{\frac{T_d}{N} s + 1}}_{F_{D}}Y(s)\]
 
 * Discretización del PID
 ** Common discretization of the PID
@@ -171,21 +183,21 @@ With low-pass filter for the derivative part
 
    #+end_export
 
-\[ U(s) = U_P(s) + U_I(s) - U_D(s) = K_cE(s) + K_c\frac{1}{T_i s} E(s) - \frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
+\[ U(s) = U_P(s) + U_I(s) - U_D(s) = K_cE(s) + K_c\frac{1}{T_i s} E(s) - K_c\frac{T_d s}{\frac{T_d}{N} s + 1}Y(s) \]
 
-*Activity* 1) Use Euler's method \(s \approx \frac{z-1}{h}\) for the integral part, and the backward difference \(s \approx \frac{z-1}{zh}\) for the derivative part. 2) Apply the inverse z-transform to obtain the controller in the form of a difference equation.
+*Activity* 1) Use the forward difference \(s \approx \frac{z-1}{h}\) for the integral part, and the backward difference \(s \approx \frac{z-1}{zh}\) for the derivative part. 2) Apply the inverse z-transform to obtain the controller in the form of a difference equation.
 
-** Common discretization of the PID  - Solution                    :noexport:
+** Common discretization of the PID  - Solution
 *** Proportional part
     Very simple: \(u_P(kh) = K_c e(kh)\)
 *** Integral part
-    Substitute \(s = \frac{z-1}{h}\) in the transfer function \(F_I(s) = K_c \frac{1}{T_i s}\)
-    \[ F_{I,d}(z) = K_c\frac{1}{T_i \frac{z-1}{h}} = K_c \frac{\frac{h}{T_i}}{z-1}\]
-    \[U_I(z) = K_c \frac{\frac{h}{T_i}}{z-1} E(z), \qquad \text{}\]
-    \[U_I(z)(z-1) = K_c \frac{h}{T_i} E(z), \qquad \text{Apply inverse z-transform}\]
-    \[ u_I(kh+h) - u_I(kh) = K_c \frac{h}{T_i} e(kh) \qquad \Leftrightarrow \qquad u_I(kh+h) = u_I(kh) + K_c\frac{h}{T_i} e(kh)\]
+    Substitute \(s = \frac{z-1}{h}\) in the transfer function \(F_I(s) = \frac{K_c}{T_i} \frac{1}{s}\)
+    \[ F_{I,d}(z) = \frac{K_c}{T_i}\frac{1}{\frac{z-1}{h}} = \frac{K_c}{T_i} \frac{h}{z-1}\]
+    \[U_I(z) = \frac{K_c}{T_i} \frac{h}{z-1} E(z), \qquad \text{}\]
+    \[U_I(z)(z-1) = \frac{K_c}{T_i} h E(z), \qquad \text{Apply inverse z-transform}\]
+    \[ u_I(kh+h) - u_I(kh) = \frac{K_c}{T_i} h e(kh) \qquad \Leftrightarrow \qquad u_I(kh+h) = u_I(kh) + \frac{K_c}{T_i} h e(kh)\]
 
-** Common discretization of the PID  - Solution                    :noexport:
+** Common discretization of the PID  - Solution
 *** Derivative part
     Substitute \(s = \frac{z-1}{zh}\) in the transfer function \(F_D(s) = K_c \frac{T_d s}{\frac{T_d}{N} s + 1}\)
     \[ F_{D,d}(z) = K_c\frac{T_d \frac{z-1}{zh}}{\frac{T_d}{N}\cdot\frac{z-1}{zh}+1} 
@@ -196,14 +208,17 @@ With low-pass filter for the derivative part
 \[ (\frac{T_d}{N}+h)u_D(kh+h) -\frac{T_d}{N}u_D(kh) = K_cT_d\big(y(kh+h) - y(kh)\big)\]
 
 ** The discrete PID algorithm
+\small
+
     \begin{align*}
-    &\text{Dado:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
+    &\text{Calculated:}  \;  \alpha_1 = \frac{\frac{T_d}{N}}{\frac{T_d}{N} + h},\; \alpha_2 = K_c\frac{T_d}{\frac{T_d}{N} + h}, \; \beta = K_c \frac{h}{T_i}\\
+    &\text{Stored:}  \;  y(kh-h), \; u_I(kh-h), \; u_D(kh-h)\\
     & \text{\textcolor{green!60!black}{Sample signals:}} \; r(kh), \; y(kh)\\
     &e(kh) = r(kh) - y(kh)\\
     &u_P(kh) = K_ce(kh)\\
-    &u_D(kh) = \frac{\frac{T_d}{N}}{\frac{T_d}{N} + h}u_D(kh-h) + K_c\frac{T_d}{\frac{T_d}{N} + h}\big(y(kh) - y(kh-h)\big)\\
-    &u(kh) = u_P(kh) + u_I(kh-h) + u_D(kh), \qquad \text{\textcolor{red}{Send to DAC}}\\
-    &u_I(kh) = u_I(kh-h) + K_c \frac{h}{T_i} e(kh)
+    &u_D(kh) = \alpha_1 u_D(kh-h) + \alpha_2\big(y(kh) - y(kh-h)\big)\\
+    &u(kh) = u_P(kh) + u_I(kh-h) - u_D(kh), \qquad \text{\textcolor{red}{Send to DAC}}\\
+    &u_I(kh) = u_I(kh-h) + \beta e(kh)
     \end{align*}
 
     #+BEANER: \pause

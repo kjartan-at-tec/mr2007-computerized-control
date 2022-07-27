@@ -1,4 +1,4 @@
-% Created 2021-07-05 Mon 10:51
+% Created 2022-07-03 Sun 20:39
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -23,7 +23,7 @@
 \DeclareMathOperator{\diff}{p}
 \usetheme{default}
 \author{Kjartan Halvorsen}
-\date{2021-07-05}
+\date{2022-07-04}
 \title{Stability}
 \hypersetup{
  pdfauthor={Kjartan Halvorsen},
@@ -37,9 +37,9 @@
 \maketitle
 
 \section{Intro}
-\label{sec:orgc262960}
+\label{sec:orge039936}
 
-\begin{frame}[label={sec:org0044637}]{Sampling the hard disk drive arm model}
+\begin{frame}[label={sec:orge325766}]{Sampling the hard disk drive arm model}
 \footnotesize
 \[ H(z) = \frac{z-1}{z} \ztrf{\mathcal{L}^{-1}\{ \frac{G(s)}{s} \}} \]
 \begin{center}
@@ -55,6 +55,9 @@
   \node at (-2, 1) {$J\ddot{y} = u$};
   \end{tikzpicture}
 \end{center}
+
+\pause
+
 Which of the below graphs show the sampled step-response of the system?
 
 \begin{center}
@@ -72,16 +75,16 @@ Which of the below graphs show the sampled step-response of the system?
        xtick = 0,
        ]
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*,domain=0:8, samples=9]  {x};
+       \addplot[red!60!black, thick, ycomb, mark=*,domain=0:8, samples=9]  {x};
 
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*, domain=0:8, samples=9]  {1};
+       \addplot[red!60!black, thick, ycomb, mark=*, domain=0:8, samples=9]  {1};
 
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*, domain=0:8, samples=9]  {2*exp(-x/2)};
+       \addplot[red!60!black, thick, ycomb, mark=*, domain=0:8, samples=9]  {2*exp(-x/2)};
 
        \nextgroupplot
-       \addplot[red, thick, ycomb, mark=*,domain=0:8, samples=9]  {pow(x,2)};
+       \addplot[red!60!black, thick, ycomb, mark=*,domain=0:8, samples=9]  {pow(x,2)};
        
      \end{groupplot}
      \node[blue!60] at (group c1r1.center) {\huge 1};
@@ -94,7 +97,7 @@ Which of the below graphs show the sampled step-response of the system?
 \end{frame}
 
 
-\begin{frame}[label={sec:orga49afd8}]{Sampling the hard disk drive arm model}
+\begin{frame}[label={sec:org637338e}]{Sampling the hard disk drive arm model}
 \footnotesize
 \[ H(z) = \frac{z-1}{z} \ztrf{\mathcal{L}^{-1}\{ \frac{G(s)}{s} \}} \]
 \begin{center}
@@ -114,6 +117,8 @@ Which of the below graphs show the sampled step-response of the system?
 Sampled step-response: \(y(kh) = \frac{1}{2J}(kh)^2\)
 \[ k^2 \qquad \overset{\mathcal{Z}}{\longleftrightarrow} \qquad \frac{z(z+1)}{(z-1)^3}\]
 
+\pause
+
 Which of the below pulse-transfer functions corresponds to the discretized hard disk drive model?
 \begin{center}
 \begin{tabular}{rrr}
@@ -124,11 +129,13 @@ Which of the below pulse-transfer functions corresponds to the discretized hard 
 \end{frame}
 
 \section{Block-diagram algebra}
-\label{sec:org7ad4442}
-\begin{frame}[label={sec:orgc33e873}]{Block-diagram algebra}
+\label{sec:org8d3a622}
+\begin{frame}[label={sec:org7b84aaf}]{Block-diagram algebra}
+\small
+
 \alert{Same rules as in the continuous-time case!}
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.9]
 \tikzset{node distance=2cm, 
     block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
     sumnode/.style={circle, draw, inner sep=2pt}        
@@ -154,12 +161,22 @@ Which of the below pulse-transfer functions corresponds to the discretized hard 
   \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
 \end{tikzpicture}
 \end{center}
+
+\pause
+
 With \[U(z) = U_1(z) - U_2(z) = F_f(z)Y_{ref}(z) - F_b(z)Y(z), \quad \text{and}\]
-\[ Y(z) = H(z)U(z), \quad \text{we obtain} \]
-\[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} Y_{ref}(z). \]
+  \[ Y(z) = H(z)U(z), \quad \text{we obtain} \]
+  \[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c(z)} Y_{ref}(z). \]
+
+\pause
+
+\footnotesize
+\begin{block}{Resource}
+\href{https://youtu.be/RTTk7ZJlGlI}{Block diagram basics from LearnChemE}
+\end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org344016d}]{Block-diagram algebra - steps in detail}
+\begin{frame}[label={sec:org552a277}]{Block-diagram algebra - steps in detail}
 With \[U(z) = U_1(z) - U_2(z) = F_f(z)Y_{ref}(z) - F_b(z)Y(z), \quad \text{and}\]
 \[ Y(z) = H(z)U(z), \quad \text{we obtain} \]
 \[ Y(z) = H(z)U(z) = H(z)\left(F_f(z)Y_{ref}(z) - F_b(z)Y(z)\right)\]
@@ -169,8 +186,8 @@ Move all terms with \(Y\) to the left side:
 \[ Y(z) = \frac{H(z)F_f(z)}{1 + H(z)F_b(z)}Y_{ref}(z)\]
 \end{frame}
 
-\begin{frame}[label={sec:orgc273941}]{Stability for the closed-loop system}
-\[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c{z}} Y_{ref}(z). \]
+\begin{frame}[label={sec:org276cf5f}]{Stability for the closed-loop system}
+\[ Y(z) = \underbrace{\frac{F_f(z)H(z)}{1 + F_b(z)H(z)}}_{H_c(z)} Y_{ref}(z). \]
 
 \begin{tcolorbox}
 Stability requires that all poles of the system, that is all solutions to the characteristic equation
@@ -179,11 +196,13 @@ are located inside the unit circle of the  z-plane.
 \end{tcolorbox}
 \end{frame}
 
-\begin{frame}[label={sec:org368f434}]{Stability for the disk drive arm}
+\begin{frame}[label={sec:org2d68b7e}]{Stability for the disk drive arm}
+\small
+
 Case \(\frac{h^2}{J} = 1\).
 
 \begin{center}
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.7]
 \tikzset{node distance=2cm, 
     block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
     sumnode/.style={circle, draw, inner sep=2pt}        
@@ -217,9 +236,9 @@ Case \(\frac{h^2}{J} = 1\).
 (z-1)^2z + \frac{K}{2}(z+1)(z-0.8) &= 0
 \end{align*}
 
-\alert{Is the system stable for the gain \(K=2\)?}
+\alert{Is the system stable for the gain \(K=1\), and for \(K=2\)?}
 \end{frame}
 
 \section{Estabilidad para el control del brazo del disko duro}
-\label{sec:org5f84d6a}
+\label{sec:org542eb8c}
 \end{document}

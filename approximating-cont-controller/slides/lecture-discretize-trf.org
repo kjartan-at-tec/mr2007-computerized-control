@@ -11,7 +11,7 @@
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
 #+title: Discretizing continuous-time controllers
-#+date: 2021-07-08
+#+date: 2022-07-08
 
 
 * What do I want the students to understand?			   :noexport:
@@ -91,6 +91,11 @@
     :PROPERTIES:
     :BEAMER_col: 0.6
     :END:
+
+\begin{align*}
+y(kh) &= \frac{\shift-1}{h} u(kh) = \frac{\shift u(kh) - u(kh)}{h}\\ &= \frac{u(kh + h) - u(kh)}{h}\\\\
+&\textcolor{white}{hej}
+\end{align*}
     
 ** Discretization methods
    
@@ -113,7 +118,7 @@
     \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}
    #+END_CENTER
    The infinite positive imaginary axis in the s-plane is mapped to the finite-length upper half of the unit circle in the z-plane.
-** Exercise
+** Exercise                                                        :noexport:
    Find the discrete approximation of the lead-compensator $F(s) = \frac{s+b}{s+a}$, and determine the pole for 
    1. Forward difference. Substitute 
       \[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
@@ -164,6 +169,24 @@ Im{z} = \mu h
     - Simply insert z = \frac{1}{1 - sh} = \frac{1}{1 - i\pi/4}
       Then do 
       | z | = \frac{1}{ | 1 -i\pi/4 | } = \frac{1}{\sqrt{1 +  \pi^2/16}} |
+
+
+** Bilinear transformation exercise
+   #+BEGIN_CENTER 
+    \includegraphics[width=\linewidth]{../../figures/tustin-diff-exercise}
+   #+END_CENTER
+
+*** Solution							   :noexport:
+    - Note that
+      s = \frac{z-1}{zh} solved for z gives
+      zhs = z-1
+      z-zhs = 1
+      z = \frac{1}{1-sh}
+    - Simply insert z = \frac{1}{1 - sh} = \frac{1}{1 - i\pi/4}
+      Then do 
+      | z | = \frac{1}{ | 1 -i\pi/4 | } = \frac{1}{\sqrt{1 +  \pi^2/16}} |
+
+** Tustin's approximation, harmonic oscillator			   :noexport:
 
 ** Tustin's approximation, harmonic oscillator			   :noexport:
 

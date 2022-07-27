@@ -15,8 +15,6 @@
     "pgfplots")
    (TeX-add-symbols
     "sysCont"
-    "samplePeriod")
-   (LaTeX-add-environments
-    '("exercise" LaTeX-env-args ["argument"] 0)))
+    "samplePeriod"))
  :latex)
 

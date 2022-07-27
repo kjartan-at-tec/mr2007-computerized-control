@@ -1,0 +1,134 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{tcolorbox}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+title: Group exercise on relative stability
+#+date: 2022-07-08
+
+* Phase margin
+** The phase margin
+#+BEGIN_CENTER 
+ \includegraphics[width=0.38\linewidth]{../../figures/implane-nyquist-margins}
+#+END_CENTER
+   - Cross-over frequency: The frequency \(\omega_c\) for which \(|G_o(i\omega)| = 1\). 
+   - Phase margin: The angle \(\varphi_m\) to the negative real axis for the point where the Nyquist curve intersects the unit circle. \[\varphi_m = \arg G_o(i\omega_c) - (-180\degree) = \arg G_o(i\omega_c) + 180\degree\]
+
+*** Notes							   :noexport:
+    The phase margin equals the  amount of extra negative phase that the loop gain can contribute before becoming unstable. For instance, assume delay of length T: F(s) = exp(-sT), which has phase 
+    \arg F(i\omega) = \arg exp(i\omegaT) = \omega T
+    If this is not accounted for in the loop gain
+    \arg G_o(i\omega_c) - \phasemargin = -180, but
+    \arg G_o^0 (i\omega_c) = \arg G_o(i\omega_c) - \omega_cT = -180 + \phasemargin - \omega_c T
+    So for the closed-loop system to remain stable we must have
+    \omega_c T = \phasemargin. 
+
+
+** Phase margin for the hard disk drive controller
+
+\footnotesize
+
+# Sampling period \(h = 2\times 10^{-4}\), Nyquist frequency \(\omega_N = \frac{\pi}{2}\times 10^4\)
+
+#+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z) = \frac{10}{3}$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=30mm] (plant) {$H(z) = \frac{0.018(z+1)}{(z-1)^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (SR) {$F_b(z)=20\frac{z-0.8}{z+0.2}$};
+    \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) |- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+
+\begin{center}
+  \includegraphics[height=0.5\textheight]{../../matlab/harddisk_margin_crop}
+  \includegraphics[height=0.5\textheight]{../../matlab/harddisk_nyquist_crop}
+
+\end{center}
+
+  #+end_export
+
+
+** Phase margin with anti-aliasing filter
+
+\footnotesize
+
+# Sampling period \(h = 2\times 10^{-4}\), Nyquist frequency \(\omega_N = \frac{\pi}{2}\times 10^4\)
+
+#+begin_export latex
+  \begin{center}
+  \begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
+  \tikzset{node distance=2cm, 
+      block/.style={rectangle, draw, minimum height=12mm, minimum width=14mm},
+      sumnode/.style={circle, draw, inner sep=2pt}        
+  }
+
+    \node[coordinate] (input) {};
+    \node[block, right of=input] (TR) {$F_f(z) = \frac{10}{3}$};
+    \node[sumnode, right of=TR, node distance=30mm] (sum) {\tiny $\sum$};
+    \node[block,right of=sum, node distance=60mm] (plant) {$H(z) = \frac{0.018(z+1)}{(z-1)^2}$};
+    %\node[sumnode, right of=plant, node distance=30mm] (sumdist) {$\sum$};
+    %\node[coordinate, above of=sumdist, node distance=15mm] (dist) {};
+    %\node[coordinate, right of=sumdist, node distance=15mm] (measure) {};
+    \node[coordinate, right of=plant, node distance=30mm] (output) {};
+    \node[coordinate, right of=plant, node distance=22mm] (measure) {};
+    %\node[sumnode,below of=measure, node distance=25mm] (sumnoise) {$\sum$};
+    %\node[coordinate, right of=sumnoise, node distance=15mm] (noise) {};
+    \node[block,below of=plant, node distance=20mm] (aa) {$H_{aa}(z) = z^{-1}$};
+    \node[block,left of=aa, node distance=36mm] (SR) {$F_b(z)=20\frac{z-0.8}{z+0.2}$};
+    \draw[->] (input) -- node[above, pos=0.2] {$y_{ref}(k)$} (TR);
+    \draw[->] (TR) -- node[above] {$u_1(k)$} (sum);
+    \draw[->] (sum) -- node[above] {$u(k)$} (plant);
+    \draw[->] (plant) -- node[at end, above] {$y(k)$} (output);
+    \draw[->] (measure) |- (aa);
+    \draw[->] (aa) -- (SR);
+    \draw[->] (SR) -| (sum) node[right, pos=0.8] {$u_2(k)$} node[left, pos=0.96] {$-$};
+  \end{tikzpicture}
+  \end{center}
+  #+end_export
+
+1. What is the *amplitude margin* (gain margin) in magnitude? (/Hint/: convert from dB)
+2. What is the *sampling period* \(h\)? (/Hint/: The bode plot ends at the Nyquist frequency)
+3. Determine the *phase shift* of a pure delay of \(h\) at the cutoff-frequency \(\omega_c = 2.87\times{}10^3\) rad/s (/hint/: the delay of time \(h\) has transfer function \(\mathrm{e}^{-sh}\)).
+4. Determine the *new phase margin* with the anti-aliasing filter in the feedback path. (/Hint/: The phase of the loop gain is given by \(\arg G_o = \arg H + \arg F_b + \arg H_{aa}\))
+  
+
+** Solution
+
+  
+#+begin_export latex
+\begin{center}
+ \includegraphics[height=0.55\textheight]{../../matlab/harddisk_margin_aa_crop}
+ \includegraphics[height=0.55\textheight]{../../matlab/harddisk_nyquist_aa_crop}
+\end{center}
+  #+end_export
+
+
+

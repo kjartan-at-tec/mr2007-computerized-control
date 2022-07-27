@@ -1,4 +1,4 @@
-% Created 2021-07-06 Tue 09:03
+% Created 2022-07-05 Tue 14:59
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,8 +34,8 @@
 \maketitle
 
 \section{Pole placement}
-\label{sec:org9c42cbf}
-\begin{frame}[label={sec:orgf8465c7}]{Pole-placement and time-response}
+\label{sec:org19bdda3}
+\begin{frame}[label={sec:orgca7ea5b}]{Pole-placement and time-response}
 \alert{Pair the pole-placement with the correct time-response (continuous time)!}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
@@ -51,7 +51,7 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org6dc2ec2}]{Mapping of poles from continuous time to discrete time}
+\begin{frame}[label={sec:org23ff790}]{Mapping of poles from continuous time to discrete time}
 \begin{center}
 \begin{tabular}{ll}
 Continuous time & Discrete time\\
@@ -67,7 +67,15 @@ Pole of the system: \(s+a=0 \; \Rightarrow \; s = -a\) & Pole of the system: \(z
 The \alert{s-domain} of continuous-time systems is related to the \alert{z-domain} of discrete-time systems through  \[z = \mathrm{e}^{sh}\]
 \end{frame}
 
-\begin{frame}[label={sec:orge1375d9}]{Pole-placement and time-response}
+\begin{frame}[label={sec:orgda35d5b}]{Poles in continuous- and discrete time}
+\begin{center}
+\includegraphics[width=0.85\linewidth]{../../figures/pzmap-continuous-discrete-exc}
+\end{center}
+
+\alert{Activity} Pair the continuous-time poles with the corresponding discrete-time poles! \(h=0.2\)
+\end{frame}
+
+\begin{frame}[label={sec:org668312d}]{Pole-placement and time-response}
 Pair the pole-placement with the correct time-response (discrete time)!
 \begin{columns}
 \begin{column}{0.4\columnwidth}
@@ -84,10 +92,10 @@ Pair the pole-placement with the correct time-response (discrete time)!
 \end{frame}
 
 \section{Root locus}
-\label{sec:orgd424d23}
+\label{sec:org81dea4c}
 
 
-\begin{frame}[label={sec:org7677301}]{Root locus: A brief review}
+\begin{frame}[label={sec:orgbc1a858}]{Root locus: A brief review}
 
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
@@ -102,25 +110,37 @@ Pair the pole-placement with the correct time-response (discrete time)!
     \draw[->] (sum) -- node[above] {} (plant);
     \draw[->] (plant) -- node[coordinate] (measure) {} node[above, near end] {} (output);
     \draw[->] (measure) |- (controller);
-    \draw[->] (controller) -| (sum);
+    \draw[->] (controller) -| node[left, pos=0.95] {$-$}(sum);
   \end{tikzpicture}
 \end{center}
+
+\pause
 
 
 \begin{itemize}
 \item The loop pulse-transfer function (loop gain) becomes \(L(z) = H(z)F(z) = K\frac{\overbrace{B(z)D(z)}^{Q(z)}}{\underbrace{A(z)C(z)}_{P(z)}} = K \frac{Q(z)}{P(z)}\).
+\end{itemize}
+\pause
+\begin{itemize}
 \item The roots of \(Q(z)\) are called the \alert{open loop zeros}.
+\end{itemize}
+\pause
+\begin{itemize}
 \item The roots of \(P(z)\) are called the \alert{open loop poles}.
+\end{itemize}
+\pause
+\begin{itemize}
 \item The characteristic equation for the closed-loop system is \[ 1 + K\frac{Q(z)}{P(z)} = 0 \quad \Leftrightarrow \quad P(z) + KQ(z) = 0\]
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}[label={sec:org4d6f28e}]{Root locus: Definition}
+\begin{frame}[label={sec:orgdddade7}]{Root locus: Definition}
 Let
 \[\begin{cases} P(z)&=z^n+a_1z^{n-1}+\dots+a_n = (z-p_1)(z-p_2)\cdots(z-p_n)\\ 
 Q(z)&=z^m+b_1 z^{m-1}+\dots+b_m=(s-q_1)(z-q_2)\cdots(z-q_m) \end{cases},\ \ \ n\ge m \]
 
+\pause
 The root locus shows how the \alert{solution} to the characteristic equation
 \begin{equation}
 \label{eq:P(z)+KQ(z)=0}
@@ -129,7 +149,7 @@ P(z)+K\cdot Q(z)=0,\ \ \ 0\le K<\infty
 depend on the parameter \(K\). The root locus consists of the set of all points in the complex plane that are solutions to \eqref{eq:P(z)+KQ(z)=0} for some non-negative value of \(K\).
 \end{frame}
 
-\begin{frame}[label={sec:orgaed6fe4}]{Root locus: Characteristics}
+\begin{frame}[label={sec:org0f8aa4c}]{Root locus: Characteristics}
 \begin{description}
 \item[{Start points}] The \(n\) roots of \(P(z)\), marked by crosses
 \item[{End points}] The \(m\) roots of \(Q(z)\), marked  by circles
@@ -138,7 +158,7 @@ depend on the parameter \(K\). The root locus consists of the set of all points 
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:org83ded44}]{Root locus: Direction of the asymptotes}
+\begin{frame}[label={sec:org2402d6c}]{Root locus: Direction of the asymptotes}
 The characteristic equation \(P(z)+K Q(z)=0\) can be written \(\frac{P(z)}{Q(z)} = -K\) and for large \(z\) it can be approximated as 
 \[ \frac{z^n}{z^m} = -K \quad \Leftrightarrow \quad z^{n-m} = -K.\]
 
@@ -148,12 +168,12 @@ So, the \alert{directions} of the asymptotes are given by the expression
 \[ \theta_k = \arg z = \frac{(2k+1)\pi}{n-m}, \; k \in \mathbb{Z} \]
 \end{frame}
 
-\begin{frame}[label={sec:org7e82366}]{Root locus: The asymptotes' intersection with the real axis}
+\begin{frame}[label={sec:org7867159}]{Root locus: The asymptotes' intersection with the real axis}
 \[ z_{ip} = \frac{ \sum_{i=0}^n p_i - \sum_{i=0}^m q_i}{n-m}, \]
 where \(\{p_i\}\) are the starting points (open-loop poles) and \(\{q_i\}\) are the end points (open-loop zeros). 
 \end{frame}
 
-\begin{frame}[label={sec:org8888ac4}]{Root locus exerise: Pair the pulse-trf fcn and root locus}
+\begin{frame}[label={sec:org503865e}]{Root locus exerise: Pair the pulse-trf fcn and root locus}
 \begin{columns}
 \begin{column}{0.35\columnwidth}
  \small

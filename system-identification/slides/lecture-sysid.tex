@@ -1,4 +1,4 @@
-% Created 2021-07-14 Wed 11:54
+% Created 2022-07-14 Thu 16:54
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -17,6 +17,8 @@
 \usepackage{khpreamble}
 \usepackage{amssymb}
 \usepackage{pgfplotstable}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
 \DeclareMathOperator{\shift}{q}
 \DeclareMathOperator{\diff}{p}
 \usetheme{default}
@@ -35,21 +37,41 @@
 \maketitle
 
 \section{Intro}
-\label{sec:org2f040f4}
-\begin{frame}[label={sec:org0fdcf79}]{A complicated process}
+\label{sec:org9403ba8}
+\begin{frame}[label={sec:org1e78cfe}]{A complicated process}
 \begin{columns}
-\begin{column}{0.6\columnwidth}
-From Wikipedia "Cyclonic separation"
-\end{column}
 \begin{column}{0.4\columnwidth}
 \begin{center}
-\includegraphics[height=1.0\textheight]{../../figures/Vertical-cyclone.jpg}
+\includegraphics[height=0.7\textheight]{../../figures/Vertical-cyclone.jpg}
 \end{center}
+
+\footnotesize
+From Wikipedia "Cyclonic separation"
+\end{column}
+
+\begin{column}{0.6\columnwidth}
+\pause
+
+ \begin{center}
+ \begin{tikzpicture}
+
+ \begin{axis}[%
+ width = 9cm,
+ height = 5cm,
+ xlabel = time,
+ ]
+ \addplot+[thick,cyan!90!black, no marks, domain = -2:11, samples=200] {2*(x>0.5)*(1-exp(-(x-0.5)/2))};
+ \addplot+[green!80!black, no marks] coordinates {(-2, 0) (0,0) (0,1) (10,1)};
+\end{axis}
+ \end{tikzpicture}
+ \end{center}
+
+Fit model \[G(s) = \frac{k\mathrm{e}^{-s\theta}}{\tau s + 1} \]
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org5066307}]{System identification}
+\begin{frame}[label={sec:org50f4fd8}]{System identification}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm, inner sep=10pt}, sumnode/.style={circle, draw, inner sep=2pt},]
 
@@ -73,67 +95,151 @@ From Wikipedia "Cyclonic separation"
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgbf66964}]{The Auto-Regressive with eXogenous input (ARX) model}
+\begin{frame}[label={sec:org6d47710}]{The Auto-Regressive with eXogenous input (ARX) model}
 \begin{center}
-\includegraphics[width=0.7\linewidth]{../../figures/block-arx}
+\includegraphics[width=0.6\linewidth]{../../figures/block-arx}
 \end{center}
+
+\pause
+
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n) \]
 
 The error signal \(e(k)\) is a zero-mean white noise sequence representing perturbations and modeling errors.
 \end{frame}
 
-\begin{frame}[label={sec:org43fbae7}]{First-order ARX model with one delay}
+\begin{frame}[label={sec:org4211b02}]{White noise}
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[axis line style={black!20},
+  width=14cm,
+  height=3.5cm,
+  %xlabel={$t$},
+  ylabel={$e(k)$},
+  %xtick = {-1, 0, 1},
+  %xticklabels={$k-1$, $k$, $k+1$},
+  %xtick = {0, 2, 4, 6, 8, 10},
+  %ytick=\empty,
+  xmin=-.5,
+  xmax=100.5,
+]
+  %\addplot[black, ycomb] table[x expr=\coordindex, y index=0] {\randntable};
+  \addplot+[black, ycomb, domain=0:100, samples=101,variable=k] { rand}; 
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org8d5caca}]{Random binary signal}
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[axis line style={black!20},
+  width=14cm,
+  height=3.5cm,
+  %xlabel={$t$},
+  ylabel={$u(k)$},
+  %xtick = {-1, 0, 1},
+  %xticklabels={$k-1$, $k$, $k+1$},
+  %xtick = {0, 2, 4, 6, 8, 10},
+  %ytick=\empty,
+  %xmin=-.5,
+  %xmax=100.5,
+]
+\addplot+[black, ycomb] table[x expr=\coordindex, y index=0] {../../figures/rbs_100.dta};
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org43617b2}]{First-order ARX model with one delay}
 \begin{center}
 \includegraphics[width=0.3\linewidth]{../../figures/block-arx}
 \end{center}
-\[ (\shift + a_1) y(k) = (b_0 \shift + b_1) \shift^{-1}u(k) + e(k+1) \]
-\[ y(k+1) +  a_1y(k) = b_0u(k) + b_1u(k-1) + e(k+1) \]
+\[ (\shift + \textcolor{red!60!black!}{a_1}) y(k) = (\textcolor{red!60!black!}{b_0} \shift + \textcolor{red!60!black!}{b_1}) \shift^{-1}u(k) + e(k+1) \]
+\[ y(k+1) +  \textcolor{red!60!black!}{a_1}y(k) = \textcolor{red!60!black!}{b_0}u(k) + \textcolor{red!60!black!}{b_1}u(k-1) + e(k+1) \]
 
 \pause
 
 Using the model to predict the output one step ahead:
 \begin{align*}
- \hat{y}(k+1) &= -a_1y(k) + b_0u(k) + b_1u(k-1) =  \underbrace{\begin{bmatrix} -y(k) & u(k) & u(k-1) \end{bmatrix}}_{\varphi_{k+1}^T} \underbrace{\begin{bmatrix} a_1\\b_0\\b_1\end{bmatrix}}_{\theta}\\
- &= \varphi_{k+1}^T\theta
+ \hat{y}(k+1) &= -\textcolor{red!60!black!}{a_1}y(k) + \textcolor{red!60!black!}{b_0}u(k) + \textcolor{red!60!black!}{b_1}u(k-1) =  \underbrace{\begin{bmatrix} \textcolor{white}{-y(k)} & \textcolor{white}{u(k)} & \textcolor{white}{u(k-1)} \end{bmatrix}}_{\varphi_{k+1}^T} \underbrace{\begin{bmatrix} \textcolor{red!60!black}{a_1}\\\textcolor{red!60!black}{b_0}\\\textcolor{red!60!black}{b_1}\end{bmatrix}}_{\theta}\\
+ &= \varphi_{k+1}^T\textcolor{red!60!black}{\theta}
  \end{align*}
 \end{frame}
 
 
 
-\begin{frame}[label={sec:org82bc73b}]{Parameter estimation - Least squares}
-\alert{Objective} Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\}\] and model \(\mathcal{M}: \; y(k+1) = -ay(k) + b_0u(k) + b_1u(k-1)  + e(k+1)\), obtain the parameters \((a_1,\,b_0,\,b_1)\) which gives the best fit of the model to the data.
+
+
+\begin{frame}[label={sec:org5aaa0d0}]{First-order ARX model with one delay}
+\begin{center}
+\includegraphics[width=0.3\linewidth]{../../figures/block-arx}
+\end{center}
+\[ (\shift + \textcolor{red!60!black!}{a_1}) y(k) = (\textcolor{red!60!black!}{b_0} \shift + \textcolor{red!60!black!}{b_1}) \shift^{-1}u(k) + e(k+1) \]
+\[ y(k+1) +  \textcolor{red!60!black!}{a_1}y(k) = \textcolor{red!60!black!}{b_0}u(k) + \textcolor{red!60!black!}{b_1}u(k-1) + e(k+1) \]
+
+
+Using the model to predict the output one step ahead:
+\begin{align*}
+ \hat{y}(k+1) &= -\textcolor{red!60!black!}{a_1}y(k) + \textcolor{red!60!black!}{b_0}u(k) + \textcolor{red!60!black!}{b_1}u(k-1) =  \underbrace{\begin{bmatrix} \textcolor{black}{-y(k)} & \textcolor{black}{u(k)} & \textcolor{black}{u(k-1)} \end{bmatrix}}_{\varphi_{k+1}^T} \underbrace{\begin{bmatrix} \textcolor{red!60!black}{a_1}\\\textcolor{red!60!black}{b_0}\\\textcolor{red!60!black}{b_1}\end{bmatrix}}_{\theta}\\
+ &= \varphi_{k+1}^T\textcolor{red!60!black}{\theta}
+ \end{align*}
 \end{frame}
 
 
 
-\begin{frame}[label={sec:orgee9dfe7}]{Parameter estimation - Least squares}
-Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\}\] and model \(\mathcal{M}: \; y(k+1) = -ay(k) + b_0u(k) + b_1u(k-1)  + e(k+1)\).
+
+\begin{frame}[label={sec:orgc7266e2}]{Parameter estimation - Least squares}
+\alert{Objective} Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\}\] and model \(\mathcal{M}: \; y(k+1) = -\textcolor{red!60!black!}{a}y(k) + \textcolor{red!60!black!}{b_0}u(k) + \textcolor{red!60!black!}{b_1}u(k-1)  + e(k+1)\), obtain the parameters \((\textcolor{red!60!black!}{a},\,\textcolor{red!60!black!}{b_0},\,\textcolor{red!60!black!}{b_1})\) which gives the best fit of the model to the data.
+\end{frame}
+
+
+
+\begin{frame}[label={sec:org91fe707}]{Parameter estimation - Least squares}
+Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\}\] and model \(\mathcal{M}: \; y(k+1) = -\textcolor{red!60!black!}{a}y(k) + \textcolor{red!60!black!}{b_0}u(k) + \textcolor{red!60!black!}{b_1}u(k-1)  + e(k+1)\).
 
 \begin{enumerate}
 \item Form the one-step ahead prediction
-\[ \hat{y}_{k+1} = -a_1y_k + b_0u_k + b_1u_{k-1} =  \underbrace{\begin{bmatrix} -y_k & u_k & u_{k-1} \end{bmatrix}}_{\varphi_{k+1}^T} \underbrace{\begin{bmatrix} a_1\\b_0\\b_1\end{bmatrix}}_{\theta}\] and the prediction error
-   \[ \epsilon_{k+1} = y_{k+1} - \hat{y}_{k+1} = y_{k+1} - \varphi_{k+1}^T\theta.\]
+\[ \hat{y}_{k+1} = -\textcolor{red!60!black!}{a_1}y_k + \textcolor{red!60!black!}{b_0}u_k + \textcolor{red!60!black!}{b_1}u_{k-1} =  \underbrace{\begin{bmatrix} -y_k & u_k & u_{k-1} \end{bmatrix}}_{\varphi_{k+1}^T} \underbrace{\begin{bmatrix} \textcolor{red!60!black!}{a_1}\\\textcolor{red!60!black!}{b_0}\\\textcolor{red!60!black!}{b_1}\end{bmatrix}}_{\textcolor{red!60!black!}{\theta}}\] and the prediction error
+   \[ \epsilon_{k+1} = y_{k+1} - \hat{y}_{k+1} = y_{k+1} - \varphi_{k+1}^T\textcolor{red!60!black!}{\theta}.\]
 \end{enumerate}
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd1a0844}]{Parameter estimation - Least squares}
+\begin{frame}[label={sec:org0f4f9bf}]{Parameter estimation - Least squares}
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item Combine all the observations \(y_k\) and predictions \(\hat{y}_k\) on vector form
 \begin{align*}
 \epsilon &= \begin{bmatrix} \epsilon_3\\\epsilon_4\\\vdots\\\epsilon_N\end{bmatrix} =  \begin{bmatrix} y_3\\ y_4\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \hat{y}_3\\ \hat{y}_4\\\vdots\\\hat{y}_N \end{bmatrix}
- =  \begin{bmatrix} y_2\\ y_3\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \varphi_2^T\theta\\ \varphi_3^T\theta\\\vdots\\\varphi_N^T\theta \end{bmatrix}\\
-&= y - \underbrace{\begin{bmatrix}\varphi_1^T\\\varphi_2^T\\\vdots\\\varphi_N^T\end{bmatrix}}_{\Phi}\theta = y - \Phi\theta 
+ =  \begin{bmatrix} y_3\\ y_4\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \varphi_3^T\textcolor{red!60!black!}{\theta}\\ \varphi_4^T\textcolor{red!60!black!}{\theta}\\\vdots\\\varphi_N^T\textcolor{red!60!black!}{\theta} \end{bmatrix}\\
+&= y - \underbrace{\begin{bmatrix}\varphi_3^T\\\varphi_4^T\\\vdots\\\varphi_N^T\end{bmatrix}}_{\Phi}\textcolor{red!60!black!}{\theta} = y - \Phi\textcolor{red!60!black!}{\theta} 
 \end{align*}
-\item Solve \(\arg\min \; J(\theta) = \frac{1}{2}\epsilon^T\epsilon = \frac{1}{2}\sum_{i=3}^N \epsilon_i(\theta)^2\)
+\item Solve \(\arg\min \; J(\textcolor{red!60!black!}{\theta}) = \frac{1}{2}\epsilon^T\epsilon = \frac{1}{2}\sum_{i=3}^N \epsilon_i(\textcolor{red!60!black!}{\theta})^2\)
 \end{enumerate}
 \end{frame}
 
 
-\begin{frame}[label={sec:org6ce2d0d}]{The problem with least squares}
+\begin{frame}[label={sec:org937f671}]{The problem with least squares}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=6cm,
+      height=5cm,
+      %ylabel=loss,
+      %xlabel=penalty,
+      xtick = \empty,
+      ytick = \empty,
+      ]
+      \addplot[black, no marks , domain=-2:2, samples=40] {x^3};
+      \addplot[blue, only marks, domain=-2:2, samples=10] {x^3 + 2.3*rand};
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+
+
 \begin{align*}
  \text{minimize} \; &\sum_k g(\epsilon_k)\\
  \text{where} \; g(u) &= u^2
@@ -157,7 +263,7 @@ Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org49222fc}]{More robust: The Huber loss function}
+\begin{frame}[label={sec:org86ffe3a}]{More robust: The Huber loss function}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Also known as \alert{robust regression}
@@ -188,23 +294,23 @@ Also known as \alert{robust regression}
 \end{frame}
 
 
-\begin{frame}[label={sec:org10b0bf3}]{First-order ARX model without delay}
+\begin{frame}[label={sec:orgf1667be}]{First-order ARX model without delay}
 \begin{center}
 \includegraphics[width=0.4\linewidth]{../../figures/block-arx}
 \end{center}
-\[ (\shift + a_1) y(k) = (b_0 \shift + b_1) u(k) + e(k+1) \]
+\[ (\shift + \textcolor{red!60!black!}{a_1}) y(k) = (\textcolor{red!60!black!}{b_0} \shift + \textcolor{red!60!black!}{b_1}) u(k) + e(k+1) \]
 
 \alert{Activity}
 
 \begin{enumerate}
 \item Determine the one-step ahead predictor \(\hat{y}_{k+1}\) and the prediction error \(\epsilon_{k+1}\).
-\item Form the system of equations \(\Phi\theta = y\)
+\item Form the system of equations \(\Phi\textcolor{red!60!black!}{\theta} = y\)
 \end{enumerate}
 \end{frame}
 
 
-\begin{frame}[label={sec:orgc2d06b4}]{The ARX model}
-\[ A(\shift) y(k) = B(\shift)u(k) + e(k+n)\]
+\begin{frame}[label={sec:org3005953}]{The ARMAX model}
+\[ A(\shift) y(k) = B(\shift)u(k) + C(\shift)e(k)\]
 
 \alert{Activity} Fill the empty blocks.
 

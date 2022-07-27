@@ -7,12 +7,13 @@
 
 #+LaTex_HEADER: \usepackage{khpreamble}
 #+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{mathtools}
 #+LaTex_HEADER: \usepgfplotslibrary{groupplots}
 #+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
 #+title: Sampling and aliasing
-#+date: 2021-06-30
+#+date: 2022-06-29
 
 * What do I want the students to understand?			   :noexport:
   - The sampling theorem
@@ -165,15 +166,21 @@ A continuous-time signal with Fourier transform that is zero outside the interva
    The *impulse train*, a.k.a the *Dirac comb*:
    #+BEGIN_CENTER 
    \( m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh) \)\hspace*{10mm}
-    \includegraphics[width=0.4\linewidth]{../../../figures/modulation-model-blocks}
+    \includegraphics[width=0.6\linewidth]{../../figures/modulation-model-blocks}
    #+END_CENTER
 
-        \[f_s(t) = f(t)m(t) = f(t) \sum_{k=-\infty}^{\infty} \delta(t-kh) = \sum_{k=-\infty}^{\infty} f(t)\delta(t-kh) = \sum_{k=-\infty}^{\infty} f(kh) \delta(t-kh) \]
+ #+beamer: \pause
+        \[f_s(t) = f(t)m(t) = f(t) \sum_{k=-\infty}^{\infty} \delta(t-kh) \quad\xleftrightarrow{\mathcal{F}}\quad F_s(\omega) = F(\omega) \ast M(\omega)\]
+	# = \sum_{k=-\infty}^{\infty} f(t)\delta(t-kh) = \sum_{k=-\infty}^{\infty} f(kh) \delta(t-kh) \]
 
+ #+beamer: \pause
 
-#+BEGIN_CENTER 
- \includegraphics[width=0.8\linewidth]{../../figures/modulation-model-timeseries}
-#+END_CENTER
+\footnotesize
+
+*** Resources
+[[https://youtu.be/SxNVcCVj-3c][Dr. Trefor Bazett on the Dirac delta function, ]]
+[[https://youtu.be/TIcfY19dk0c][Prof Iain Collings explains convolution with the delta, ]]
+[[https://youtu.be/nHguB7MvCfI][Steven Fenton on the dirac comb and sampling]]
 
 *** Notes							   :noexport:
     The laplace transform of f_s(t):
@@ -432,10 +439,11 @@ A continuous-time signal with Fourier transform that is zero outside the interva
 
 * Exercises using line spectra
 ** Fourier transform of a complex exponential
-   The function $x(t) = \mathrm{e}^{i\omega_1 t}$ 
+\small 
+The function $x(t) = \mathrm{e}^{i\omega_1 t}$ 
    #+begin_export latex
    \begin{center}
-     \begin{tikzpicture}[scale=2]
+     \begin{tikzpicture}[scale=1.4]
        \draw[->] (-1.2, 0) -- (1.2,0) node[below] {Re};
        \draw[->] (0, -1.2) -- (0,1.2) node[left] {Im};
        \draw[domain=0:360, samples=361, dashed] plot ({cos(\x)}, {sin(\x)});
@@ -448,8 +456,14 @@ A continuous-time signal with Fourier transform that is zero outside the interva
      \end{tikzpicture}
    \end{center}
    #+end_export
-   has Fourier transform 
-   \[X(i\omega) = \int_{-\infty}^{\infty} x(t) \mathrm{e}^{-i\omega t}dt = \int_{-\infty}^{\infty} \mathrm{e}^{i(\omega_1 - \omega) t}dt = \delta(\omega_1 - \omega)\] 
+
+   #+beamer: \pause
+has Fourier transform 
+   \[X(i\omega) = \int_{-\infty}^{\infty} x(t) \mathrm{e}^{-i\omega t}dt = \int_{-\infty}^{\infty} \mathrm{e}^{i(\omega_1 - \omega) t}dt = 2\pi \delta(\omega_1 - \omega)\] 
+
+   \footnotesize
+*** Resources
+[[https://youtu.be/TLWE388JWGs][Prof Iain Collings on Complex numbers and real signals]]
 
 ** Fourier transform of a sinusoid
    A sinusoidal signal $y(t) = \sin(\omega_1 t)$ has all its power concentrated at one single frequency, $\omega=\unit{\omega_1}{rad\per\second}$. 
@@ -477,7 +491,7 @@ A continuous-time signal with Fourier transform that is zero outside the interva
    #+end_export
    Since \[y(t) = \sin(\omega_1 t) = \frac{1}{2i} \left( \mathrm{e}^{i\omega_1 t} - \mathrm{e}^{-i \omega_1 t} \right)\]
    the Fourier transform of a sinusoid becomes
-   \[ Y(i\omega) = \frac{1}{2i} \left( \delta(\omega_1 - \omega) - \delta(\omega_1 + \omega) \right)\]
+   \[ Y(i\omega) = \frac{1}{2i} \left( 2\pi \delta(\omega_1 - \omega) - 2\pi \delta(\omega_1 + \omega) \right)\]
 
 ** Exercise 1: Fourier transform of a sinusoid
    Consider the signal below
@@ -706,14 +720,16 @@ A continuous-time signal with Fourier transform that is zero outside the interva
        \end{center}
    #+end_export
 
-   What is the frequency of the sinusoid? What is the sampling frequency \(\omega_s\) and the Nyquist frequency \(\omega_N\)?
+   What is the frequency of the sinusoid? What is the sampling frequency \(\omega_s\) and the Nyquist frequency \(\omega_N\) in terms of the period $T$ of the sinusoid?
 
 *** Notes							   :noexport:
     - w = 2pi/T, so to minimum sampling period in  order to avoid aliasing is 2*w = 4pi/T
     - ws = 2pi/h = 2pi/(2/3T) = 3pi/T < 4 pi/T
     - wN  = pi/h = 3/2 pi/T
-** Exercise 3: Fourier transform of a sampled sinusoid
-   Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
+** Exercise 4: Fourier transform of a sampled sinusoid
+
+\small 
+Consider the continuous and sampled signals with sampling period \(h=\frac{2}{3}T\)
 
    #+begin_export latex
 

@@ -50,15 +50,15 @@
    #+end_center
 
 ** Closed-loop poles
-   *Activity* Given the specifications \( \zeta > 0.59\) and \( \zeta\omega_n > 4\), mark the regions in the s-plane and in the z-plane that corresponds to the specifications.
+   *Activity* Given specifications \( \zeta > 0.59\) and \( \zeta\omega_n > 4\), mark the regions in the s-plane and in the z-plane that corresponds to the specifications. Use sampling period \(h=0.2\).
 #+BEGIN_CENTER 
-*plano s* \hspace*{0.4\linewidth} *plano z*\\
+*s-plane* \hspace*{0.4\linewidth} *z-plane*\\
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
 \includegraphics[height=0.6\textheight]{../../figures/zgrid-crop}\\
 #+END_CENTER
 
-** Closed-loop poles - Solution
-** Closed-loop poles - Solution
+** Closed-loop poles - Solution                                    :noexport:
+** Closed-loop poles - Solution                                    :noexport:
    #+begin_center
    \includegraphics[height=0.9\textheight]{../../figures/screenshot-2020-07-14.png}
    #+end_center
@@ -70,7 +70,7 @@
 #+END_CENTER
 
 \begin{align*}
-Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z)}^{\text{sens compl}}N(z)\\
+Y(z) &= G_c(z)Y_{ref}(z) + \overbrace{S_s(z)}^{\text{sens}}V(z) - \overbrace{T_s(z)}^{\text{compl sens}}N(z)\\
      &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{z^{-d}F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
 \end{align*}
 
@@ -80,16 +80,29 @@ Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z
 #+END_CENTER
 
 \begin{align*}
-Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
+Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}Y_{ref}(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
 \end{align*}
  
 *Evidently* \( S_s(z) + T_s(z) = 1\) *Conclusion:* One must find a balance between disturbance rejection and noise attenuation.
 
 ** The sensitivity and the complementary sensitivity
-*Activity* Mark in the complex plane the points indicated in the Bode plot of the two systems \(S_s(z)\) and \(T_s(z)\). Verify that the vector sum is equal to 1.
+*** Graphics 
+   :PROPERTIES:
+    :BEAMER_col: 0.7
+    :END:
+
 #+begin_center
-\includegraphics[width=0.7\linewidth]{../matlab/bode-sensitivity-exercise-crop}
+\includegraphics[width=1.05\linewidth]{../matlab/bode-sensitivity-exercise-crop}
 #+end_center
+
+*** Graphics 
+   :PROPERTIES:
+    :BEAMER_col: 0.3
+    :END:
+
+#+BEAMER: \pause
+
+*Activity* Mark in the complex plane the values of \(S_s(z)\) and \(T_s(z)\) for the frequencies 0.511, 0.516 and 2.07 rad/s.  Verify that the vector sum is equal to 1.
 
 ** The sensitivity and the complementary sensitivity
     \pgfmathsetmacro{\Smag}{0.12}

@@ -1,4 +1,4 @@
-% Created 2021-07-26 Mon 11:04
+% Created 2022-07-26 Tue 16:38
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,14 +34,14 @@
 \maketitle
 
 \section{Apollo moon lander}
-\label{sec:orgf367148}
-\begin{frame}[label={sec:orga00b35e}]{Example - The Apollo lunar module}
+\label{sec:orgcee211e}
+\begin{frame}[label={sec:orgfba8330}]{Example - The Apollo lunar module}
 \begin{center}
 \includegraphics[width=\linewidth]{fig-apollo}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org4e808de}]{Example - The Apollo lunar module}
+\begin{frame}[label={sec:org34fad2a}]{Example - The Apollo lunar module}
 State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
 
@@ -49,7 +49,7 @@ State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{
 \end{frame}
 
 
-\begin{frame}[label={sec:org03fd31b}]{Example - The Apollo lunar module}
+\begin{frame}[label={sec:orgf88498e}]{Example - The Apollo lunar module}
  \begin{align*}
   x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
    &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)\\
@@ -59,17 +59,17 @@ State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{
 
 
 \section{State feedback with observer}
-\label{sec:org1049069}
-\begin{frame}[label={sec:orge0b900b}]{State feedback with reconstructed states}
+\label{sec:org471f8c2}
+\begin{frame}[label={sec:org4df2cb8}]{State feedback with reconstructed states}
 \end{frame}
 
-\begin{frame}[label={sec:org7f98d83}]{State feedback with reconstructed states}
+\begin{frame}[label={sec:orgd0a5c1d}]{State feedback with reconstructed states}
 \begin{center}
 \includegraphics[width=0.9\linewidth]{fig-apollo}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org5b63c86}]{State feedback}
+\begin{frame}[label={sec:org8dbf4a3}]{State feedback}
 Given
  \begin{equation}
  \begin{split}
@@ -100,7 +100,7 @@ Substituting the control law in the state space model \eqref{eq:ssmodel} gives
 
 
 
-\begin{frame}[label={sec:org71af002}]{Observer design}
+\begin{frame}[label={sec:org23f8645}]{Observer design}
 Given model
  \begin{equation*}
  \begin{split}
@@ -109,9 +109,10 @@ Given model
  \end{split}
  \label{eq:ssmodel}
 \end{equation*}
-and measurements of the output signal \(y(k)\). 
+input signal \(u(k)\) and measurements of the output signal \(y(k)\). 
 
-The obserser is given by
+\pause
+The observer is given by
 \begin{equation*}
 \begin{split}
 \hat{x}(k+1) &= \underbrace{\Phi \hat{x}(k) + \Gamma u(k)}_{\text{simulation}} + \underbrace{K\big(y(k) - C\hat{x}(k)\big)}_{\text{correction}} = \left(\Phi - KC\right)\hat{x}(k) +  \Gamma u(k) + Ky(k)
@@ -119,10 +120,12 @@ The obserser is given by
 \end{equation*}
 with poles given by the eigenvalues of the matrix \(\Phi_o = \Phi - KC\)
 
+\pause
+
 \alert{Rule-of-thumb} Choose the poles of the observer (eigenvalues of \(\Phi-KC\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\).
 \end{frame}
 
-\begin{frame}[label={sec:org8c2ca3d}]{Observer design}
+\begin{frame}[label={sec:org121c645}]{Observer design}
 \alert{Rule-of-thumb} Choose the poles of the observer (eigenvalues of \(\Phi-KC\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\).
 
 In continuous time (the s-plane), choosing a pole to be twice as fast, means moving the pole to twice the disance from the origin. Given a discrete pole \(p_1\), the discrete pole in 
@@ -130,7 +133,7 @@ In continuous time (the s-plane), choosing a pole to be twice as fast, means mov
 corresponds to a response that is twice as fast.
 \end{frame}
 
-\begin{frame}[label={sec:org71f4946}]{Control by feedback from reconstructed states}
+\begin{frame}[label={sec:orgce8f2cc}]{Control by feedback from reconstructed states}
 The design problem can be separates into two problems
 \begin{enumerate}
 \item Determine the gain vector \(\textcolor{orange!80!black}{L}\) and the gain \(l_0\) of the control law
@@ -146,7 +149,7 @@ to get a good balance between disturbance rejection and noise attenuation.
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgff3fa4d}]{Computing the observer gain}
+\begin{frame}[label={sec:org4567bee}]{Computing the observer gain}
 A matrix \(M\) and its transpose \(M\transp\) have the same eigenvalues. Hence, the problem of determining the gain \(K\) to obtain desired eigenvalues of 
 \[\Phi- KC\] is equivalent to determining the gain \(K\) in 
 \[(\Phi-KC)\transp = \Phi\transp - C\transp K\transp.\]
@@ -156,7 +159,7 @@ The last problem has the exact same form as the problem of determining \(L\) to 
 So, the same matlab function can be used for both problems.
 \end{frame}
 
-\begin{frame}[label={sec:org9d34dd5},fragile]{Computing the observer gain}
+\begin{frame}[label={sec:org8475baa},fragile]{Computing the observer gain}
  \begin{enumerate}
 \item \alert{Ackerman's method} 
 \begin{verbatim}

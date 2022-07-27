@@ -1,4 +1,4 @@
-% Created 2021-07-22 Thu 11:00
+% Created 2022-07-22 Fri 16:55
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -42,55 +42,55 @@
 
 
 \section{PMSM - sysid}
-\label{sec:orgd8d4281}
+\label{sec:orga9605c3}
 
-\begin{frame}[label={sec:org9a749ce}]{Obtain state-space model from discrete-time pulse-transfer function}
+\begin{frame}[label={sec:orgfef55c8}]{Obtain state-space model from discrete-time pulse-transfer function}
 \end{frame}
 
-\begin{frame}[label={sec:org7a551b6}]{The permanent magnet synchronous motor}
+\begin{frame}[label={sec:org19ac69e}]{The permanent magnet synchronous motor}
 \begin{center}
 \includegraphics[width=0.9\linewidth]{../../figures/permanent-motor.jpg}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgb40e192}]{The PMSM}
+\begin{frame}[label={sec:org08ae0d8}]{The PMSM}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{../../figures/pmsm_control_block_diag.png}
 \end{center}
 {\footnotesize De Liu and Li  ``Speed control for PMSM servo system'', IEEE Transactions on Industrial Electronics, 2012.}
 \end{frame}
-\begin{frame}[label={sec:orgfaa79fd}]{Identified model}
-Two poles, two zeros, one delay
+\begin{frame}[label={sec:org11978d1}]{Identified model}
+Three poles, two zeros
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=10mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
-    \node[coordinate] (input) {};
-    \node[block, right of=input] (delay1)  {$\frac{1}{z}$};
-    \node[block, right of=delay1, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
-    \node[coordinate, right of=plant] (output) {};
+    % \node[coordinate] (input) {};
+    % \node[block, right of=input] (delay1)  {$\frac{1}{z}$};
+    % \node[block, right of=delay1, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
+    % \node[coordinate, right of=plant] (output) {};
 
-    \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (delay1);
-    \draw[->] (delay1) -- node[above, pos=0.3] {} (plant);
-    \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
+    % \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (delay1);
+    % \draw[->] (delay1) -- node[above, pos=0.3] {} (plant);
+    % \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
 
-    \begin{scope}[yshift=-1cm, xshift = 3cm]
-    \node {$\Updownarrow$};
-    \end{scope}
-    \begin{scope}[yshift=-3cm, xshift = 3cm]
-    \node {$\Updownarrow$};
-    \end{scope}
+    % \begin{scope}[yshift=-1cm, xshift = 3cm]
+    % \node {$\Updownarrow$};
+    % \end{scope}
+    % \begin{scope}[yshift=-3cm, xshift = 3cm]
+    % \node {$\Updownarrow$};
+    % \end{scope}
 
-    \node[coordinate, below of=input, node distance=2cm] (input2) {};
-    \node[block, right of=input2, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
-    \node[block, right of=plant] (delay2)  {$\frac{1}{z}$};
-    \node[coordinate, right of=delay2] (output) {};
+    % \node[coordinate, below of=input, node distance=2cm] (input2) {};
+    % \node[block, right of=input2, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
+    % \node[block, right of=plant] (delay2)  {$\frac{1}{z}$};
+    % \node[coordinate, right of=delay2] (output) {};
 
-    \draw[->] (input2) -- node[above, pos=0.3] {$u(k)$} (plant);
-    \draw[->] (plant) -- node[above, pos=0.3] {} (delay2);
-    \draw[->] (delay2) -- node[above, near end] {$y(k)$} (output);
+    % \draw[->] (input2) -- node[above, pos=0.3] {$u(k)$} (plant);
+    % \draw[->] (plant) -- node[above, pos=0.3] {} (delay2);
+    % \draw[->] (delay2) -- node[above, near end] {$y(k)$} (output);
 
     \node[coordinate, below of=input2, node distance=2cm] (input3) {};
-    \node[block, right of=input3, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z(z^2 + a_1 z + a_2})$};
+    \node[block, right of=input3, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^3 + a_1 z^2 + a_2z + a_3})$};
     \node[coordinate, right of=plant, node distance=30mm] (output) {};
 
     \draw[->] (input3) -- node[above, pos=0.3] {$u(k)$} (plant);
@@ -102,20 +102,21 @@ Two poles, two zeros, one delay
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org663463f}]{Identified model}
-\[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
+\begin{frame}[label={sec:orgf700ceb}]{Identified model}
+\[ H(z) = \frac{4.6z^2 + 20.0z -1.0}{z^3 - 1.25z^2 + 0.42z - 0.16}\]
 
 \begin{center}
-\includegraphics[width=0.6\linewidth]{../../figures/validation-result-2020-07-24.png}
+\includegraphics[width=0.45\linewidth]{../../figures/pmsm_arx331_pzmap.png}
+\includegraphics[width=0.45\linewidth]{../../figures/pmsm_arx331_residual.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org6ba2fba}]{From pulse-transfer function to state space model}
+\begin{frame}[label={sec:orge251605}]{From pulse-transfer function to state space model}
 \begin{center}
   \begin{tikzpicture}[node distance=32mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
     \node[coordinate] (input) {};
-    \node[block, right of=input] (plant)  {$H(z) = \frac{b_0z^2 + b_1z + b_2}{z(z^2 + a_1 z + a_2)}$};
+    \node[block, right of=input] (plant)  {$H(z) = \frac{b_0z^2 + b_1z + b_2}{z^3 + a_1 z^2 + a_2z + a_3)}$};
     \node[coordinate, right of=plant] (output) {};
 
     \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (plant);
@@ -140,7 +141,7 @@ Two poles, two zeros, one delay
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orga09dbeb}]{Canonical forms}
+\begin{frame}[label={sec:org51c8988}]{Canonical forms}
 Given pulse-transfer function 
 \[ H(z) = \frac{b_1 z^2 + b_2 z + b_3}{z^3 + a_1z^2 + a_2z + a_3}.\] 
 Find a representation in state space form
@@ -157,7 +158,7 @@ Find a representation in state space form
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org8bf8145}]{Controlable canonical form}
+\begin{frame}[label={sec:org7513c03}]{Controlable canonical form}
 Given pulse-transfer function 
 \[ H(z) = \frac{b_1 z^2 + b_2 z + b_3}{z^3 + a_1z^2 + a_2z + a_3}.\] 
 
@@ -168,7 +169,7 @@ Given pulse-transfer function
 \end{frame}
 
 
-\begin{frame}[label={sec:orga3d2da4}]{Observable canonical form}
+\begin{frame}[label={sec:org2bef48e}]{Observable canonical form}
 Given pulse-transfer function 
 \[ H(z) = \frac{b_1 z^2 + b_2 z + b_3}{z^3 + a_1z^2 + a_2z + a_3}.\] 
 
@@ -179,24 +180,25 @@ Given pulse-transfer function
 \end{frame}
 
 
-\begin{frame}[label={sec:orgcb7a0f5}]{Canonical forms}
-\alert{Activity} Find the controlable abd observable canonical forms for the pulse-transfer function of the motor. Answer on Canvas (questions 1 and 2 on today's exercises).
+\begin{frame}[label={sec:org982ed49}]{Canonical forms}
+\alert{Activity} Find the controlable and observable canonical forms for the pulse-transfer function of the motor. Answer on Canvas (questions 1 and 2 on today's exercises).
 
-\[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
+\[ H(z) = \frac{4.6z^2 + 20.0z -1.0}{z^3 - 1.25z^2 + 0.42z - 0.16}\]
 \end{frame}
 
+
 \section{Apollo moon lander}
-\label{sec:org0898f55}
-\begin{frame}[label={sec:org0461feb}]{Discrete-time state-space  from continuous-time state space}
+\label{sec:orgcf9afff}
+\begin{frame}[label={sec:orgde33206}]{Discrete-time state-space  from continuous-time state space}
 A.k.a. discretization
 \end{frame}
 
-\begin{frame}[label={sec:orgb2a2f80}]{Example - the Apollo lunar module}
+\begin{frame}[label={sec:org884f995}]{Example - the Apollo lunar module}
 \begin{center}
 \includegraphics[width=\linewidth]{fig-apollo}
 \end{center}
 \end{frame}
-\begin{frame}[label={sec:orgacd27c5}]{Example - the Apollo lunar module}
+\begin{frame}[label={sec:org88a3e4a}]{Example - the Apollo lunar module}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{fig-apollo}
 \end{center}
@@ -204,14 +206,14 @@ A.k.a. discretization
 \[1: \; G(s) = \frac{k_1 k_2}{s^2}\qquad 2: \; G(s) = \frac{k_1 k_2}{s(s^2 + 1)} \qquad 3: \; G(s) = \frac{k_1 k_2}{s^3}\]
 \end{frame}
 
-\begin{frame}[label={sec:orgd29c635}]{Example - the Apollo lunar module}
+\begin{frame}[label={sec:orgedc44d8}]{Example - the Apollo lunar module}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{fig-apollo}
 \end{center}
 \alert{Activity} What sensors are needed by the control system?
 \end{frame}
 
-\begin{frame}[label={sec:org1d01b3c}]{Example - the Apollo lunar module}
+\begin{frame}[label={sec:org09e1bba}]{Example - the Apollo lunar module}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{fig-apollo}
 \end{center}
@@ -220,7 +222,7 @@ State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
 \end{frame}
 
-\begin{frame}[label={sec:org380c798}]{Example - the Apollo lunar module}
+\begin{frame}[label={sec:orgc66d921}]{Example - the Apollo lunar module}
 State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = k_1 u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = k_2\theta = k_2x_2 \end{cases} \]
 
@@ -229,19 +231,19 @@ State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{
 \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{white}{0} & \textcolor{white}{0} &\textcolor{white}{0} \\\textcolor{white}{1} & \textcolor{white}{0}& \textcolor{white}{0}\\ \textcolor{white}{0}& \textcolor{white}{k_2} &\textcolor{white}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{white}{k_1} \\ \textcolor{white}{0} \\\textcolor{white}{0}  \end{bmatrix}}_{B} u \]
 \end{frame}
 
-\begin{frame}[label={sec:orgd8545c5}]{Example - the Apollo lunar module}
+\begin{frame}[label={sec:org1f8222f}]{Example - the Apollo lunar module}
 \end{frame}
 
 
 \section{Discretization}
-\label{sec:orge61a8be}
+\label{sec:org5295fa1}
 
-\begin{frame}[label={sec:org8990824}]{Discretizing a continuous-time state-space model}
+\begin{frame}[label={sec:org5cb34e5}]{Discretizing a continuous-time state-space model}
 \end{frame}
-\begin{frame}[label={sec:orgedf0d91}]{Discretización}
+\begin{frame}[label={sec:org405ee0b}]{Discretización}
 The general solution to a linear, continuous-time state-space system
 \begin{align*}
-x(t_k+\tau)& = \mathrm{e}^{A(\tau)} x(t_k) + \int_{0}^\tau \mathrm{e}^{As} B u\big((t_k+\tau)-s) ds
+x(t_k+\tau)& = \mathrm{e}^{A\tau} x(t_k) + \int_{0}^\tau \mathrm{e}^{As} B u\big((t_k+\tau)-s) ds
 \end{align*}
 
 \begin{center}
@@ -261,15 +263,15 @@ x(t_k+\tau)& = \mathrm{e}^{A(\tau)} x(t_k) + \int_{0}^\tau \mathrm{e}^{As} B u\b
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:orgaa1f3f9}]{Discretization - The matrix exponential}
+\begin{frame}[label={sec:org94d39e8}]{Discretization - The matrix exponential}
 Square matrix \(A\). Scalar variable \(t\).
-\[ \mathrm{e}^{At} = 1 + At + \frac{t^2}{2!}A^2 + \frac{t^3}{3!} A^3 + \cdots\]
+\[ \mathrm{e}^{At} = I + At + \frac{t^2}{2!}A^2 + \frac{t^3}{3!} A^3 + \cdots\]
 Laplace transform
 \[ \laplace{\mathrm{e}^{At}} = (sI - A)^{-1}\]
 \end{frame}
 
 
-\begin{frame}[label={sec:orge94101e}]{Discretization - example}
+\begin{frame}[label={sec:org8b97ae2}]{Discretization - example}
  \begin{align*}
   x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
    &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)
@@ -282,7 +284,7 @@ So,
  \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:orge5dc4ca}]{Discretization - example}
+\begin{frame}[label={sec:orgad0931e}]{Discretization - example}
  \begin{align*}
   x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
    &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)
@@ -294,7 +296,7 @@ So,
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org2d3268c}]{Discretization - example}
+\begin{frame}[label={sec:org7ceede2}]{Discretization - example}
  \begin{align*}
   x(kh+h) &= \mathrm{e}^{Ah} x(kh) + \int_{0}^{h} \mathrm{e}^{As} B u(kh+h-s) ds\\
    &= \underbrace{\mathrm{e}^{Ah}}_{\Phi(h)} x(kh) + \underbrace{\left(\int_{0}^h \mathrm{e}^{As} B ds \right)}_{\Gamma(h)} u(kh)\\
@@ -302,7 +304,7 @@ So,
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:orgff35f9c}]{Discretization - exercise}
+\begin{frame}[label={sec:orgec19f3f}]{Discretization - exercise}
 \alert{Activity} Discretize the system (question 3 on today's exercises on Canvas)
 \[ \dot{x} = Ax + Bu = \begin{bmatrix} 0 & 1\\ 0 & 0 \end{bmatrix} x + \begin{bmatrix}0\\1\end{bmatrix}u\]
 \end{frame}

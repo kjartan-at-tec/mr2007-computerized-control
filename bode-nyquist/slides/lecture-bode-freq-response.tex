@@ -1,4 +1,4 @@
-% Created 2022-06-27 Mon 10:03
+% Created 2022-06-28 Tue 08:44
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -32,9 +32,9 @@
 \maketitle
 
 \section{Bode diagram}
-\label{sec:org12b14cf}
+\label{sec:orgd44b59e}
 
-\begin{frame}[label={sec:orge6079e2}]{Response of LTI systems to sinusoids}
+\begin{frame}[label={sec:org5a18791}]{Response of LTI systems to sinusoids}
 \begin{center}
   \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -52,20 +52,20 @@ Let \(u(t) = \sin\omega_1 t\). Then, after transients have died out,
 \end{frame}
 
 
-\begin{frame}[label={sec:org2462e6a}]{The Bode diagram}
+\begin{frame}[label={sec:orgbb2bec3}]{The Bode diagram}
 \[ y(t) = \underbrace{|G(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G(i\omega_1)}_{\text{phase shift}} \big) \]
 
 The Bode diagram shows the magnitude and phase of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
 \end{frame}
 
 
-\begin{frame}[label={sec:orgade3c46}]{Specifications on the frequency properties of the closed-loop system}
+\begin{frame}[label={sec:orgb469bab}]{Specifications on the frequency properties of the closed-loop system}
 \begin{center}
 \includegraphics[width=0.899\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgd748c93}]{Exercise: Reading the Bode diagram}
+\begin{frame}[label={sec:orgd8c5c11}]{Exercise: Reading the Bode diagram}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/alias-example-bode-GC}
 \end{center}
@@ -76,7 +76,7 @@ which of the below frequency responses \alert{is not} compatible with the Bode d
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org47b536e}]{Stability of the closed-loop system}
+\begin{frame}[label={sec:org18ee3c4}]{Stability of the closed-loop system}
  \begin{center}
  \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -101,7 +101,7 @@ which of the below frequency responses \alert{is not} compatible with the Bode d
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgd22ccdc}]{Stability of the closed-loop system}
+\begin{frame}[label={sec:orgbc96810}]{Stability of the closed-loop system}
  \begin{center}
  \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -165,7 +165,7 @@ which of the below frequency responses \alert{is not} compatible with the Bode d
 \end{frame}
 
 
-\begin{frame}[label={sec:orgcc54f31}]{From loop gain to closed-loop gain}
+\begin{frame}[label={sec:orgbbc0a22}]{From loop gain to closed-loop gain}
  \begin{center}
  \begin{tikzpicture}
 \tikzset{node distance=2cm, 

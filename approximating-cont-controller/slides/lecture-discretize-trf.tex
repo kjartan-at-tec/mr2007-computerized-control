@@ -1,4 +1,4 @@
-% Created 2021-07-08 Thu 10:15
+% Created 2022-07-08 Fri 11:51
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -20,7 +20,7 @@
 \DeclareMathOperator{\diff}{p}
 \usetheme{default}
 \author{Kjartan Halvorsen}
-\date{2021-07-08}
+\date{2022-07-08}
 \title{Discretizing continuous-time controllers}
 \hypersetup{
  pdfauthor={Kjartan Halvorsen},
@@ -35,11 +35,11 @@
 
 
 \section{Intro}
-\label{sec:org5096880}
+\label{sec:org3cfdf55}
 
 \section{Discretization}
-\label{sec:org497335f}
-\begin{frame}[label={sec:orga5cf6e7}]{Context}
+\label{sec:org4173e32}
+\begin{frame}[label={sec:orge7a4022}]{Context}
 \begin{itemize}
 \item Controller \(F(s)\) obtained from a design in continuous time.
 \item Need discrete approxmation in order to implement on a computer
@@ -52,9 +52,9 @@
 \end{frame}
 
 \section{Warm-up: Differentiation}
-\label{sec:org1fa17cb}
+\label{sec:org78c256d}
 
-\begin{frame}[label={sec:org07d6f70}]{Warm-up exercise}
+\begin{frame}[label={sec:org31a75f1}]{Warm-up exercise}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -71,7 +71,7 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org2b5bba8}]{Discrete-time differentiation}
+\begin{frame}[label={sec:orge36f0a5}]{Discrete-time differentiation}
 \begin{center}
 \begin{tabular}{lll}
 \includegraphics[width=0.3\linewidth]{../../figures/block-simple-shift-z} & \(\Leftrightarrow\) & \includegraphics[width=0.3\linewidth]{../../figures/block-simple-shift}\\
@@ -94,11 +94,15 @@
 \end{column}
 
 \begin{column}{0.6\columnwidth}
+\begin{align*}
+y(kh) &= \frac{\shift-1}{h} u(kh) = \frac{\shift u(kh) - u(kh)}{h}\\ &= \frac{u(kh + h) - u(kh)}{h}\\\\
+&\textcolor{white}{hej}
+\end{align*}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgc048ecb}]{Discretization methods}
+\begin{frame}[label={sec:org1066e7b}]{Discretization methods}
 \begin{enumerate}
 \item Forward difference. Substitute 
 \[ s = \frac{z-1}{h} \] in \(F(s)\) to get
@@ -108,7 +112,7 @@
 \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:org6c3e541}]{Discretization methods, contd.}
+\begin{frame}[label={sec:org35f1812}]{Discretization methods, contd.}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item Tustin's method (also known as the bilinear transform). Substitute
@@ -120,32 +124,28 @@ Since a unit ramp has z-transform \(\frac{zh}{(z-1)^2}\) and Laplace-transform \
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgcde3040}]{Frequency warping using Tustin's}
+\begin{frame}[label={sec:org09330e0}]{Frequency warping using Tustin's}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}
 \end{center}
 The infinite positive imaginary axis in the s-plane is mapped to the finite-length upper half of the unit circle in the z-plane.
 \end{frame}
-\begin{frame}[label={sec:org92aad28}]{Exercise}
-Find the discrete approximation of the lead-compensator \(F(s) = \frac{s+b}{s+a}\), and determine the pole for 
-\begin{enumerate}
-\item Forward difference. Substitute 
-\[ F_d(z) = F(s')|_{s'=\frac{z-1}{h}}. \]
-\item Backward difference. Substitute 
-\[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
-\item Tustin's approximation
-\[ F_d(z) = F(s')|_{s'=\frac{2}{h}\cdot \frac{z-1}{z+1}}. \]
-\end{enumerate}
-\end{frame}
-\begin{frame}[label={sec:org4007077}]{Forward difference exercise}
+\begin{frame}[label={sec:org77f91c0}]{Forward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org912e773}]{Backward difference exercise}
+\begin{frame}[label={sec:org1437175}]{Backward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[label={sec:org47c0825}]{Bilinear transformation exercise}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/tustin-diff-exercise}
 \end{center}
 \end{frame}
 \end{document}

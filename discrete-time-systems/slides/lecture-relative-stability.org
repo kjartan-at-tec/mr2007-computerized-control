@@ -12,7 +12,7 @@
 #+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
 
 #+title: Relative stability
-#+date: 2021-07-07
+#+date: 2022-07-06
 
 * What do I want the students to understand?			   :noexport:
   - Como analisar estabilidad
@@ -124,7 +124,7 @@ The rules for drawing the root locus is the same in continous as in discrete tim
      \end{center}
    #+end_export
    \( \omega_1 = \frac{2\pi}{T} = 2\pi \), \(|G(i\omega_1)| = 0.7\), \(\arg G(i\omega_1) = -\omega_1 \Delta t = -2\pi \frac{1}{3} = - \frac{2\pi}{3}\)
-** Sinusoid in - sinusoid out
+** Sinusoid in - sinusoid out                                      :noexport:
    #+begin_export latex
    \begin{center}
      \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
@@ -179,7 +179,7 @@ The rules for drawing the root locus is the same in continous as in discrete tim
      \end{tikzpicture}
    \end{center}
    #+end_export
-   #+BEAMER: \pause
+#   #+BEAMER: \pause
    Closed-loop transfer function: \(G_c(s) = \frac{G_o(s)}{1 + G_o(s)} \)
    \begin{tcolorbox}
    We want \[ 1 + G_o(i\omega) \neq 0, \quad \forall \omega \]
@@ -190,6 +190,9 @@ The rules for drawing the root locus is the same in continous as in discrete tim
 #+BEGIN_CENTER 
  \includegraphics[width=0.65\linewidth]{../../figures/implane-nyquist-contour-map}
 #+END_CENTER
+
+   #+BEAMER: \pause
+   
 \begin{tcolorbox}
 If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no poles in the right-half plane, then the closed-loop system will be stable if the Nyquist curve \textbf{do not encircle the point \(s=-1\)}. The point $s=-1$ should stay on the left side of the Nyquist curve when we go along the curve from low to high frequencies.
 \end{tcolorbox}
@@ -221,15 +224,19 @@ If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no po
 
 ** The effect of sampling on the stability margins
    \[G(s) = \frac{1}{s^2 + 1.4s + 1} \quad \overset{h=0.4}{\longrightarrow} \quad H(z) = \frac{0.066z + 0.055}{z^2 - 1.450z + 0.571}\] 
-   #+begin_center
-   \includegraphics[width=0.6\linewidth]{../../figures/fig3-3.png}
-   #+end_center
+   \begin{center}
+   \includegraphics[width=0.5\linewidth]{../../figures/fig3-3.png}
+   \tiny Source: Åström \& Wittenmark
+   \end{center}
+
 ** The effect of sampling on the stability margins
 
    \[G(s) = \frac{1}{s^2 + 1.4s + 1} \quad \overset{h=0.4}{\longrightarrow} \quad H(z) = \frac{0.066z + 0.055}{z^2 - 1.450z + 0.571}\] 
-   #+begin_center
+
+   \begin{center}
    \includegraphics[width=0.5\linewidth]{../../figures/fig3-4.png}
-   #+end_center
+   \tiny Source: Åström \& Wittenmark
+   \end{center}
 
 ** Selecting the sampling period
    One can use the phase margin to determine a suitable sampling period. Given a desired cross-over frequency $\omega_c$ and a maximum acceptable negative change in the phase margin  \(\Delta\varphi \approx 5^\circ\; - \; 15^\circ \approx 0.09 \text{rad}\; - \; 0.26\text{rad}\) (a rule-of-thumb).
@@ -251,6 +258,17 @@ If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no po
 \[ \arg G_{ZOH}(i\omega_c) \approx \arg \mathrm{e}^{-i\omega_c \frac{h}{2}} = -\omega_c \frac{h}{2} \approx -0.09 \text{rad}\; - \; -0.26\text{rad} \]
 
 *Activity* Use the rule-of-thumb above to calculate a sampling period for the case  \(\omega_c = \unit{20}{\rad\per\second}\) and \(\Delta\varphi = \unit{0.2}{\rad}\).
+
+*** Notes                                                          :noexport:
+
+wc = 20
+delta_varphi = 0.2
+
+h = 2*delta_varphi / wc = 2*0.2/20 = 0.2/10 = 0.02.
+
+
+(1 - exp(-sh))/s = 1/s ( 1 - 1 - sh - (sh)^2/2 - ...)
+= 1/s (sh - (sh)^2/2 - ...) = h ( 1 - (sh/2) - ...)
 
 ** Efecto de un filtro de anti-aliasing                            :noexport:
 

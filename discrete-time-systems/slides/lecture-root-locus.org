@@ -48,6 +48,14 @@
 
    The *s-domain* of continuous-time systems is related to the *z-domain* of discrete-time systems through  \[z = \mathrm{e}^{sh}\]
  
+** Poles in continuous- and discrete time
+
+    #+BEGIN_CENTER 
+     \includegraphics[width=0.85\linewidth]{../../figures/pzmap-continuous-discrete-exc}
+    #+END_CENTER
+
+    *Activity* Pair the continuous-time poles with the corresponding discrete-time poles! \(h=0.2\)
+
 ** Pole-placement and time-response
 Pair the pole-placement with the correct time-response (discrete time)!
 *** pzmap
@@ -84,16 +92,21 @@ Pair the pole-placement with the correct time-response (discrete time)!
             \draw[->] (sum) -- node[above] {} (plant);
             \draw[->] (plant) -- node[coordinate] (measure) {} node[above, near end] {} (output);
             \draw[->] (measure) |- (controller);
-            \draw[->] (controller) -| (sum);
+            \draw[->] (controller) -| node[left, pos=0.95] {$-$}(sum);
           \end{tikzpicture}
         \end{center}
 
 #+end_export
 
+#+beamer:\pause
+
 
    - The loop pulse-transfer function (loop gain) becomes \(L(z) = H(z)F(z) = K\frac{\overbrace{B(z)D(z)}^{Q(z)}}{\underbrace{A(z)C(z)}_{P(z)}} = K \frac{Q(z)}{P(z)}\).
+#+beamer:\pause
    - The roots of \(Q(z)\) are called the *open loop zeros*.
+#+beamer:\pause
    - The roots of \(P(z)\) are called the *open loop poles*.
+#+beamer:\pause
    - The characteristic equation for the closed-loop system is \[ 1 + K\frac{Q(z)}{P(z)} = 0 \quad \Leftrightarrow \quad P(z) + KQ(z) = 0\]
 
 
@@ -103,6 +116,7 @@ Let
 \[\begin{cases} P(z)&=z^n+a_1z^{n-1}+\dots+a_n = (z-p_1)(z-p_2)\cdots(z-p_n)\\ 
 Q(z)&=z^m+b_1 z^{m-1}+\dots+b_m=(s-q_1)(z-q_2)\cdots(z-q_m) \end{cases},\ \ \ n\ge m \]
 
+#+beamer:\pause
 The root locus shows how the *solution* to the characteristic equation
 \begin{equation}
 \label{eq:P(z)+KQ(z)=0}

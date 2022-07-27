@@ -56,48 +56,48 @@
 
     En lo que sigue vamos a ver el resultado que obtuve para un model de dos polos y dos ceros, y con un retraso. 
 ** Identified model
-   Two poles, two zeros, one delay
+   Three poles, two zeros
    #+begin_export latex
    \begin{center}
      \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=10mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-    
-       \node[coordinate] (input) {};
-       \node[block, right of=input] (delay1)  {$\frac{1}{z}$};
-       \node[block, right of=delay1, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
-       \node[coordinate, right of=plant] (output) {};
-
-       \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (delay1);
-       \draw[->] (delay1) -- node[above, pos=0.3] {} (plant);
-       \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
-
-       \begin{scope}[yshift=-1cm, xshift = 3cm]
-       \node {$\Updownarrow$};
-       \end{scope}
-       \begin{scope}[yshift=-3cm, xshift = 3cm]
-       \node {$\Updownarrow$};
-       \end{scope}
-
-       \node[coordinate, below of=input, node distance=2cm] (input2) {};
-       \node[block, right of=input2, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
-       \node[block, right of=plant] (delay2)  {$\frac{1}{z}$};
-       \node[coordinate, right of=delay2] (output) {};
-
-       \draw[->] (input2) -- node[above, pos=0.3] {$u(k)$} (plant);
-       \draw[->] (plant) -- node[above, pos=0.3] {} (delay2);
-       \draw[->] (delay2) -- node[above, near end] {$y(k)$} (output);
-
+   
+       % \node[coordinate] (input) {};
+       % \node[block, right of=input] (delay1)  {$\frac{1}{z}$};
+       % \node[block, right of=delay1, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
+       % \node[coordinate, right of=plant] (output) {};
+   
+       % \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (delay1);
+       % \draw[->] (delay1) -- node[above, pos=0.3] {} (plant);
+       % \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
+   
+       % \begin{scope}[yshift=-1cm, xshift = 3cm]
+       % \node {$\Updownarrow$};
+       % \end{scope}
+       % \begin{scope}[yshift=-3cm, xshift = 3cm]
+       % \node {$\Updownarrow$};
+       % \end{scope}
+   
+       % \node[coordinate, below of=input, node distance=2cm] (input2) {};
+       % \node[block, right of=input2, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^2 + a_1 z + a_2}$};
+       % \node[block, right of=plant] (delay2)  {$\frac{1}{z}$};
+       % \node[coordinate, right of=delay2] (output) {};
+   
+       % \draw[->] (input2) -- node[above, pos=0.3] {$u(k)$} (plant);
+       % \draw[->] (plant) -- node[above, pos=0.3] {} (delay2);
+       % \draw[->] (delay2) -- node[above, near end] {$y(k)$} (output);
+   
        \node[coordinate, below of=input2, node distance=2cm] (input3) {};
-       \node[block, right of=input3, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z(z^2 + a_1 z + a_2})$};
+       \node[block, right of=input3, node distance=30mm] (plant)  {$\frac{b_0z^2 + b_1z + b_2}{z^3 + a_1 z^2 + a_2z + a_3})$};
        \node[coordinate, right of=plant, node distance=30mm] (output) {};
-
+   
        \draw[->] (input3) -- node[above, pos=0.3] {$u(k)$} (plant);
        \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
-
-
-
+   
+   
+   
      \end{tikzpicture}
    \end{center}
-
+   
        #+end_export
 
 *** Notas                                                          :noexport:
@@ -119,10 +119,11 @@ Given signals \(u(k), \; k=1,2,\ldots, N\) y \(y(k), \; k=1,2,\ldots,N\), el mod
 
 ** Identified model
 
-   \[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
+   \[ H(z) = \frac{4.6z^2 + 20.0z -1.0}{z^3 - 1.25z^2 + 0.42z - 0.16}\]
 
    #+begin_center
-   \includegraphics[width=0.6\linewidth]{../../figures/validation-result-2020-07-24.png}
+   \includegraphics[width=0.45\linewidth]{../../figures/pmsm_arx331_pzmap.png}
+   \includegraphics[width=0.45\linewidth]{../../figures/pmsm_arx331_residual.png}
    #+end_center
 
 ** From pulse-transfer function to state space model
@@ -131,7 +132,7 @@ Given signals \(u(k), \; k=1,2,\ldots, N\) y \(y(k), \; k=1,2,\ldots,N\), el mod
      \begin{tikzpicture}[node distance=32mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
     
        \node[coordinate] (input) {};
-       \node[block, right of=input] (plant)  {$H(z) = \frac{b_0z^2 + b_1z + b_2}{z(z^2 + a_1 z + a_2)}$};
+       \node[block, right of=input] (plant)  {$H(z) = \frac{b_0z^2 + b_1z + b_2}{z^3 + a_1 z^2 + a_2z + a_3)}$};
        \node[coordinate, right of=plant] (output) {};
 
        \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (plant);
@@ -193,9 +194,10 @@ Given signals \(u(k), \; k=1,2,\ldots, N\) y \(y(k), \; k=1,2,\ldots,N\), el mod
 
 
 ** Canonical forms
-   *Activity* Find the controlable abd observable canonical forms for the pulse-transfer function of the motor. Answer on Canvas (questions 1 and 2 on today's exercises).
+   *Activity* Find the controlable and observable canonical forms for the pulse-transfer function of the motor. Answer on Canvas (questions 1 and 2 on today's exercises).
    
-   \[ H(z) = \frac{6.91z^2 + 16.48z -17.87}{z(z^2 - 1.766z + 0.7665)} = \frac{6.91(z+3.19)(z-0.81)}{z(z-0.998)(z-0.768)}\]
+   \[ H(z) = \frac{4.6z^2 + 20.0z -1.0}{z^3 - 1.25z^2 + 0.42z - 0.16}\]
+
 
 * Solutions to canonical forms                                     :noexport:
 ** Formas canónicas - solución
@@ -368,7 +370,7 @@ Given signals \(u(k), \; k=1,2,\ldots, N\) y \(y(k), \; k=1,2,\ldots,N\), el mod
 ** Discretización
    The general solution to a linear, continuous-time state-space system
    \begin{align*}
-   x(t_k+\tau)& = \mathrm{e}^{A(\tau)} x(t_k) + \int_{0}^\tau \mathrm{e}^{As} B u\big((t_k+\tau)-s) ds
+   x(t_k+\tau)& = \mathrm{e}^{A\tau} x(t_k) + \int_{0}^\tau \mathrm{e}^{As} B u\big((t_k+\tau)-s) ds
    \end{align*}
    
    #+begin_export latex
@@ -391,7 +393,7 @@ Given signals \(u(k), \; k=1,2,\ldots, N\) y \(y(k), \; k=1,2,\ldots,N\), el mod
 
 ** Discretization - The matrix exponential
    Square matrix \(A\). Scalar variable \(t\).
-   \[ \mathrm{e}^{At} = 1 + At + \frac{t^2}{2!}A^2 + \frac{t^3}{3!} A^3 + \cdots\]
+   \[ \mathrm{e}^{At} = I + At + \frac{t^2}{2!}A^2 + \frac{t^3}{3!} A^3 + \cdots\]
    Laplace transform
    \[ \laplace{\mathrm{e}^{At}} = (sI - A)^{-1}\]
    

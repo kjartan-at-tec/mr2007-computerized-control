@@ -1,4 +1,4 @@
-% Created 2021-07-19 Mon 09:18
+% Created 2022-07-19 Tue 16:06
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,25 +35,25 @@
 
 
 \section{Intro}
-\label{sec:org8473273}
+\label{sec:org19d6543}
 
-\begin{frame}[label={sec:orgf130457}]{Goal of today's lecture}
+\begin{frame}[label={sec:orgb7ad1e3}]{Goal of today's lecture}
 Understand key concepts of the two-degree-of-freedom controller structure.
 \end{frame}
 
 
 \section{2-dof controller}
-\label{sec:org8ecad3b}
+\label{sec:org97d694c}
 
-\begin{frame}[label={sec:org79b98bd}]{Two-degree-of-freedom controller}
+\begin{frame}[label={sec:org63c157a}]{Two-degree-of-freedom controller}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
 \end{frame}
 
 \section{Key concepts}
-\label{sec:org1d7ff68}
-\begin{frame}[label={sec:orgf6d6ee9}]{Three key concepts}
+\label{sec:org724838f}
+\begin{frame}[label={sec:orgb8c549e}]{Three key concepts}
 \begin{enumerate}
 \item Where to place the poles of the closed-loop system.
 \item The \emph{sensitivity function} and the \emph{complementary sensitivity function}.
@@ -61,14 +61,14 @@ Understand key concepts of the two-degree-of-freedom controller structure.
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org18d5d4d}]{The closed-loop poles}
+\begin{frame}[label={sec:org1d370d0}]{The closed-loop poles}
 Complex poles in the s-plane
 \begin{center}
 \includegraphics[width=0.45\linewidth]{../../figures/implane-second-order-poles}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org695212c}]{The closed-loop poles}
+\begin{frame}[label={sec:org190ec43}]{The closed-loop poles}
 Given specifications on the velocity and damping of the closed-loop system
 \[ t_s \approx \frac{4}{\zeta\omega_n} < 1 s \qquad \zeta \approx \frac{-\ln (\%OS/100)}{\sqrt{\pi^2 + \ln^2(\%OS/100)}}, \quad OS < 10\%  \]
 gives
@@ -79,56 +79,57 @@ gives
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgb3cd3e5}]{Closed-loop poles}
-\alert{Activity} Given the specifications \(\zeta > 0.59\) and \(\zeta\omega_n > 4\), mark the regions in the s-plane and in the z-plane that corresponds to the specifications.
+\begin{frame}[label={sec:org59a4a22}]{Closed-loop poles}
+\alert{Activity} Given specifications \(\zeta > 0.59\) and \(\zeta\omega_n > 4\), mark the regions in the s-plane and in the z-plane that corresponds to the specifications. Use sampling period \(h=0.2\).
 \begin{center}
-\alert{plano s} \hspace*{0.4\linewidth} \alert{plano z}\\
+\alert{s-plane} \hspace*{0.4\linewidth} \alert{z-plane}\\
 \includegraphics[height=0.61\textheight]{../../figures/sgrid-crop} \hspace*{3mm}
 \includegraphics[height=0.6\textheight]{../../figures/zgrid-crop}\\
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org18f10eb}]{Closed-loop poles - Solution}
+\begin{frame}[label={sec:orge304fac}]{The sensitivity and the complementary sensitivity}
 \end{frame}
-\begin{frame}[label={sec:org6b73f68}]{Closed-loop poles - Solution}
-\begin{center}
-\includegraphics[height=0.9\textheight]{../../figures/screenshot-2020-07-14.png}
-\end{center}
-\end{frame}
-
-\begin{frame}[label={sec:org3c64092}]{The sensitivity and the complementary sensitivity}
-\end{frame}
-\begin{frame}[label={sec:org8ee3c7d}]{Two-degree-of-freedom controller}
+\begin{frame}[label={sec:org9f204b3}]{Two-degree-of-freedom controller}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
 
 \begin{align*}
-Y(z) &= G_c(z)U_c(z) + \overbrace{S_s(z)}^{\text{sensib}}V(z) - \overbrace{T_s(z)}^{\text{sens compl}}N(z)\\
+Y(z) &= G_c(z)Y_{ref}(z) + \overbrace{S_s(z)}^{\text{sens}}V(z) - \overbrace{T_s(z)}^{\text{compl sens}}N(z)\\
      &= \frac{F_f(z)H(z)}{1 + F_b(z)z^{-d}H(z)}U_c(z) + \frac{1}{1 + F_b(z)z^{-d}H(z)}V(z)  - \frac{z^{-d}F_b(z)H(z)}{1 + F_b(z)z^{-d}H(z)}N(z)\\
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:orge8baa34}]{Two-degree-of-freedom controller}
+\begin{frame}[label={sec:org803888e}]{Two-degree-of-freedom controller}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/2dof-block-explicit}
 \end{center}
 
 \begin{align*}
-Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
+Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}Y_{ref}(z) + \overbrace{\frac{1}{1 + z^{-d}F_b(z)H(z)}}^{S_s(z)}V(z)  - \overbrace{\frac{z^{-d}F_b(z)H(z)}{1 + z^{-d}F_b(z)H(z)}}^{T_s(z)}N(z)\\
 \end{align*}
 
 \alert{Evidently} \(S_s(z) + T_s(z) = 1\) \alert{Conclusion:} One must find a balance between disturbance rejection and noise attenuation.
 \end{frame}
 
-\begin{frame}[label={sec:orgeae52d9}]{The sensitivity and the complementary sensitivity}
-\alert{Activity} Mark in the complex plane the points indicated in the Bode plot of the two systems \(S_s(z)\) and \(T_s(z)\). Verify that the vector sum is equal to 1.
+\begin{frame}[label={sec:org8bea005}]{The sensitivity and the complementary sensitivity}
+\begin{columns}
+\begin{column}{0.7\columnwidth}
 \begin{center}
-\includegraphics[width=0.7\linewidth]{../matlab/bode-sensitivity-exercise-crop}
+\includegraphics[width=1.05\linewidth]{../matlab/bode-sensitivity-exercise-crop}
 \end{center}
+\end{column}
+
+\begin{column}{0.3\columnwidth}
+\pause
+
+\alert{Activity} Mark in the complex plane the values of \(S_s(z)\) and \(T_s(z)\) for the frequencies 0.511, 0.516 and 2.07 rad/s.  Verify that the vector sum is equal to 1.
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org8396314}]{The sensitivity and the complementary sensitivity}
+\begin{frame}[label={sec:orge732f37}]{The sensitivity and the complementary sensitivity}
 \pgfmathsetmacro{\Smag}{0.12}
 \pgfmathsetmacro{\Sarg}{70}
 \pgfmathsetmacro{\Sreal}{\Smag*cos(\Sarg)}
@@ -155,10 +156,10 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org68f0c78}]{The sensitivity and the complementary sensitivity - Solution}
+\begin{frame}[label={sec:orgb4f03f0}]{The sensitivity and the complementary sensitivity - Solution}
 \end{frame}
 
-\begin{frame}[label={sec:orgd08a7b7}]{The sensitivity and the complementary sensitivity - Solution}
+\begin{frame}[label={sec:org89be80b}]{The sensitivity and the complementary sensitivity - Solution}
 \pgfmathsetmacro{\Smag}{0.12}
 \pgfmathsetmacro{\Sarg}{70}
 \pgfmathsetmacro{\Tmag}{0.98}
@@ -205,9 +206,9 @@ Y(z)     &= \frac{F_f(z)H(z)}{1 + z^{-d}F_b(z)H(z)}U_c(z) + \overbrace{\frac{1}{
 
 
 \section{RST}
-\label{sec:org82e3bcb}
+\label{sec:orga1193dc}
 
-\begin{frame}[label={sec:org0c8aa0e}]{Procedure}
+\begin{frame}[label={sec:org7845e5f}]{Procedure}
 Given plant model \(H(z)=\frac{B(z)}{A(z)}\) and specifications on the desired closed-loop poles \(A_{cl}(z)\)
 \begin{enumerate}
 \item Find polynomials \(R(z)\) and \(S(z)\) with \(n_R \ge n_S\) such that 
@@ -221,7 +222,7 @@ The control law is then
 The closed-loop response to the command signal is given by
 \[ A_c(q)y(k) = t_0 B(q) u_c(k). \]
 \end{frame}
-\begin{frame}[label={sec:org4fc5796}]{Determining the order of the controller}
+\begin{frame}[label={sec:orge8e36f2}]{Determining the order of the controller}
 With Diophantine equation 
    \[ A(z)R(z)z^{d} + B(z)S(z) = A_{cl}(z) \qquad (*) \]
 and feedback controller
@@ -237,7 +238,7 @@ and feedback controller
 \end{frame}
 
 
-\begin{frame}[label={sec:org012c28b}]{Determining the order of the controller - Exercise}
+\begin{frame}[label={sec:org4d881a2}]{Determining the order of the controller - Exercise}
 With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller 
 \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
 so that all parameters can be determined from the diophantine equation
@@ -250,7 +251,7 @@ so that all parameters can be determined from the diophantine equation
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org694cb05}]{Determining the order of the controller - Exercise - Solution}
+\begin{frame}[label={sec:orgbaf4096}]{Determining the order of the controller - Exercise - Solution}
 With the plant model \[H(z) = \frac{B(z)}{A(z)} = \frac{b}{z + a}\] and \(d=0\) (no delay), what is the appropriate degree of the controller \[F_b(z) = \frac{S(z)}{R(z)} = \frac{s_0z^n + s_1z^{n-1} + \cdots + s_n}{z^n + r_1 z^{n-1} + \cdots + r_n}\]
 so that all parameters can be determined from the diophantine equation
 \[ A(z)R(z) + B(z)S(z) = A_c(z)A_o(z)?\]
